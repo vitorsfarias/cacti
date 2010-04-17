@@ -682,8 +682,8 @@ if (get_request_var_request("step") == "4") {
 							print "<p><strong><font color='#FF0000'>WARNING:</font></strong> One or more of the SQL queries needed to
 								upgraded your Cacti installation has failed. Please see below for more details. Your
 								Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>
-								permissions. You should try executing the failed queries as 'root' to ensure that you do not have
-								a permissions problem.</p>\n";
+								permissions. For each query that failed, you should evaluate the error message returned and take 
+								appropriate action.</p>\n";
 						}
 
 						print $upgrade_results;
