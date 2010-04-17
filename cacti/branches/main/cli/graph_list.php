@@ -302,9 +302,6 @@ function display_help($me) {
 	echo "   --description       " . __("the name that will be displayed by Cacti in the graphs") . "\n";
 	echo "   --ip                " . __("self explanatory (can also be a FQDN)") . "\n";
 	echo "   --template          " . __("denotes the device template to be used") . "\n";
-	echo "                       " . __("In case a device template is given, all values are fetched from this one.") . "\n";
-	echo "                       " . __("For a device template=0 (NONE), Cacti default settings are used.") . "\n";
-	echo "                       " . __("Optionally overwrite by any of the following:") . "\n";
 	echo "   --notes             " . __("General information about this device. Must be enclosed using double quotes.") . "\n";
 	echo "   --disable           " . __("to add this device but to disable checks and 0 to enable it") . " [0|1]\n";
 	echo "   --avail             " . __("device availability check") . " [ping][none, snmp, pingsnmp]\n";
