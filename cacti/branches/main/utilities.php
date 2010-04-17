@@ -296,10 +296,10 @@ function display_general() {
 		$out_array = array();
 		exec(read_config_option("path_rrdtool"), $out_array);
 
-        if (sizeof($out_array) > 0) {
-            if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
-                $rrdtool_version = RRD_VERSION_1_4;
-            }else if (preg_match("/^RRDtool 1\.3/", $out_array[0])) {
+		if (sizeof($out_array) > 0) {
+			if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
+				$rrdtool_version = RRD_VERSION_1_4;
+			}else if (preg_match("/^RRDtool 1\.3/", $out_array[0])) {
 				$rrdtool_version = RRD_VERSION_1_3;
 			}else if (preg_match("/^RRDtool 1\.2\./", $out_array[0])) {
 				$rrdtool_version = RRD_VERSION_1_2;
@@ -326,7 +326,7 @@ function display_general() {
 	}
 
 	/* Display tech information */
-	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
 	html_header(array(__("General Information")), 2,'','','left wp100');
 	print "<tr class='rowAlternate1'>\n";
@@ -348,7 +348,7 @@ function display_general() {
 
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("RRDTool Version") . "</td>\n";
-	print "		<td class='textAreaNotes v'>" . $rrdtool_versions[$rrdtool_version] . " " . $rrdtool_error . "</td>\n";
+	print "		<td class='textAreaNotes v'>" . (isset($rrdtool_versions[$rrdtool_version]) ? $rrdtool_versions[$rrdtool_version]: "Unknown") . " " . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='rowAlternate2'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Hosts") . "</td>\n";
@@ -503,7 +503,7 @@ function display_database() {
 
 	$display_array = array(__("Name"), __("Engine"), __("Version"), __("Row Format"), __("Rows"), __("Average Length"), __("Data Length"), __("Index Length"), __("Auto Increment"), __("Collation"), __("Comment"));
 
-	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($table_status) > 0) {
@@ -545,7 +545,7 @@ function display_database_processes() {
 
 	$display_array = array(__("ID"), __("User"), __("Host"), __("Database"), __("Command"), __("Time"), __("State"), __("Info"));
 
-	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($db_processes) > 0) {
@@ -1221,7 +1221,7 @@ function utilities_clear_logfile() {
 		$logfile = "./log/cacti.log";
 	}
 
-	html_start_box("<strong>" . __("Clear Cacti Log File") . "</strong>", "100", $colors["header"], "1", "center", "");
+	html_start_box("<strong>" . __("Clear Cacti Log File") . "</strong>", "100", $colors["header"], "3", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = format_date();
@@ -1794,11 +1794,10 @@ function utilities_view_poller_cache() {
 function utilities() {
 	global $colors;
 
-	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", $colors["header"], 0, "center", "");
-
+	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", $colors["header"], "3", "center", "");
 
 	print "<tr><td>";
-	html_header(array(__("Technical Support")), 2,'','','left wp100'); ?>
+	html_header(array(__("Technical Support")), 2, '', '', 'left wp100'); ?>
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes">
