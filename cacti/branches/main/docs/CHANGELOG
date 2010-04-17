@@ -157,6 +157,7 @@ Cacti CHANGELOG
 -feature: add shortcuts to show matching objects for template management (device, graph, data source templates)
 -feature: tabbed view for templates (device, graph, data source)
 -feature: cli/rrd_datasouce_add.php allows for adding new datasouces to existing rrd files; supports RRD file version 0001, 0003
+-feature: Add error messages to upgrade script SQL failures
 
 0.8.7e
 

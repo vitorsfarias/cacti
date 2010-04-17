@@ -84,12 +84,15 @@ function verify_php_extensions() {
 }
 
 function db_install_execute($cacti_version, $sql) {
+	global $cnn_id;
+
 	$sql_install_cache = (isset($_SESSION["sess_sql_install_cache"]) ? $_SESSION["sess_sql_install_cache"] : array());
 
 	if (db_execute($sql)) {
-		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][1] = $sql;
+		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][TRUE] = $sql;
 	}else{
-		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][0] = $sql;
+		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][FALSE] = array($sql, $cnn_id->ErrorMsg());
+//		$sql_install_cache{sizeof($sql_install_cache)}[$cacti_version][2] = $cnn_id->ErrorMsg();
 	}
 
 	$_SESSION["sess_sql_install_cache"] = $sql_install_cache;
@@ -521,7 +524,8 @@ if (get_request_var_request("step") == "4") {
 
 <form method="post" action="index.php">
 
-<table align="center" style='padding:20px 100px 20px 100px;margin:20px 100px 20px 100px;' cellpadding="1" cellspacing="0" border="0">
+<div style='align:center;margin:20px 100px 20px 100px;'>
+<table align="center" cellpadding="1" cellspacing="0" border="0">
 	<tr>
 		<td width="100%">
 			<table cellpadding="3" cellspacing="0" border="0" style="border:1px solid #104075;" bgcolor="#F0F0F0" width="100%">
@@ -643,8 +647,9 @@ if (get_request_var_request("step") == "4") {
 						$upgrade_results = "";
 						$failed_sql_query = false;
 
-						$fail_text = "<span class=\"warning\">[Fail]</span>&nbsp;";
+						$fail_text    = "<span class=\"warning\">[Fail]</span>&nbsp;";
 						$success_text = "<span class=\"success\">[Success]</span>&nbsp;";
+						$fail_message = "<span class=\"warning\">[Message]</span>&nbsp;";
 
 						if (isset($_SESSION["sess_sql_install_cache"])) {
 							while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
@@ -655,7 +660,8 @@ if (get_request_var_request("step") == "4") {
 											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 
-										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . $sql . "</p>\n";
+//										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . $sql . "</p>\n";
+										$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
 
 										/* if there are one or more failures, make a note because we are going to print
 										out a warning to the user later on */
@@ -705,6 +711,7 @@ if (get_request_var_request("step") == "4") {
 		</td>
 	</tr>
 </table>
+</div>
 
 <input type="hidden" name="step" value="<?php print $_REQUEST["step"];?>">
 
