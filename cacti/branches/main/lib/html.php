@@ -874,7 +874,8 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		/* graph grouping display logic */
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
 
-		if ($item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_AVERAGE &&
+		if ($item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT &&
+			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_AVERAGE &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_LAST &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MAX &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MIN) {
@@ -915,6 +916,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		switch ($item["graph_type_id"]) {
 			case GRAPH_ITEM_TYPE_AREA:
 			case GRAPH_ITEM_TYPE_AREASTACK:
+			case GRAPH_ITEM_TYPE_GPRINT:
 			case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
 			case GRAPH_ITEM_TYPE_GPRINT_LAST:
 			case GRAPH_ITEM_TYPE_GPRINT_MAX:
