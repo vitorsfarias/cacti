@@ -521,15 +521,12 @@ if (get_request_var_request("step") == "4") {
 
 <form method="post" action="index.php">
 
-<table width="500" align="center" cellpadding="1" cellspacing="0" border="0" bgcolor="#104075">
-	<tr bgcolor="#FFFFFF" height="10">
-		<td>&nbsp;</td>
-	</tr>
+<table align="center" style='padding:20px 100px 20px 100px;margin:20px 100px 20px 100px;' cellpadding="1" cellspacing="0" border="0">
 	<tr>
 		<td width="100%">
-			<table cellpadding="3" cellspacing="0" border="0" bgcolor="#E6E6E6" width="100%">
-				<tr>
-					<td bgcolor="#104075" class="header-text">Cacti Installation Guide</td>
+			<table cellpadding="3" cellspacing="0" border="0" style="border:1px solid #104075;" bgcolor="#F0F0F0" width="100%">
+				<tr class="rowHeader">
+					<td class="textHeaderDark"><strong>Cacti Installation Guide</strong></td>
 				</tr>
 				<tr>
 					<td width="100%" style="font-size: 12px;">
@@ -658,7 +655,7 @@ if (get_request_var_request("step") == "4") {
 											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 
-										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . nl2br($sql) . "</p>\n";
+										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . $sql . "</p>\n";
 
 										/* if there are one or more failures, make a note because we are going to print
 										out a warning to the user later on */
@@ -701,7 +698,7 @@ if (get_request_var_request("step") == "4") {
 
 						<?php }?>
 
-						<p align="right"><input type="image" src="install_<?php if (get_request_var_request("step") == "3") {?>finish<?php }else{?>next<?php }?>.gif" alt="<?php if (get_request_var_request("step") == "3"){?>Finish<?php }else{?>Next<?php }?>"></p>
+						<p align="right"><input type="submit" value="<?php if (get_request_var_request("step") == "3") {?>Finish<?php }else{?>Next<?php }?>" title="<?php if (get_request_var_request("step") == "3"){?>Finish Install<?php }else{?>Proceed to Next Step<?php }?>"></p>
 					</td>
 				</tr>
 			</table>
