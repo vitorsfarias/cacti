@@ -67,6 +67,7 @@ $rrd_legend_direction = array(
 );
 
 $graph_item_gprint_types = array(
+	GRAPH_ITEM_TYPE_GPRINT			=> "GPRINT:deprecated",
 	GRAPH_ITEM_TYPE_GPRINT_AVERAGE	=> "GPRINT:AVERAGE",
 	GRAPH_ITEM_TYPE_GPRINT_LAST		=> "GPRINT:LAST",
 	GRAPH_ITEM_TYPE_GPRINT_MAX		=> "GPRINT:MAX",
