@@ -660,7 +660,6 @@ if (get_request_var_request("step") == "4") {
 											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
 										}
 
-//										$upgrade_results .= "<p class='code'>" . (($status == 0) ? $fail_text : $success_text) . $sql . "</p>\n";
 										$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
 
 										/* if there are one or more failures, make a note because we are going to print
