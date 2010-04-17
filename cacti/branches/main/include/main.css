@@ -580,7 +580,7 @@ a:hover {
 }
 
 .rowAlternate1 td {
-	padding: 0px 3px 0px 3px;
+	padding: 0px 3px;
 }
 
 .rowAlternate2 {
@@ -589,7 +589,7 @@ a:hover {
 }
 
 .rowAlternate2 td {
-	padding: 0px 3px 0px 3px;
+	padding: 0px 3px;
 }
 
 .rowSelected {
@@ -598,7 +598,7 @@ a:hover {
 }
 
 .rowSelected td {
-	padding: 0px 3px 0px 3px;
+	padding: 0px 3px;
 }
 
 /* text styles */
