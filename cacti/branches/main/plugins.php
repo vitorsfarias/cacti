@@ -142,7 +142,7 @@ function plugins_show($status = 'all') {
 		form_end_table();
 	} else {
 		form_alternate_row_color('line0', true);
-		print '<td colspan=5><center>' . __("There are no installed Plugins") . '</center></td>';
+		print '<td colspan=6><center>' . __("There are no installed Plugins") . '</center></td>';
 		form_end_row();
 	}
 
