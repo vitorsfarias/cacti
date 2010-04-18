@@ -261,7 +261,7 @@ function get_graph_list_content() {
 						applyGraphListFilterChange(document.form_graph_list);
 					}
 				});
-				SetSelections();
+				setSelections();
 			});
 
 			function applyGraphListFilterChange(objForm, strURL) {
@@ -281,7 +281,7 @@ function get_graph_list_content() {
 				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
 				$.get("graph_view.php" + strURL, function (data) {
 					$("#graph_content").html(data);
-					SetSelections();
+					setSelections();
 				});
 			}
 
@@ -384,8 +384,8 @@ function get_graph_list_content() {
 							?>
 						</select>
 					</td>
-					<td class="nw100">
-						&nbsp;<?php print __("Graphs/Page:");?>&nbsp;
+					<td class="w1">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td class="w1">
 						<select name="graphs" onChange="applyGraphListFilterChange(document.form_graph_list)">
@@ -404,8 +404,10 @@ function get_graph_list_content() {
 					<td class="w1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
-					<td>
-						&nbsp;<input type="submit" value="<?php print __("Go");?>" name="go">
+					<td class="w1">
+						<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
+					</td>
+					<td class="w1">
 						<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
 					</td>
 				</tr>
@@ -504,7 +506,7 @@ function get_graph_list_content() {
 			<table width='100%' cellspacing='0' cellpadding='0' style='border-width:0px;'>
 				<tr>
 					<?php
-					print "<td width='1%' align='left' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px 0px 0px 1px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='left' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px 0px 0px 1px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
 					?>
 				</tr>
 			</table>
@@ -1275,8 +1277,10 @@ function graph_view_search_filter() {
 						<td>
 							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="applyFilter(document.form_graph_view);" <?php print ((isset($_REQUEST['thumbnails'])) && ($_REQUEST['thumbnails'] == "true") ? "checked":"");?>>
 						</td>
-						<td class='nw'>
-							&nbsp;<input type='button' value='<?php print __("Refresh");?>' name='refresh' onClick='applyFilter(document.form_graph_view)'>
+						<td class='w1'>
+							<input type='button' value='<?php print __("Refresh");?>' name='refresh' onClick='applyFilter(document.form_graph_view)'>
+						</td>
+						<td class='w1'>
 							<input type='button' value='<?php print __("Clear");?>' name='clear_x' onClick='clearFilter(document.form_graph_view)'>
 						</td>
 					</tr>
