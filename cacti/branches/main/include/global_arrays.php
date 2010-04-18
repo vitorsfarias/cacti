@@ -150,7 +150,7 @@ $menu = array(
 		"data_sources.php" => __("Data Sources"),
 		),
 	__("Data Collection") => array(
-		"pollers.php" => __("Pollers"),
+//		"pollers.php" => __("Pollers"),
 		"data_queries.php" => __("Data Queries"),
 		"data_input.php" => __("Data Input Methods"),
 		),

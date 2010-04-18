@@ -46,13 +46,17 @@ $fields_device_edit = array(
 		"max_length" => "250",
 		"size" => "70"
 		),
+//	"poller_id" => array(
+//		"method" => "drop_sql",
+//		"friendly_name" => __("Poller"),
+//		"description" => __("Choose which poller will be the polling of this device."),
+//		"value" => "|arg1:poller_id|",
+//		"none_value" => __("System Default"),
+//		"sql" => "select id,description as name from poller order by name",
+//		),
 	"poller_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => __("Poller"),
-		"description" => __("Choose which poller will be the polling of this device."),
-		"value" => "|arg1:poller_id|",
-		"none_value" => __("System Default"),
-		"sql" => "select id,description as name from poller order by name",
+		"method" => "hidden",
+		"value" => "0"
 		),
 	"site_id" => array(
 		"method" => "drop_sql",
