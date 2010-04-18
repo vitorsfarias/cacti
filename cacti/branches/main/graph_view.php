@@ -221,7 +221,7 @@ case 'list':
 	$().ready(function() {
 		$.get("graph_view.php?action=ajax_list", function (data) {
 			$("#graph_content").html(data);
-			SetSelections();
+			setSelections();
 		});
 	});
 

@@ -150,7 +150,7 @@ function selectAllDataQueries(data_query_id, checkbox_state) {
 	}
 }
 
-function SetSelections() {
+function setSelections() {
 	for (var i = 0; i < document.chk.elements.length; i++) {
 		lineid = document.getElementById('line'+ document.chk.elements[i].name.substr(4));
 
@@ -158,15 +158,6 @@ function SetSelections() {
 			if ( lineid ) { lineid.style.backgroundColor = 'khaki'; }
 		}else{
 			if ( lineid ) { lineid.style.backgroundColor = ''; }
-		}
-	}
-}
-
-function SelectAllGraphs(prefix, checkbox_state) {
-	for (var i = 0; i < document.graphs.elements.length; i++) {
-		if ((document.graphs.elements[i].name.substr(0, prefix.length) == prefix) &&
-			(document.graphs.elements[i].style.visibility != 'hidden')) {
-			document.graphs.elements[i].checked = checkbox_state;
 		}
 	}
 }
