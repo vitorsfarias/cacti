@@ -51,11 +51,8 @@ function isGraphCreated(graph_template_id) {
 
 function setGraphStatus() {
 	for (var i = 0; i < gt_created_graphs.length; i++) {
-		$("#gt_line"+gt_created_graphs[i]).children().css('color', '#999999');
-		$("#gt_line"+gt_created_graphs[i]).css('background-color', '#FFFFFF');
-		$("#gt_line"+gt_created_graphs[i]).attr('name', 'graphing');
-		$("#cg_"+gt_created_graphs[i]).hide();
-		$("#cg_"+gt_created_graphs[i]).attr('checked', false);
+		$("#gt_line"+gt_created_graphs[i]).attr('name', 'graphing').css('background-color', '#FFFFFF').children().css('color', '#999999');
+		$("#cg_"+gt_created_graphs[i]).hide().attr('checked', false);
 	}
 }
 
@@ -131,17 +128,13 @@ function setDataQueryGraphStatus(snmp_query_id) {
 	var snmp_query_graph_id = document.getElementById('sgg_' + snmp_query_id).value;
 
 	for (var i = 0; i < created_graphs[snmp_query_graph_id].length; i++) {
-		$("#line"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).children().css('color', '#999999');
-		$("#line"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).css('background-color', '');
-		$("#line"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).attr('name', 'disabled_line');
-		$("#sg_"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).hide();
-		$("#sg_"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).attr('checked', false);
+		$("#line"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).css('background-color', '').attr('name', 'disabled_line').children().css('color', '#999999');
+		$("#sg_"+snmp_query_id+"_"+created_graphs[snmp_query_graph_id][i]).hide().attr('checked', false);
 	}
 }
 
 function resetDataQueryGraphStatus(snmp_query_id) {
-	$("tr[id^=line"+snmp_query_id+"]").css('background-color', '');
-	$("tr[id^=line"+snmp_query_id+"]").children().css('color', '');
+	$("tr[id^=line"+snmp_query_id+"]").attr('name', 'enabled').css('background-color', '').children().css('color', '');
 	$("input[id^=sg_"+snmp_query_id+"]").show().attr('checked', false);
 	$("input[name^=all_"+snmp_query_id+"]").attr('checked', false);
 }
