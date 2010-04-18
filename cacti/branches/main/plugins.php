@@ -29,6 +29,8 @@ $ptabs = array(
 	'all'       => __('Plugins'),
 );
 
+$plugins = plugins_get_plugins_list();
+
 $ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
 
 /* set the default settings category */
@@ -45,15 +47,17 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 
 	switch ($mode) {
 		case 'disable':
-			if (!in_array($id, $plugins))
+			if (!isset($plugins[$id]))
 				break;
 			api_plugin_disable($id);
-			break;
+			Header("Location: " . CACTI_URL_PATH . "plugins.php\n\n");
+			exit;
 		case 'enable':
-			if (!in_array($id, $plugins))
+			if (!isset($plugins[$id]))
 				break;
 			api_plugin_enable($id);
-			break;
+			Header("Location: " . CACTI_URL_PATH . "plugins.php\n\n");
+			exit;
 	}
 }
 
@@ -77,6 +81,17 @@ html_end_box();
 
 include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
+function plugins_get_plugins_list () {
+	$info  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
+	$plugins = array();
+	if (!empty($info)) {
+		foreach ($info as $p) {
+			$plugins[$p['directory']] = $p;
+		}
+	}
+	return $plugins;
+}
+
 function plugins_draw_tabs ($tabs, $current_tab) {
 	/* draw the categories tabs on the top of the page */
 	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>\n";
@@ -90,13 +105,12 @@ function plugins_draw_tabs ($tabs, $current_tab) {
 }
 
 function plugins_show($status = 'all') {
-	global $colors, $config, $status_names;
+	global $plugins, $colors, $config, $status_names;
 
 	print "<table width='100%' cellspacing=0 cellpadding=3>";
-	$plugins  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
 
 	$display_text = array(
-		"function" => array(__("Function"), "ASC"),
+		"" => array(__(""), "ASC"),
 		"directory" => array(__("Plugin"), "ASC"),
 		"longname" => array(__("Name"), "ASC"),
 		"version" => array(__("Version"), "ASC"),
@@ -108,25 +122,16 @@ function plugins_show($status = 'all') {
 	if (count($plugins)) {
 		foreach ($plugins as $plugin) {
 				form_alternate_row_color('line' . $plugin['id'], true);
-				$links = array('enable' => __('Enable'), 'disable' => __('Disable'));
+				$link = '';
 				switch ($plugin['status']) {
 					case 1:	// Currently Active
-						$links['disable'] = "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin['directory']) . "'><b>Disable</b></a>";
+						$link = "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin['directory']) . "' class='linkEditMain'><img border=0 src=images/disable_icon.png></a>";
 						break;
 					case 4:	// Installed but not active
-						$links['enable'] = "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin['directory']) . "'><b>Enable</b></a>";
+						$link = "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin['directory']) . "' class='linkEditMain'><img border=0 src=images/enable_icon.png></a>";
 						break;
 				}
-
-				$c = 1;
-				$t = "";
-				foreach ($links as $temp => $link) {
-					$t .= $link;
-					if ($c < count($links))
-						$t .= ' | ';
-					$c++;
-				}
-				form_selectable_cell($t, $plugin['id']);
+				form_selectable_cell($link, $plugin['directory']);
 				form_selectable_cell($plugin['directory'], $plugin['directory']);
 				form_selectable_cell((isset($plugin['name']) ? $plugin['name'] : $plugin['directory']), $plugin['directory']);
 				form_selectable_cell((isset($plugin['version']) ? $plugin['version'] : ''), $plugin['directory']);
@@ -137,7 +142,7 @@ function plugins_show($status = 'all') {
 		form_end_table();
 	} else {
 		form_alternate_row_color('line0', true);
-		print '<td colspan=6><center>' . __("There are no installed Plugins") . '</center></td>';
+		print '<td colspan=5><center>' . __("There are no installed Plugins") . '</center></td>';
 		form_end_row();
 	}
 
