@@ -4,14 +4,14 @@
 
 CREATE TABLE `auth_control` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `name` varchar(100) NOT NULL default '',
-  `description` varchar(255) default NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   `object_type` int(8) unsigned NOT NULL default '0',
   `enabled` int(1) unsigned NOT NULL default '1',
   `updated_when` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated_by` varchar(100) NOT NULL default '',
+  `updated_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `created_when` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created_by` varchar(100) NOT NULL default '',
+  `created_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `constraint_index` (`name`,`object_type`),
   KEY `name` (`name`),
@@ -33,12 +33,12 @@ CREATE TABLE `auth_data` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `control_id` mediumint(8) unsigned NOT NULL default '0',
   `plugin_id` mediumint(8) unsigned NOT NULL default '0',
-  `category` varchar(25) NOT NULL default 'SYSTEM',
-  `name` varchar(100) NOT NULL default '',
-  `value` varchar(255) default NULL,
+  `category` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default 'SYSTEM',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   `enable_user_edit` int(1) unsigned NOT NULL default '0',
   `updated_when` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated_by` varchar(100) NOT NULL default '',
+  `updated_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `constraint_index` (`control_id`,`plugin_id`,`category`,`name`),
   KEY `control_id` (`control_id`),
@@ -97,9 +97,9 @@ CREATE TABLE `auth_link` (
 
 CREATE TABLE `auth_perm` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `name` varchar(100) NOT NULL default '',
-  `description` text NOT NULL,
-  `category` varchar(100) default NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `category` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   `plugin_id` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
@@ -137,7 +137,7 @@ CREATE TABLE `auth_perm_link` (
 CREATE TABLE cdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(255) NOT NULL default '',
+  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -369,8 +369,8 @@ INSERT INTO colors VALUES (104,'2E3127');
 CREATE TABLE data_input (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(200) NOT NULL default '',
-  input_string varchar(255) default NULL,
+  name varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  input_string varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id),
   KEY name (name)
@@ -401,7 +401,7 @@ CREATE TABLE data_input_data (
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   data_template_data_id mediumint(8) unsigned NOT NULL default '0',
   t_value char(2) default NULL,
-  value text,
+  value text CHARACTER SET utf8 COLLATE utf8_general_ci,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY t_value (t_value),
   KEY `data_template_data_id` (`data_template_data_id`)
@@ -598,7 +598,7 @@ CREATE TABLE data_input_fields (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
-  name varchar(200) NOT NULL default '',
+  name varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   data_name varchar(50) NOT NULL default '',
   input_output char(3) NOT NULL default '',
   update_rra char(2) default '0',
@@ -696,8 +696,8 @@ INSERT INTO data_local VALUES (7,16,1,0,'');
 CREATE TABLE data_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(150) NOT NULL default '',
-  description varchar(255) NOT NULL default '',
+  name varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  description varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -757,9 +757,9 @@ CREATE TABLE data_template_data (
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   t_name char(2) default NULL,
-  name varchar(250) NOT NULL default '',
-  name_cache varchar(255) NOT NULL default '',
-  data_source_path varchar(255) default NULL,
+  name varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  name_cache varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  data_source_path varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   t_active char(2) default NULL,
   active char(2) default NULL,
   t_rrd_step char(2) default NULL,
@@ -1043,7 +1043,7 @@ CREATE TABLE data_template_rrd (
   t_data_source_type_id char(2) default NULL,
   data_source_type_id smallint(5) NOT NULL default '0',
   t_data_source_name char(2) default NULL,
-  data_source_name varchar(19) NOT NULL default '',
+  data_source_name varchar(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   t_data_input_field_id char(2) default NULL,
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id),
@@ -1154,8 +1154,8 @@ CREATE TABLE graph_template_input (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  name varchar(255) NOT NULL default '',
-  description text,
+  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  description text CHARACTER SET utf8 COLLATE utf8_general_ci,
   column_name varchar(50) NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM COMMENT='Stores the names for graph item input groups.';
@@ -1522,8 +1522,8 @@ INSERT INTO graph_template_input_defs VALUES (83,407);
 CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
-  name char(255) NOT NULL default '',
-  description varchar(255) NOT NULL default '',
+  name char(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  description varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   image varchar(64) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY name (name)
@@ -1573,7 +1573,7 @@ INSERT INTO `graph_templates` VALUES(34, '010b90500e1fc6a05abfd542940584d0', 'SN
 CREATE TABLE graph_templates_gprint (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
+  name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   gprint_text varchar(255) default NULL,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -1598,8 +1598,8 @@ CREATE TABLE graph_templates_graph (
   t_image_format_id char(2) default '0',
   image_format_id tinyint(1) NOT NULL default '0',
   t_title char(2) default '0',
-  title varchar(255) NOT NULL default '',
-  title_cache varchar(255) NOT NULL default '',
+  title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  title_cache varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   t_height char(2) default '0',
   height mediumint(8) NOT NULL default '0',
   t_width char(2) default '0',
@@ -1609,7 +1609,7 @@ CREATE TABLE graph_templates_graph (
   t_lower_limit char(2) default '0',
   lower_limit varchar(255) NOT NULL default '0',
   t_vertical_label char(2) default '0',
-  vertical_label varchar(200) default NULL,
+  vertical_label varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   t_slope_mode char(2) default '0',
   slope_mode char(2) default 'on',
   t_auto_scale char(2) default '0',
@@ -1685,7 +1685,7 @@ CREATE TABLE graph_templates_graph (
   t_tab_width char(2) DEFAULT '0',
   tab_width mediumint(4) DEFAULT NULL,
   t_watermark char(2) DEFAULT '0',
-  watermark varchar(255) DEFAULT NULL,
+  watermark varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   t_force_rules_legend char(2) DEFAULT '0',
   force_rules_legend char(2) DEFAULT NULL,
   t_legend_position char(2) DEFAULT '0',
@@ -1766,7 +1766,7 @@ CREATE TABLE graph_templates_item (
   shift char(2) default NULL,
   consolidation_function_id tinyint(2) NOT NULL default '0',
   textalign varchar(10) default NULL,
-  text_format varchar(255) default NULL,
+  text_format varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   value varchar(255) default NULL,
   hard_return char(2) default NULL,
   gprint_id mediumint(8) unsigned NOT NULL default '0',
@@ -2072,7 +2072,7 @@ CREATE TABLE graph_tree (
   id smallint(5) unsigned NOT NULL auto_increment,
   user_id integer(10) unsigned NOT NULL default '0',
   sort_type tinyint(3) unsigned NOT NULL default '1',
-  name varchar(255) NOT NULL default '',
+  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -2092,7 +2092,7 @@ CREATE TABLE graph_tree_items (
   graph_tree_id smallint(5) unsigned NOT NULL default '0',
   local_graph_id mediumint(8) unsigned NOT NULL default '0',
   rra_id smallint(8) unsigned NOT NULL default '0',
-  title varchar(255) default NULL,
+  title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   device_id mediumint(8) unsigned NOT NULL default '0',
   order_key varchar(100) NOT NULL default '0',
   device_grouping_type tinyint(3) unsigned NOT NULL default '1',
@@ -2120,9 +2120,9 @@ CREATE TABLE device (
   poller_id smallint(5) unsigned NOT NULL default '0',
   device_template_id mediumint(8) unsigned NOT NULL default '0',
   template_enabled CHAR(2) NOT NULL DEFAULT '',
-  description varchar(150) NOT NULL default '',
+  description varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   hostname varchar(250) default NULL,
-  notes text,
+  notes text CHARACTER SET utf8 COLLATE utf8_general_ci,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
@@ -2219,8 +2219,8 @@ CREATE TABLE device_snmp_cache (
 CREATE TABLE device_snmp_query (
   device_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
-  sort_field varchar(50) NOT NULL default '',
-  title_format varchar(50) NOT NULL default '',
+  sort_field varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  title_format varchar(50)CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   reindex_method tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (device_id,snmp_query_id),
   KEY device_id (device_id)
@@ -2239,8 +2239,8 @@ INSERT INTO device_snmp_query VALUES (1,6,'dskDevice','|query_dskDevice|',0);
 CREATE TABLE device_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  description varchar(255) NOT NULL default '',
+  name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  description varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   image varchar(64) NOT NULL default '',
   override_defaults char(2) NOT NULL default '',
   override_permitted char(2) NOT NULL default 'on',
@@ -2343,10 +2343,10 @@ INSERT INTO device_template_snmp_query VALUES (8,6,1);
 CREATE TABLE `plugin_config` (
   `id` int(8) NOT NULL auto_increment,
   `directory` varchar(32) NOT NULL default '',
-  `name` varchar(64) NOT NULL default '',
+  `name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `status` tinyint(2) NOT NULL default '0',
-  `author` varchar(64) NOT NULL default '',
-  `webpage` varchar(255) NOT NULL default '',
+  `author` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `webpage` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `version` varchar(8) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
@@ -2418,8 +2418,8 @@ INSERT INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Manage
 CREATE TABLE poller (
   id smallint(5) unsigned NOT NULL auto_increment,
   disabled char(2) default '',
-  description varchar(45) NOT NULL default '',
-  hostname varchar(250) NOT NULL default '',
+  description varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  hostname varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   ip_address varchar(30) NOT NULL default '',
   last_update datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
@@ -2458,7 +2458,7 @@ CREATE TABLE poller_item (
   device_id mediumint(8) NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
   present TINYINT NOT NULL default '1',
-  hostname varchar(250) NOT NULL default '',
+  hostname varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) unsigned NOT NULL default '0',
   snmp_username varchar(50) NOT NULL default '',
@@ -2469,8 +2469,8 @@ CREATE TABLE poller_item (
   snmp_context varchar(64) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '0',
-  rrd_name varchar(19) NOT NULL default '',
-  rrd_path varchar(255) NOT NULL default '',
+  rrd_name varchar(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  rrd_path varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   rrd_num tinyint(2) unsigned NOT NULL default '0',
   rrd_step mediumint(8) NOT NULL default '300',
   rrd_next_step mediumint(8) NOT NULL default '0',
@@ -2498,7 +2498,7 @@ CREATE TABLE poller_item (
 
 CREATE TABLE poller_output (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
-  rrd_name varchar(19) NOT NULL default '',
+  rrd_name varchar(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   time datetime NOT NULL default '0000-00-00 00:00:00',
   poller_id smallint(5) NOT NULL default '0',
   output text NOT NULL,
@@ -2556,7 +2556,7 @@ CREATE TABLE poller_time (
 CREATE TABLE rra (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
+  name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   x_files_factor double NOT NULL default '0.1',
   steps mediumint(8) default '1',
   rows int(12) NOT NULL default '600',
@@ -2606,7 +2606,7 @@ INSERT INTO rra_cf VALUES (5,3);
 
 CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
-  value varchar(255) NOT NULL default '',
+  value varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (name)
 ) TYPE=MyISAM;
 
@@ -2621,8 +2621,8 @@ CREATE TABLE settings (
 
 CREATE TABLE settings_graphs (
   user_id smallint(8) unsigned NOT NULL default '0',
-  name varchar(50) NOT NULL default '',
-  value varchar(255) NOT NULL default '',
+  name varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  value varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (user_id,name)
 ) TYPE=MyISAM;
 
@@ -2653,16 +2653,16 @@ CREATE TABLE settings_tree (
 
 CREATE TABLE  `sites` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(100) NOT NULL default '',
-  `address1` varchar(100) default '',
-  `address2` varchar(100) default '',
-  `city` varchar(50) default '',
-  `state` varchar(20) default NULL,
-  `postal_code` varchar(20) default '',
-  `country` varchar(30) default '',
-  `timezone` varchar(40) default '',
-  `alternate_id` varchar(30) default '',
-  `notes` text,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `address1` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `address2` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `city` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `state` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
+  `postal_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `country` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `timezone` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `alternate_id` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci default '',
+  `notes` text CHARACTER SET utf8 COLLATE utf8_general_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `city` (`city`),
@@ -2684,9 +2684,9 @@ CREATE TABLE  `sites` (
 CREATE TABLE snmp_query (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  xml_path varchar(255) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  description varchar(255) default NULL,
+  xml_path varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  description varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   image varchar(64) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
@@ -2714,7 +2714,7 @@ CREATE TABLE snmp_query_graph (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
-  name varchar(100) NOT NULL default '',
+  name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -2812,7 +2812,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
-  text varchar(255) NOT NULL default '',
+  text varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
@@ -2892,7 +2892,7 @@ CREATE TABLE snmp_query_graph_sv (
   snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
-  text varchar(255) NOT NULL default '',
+  text varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) TYPE=MyISAM;
@@ -2948,10 +2948,10 @@ INSERT INTO snmp_query_graph_sv VALUES (49,'183bb486c92a566fddcb0585ede37865',22
 
 CREATE TABLE user_auth (
   id mediumint(8) unsigned NOT NULL auto_increment,
-  username varchar(50) NOT NULL default '0',
+  username varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '0',
   password varchar(50) NOT NULL default '0',
   realm mediumint(8) NOT NULL default '0',
-  full_name varchar(100) default '0',
+  full_name varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci default '0',
   must_change_password char(2) default NULL,
   show_tree char(2) default 'on',
   show_list char(2) default 'on',
@@ -3032,14 +3032,14 @@ INSERT INTO user_auth_realm VALUES (101,1);
 --
 
 CREATE TABLE user_log (
-  username varchar(50) NOT NULL default '0',
+  username varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '0',
   user_id mediumint(8) NOT NULL default '0',
   time datetime NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
   PRIMARY KEY  (username,user_id,time),
   KEY username (username),
-  KEY user_id (`user_id`) 
+  KEY user_id (`user_id`)
 ) TYPE=MyISAM;
 
 --
@@ -3053,7 +3053,7 @@ CREATE TABLE user_log (
 CREATE TABLE vdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(255) NOT NULL default '',
+  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -3079,7 +3079,7 @@ CREATE TABLE vdef_items (
   vdef_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
-  value varchar(150) NOT NULL default '',
+  value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   PRIMARY KEY  (id),
   KEY vdef_id (vdef_id)
 ) TYPE=MyISAM;
@@ -3131,10 +3131,10 @@ CREATE TABLE `log` (
   `poller_id` smallint(5) unsigned NOT NULL default '0',
   `device_id` mediumint(8) unsigned NOT NULL default '0',
   `data_id` mediumint(8) unsigned NOT NULL default '0',
-  `username` varchar(100) NOT NULL default 'system',
-  `source` varchar(50) NOT NULL default 'localhost',
-  `plugin_name` varchar(64) NOT NULL default '',
-  `message` text NOT NULL,
+  `username` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default 'system',
+  `source` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default 'localhost',
+  `plugin_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  `message` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `facility` (`facility`),
   KEY `severity` (`severity`),
@@ -3153,7 +3153,7 @@ CREATE TABLE `log` (
 CREATE TABLE `graph_templates_xaxis` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique Table Id',
   `hash` varchar(32) NOT NULL DEFAULT '' COMMENT 'Unique Hash',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT 'Name of X-Axis Preset',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT 'Name of X-Axis Preset',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  COMMENT='X-Axis Presets';
 
@@ -3170,7 +3170,7 @@ INSERT INTO `graph_templates_xaxis` VALUES(1, 'a09c5cab07a6e10face1710cec45e82f'
 CREATE TABLE `graph_templates_xaxis_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
   `hash` varchar(32) NOT NULL DEFAULT '' COMMENT 'Unique Hash',
-  `item_name` varchar(100) NOT NULL COMMENT 'Name of this Item',
+  `item_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Name of this Item',
   `xaxis_id` int(12) unsigned NOT NULL DEFAULT '0' COMMENT 'Id of related X-Axis Preset',
   `timespan` int(12) unsigned NOT NULL DEFAULT '0' COMMENT 'Graph Timespan that shall match this Item',
   `gtm` VARCHAR( 10 ) NOT NULL DEFAULT '' COMMENT 'Global Grid Timespan',
