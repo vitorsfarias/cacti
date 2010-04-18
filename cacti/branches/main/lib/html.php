@@ -625,7 +625,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n";
+	print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
 	print "\t\t</tr>\n";
 }
 
@@ -699,7 +699,7 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 		$rand_id++;
 	}
 
-	print "\t\t\t<th id='hhc_$rand_id' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
+	print "\t\t\t<th id='hhc_$rand_id' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
 	print "\t\t</tr>\n";
 }
 

@@ -56,7 +56,8 @@
 }
 .dd .ddChild a.selected {
 	background:#66CCFF;
-	
+
 }
-.hidden {display:none;}
-s
+.hidden {
+	display:none;
+}

@@ -421,7 +421,7 @@ function graphs_new() {
 			<table cellpadding="0" align="left">
 				<tr>
 					<?php if (!isset($_REQUEST["tab"])) { ?>
-					<td class="nw50 textGraphFilter">
+					<td class="nw50">
 						&nbsp;Host:&nbsp;
 					</td>
 					<td width="1">
@@ -438,7 +438,7 @@ function graphs_new() {
 						</select>
 					</td>
 					<?php } ?>
-					<td class="nw50 textGraphFilter">
+					<td class="nw50">
 						&nbsp;<?php print __("Type:");?>&nbsp;
 					</td>
 					<td width="1">
@@ -464,16 +464,8 @@ function graphs_new() {
 						?>
 						</select>
 					</td>
-					<td style="white-space:nowrap;width:1%;" class="textInfo" align="center" valign="top">
-						<?php if (!isset($_REQUEST["tab"])) { ?><span class="tabedit">*</span><a href="devices.php?action=edit&id=<?php print $_REQUEST["device_id"];?>"><?php print __("Edit this Host");?></a><br><?php } ?>
-						<?php api_plugin_hook('graphs_new_top_links'); ?>
-					</td>
-				</tr>
-			</table>
-			<?php if (get_request_var_request("graph_type") > 0) {?>
-			<table cellpadding="0" align="left">
-				<tr>
-					<td class="nw50 textGraphFilter">
+					<?php if (get_request_var_request("graph_type") > 0) {?>
+					<td class="nw50">
 						&nbsp;Search:&nbsp;
 					</td>
 					<td class="nw200">
@@ -485,11 +477,14 @@ function graphs_new() {
 						<input type="hidden" name="action" value="edit">
 						<input type="hidden" name="tab" value="newgraphs">
 					</td>
+					<?php }else{
+					form_hidden_box("device_template_id", $device["device_template_id"], "0");
+					form_hidden_box("filter", get_request_var_request("filter"), "");
+					}
+					form_hidden_box("device_id", $device["id"], "0");
+				?>
 				</tr>
 			</table>
-			<?php }else{
-				form_hidden_box("filter", get_request_var_request("filter"), "");
-			}?>
 			</form>
 		</td>
 	</tr>
@@ -510,6 +505,7 @@ function graphs_new() {
 	}
 
 	print "<form name='chk' method='post' action='" . $file2 . "'>";
+	print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
 	if (get_request_var_request("graph_type") < 0) {
 
 		$graph_templates = db_fetch_assoc("SELECT
@@ -529,7 +525,7 @@ function graphs_new() {
 			GROUP BY graph_local.graph_template_id");
 
 		if (sizeof($template_graphs) > 0) {
-			print "<script type='text/javascript'>\n<!--\n";
+			print "\n<script type='text/javascript'>\n<!--\n";
 			print "var gt_created_graphs = new Array(";
 
 			$cg_ctr = 0;
@@ -545,13 +541,16 @@ function graphs_new() {
 			print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
 		}
 
-		print "<script type='text/javascript'>gt_update_deps(1);</script>\n";
-		print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
+		?><script type='text/javascript'>
+		$().ready(function() {
+				setGraphStatus();
+		});
+		</script><?php
 
 		html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", $colors["header"], "3", "center", "");
 		print "	<tr class='rowSubHeader'>
 				<td class='textSubHeaderDark'>" . __("Graph Template Name") . "</td>
-				<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='" . __("Select All") . "' onClick='SelectAll(\"cg\",this.checked);gt_update_selection_indicators();'></td>\n
+				<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='" . __("Select All") . "' onClick='selectAllGraphs(\"cg\",this.checked)'></td>\n
 			</tr>\n";
 
 		/* create a row for each graph template associated with the device template */
@@ -559,15 +558,13 @@ function graphs_new() {
 		foreach ($graph_templates as $graph_template) {
 			$query_row = $graph_template["graph_template_id"];
 
-			print "<tr id='gt_line$query_row' bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>"; $i++;
+			form_alternate_row_color("gt_line" . $query_row, true);
 
-			print "		<td onClick='gt_select_line(" . $graph_template["graph_template_id"] . ");'><span id='gt_text$query_row" . "_0'>
-						<strong>" . __("Create:") . "</strong> " . $graph_template["graph_template_name"] . "</span>
-					</td>
-					<td align='right'>
-						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onClick='gt_update_selection_indicators();'>
-					</td>
-				</tr>";
+			print "<td style='line-height: 1.5em;padding:0px 5px 0px 5px;' onClick='toggleGraph(\"" . $query_row . "\")'>" . $graph_template["graph_template_name"] . "</td>";
+			print "<td align='right'>
+						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onChange='toggleGraph(\"" . $query_row . "\", true)'>
+					</td>";
+			form_end_row();
 		}
 		}
 
@@ -776,7 +773,6 @@ function graphs_new() {
 						if ($field_array["direction"] == "input") {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
-#									$html_dq_header .= "<td height='1' style='padding:0px 5px 0px 5px;' onMousemove='doColResize(this,event)' onMouseover='doColResize(this,event)' onMouseup='doneColResize()'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></td>\n";
 									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' onMousemove='doColResize(this,event)' onMouseover='doColResize(this,event)' onMouseup='doneColResize()' class='textSubHeaderDark'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></th>\n";
 									break;
 								}
@@ -789,37 +785,33 @@ function graphs_new() {
 					}else{
 						print "<tr class='rowSubHeader'>
 								$html_dq_header
-								<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='" . __("Select All") ."' onClick='SelectAll(\"sg_" . $snmp_query["id"] . "\",this.checked);dq_update_selection_indicators();'></td>\n
+								<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='" . __("Select All") ."' onClick='selectAllDataQueries(\"sg_\"," . $snmp_query["id"] . ",this.checked);'></td>\n
 							</tr>\n";
 					}
 
 					$row_counter    = 0;
-					$column_counter = 0;
 					$fields         = array_rekey($field_names, "field_name", "field_name");
 					if (sizeof($snmp_query_indexes) > 0) {
 					foreach($snmp_query_indexes as $row) {
 						$query_row = $snmp_query["id"] . "_" . encode_data_query_index($row["snmp_index"]);
 
-						form_alternate_row_color("line" . $query_row, true);
+						print "<tr class='rowAlternate" . ($row_counter % 2 ? "1":"2") . "' id='line" . $query_row . "' onClick='toggleDataQueryGraph(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\")'>";
 
-						$column_counter = 0;
 						reset($xml_array["fields"]);
 						while (list($field_name, $field_array) = each($xml_array["fields"])) {
 							if ($field_array["direction"] == "input") {
 								if (in_array($field_name, $fields)) {
 									if (isset($row[$field_name])) {
-										print "<td style='line-height: 1.5em;padding:0px 5px 0px 5px;' onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $row[$field_name]) : $row[$field_name]) . "</span></td>";
+										print "<td>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $row[$field_name]) : $row[$field_name]) . "</td>";
 									}else{
-										print "<td style='line-height: 1.5em;padding:0px 5px 0px 5px;' onClick='dq_select_line(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\");'><span id='text$query_row" . "_" . $column_counter . "'></span></td>";
+										print "<td></td>";
 									}
-
-									$column_counter++;
 								}
 							}
 						}
 
 						print "<td style='padding-right: 4px;' align='right'>";
-						print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row' onClick='dq_update_selection_indicators();'>";
+						print "<input type='checkbox' name='sg_$query_row' id='sg_$query_row' onChange='toggleDataQueryGraph(" . $snmp_query["id"] . ",\"" . encode_data_query_index($row["snmp_index"]) . "\", true)'>";
 						print "</td>";
 						print "</tr>\n";
 
@@ -841,6 +833,7 @@ function graphs_new() {
 			$data_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
 
 			if (sizeof($data_query_graphs) == 1) {
+				print "<script type='text/javascript'>setDataQueryGraphStatus(" . $snmp_query["id"] . ");</script>\n";
 				html_end_box();
 
 				form_hidden_box("sgg_" . $snmp_query["id"], $data_query_graphs[0]["id"], "");
@@ -854,15 +847,14 @@ function graphs_new() {
 							</td>
 							<td align='right'>
 								<span class=\"italic\">" . __("Select a graph type:") . "</span>&nbsp;
-								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='dq_update_deps(" . $snmp_query["id"] . "," . $column_counter . ");'>
+								<select name='sgg_" . $snmp_query["id"] . "' id='sgg_" . $snmp_query["id"] . "' onChange='setDataQueryGraphStatus(" . $snmp_query["id"] . ");'>
 									"; html_create_list($data_query_graphs,"name","id","0"); print "
 								</select>
 							</td>
 						</tr>
-					</table>";
+					</table>\n";
+				print "<script type='text/javascript'>setDataQueryGraphStatus(" . $snmp_query["id"] . ");</script>\n";
 			}
-
-			print "<script type='text/javascript'>dq_update_deps(" . $snmp_query["id"] . "," . ($num_visible_fields) . ");</script>\n";
 		}
 		}
 	}
@@ -886,7 +878,4 @@ function graphs_new() {
 		<br>
 		<?php
 	}
-
-	print "<script type='text/javascript'>dq_update_selection_indicators();</script>\n";
-	print "<script type='text/javascript'>gt_update_selection_indicators();</script>\n";
 }

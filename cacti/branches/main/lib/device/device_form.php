@@ -653,7 +653,7 @@ function device_edit() {
 
 	if (sizeof($device_tabs) > 0) {
 	foreach (array_keys($device_tabs) as $tab_short_name) {
-		print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("devices.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>$device_tabs[$tab_short_name]</a></div>";
+		print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("devices.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></div>";
 
 		if (!isset($_REQUEST["id"])) break;
 	}
@@ -719,7 +719,7 @@ function device_display_general($device, $device_text) {
 	if (isset($device["id"])) {
 		html_start_box($device_text, "100", $colors["header"], "3", "center", "", true);
 		?>
-			<tr>
+			<tr class="rowAlternate2">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
 					($device["availability_method"] == AVAIL_SNMP_AND_PING) ||
 					($device["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
@@ -1511,7 +1511,7 @@ function device() {
 	<!--
 
 	function clearDeviceFilterChange(objForm) {
-		<?php print (isset($_REQUEST["tab"]) ? "strURL = '?template_id=" . $_REQUEST["template_id"] . "&id=" . $_REQUEST["template_id"] . "&action=edit&amp;action=edit&tab=" . $_REQUEST["tab"] . "';" : "strURL = '?template_id=-1';");?>
+		<?php print (isset($_REQUEST["tab"]) ? "strURL = '?template_id=" . $_REQUEST["template_id"] . "&id=" . $_REQUEST["template_id"] . "&action=edit&tab=" . $_REQUEST["tab"] . "';\n" : "strURL = '?template_id=-1';");?>
 		strURL = strURL + '&filter=';
 		strURL = strURL + '&rows=-1';
 		document.location = strURL;
@@ -1528,7 +1528,7 @@ function device() {
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		strURL = strURL + '&poller=' + objForm.poller.value;
 		strURL = strURL + '&site=' + objForm.site.value;
-		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&action=edit&tab=" . $_REQUEST["tab"] . "';" : "");?>
+		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&action=edit&tab=" . $_REQUEST["tab"] . "';\n" : "");?>
 		document.location = strURL;
 	}
 
