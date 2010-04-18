@@ -50,8 +50,6 @@ function isGraphCreated(graph_template_id) {
 }
 
 function setGraphStatus() {
-	$("tr[id|=gt_line]").css('background-color', '');
-
 	for (var i = 0; i < gt_created_graphs.length; i++) {
 		$("#gt_line"+gt_created_graphs[i]).children().css('color', '#999999');
 		$("#gt_line"+gt_created_graphs[i]).css('background-color', '#FFFFFF');
@@ -65,15 +63,15 @@ function selectAllGraphs(prefix, checkbox_state) {
 	if (checkbox_state) {
 		$("input[id^="+prefix+"]").attr('checked', true);
 		$("tr[id^=gt_line]").css('background-color', 'khaki');
-		$("tr[name=graphing]").css('background-color', '');
 	}else{
 		$("input[id^="+prefix+"]").attr('checked', false);
 		$("tr[id^=gt_line]").css('background-color', '');
 	}
+	setGraphStatus();
 }
 
 /* general id based selects */
-function select_line(id, update) {
+function selectLine(id, update) {
 	msgid  = document.getElementById('chk_' + id);
 	lineid = document.getElementById('line'+ id);
 
@@ -143,19 +141,18 @@ function setDataQueryGraphStatus(snmp_query_id) {
 
 function resetDataQueryGraphStatus(snmp_query_id) {
 	$("tr[id^=line"+snmp_query_id+"]").css('background-color', '');
-	$("tr[id^=line"+snmp_query_id+"]").children().css('color', '#000000');
-	$("input[id^=sg_"+snmp_query_id+"]").show();
-	$("input[id^=sg_"+snmp_query_id+"]").attr('checked', false);
+	$("tr[id^=line"+snmp_query_id+"]").children().css('color', '');
+	$("input[id^=sg_"+snmp_query_id+"]").show().attr('checked', false);
 	$("input[name^=all_"+snmp_query_id+"]").attr('checked', false);
 }
 
-function selectAllDataQueries(prefix, data_query_id, checkbox_state) {
+function selectAllDataQueries(data_query_id, checkbox_state) {
 	if (checkbox_state) {
-		$("input[id^="+prefix+"_"+data_query_id+"]").attr('checked', true);
+		$("input[id^=sg_"+data_query_id+"]").attr('checked', true);
 		$("tr[id^=line"+data_query_id+"]").css('background-color', 'khaki');
 		$("tr[name^=disabled]").css('background-color', '');
 	}else{
-		$("input[id^="+prefix+"_"+data_query_id+"]").attr('checked', false);
+		$("input[id^=sg_"+data_query_id+"]").attr('checked', false);
 		$("tr[id^=line"+data_query_id+"]").css('background-color', '');
 	}
 }

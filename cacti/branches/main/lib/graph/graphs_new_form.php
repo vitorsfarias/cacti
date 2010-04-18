@@ -394,9 +394,10 @@ function graphs_new() {
 		$file2 = "graphs_new.php";
 	}
 
-	$device      = db_fetch_row("select id,description,hostname,device_template_id from device where id=" . $_REQUEST["device_id"]);
-	$row_limit = read_config_option("num_rows_data_query");
-	$debug_log = debug_log_return("new_graphs");
+	$device       = db_fetch_row("select id,description,hostname,device_template_id from device where id=" . $_REQUEST["device_id"]);
+	$row_limit    = read_config_option("num_rows_data_query");
+	$debug_log    = debug_log_return("new_graphs");
+	$onReadyFuncs = array();
 
 	?>
 	<script type="text/javascript">
@@ -541,11 +542,7 @@ function graphs_new() {
 			print "<script type='text/javascript'>\nvar gt_created_graphs = new Array()\n</script>\n";
 		}
 
-		?><script type='text/javascript'>
-		$().ready(function() {
-				setGraphStatus();
-		});
-		</script><?php
+		$onReadyFuncs[] = "setGraphStatus()";
 
 		html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", $colors["header"], "3", "center", "");
 		print "	<tr class='rowSubHeader'>
@@ -785,7 +782,7 @@ function graphs_new() {
 					}else{
 						print "<tr class='rowSubHeader'>
 								$html_dq_header
-								<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='" . __("Select All") ."' onClick='selectAllDataQueries(\"sg_\"," . $snmp_query["id"] . ",this.checked);'></td>\n
+								<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_" . $snmp_query["id"] . "' title='" . __("Select All") ."' onClick='selectAllDataQueries(\"" . $snmp_query["id"] . "\", this.checked);'></td>\n
 							</tr>\n";
 					}
 
@@ -833,7 +830,6 @@ function graphs_new() {
 			$data_query_graphs = db_fetch_assoc("select snmp_query_graph.id,snmp_query_graph.name from snmp_query_graph where snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " order by snmp_query_graph.name");
 
 			if (sizeof($data_query_graphs) == 1) {
-				print "<script type='text/javascript'>setDataQueryGraphStatus(" . $snmp_query["id"] . ");</script>\n";
 				html_end_box();
 
 				form_hidden_box("sgg_" . $snmp_query["id"], $data_query_graphs[0]["id"], "");
@@ -853,8 +849,8 @@ function graphs_new() {
 							</td>
 						</tr>
 					</table>\n";
-				print "<script type='text/javascript'>setDataQueryGraphStatus(" . $snmp_query["id"] . ");</script>\n";
 			}
+			$onReadyFuncs[] = "setDataQueryGraphStatus(" . $snmp_query["id"] . ")";
 		}
 		}
 	}
@@ -864,6 +860,15 @@ function graphs_new() {
 	form_hidden_box("device_template_id", $device["device_template_id"], "0");
 
 	form_save_button_alt("url!" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""));
+
+	if (sizeof($onReadyFuncs)) {
+		print "<script type='text/javascript'>\n";
+		print "$().ready(function() {\n";
+		foreach($onReadyFuncs as $func) {
+			print "\t" . $func . "\n";
+		}
+		print "	});\n</script>\n";
+	}
 
 	if (!empty($debug_log)) {
 		debug_log_clear("new_graphs");
