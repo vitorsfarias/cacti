@@ -31,15 +31,14 @@ $page_title = api_plugin_hook_function('page_title', 'Cacti');
 <html>
 <head>
 	<title><?php echo $page_title; ?></title>
-	<?php if (isset($_SESSION["custom"])) {
-		if ($_SESSION["custom"]) {
-			print "<meta http-equiv=refresh content='99999'>\r\n";
-		}else{
-			$refresh = api_plugin_hook_function('top_general_refresh', '0');
+	<?php
+	if (isset($_SESSION["custom"])) {
+		print "<meta http-equiv=refresh content='99999'>\r\n";
+	}else{
+		$refresh = api_plugin_hook_function('top_general_refresh', '0');
 
-			if ($refresh > 0) {
-				print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
-			}
+		if ($refresh > 0) {
+			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
 		}
 	}
 	?>
