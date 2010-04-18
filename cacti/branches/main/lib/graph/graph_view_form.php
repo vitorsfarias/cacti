@@ -531,7 +531,7 @@ function get_graph_list_content() {
 		<td colspan='3'>
 			<table width='100%' cellspacing='0' cellpadding='0' style='border-width:0px'>
 				<tr><?php
-					print "<td width='1%' align='right' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='right' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
 					?>
 				</tr>
 			</table>

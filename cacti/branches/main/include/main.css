@@ -40,10 +40,11 @@ img_info {
 	border: 0px;
 	padding: 3px;
 }
+
 img_filter {
 	border-width: 0px;
 	vertical-align: middle;
-	text-align: middle;
+	text-align: center;
 	padding-bottom: 5px;
 }
 
@@ -178,7 +179,6 @@ img_filter {
 /* php info section */
 .center h2 {
 	background: #001a6e url('../images/rowSubHeader2.png') repeat-x scroll top left;
-	align: left;
 	text-align: left;
 	font-size: 12px;
 	margin: 0px;
@@ -196,7 +196,7 @@ img_filter {
 
 .center th {
 	background: #001a6e url('../images/rowSubHeader.png') repeat-x scroll top left;
-	vertical-align: left;
+	vertical-align: middle;
 	text-align: left;
 	padding: 4px;
 	margin: 0px;
@@ -214,11 +214,11 @@ img_filter {
 }
 
 .right td {
-	vertical-align: right;
+	vertical-align: middle;
 	text-align: right;
 }
 .left td {
-	vertical-align: left;
+	vertical-align: middle;
 	text-align: left;
 }
 .center td.e {
@@ -695,10 +695,6 @@ table.resizable th {
 	background-color: #f5f5f5;
 }
 
-.textGraphFilter {
-	font-size: 10px;
-}
-
 .textAreaNotes {
 	font-size: 12px;
 	font-family: Arial, Verdana, Helvetica, sans-serif;
@@ -849,7 +845,7 @@ span.italic {
 }
 tr.highlight {
 	background-color: #f0e68c;
-}								                );
+}
 
 /* Alignment and Size */
 
@@ -859,11 +855,11 @@ tr.highlight {
 }
 .left {
 	text-align: left;
-	vertical-align: left;
+	vertical-align: middle;
 }
 .right {
 	text-align: right;
-	vertical-align: right;
+	vertical-align: middle;
 }
 .nwauto {
 	width: auto;

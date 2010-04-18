@@ -793,7 +793,7 @@ function user_realms_edit() {
 
 	print "	<tr class='rowHeader'>
 			<td class='textHeaderDark'><strong>" . __("Realm Permissions") . "</strong></td>
-			<td class='textHeaderDark' width='1%' align='center'><input type='checkbox' style='margin: 0px;' name='all' title='" . __("Select All") . "' onClick='SelectAll(\"section\",this.checked)'></td>\n
+			<td class='textHeaderDark' width='1%' align='center'><input type='checkbox' style='margin: 0px;' name='all' title='" . __("Select All") . "' onClick='selectAll(\"chk_\",this.checked)'></td>\n
 		</tr>\n";
 
 	?>

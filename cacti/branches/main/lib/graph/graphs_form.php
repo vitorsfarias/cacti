@@ -1178,7 +1178,7 @@ function graph() {
 		# called from outside
 		if (isset($_REQUEST["tab"])) {
 			# print the tab
-			print "strURL = strURL + &tab=" . $_REQUEST["tab"] . "';";
+			print "strURL = strURL + '&tab=" . $_REQUEST["tab"] . "';";
 			# now look for more parameters
 			if (isset($_REQUEST["device_id"])) {
 				print "strURL = strURL + '&device_id=" . $_REQUEST["device_id"] . "&id=" . $_REQUEST["device_id"] . "';";
