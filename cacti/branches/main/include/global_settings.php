@@ -753,6 +753,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the background (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_canvas" => array(
 			"friendly_name" => __("Canvas (--color CANVAS)"),
@@ -761,6 +762,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the background of the actual graph (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_shadea" => array(
 			"friendly_name" => __("ShadeA (--color SHADEA)"),
@@ -769,6 +771,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the left and top border (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_shadeb" => array(
 			"friendly_name" => __("ShadeB (--color SHADEB)"),
@@ -777,6 +780,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the right and bottom border (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_grid" => array(
 			"friendly_name" => __("Grid (--color GRID)"),
@@ -785,6 +789,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the grid (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_mgrid" => array(
 			"friendly_name" => __("Major Grid (--color MGRID)"),
@@ -793,6 +798,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the major grid (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_font" => array(
 			"friendly_name" => __("Font (--color FONT)"),
@@ -801,6 +807,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the font (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_axis" => array(
 			"friendly_name" => __("Axis (--color AXIS)"),
@@ -809,6 +816,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the axis (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_frame" => array(
 			"friendly_name" => __("Frame (--color FRAME)"),
@@ -817,6 +825,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the frame (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		"colortag_arrow" => array(
 			"friendly_name" => __("Arrow (--color ARROW)"),
@@ -825,6 +834,7 @@ $settings = array(
 			"default" => "",
 			"size" => "8",
 			"description" => __("Color tag of the arrow (rrggbb[aa])."),
+			"class" => "colortags",
 			),
 		),
 	"legend" => array(

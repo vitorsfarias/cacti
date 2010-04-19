@@ -107,11 +107,10 @@ default:
 		}
 	}
 
-	draw_edit_form(
-		array(
-			"config" => array(),
-			"fields" => $form_array)
-			);
+	draw_edit_form(array(
+			"config" => array("no_form_tag" => true),
+			"fields" => $form_array
+	));
 
 	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
