@@ -1119,7 +1119,8 @@ function update_pre_088_graph_items($items) {
 					/* remember this for second foreach loop */
 					$items[$key]["cf_reference"] = $graph_cf;
 				} else {
-					$graph_cf = generate_graph_best_cf($graph_item["local_data_id"], $graph_item["consolidation_function_id"]);
+					$local_data_id = db_fetch_cell("SELECT data_template_rrd.local_data_id FROM data_template_rrd WHERE id=" . $graph_item["task_item_id"]);
+					$graph_cf = generate_graph_best_cf($local_data_id, $graph_item["consolidation_function_id"]);
 					/* remember this for second foreach loop */
 					$items[$key]["cf_reference"] = $graph_cf;
 				}
