@@ -144,7 +144,6 @@ Cacti CHANGELOG
 -feature: Add Alignment Attribute to Sortable Header Columns
 -feature: Do not repopulate the poller cache unless its required
 -feature: Reorganize Menu for clarity
--feature: Add logging to SQL Save error handling
 -feature: Allow non-numeric form row ids in form API
 -feature: User UI Visual Settings Saved Between Login Sessions
 -feature: Custom Legend: customize the entries added in one go to your liking
