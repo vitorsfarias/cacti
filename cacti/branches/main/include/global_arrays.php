@@ -439,7 +439,7 @@ $lang2locale = array(
 	"be"	=> array("language"=>__("Belarusian"),		"country" => "by", "filename" => "belarusian_belarus"),
 	"bg"	=> array("language"=>__("Bulgarian"),		"country" => "bg", "filename" => "bulgarian_bulgaria"),
 	"zh"	=> array("language"=>__("Chinese"),		"country" => "cn", "filename" => "chinese_china"),
-	"zh-cn"	=> array("language"=>__("Chinese (China)"),	"country" => "cn", "filename" => "chinese_china"),
+	"zh-cn"	=> array("language"=>__("Chinese (China)"),	"country" => "cn", "filename" => "chinese_china_simplified"),
 	"zh-hk"	=> array("language"=>__("Chinese (Hong Kong)"),	"country" => "hk", "filename" => "chinese_hong_kong"),
 	"zh-sg"	=> array("language"=>__("Chinese (Singapore)"),	"country" => "sg", "filename" => "chinese_singapore"),
 	"zh-tw"	=> array("language"=>__("Chinese (Taiwan)"),	"country" => "tw", "filename" => "chinese_taiwan"),
