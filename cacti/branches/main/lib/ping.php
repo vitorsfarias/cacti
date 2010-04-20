@@ -120,10 +120,12 @@ class Net_Ping
 			$this->device["hostname"] = str_replace("tcp:", "", strtolower($this->device["hostname"]));
 			$this->device["hostname"] = str_replace("udp:", "", strtolower($this->device["hostname"]));
 
-			/* determine the device's ip address */
+			/* determine the device's ip address 
+			 * this prevents from command injection as well */
 			if ($this->is_ipaddress($this->device["hostname"])) {
 				$device_ip = $this->device["hostname"];
 			}else{
+				/* again, as a side effect, prevention from command injection */
 				$device_ip = gethostbyname($this->device["hostname"]);
 
 				if (!$this->is_ipaddress($device_ip)) {
@@ -236,7 +238,11 @@ class Net_Ping
 			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
-			/* device timeout given in ms, recalculate to sec, but make it an integer */
+			/* host timeout given in ms, recalculate to sec, but make it an integer 
+			 * we might consider to use escapeshellarh on hostname, 
+			 * but this field has already been verified.
+			 * The other fields are numerical fields only and thus
+			 * not vulnerable for command injection */
 			if (substr_count(strtolower(PHP_OS), "sun")) {
 				$result = shell_exec("ping " . $this->device["hostname"]);
 			}else if (substr_count(strtolower(PHP_OS), "hpux")) {
