@@ -26,8 +26,7 @@ define("RRD_NL", " \\\n");
 define("MAX_FETCH_CACHE_SIZE", 5);
 
 function escape_command($command) {
-	return escapeshellcmd($command);
-	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
+	return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
@@ -2282,7 +2281,7 @@ function rrdtool_set_x_grid($xaxis_id, $start, $end) {
 	}
 
 	if (!empty($format)) {
-		$format = "--x-grid \"" . $format . "\"" . RRD_NL;
+		$format = "--x-grid " . escapeshellarg($format) . RRD_NL;
 	}
 
 	return $format;
@@ -2473,7 +2472,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 		switch ($key) {
 			case "title_cache":
 				if (!empty($value)) {
-					$option .= "--title=\"" . str_replace("\"", "\\\"", $value) . "\"" . RRD_NL;
+					$option .= "--title=" . escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
@@ -2483,7 +2482,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "unit_value":
 				if (!empty($value)) {
-					$option .= "--y-grid=" . $value . RRD_NL;
+					$option .= "--y-grid=" . escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
@@ -2528,7 +2527,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "vertical_label":
 				if (!empty($value)) {
-					$option .= "--vertical-label=\"" . $value . "\"" . RRD_NL;
+					$option .= "--vertical-label=\"" . escapeshellarg($value) . "\"" . RRD_NL;
 				}
 				break;
 
@@ -2544,7 +2543,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "right_axis":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--right-axis " . $value . RRD_NL;
+						$option .= "--right-axis " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2552,7 +2551,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "right_axis_label":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--right-axis-label \"" . $value . "\"" . RRD_NL;
+						$option .= "--right-axis-label \"" . escapeshellarg($value) . "\"" . RRD_NL;
 					}
 				}
 				break;
@@ -2561,7 +2560,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
 						$format = db_fetch_cell('SELECT gprint_text from graph_templates_gprint WHERE id=' . $value);
-						$option .= "--right-axis-format \"" . $format . "\"" . RRD_NL;
+						$option .= "--right-axis-format \"" . escapeshellarg($format) . "\"" . RRD_NL;
 					}
 				}
 				break;
@@ -2596,14 +2595,14 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "unit_length":
 				if (!empty($value)) {
-					$option .= "--units-length " . $value . RRD_NL;
+					$option .= "--units-length " . escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
 			case "font_render_mode":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--font-render-mode " . $value . RRD_NL;
+						$option .= "--font-render-mode " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2611,7 +2610,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "font_smoothing_threshold":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--font-smoothing-threshold " . $value . RRD_NL;
+						$option .= "--font-smoothing-threshold " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2619,7 +2618,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "graph_render_mode":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--graph-render-mode " . $value . RRD_NL;
+						$option .= "--graph-render-mode " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2641,7 +2640,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "tab_width":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--tabwidth " . $value . RRD_NL;
+						$option .= "--tabwidth " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2649,7 +2648,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "watermark":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--watermark \"" . $value . "\"" . RRD_NL;
+						$option .= "--watermark " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2663,7 +2662,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "legend_position":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--legend-position " . $value . RRD_NL;
+						$option .= "--legend-position " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2671,7 +2670,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "legend_direction":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--legend-direction " . $value . RRD_NL;
+						$option .= "--legend-direction " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2679,7 +2678,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "grid_dash":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--grid-dash " . $value . RRD_NL;
+						$option .= "--grid-dash " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2687,7 +2686,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "border":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (preg_match("/^[0-9]+$/", $value)) { # stored as string, do not use ===; border=0 is valid but != empty border!
-						$option .= "--border " . $value . RRD_NL;
+						$option .= "--border " . escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
