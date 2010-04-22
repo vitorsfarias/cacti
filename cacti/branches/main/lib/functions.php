@@ -2364,7 +2364,7 @@ function cacti_wiki_url() {
 }
 
 
-function cacti_escapeshellarg($string, $quote) {
+function cacti_escapeshellarg($string, $quote=true) {
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
 	characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 	you do this, but are perfectly happy with a quotation mark. */
