@@ -294,7 +294,7 @@ function display_general() {
 	if ((file_exists(read_config_option("path_rrdtool"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_rrdtool"))))) {
 
 		$out_array = array();
-		exec(escapeshellcmd(read_config_option("path_rrdtool"), $out_array));
+		exec(escapeshellcmd(read_config_option("path_rrdtool")), $out_array);
 
 		if (sizeof($out_array) > 0) {
 			if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
