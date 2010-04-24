@@ -592,6 +592,11 @@ int spine_log(const char *format, ...) {
 	localtime_r(&nowbin,&now_time);
 	now_ptr = &now_time;
 
+	if (IS_LOGGING_TO_STDOUT()) {
+		puts(trim(ulogmessage));
+		return TRUE;
+	}
+
 	/* append a line feed to the log message if needed */
 	if (!strstr(ulogmessage, "\n")) {
 		strncat(ulogmessage, "\n", 1);
@@ -603,10 +608,7 @@ int spine_log(const char *format, ...) {
 	/* log message prefix */
 	snprintf(logprefix, SMALL_BUFSIZE, ", SPINE: Poller[%i] ", set.poller_id);
 
-	if (IS_LOGGING_TO_STDOUT()) {
-		puts(ulogmessage);
-		return TRUE;
-	}
+
 
 	strncat(flogmessage, dateformat,  sizeof(dateformat)-1);
 	strncat(flogmessage, logprefix,   sizeof(flogmessage)-1);
