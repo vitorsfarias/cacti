@@ -142,43 +142,65 @@ $i18n_modes = array(
     );
 
 $menu = array(
-	__("Management") => array(
-		"tree.php" => __("Trees"),
-		"sites.php" => __("Sites"),
-		"devices.php" => __("Devices"),
-		"graphs.php" => __("Graphs"),
-		"data_sources.php" => __("Data Sources"),
+	"management" => array(
+		"description"	=> __("Management"),
+		"items"			=> array(
+			"tree.php" => __("Trees"),
+			"sites.php" => __("Sites"),
+			"devices.php" => __("Devices"),
+			"graphs.php" => __("Graphs"),
+			"data_sources.php" => __("Data Sources"),
+			),
 		),
-	__("Data Collection") => array(
-//		"pollers.php" => __("Pollers"),
-		"data_queries.php" => __("Data Queries"),
-		"data_input.php" => __("Data Input Methods"),
+	"data_collection" => array(
+		"description"	=> __("Data Collection"),
+		"items" 		=> array(
+//			"pollers.php" => __("Pollers"),
+			"data_queries.php" => __("Data Queries"),
+			"data_input.php" => __("Data Input Methods"),
+			),
 		),
-	__("Templates") => array(
-		"device_templates.php" => __("Device"),
-		"graph_templates.php" => __("Graph"),
-		"data_templates.php" => __("Data Source"),
+	"templates" => array(
+		"description"	=> __("Templates"),
+		"items"			=> array(
+			"device_templates.php" => __("Device"),
+			"graph_templates.php" => __("Graph"),
+			"data_templates.php" => __("Data Source"),
+			),
 		),
-	__("Presets") => array(
-		"cdef.php" => __("CDEFs"),
-		"vdef.php" => __("VDEFs"),
-		"color.php" => __("Colors"),
-		"gprint_presets.php" => __("GPRINT"),
-		"xaxis_presets.php" => __("X-Axis"),
-		"rra.php" => __("RRAs"),
+	"presets" => array(
+		"description"	=> __("Presets"),
+		"items"			=> array(
+			"cdef.php" => __("CDEFs"),
+			"vdef.php" => __("VDEFs"),
+			"color.php" => __("Colors"),
+			"gprint_presets.php" => __("GPRINT"),
+			"xaxis_presets.php" => __("X-Axis"),
+			"rra.php" => __("RRAs"),
+			),
 		),
-	__("Import/Export") => array(
-		"templates_import.php" => __("Import Templates"),
-		"templates_export.php" => __("Export Templates"),
+	"import_export" => array(
+		"description"	=> __("Import/Export"),
+		"items"			=> array(
+			"templates_import.php" => __("Import Templates"),
+			"templates_export.php" => __("Export Templates"),
+			),
 		),
-	__("Configuration")  => array(
-		"settings.php" => __("Settings"),
+	"configuration"  => array(
+		"description"	=> __("Configuration"),
+		"items"			=> array(
+			"settings.php" => __("Settings"),
+			),
 		),
-	__("Utilities") => array(
-		"utilities.php" => __("System Utilities"),
-		"user_admin.php" => __("User Management"),
-		"logout.php" => __("Logout User"),
-	));
+	"utilities" => array(
+		"description"	=> __("Utilities"),
+		"items"			=> array(
+			"utilities.php" => __("System Utilities"),
+			"user_admin.php" => __("User Management"),
+			"logout.php" => __("Logout User"),
+			),
+		),
+	);
 
 $log_tail_lines = array(
 	-1 => __("All Lines"),

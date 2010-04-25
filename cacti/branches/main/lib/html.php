@@ -1120,10 +1120,10 @@ function draw_menu($user_menu = "") {
 	$first_ul = true;
 
 	/* loop through each header */
-	while (list($header_name, $header_array) = each($user_menu)) {
+	while (list($header_id, $header_array) = each($user_menu)) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
-		while (list($item_url, $item_title) = each($header_array)) {
+		while (list($item_url, $item_title) = each($header_array["items"])) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
 			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
@@ -1131,7 +1131,7 @@ function draw_menu($user_menu = "") {
 			}
 		}
 
-		reset($header_array);
+		reset($header_array["items"]);
 
 		if ($show_header_items == true) {
 			if (!$first_ul) {
@@ -1140,7 +1140,7 @@ function draw_menu($user_menu = "") {
 				$first_ul = false;
 			}
 
-			$id = clean_up_name(strtolower($header_name));
+			$id = clean_up_name(strtolower($header_id));
 			$ani  = "onClick='changeMenuState(\"" . $id . "\")'";
 			?>
 			<script type="text/javascript">
@@ -1151,13 +1151,13 @@ function draw_menu($user_menu = "") {
 			-->
 			</script>
 			<?php
-			print "<div id='mm_$id' onMouseDown='return false' class='menuMain nw' $ani>$header_name</div>
+			print "<div id='mm_$id' onMouseDown='return false' class='menuMain nw' $ani>" . $header_array["description"] . "</div>
 				<div>
 				<ul id='ul_$id' class='menuSubMain'>";
 		}
 
 		/* pass 2: loop through each top level item and render it */
-		while (list($item_url, $item_title) = each($header_array)) {
+		while (list($item_url, $item_title) = each($header_array["items"])) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
 			/* if this item is an array, then it contains sub-items. if not, is just

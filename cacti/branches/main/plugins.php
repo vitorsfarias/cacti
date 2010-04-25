@@ -110,7 +110,7 @@ function plugins_show($status = 'all') {
 	print "<table width='100%' cellspacing=0 cellpadding=3>";
 
 	$display_text = array(
-		"" => array(__(""), "ASC"),
+		" " => array(__(" "), "ASC"),
 		"directory" => array(__("Plugin"), "ASC"),
 		"longname" => array(__("Name"), "ASC"),
 		"version" => array(__("Version"), "ASC"),
