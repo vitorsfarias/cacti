@@ -373,9 +373,33 @@ function api_plugin_user_realm_auth ($filename = '') {
 }
 
 function plugin_config_arrays () {
-	global $menu;
-	$menu[__('Configuration')]['plugins.php'] = __('Plugin Management');
+	plugin_menu_item_add('configuration', array('plugins.php' => __('Plugin Management')));
 	api_plugin_load_realms ();
+}
+
+/**
+ * add a new menue header, changes the global $menu
+ * @param string $menu_id		- id for the div of the menu entry	
+ * @param string $menue_header	- translated header description
+ */
+function plugin_menu_add ($menu_id, $menu_header) {
+	global $menu;
+	$menu[$menu_id]["name"] = $menu_header;	
+}
+
+/**
+ * add an array of menu items to an existing menu specified by the id
+ * @param string $menu_id
+ * @param array $menue_items	- array of menu items
+ * 									array(
+ * 										<php module> => __("<Item Description>")
+ * 										<php module> => __("<Item Description>")
+ * 										...
+ * 									)
+ */
+function plugin_menu_item_add ($menu_id, $menu_items) {
+	global $menu;
+	$menu[$menu_id]["items"] += $menu_items;	
 }
 
 function plugin_draw_navigation_text ($nav) {
