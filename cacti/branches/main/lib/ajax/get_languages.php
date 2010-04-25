@@ -43,7 +43,7 @@ while (false !== ($filename = readdir($dhandle))) {
 }
 
 /* in strict mode we have display languages only supported by Cacti and all installed plugins */
-if(read_config_option('i18n_support') == 2){
+if(read_config_option('i18n_language_support') == 2){
 
 	$plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config`");
 

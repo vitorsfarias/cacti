@@ -620,7 +620,7 @@ function display_languages() {
 	print "</tr>\n";
 	print "<tr class='rowAlternate2'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Language Mode") . "</td>\n";
-	print "		<td class='textAreaNotes v'>" . $i18n_modes[read_config_option('i18n_support')] . "</td>\n";
+	print "		<td class='textAreaNotes v'>" . $i18n_modes[read_config_option('i18n_language_support')] . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Default Language") . "</td>\n";

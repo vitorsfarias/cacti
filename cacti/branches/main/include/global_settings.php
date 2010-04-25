@@ -245,11 +245,11 @@ $settings = array(
 			"default" => CHECKED,
 			"method" => "checkbox"
 			),
-		"i18n_support" => array(
+		"i18n_language_support" => array(
 			"friendly_name" => __("Language Support"),
 			"description" => __("Choose \"enabled\" to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."),
 			"method" => "drop_array",
-			"default" => "0",
+			"default" => "1",
 			"array" => $i18n_modes
 			),
 		"i18n_default_language" => array(
@@ -263,7 +263,7 @@ $settings = array(
 			"friendly_name" => __("Auto Language Detection"),
 			"description" => __("Allow to automatically determine the \"default\" language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language. "),
 			"method" => "drop_array",
-			"default" => "0",
+			"default" => "1",
 			"array" => array( "0" => __("Disabled"), "1" => __("Enabled"))
 			),
 		"i18n_timezone_support" => array(

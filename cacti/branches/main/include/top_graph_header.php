@@ -133,7 +133,7 @@ $page_title = api_plugin_hook_function('page_title', 'Cacti');
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar-setup.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jstree/plugins/jquery.tree.cookie.js"></script>
 	<?php initializeCookieVariable(); api_plugin_hook('page_head'); ?>
@@ -181,7 +181,7 @@ $page_title = api_plugin_hook_function('page_title', 'Cacti');
 					&nbsp;&nbsp;&nbsp;<?php print __("Logged in as");?> <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo CACTI_URL_PATH; ?>logout.php"><?php print __("Logout");?></a>)
 		<?php } ?>
 		</div>
-		<?php if(read_config_option('i18n_support') != 0) {?>
+		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
 			<a href="#" id="menu_languages" rel="<?php echo CACTI_URL_PATH; ?>"><img src="<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></a>
 		</div>

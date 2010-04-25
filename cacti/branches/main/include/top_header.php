@@ -91,7 +91,7 @@ api_plugin_hook('page_head');
 					&nbsp;&nbsp;&nbsp;<?php print __("Logged in as");?> <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo CACTI_URL_PATH; ?>logout.php"><?php print __("Logout");?></a>)
 		<?php } ?>
 		</div>
-		<?php if(read_config_option('i18n_support') != 0) {?>
+		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
 			<a href="#" id="menu_languages" rel="<?php echo CACTI_URL_PATH; ?>"><img src="<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></a>
 		</div>

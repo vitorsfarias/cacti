@@ -30,7 +30,7 @@ $cacti_country = "us";
 $cacti_textdomains = array();
 
 /* use a fallback if i18n is disabled (default) */
-if (read_config_option('i18n_support') == 0) {
+if (read_config_option('i18n_language_support') == 0 & !defined("FORCE_LANGUAGE_SUPPORT")) {
 	load_fallback_procedure();
 	return;
 }
@@ -63,7 +63,7 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 	}
 
 /* detect browser settings if auto detection is enabled */
-}elseif (read_config_option('i18n_auto_detection') && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+}elseif ((defined("FORCE_LANGUAGE_SUPPORT") | read_config_option('i18n_auto_detection')) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 	$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 	$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
 
@@ -118,7 +118,7 @@ if(sizeof($plugins)>0) {
 	}
 
 	/* if i18n support is set to strict mode then check if all plugins support the requested language */
-	if(read_config_option('i18n_support') == 2) {
+	if(read_config_option('i18n_language_support') == 2) {
 		if(sizeof($plugins) != (sizeof($cacti_textdomains)-1)) {
 			load_fallback_procedure();
 			return;
