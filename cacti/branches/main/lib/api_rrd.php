@@ -35,13 +35,13 @@ function api_rrd_datasource_add($file_array, $ds_array, $debug) {
 	require_once(CACTI_BASE_PATH."/lib/rrd.php");
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 	#print_r($ds_array);
-	$rrd_struc = array();
+	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
 	foreach($file_array as $file) {
 		/* create a DOM object from an rrdtool dump */
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, 'UTIL'));
+		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 		if (!$dom) {
 			$check["err_msg"] = __('Error while parsing the XML of rrdtool dump');
 			return $check;
@@ -81,7 +81,7 @@ function api_rrd_datasource_add($file_array, $ds_array, $debug) {
 				/* are we allowed to write the rrd file? */
 				if (is_writable($file)) {
 					/* restore the modified XML to rrd */
-					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrd_struc, 'UTIL');
+					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
 					cacti_log(__("Added datasource(s) to rrd file: %s", $file), false, 'UTIL');
