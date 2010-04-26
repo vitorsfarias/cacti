@@ -92,6 +92,9 @@ function api_rrd_datasource_add($file_array, $ds_array, $debug) {
 			}
 		}
 	}
+
+	rrd_close($rrdtool_pipe);
+
 	return true;
 }
 
