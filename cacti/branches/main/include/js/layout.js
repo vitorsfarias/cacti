@@ -245,13 +245,10 @@ var overColumn      = false;
 var overVSplit      = false;
 var iEdgeThreshold  = 10;
 var isMouseDown     = false;
-var aniInProgress   = false;
 var vSplitterClosed = false;
 var creatingCookie  = false;
 var browser         = "Unknown";
 var browserVersion  = 0;
-var windowOnLoadReg = new Array();
-var windowOnLoadCt  = 0;
 
 /* tells if on the right border or not */
 function isOnBorderRight(type, object, event) {
@@ -393,7 +390,16 @@ function saveColumnWidths() {
 	columns = document.getElementsByTagName("th");
 	pathname = getBaseName();
 	for (i = 0; i < columns.length; i++) {
-		createCookieElement(pathname, columns[i].id, parseInt(columns[i].style.width));
+		width1 = columns[i].clientWidth;
+		width2 = parseInt(columns[i].style.width);
+		width3 = columns[i].scrollWidth;
+		if (width2 < width3) {
+			width = width3;
+		}else{
+			width = width2;
+		}
+		//alert("clientWidth:"+width1+", width:"+width2+", scroll:"+width3);
+		createCookieElement(pathname, columns[i].id, width);
 	}
 }
 
