@@ -110,18 +110,18 @@ function settings() {
 	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr><td><div class='tabs'>\n";
 	if (sizeof($settings_graphs) > 0) {
 		foreach (array_keys($settings_graphs) as $tab_short_name) {
-			print "<div><a id='tab_" . clean_up_name($tabs_graphs[$tab_short_name]) . "' " . (($tab_short_name == "General") ? "class='tab tabSelected'" : "class='tab tabDefault'") . " onClick='selectTab(\"" . clean_up_name($tabs_graphs[$tab_short_name]) . "\")' href='#'>$tabs_graphs[$tab_short_name]</a></div>\n";
+			print "<div><a id='tab_" . clean_up_name($tab_short_name) . "' " . (($tab_short_name == "General") ? "class='tab tabSelected'" : "class='tab tabDefault'") . " onClick='selectTab(\"" . clean_up_name($tab_short_name) . "\")' href='#'>$tabs_graphs[$tab_short_name]</a></div>\n";
 		}
 	}
 	print "</div></td></tr></table>\n";
 
 	# the tab contents
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tabs_graphs[$tab_short_name]) . "'>\n";
-		html_start_box("<strong>" . __("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")</strong>", "100", $colors["header"], 0, "center", "", false, "Tab_Settings_" . clean_up_name($tabs_graphs[$tab_short_name]));
+		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tab_short_name) . "'>\n";
+		html_start_box("<strong>" . __("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")</strong>", "100", $colors["header"], 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
 		$header_items = array(__("Field"), __("Value"));
 		print "<tr><td>";
-		html_header($header_items, 2, true, "Header_Settings_" . clean_up_name($tabs_graphs[$tab_short_name]),'left wp100');
+		html_header($header_items, 2, true, "Header_Settings_" . clean_up_name($tab_short_name),'left wp100');
 
 		$form_array = array();
 
@@ -187,7 +187,8 @@ function settings() {
 	}
 
 	$().ready(function() {
-		selectTab('General');
+		// the name of the default selected tab has to match an array key of $settings_graphs
+		selectTab('general');
 	});
 
 	//-->
