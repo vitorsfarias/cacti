@@ -411,6 +411,12 @@ img_filter {
 #authFooter {
 }
 
+#footer {
+	position:absolute;
+	bottom:0px;
+	left:20px;
+}
+
 /* links */
 a, a:active, a:visited {
 	color: #0000ff;

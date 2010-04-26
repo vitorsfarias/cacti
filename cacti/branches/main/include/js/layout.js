@@ -208,9 +208,6 @@ function changeMenuState(id, initialize) {
 	if (filter == "o") {
 		if (initialize != null) {
 			createCookieElement("menu", id, "o");
-
-			/* set the display properly */
-			object.style.height = object.scrollHeight + "px";
 		}else{
 			createCookieElement("menu", id, "c");
 			closeMenu(id);
@@ -219,14 +216,9 @@ function changeMenuState(id, initialize) {
 		if (initialize != null) {
 			if (filter == "c") {
 				createCookieElement("menu", id, "c");
-
-				/* set the display properly */
-				object.style.height = "0px";
+				hideMenu(id);
 			}else{
 				createCookieElement("menu", id, "o");
-
-				/* set the display properly */
-				object.style.height = object.scrollHeight + "px";
 			}
 		}else{
 			createCookieElement("menu", id, "o");
@@ -236,64 +228,23 @@ function changeMenuState(id, initialize) {
 }
 
 function closeMenu(id) {
-	element = document.getElementById("ul_"+id);
+	$("#ul_"+id).slideUp("fast");
+}
 
-	if (!aniInProgress) {
-		aniInProgress = true;
-		closeMe = setInterval(function() { moveUp(element); }, 10);
-		aniInProgress = false;
-	}
+function hideMenu(id) {
+	$("#ul_"+id).hide();
 }
 
 function openMenu(id) {
-	element = document.getElementById("ul_"+id);
-
-	if (!aniInProgress) {
-		aniInProgress = true;
-		openMe  = setInterval(function() { moveDown(element); }, 10);
-		aniInProgress = false;
-	}
-}
-
-function moveUp(object) {
-	newEM = parseInt(object.style.height);
-
-	if ((newEM - 15) < 0) {
-		newEM = 0;
-	}else{
-		newEM = newEM - 15;
-	}
-
-	object.style.height = newEM + "px";
-
-	if (newEM <= 0) {
-		clearInterval(closeMe);
-	}
-}
-
-function moveDown(object) {
-	newEM = parseInt(object.style.height);
-
-	if ((newEM + 15) > object.scrollHeight) {
-		newEM = object.scrollHeight;
-	}else{
-		newEM = newEM + 15;
-	}
-
-	object.style.height  = newEM + "px";
-
-	if (newEM >= object.scrollHeight) {
-		clearInterval(openMe);
-	}
+	$("#ul_"+id).slideDown("fast");
 }
 
 var objTh           = null;
 var objDiv          = null;
 var overColumn      = false;
 var overVSplit      = false;
-var resizedColumn   = false;
-var resizedDiv      = false;
 var iEdgeThreshold  = 10;
+var isMouseDown     = false;
 var aniInProgress   = false;
 var vSplitterClosed = false;
 var creatingCookie  = false;
@@ -303,12 +254,16 @@ var windowOnLoadReg = new Array();
 var windowOnLoadCt  = 0;
 
 /* tells if on the right border or not */
-function isOnBorderRight(object, event) {
+function isOnBorderRight(type, object, event) {
 	var width    = object.offsetWidth;
 	var pos      = findPos(object);
 	var absRight = pos[0] + width;
 
 	if (event.clientX > (absRight - iEdgeThreshold)) {
+		if (type == "column") {
+			objTh = object;
+			objThWidth = width - iEdgeThreshold;
+		}
 		return true;
 	}
 
@@ -321,7 +276,7 @@ function findPos(obj) {
 		curleft = obj.offsetLeft;
 		curtop  = obj.offsetTop;
 
-		while (obj == obj.offsetParent) {
+		while (obj = obj.offsetParent) {
 			curleft += obj.offsetLeft;
 			curtop  += obj.offsetTop;
 		}
@@ -360,12 +315,17 @@ function getParentNode(objReference, nodeName, className) {
 function doColResize(object, event){
 	if(!event) event = window.event;
 
-	if (isOnBorderRight(object, event)) {
-		overColumn          = true;
-		object.style.cursor = "e-resize";
-	}else{
-		overColumn          = false;
-		object.style.cursor = "";
+	if (!isMouseDown) {
+		if (isOnBorderRight("column", object, event)) {
+			overColumn          = true;
+			$("th").css("cursor", "e-resize");
+		}else{
+			overColumn          = false;
+			$("th").css("cursor", "");
+			$("th > a").css("cursor", "");
+		}
+	} else {
+		$("th > a").css("cursor", "e-resize");
 	}
 
 	return overColumn;
@@ -373,17 +333,26 @@ function doColResize(object, event){
 
 function doneColResize() {
 	overColumn = false;
-
-	if (resizedColumn) {
-		saveColumnWidths();
-		resizedColumn = false;
-	}
+	$("th > a").css("cursor", "");
+	saveColumnWidths();
 }
 
-function initColumnWidths() {
-	columns = document.getElementsByTagName("TH");
+function initResizableColumns() {
+	columns = document.getElementsByTagName("th");
 
 	pathname = getBaseName();
+
+	$('th').mousemove(function(e) {
+		doColResize(this,e);
+	});
+
+	$('th').mouseover(function(e) {
+		doColResize(this,e);
+	});
+
+	$('th > a').mousedown(function(e) {
+		return false;
+	});
 
 	if (columns.length > 0) {
 		for (i = 0; i < columns.length; i++) {
@@ -404,8 +373,9 @@ function initColumnWidths() {
 					}
 				}
 			}
-
 		}
+
+		saveColumnWidths();
 	}
 }
 
@@ -420,10 +390,8 @@ function getBaseName() {
 }
 
 function saveColumnWidths() {
-	columns = document.getElementsByTagName("TH");
-
+	columns = document.getElementsByTagName("th");
 	pathname = getBaseName();
-
 	for (i = 0; i < columns.length; i++) {
 		createCookieElement(pathname, columns[i].id, parseInt(columns[i].style.width));
 	}
@@ -432,12 +400,14 @@ function saveColumnWidths() {
 function doDivResize(object, event){
 	if (!event) event = window.event;
 
-	if (isOnBorderRight(object, event)) {
-		overVSplit          = true;
-		object.style.cursor = "e-resize";
-	}else{
-		overVSplit          = false;
-		object.style.cursor = "";
+	if (!isMouseDown) {
+		if (isOnBorderRight("div", object, event)) {
+			overVSplit          = true;
+			object.style.cursor = "e-resize";
+		}else{
+			overVSplit          = false;
+			object.style.cursor = "";
+		}
 	}
 
 	return overColumn;
@@ -446,13 +416,9 @@ function doDivResize(object, event){
 function doneDivResize(){
 	overVSplit = false;
 
-	if (resizedDiv == true) {
-		if (document.getElementById("vsplitter")) {
-			createCookieElement("menu", "vsplitter_last", parseInt(document.getElementById("vsplitter").style.marginLeft));
-			resizedDiv = false;
-		}
+	if (document.getElementById("vsplitter")) {
+		createCookieElement("menu", "vsplitter_last", parseInt(document.getElementById("vsplitter").style.marginLeft));
 	}
-
 }
 
 function vSplitterToggle() {
@@ -467,114 +433,83 @@ function vSplitterToggle() {
 	vSplitterPos();
 }
 
-function MouseDown(event) {
+function mouseDown(event) {
 	if (!event) event = window.event;
 
-	MOUSTSTART_X = event.clientX;
-	MOUSTSTART_Y = event.clientY;
+	startX = event.clientX;
+	startY = event.clientY;
 
 	if (overColumn) {
-		if (event.srcElement)objTh = event.srcElement;
-		else if (event.target)objTh = event.target;
-		else return;
-
-		objTh = getParentNode(objTh,"TH");
-
-		if (objTh == null) return;
-
-		objTable      = getParentNode(objTh,"TABLE");
-		objThWidth    = parseInt(objTh.style.width);
-
-		if (objThWidth > 0) {
-		}else{
-			objThWidth = parseInt(objTh.scrollWidth);
-		}
-
-		objTableWidth = parseInt(objTable.offsetWidth);
+		isMouseDown   = true;
 	} else if (overVSplit) {
-		if (event.srcElement)objDiv = event.srcElement;
-		else if (event.target)objDiv = event.target;
-		else return;
+		if (event.srcElement) {
+			objDiv = event.srcElement;
+		} else if (event.target) {
+			objDiv = event.target;
+		} else {
+			return;
+		}
 
 		objDiv = getParentNode(objDiv,"DIV");
 
 		if (objDiv == null) return;
 
 		objDivWidth   = objDiv.offsetLeft;
+		isMouseDown   = true;
 	}
 }
 
-function MouseMove(event) {
+function mouseMove(event) {
 	if (!event) event = window.event;
 
 	/* let's see how wide the page is */
 	var clWidth = document.getElementById("wrapper").clientWidth;
 
-	if (objTh) {
-		thSt    = event.clientX - MOUSTSTART_X + objThWidth;
-		tableSt = event.clientX - MOUSTSTART_X + objTableWidth;
+	if (isMouseDown) {
+		if (objTh) {
+			minX    = $("#"+objTh.id+" > a").width();
+			thSt    = parseInt(event.clientX - startX + objThWidth);
 
-		resizedColumn = true;
-
-		/* check for minimum width */
-		if (thSt >= 10) {
-			objTh.style.width    = thSt + "px";
-		}
-
-		if ((browser == 'IE') && (document.selection)) {
-			document.selection.empty();
-		}else if (window.getSelection) {
-			window.getSelection().removeAllRanges();
-		}
-	}else if (objDiv) {
-		var divSt   = event.clientX - MOUSTSTART_X + objDivWidth;
-
-		resizedDiv = true;
-
-		/* check for minimum height */
-		if (divSt >=30 ) {
-			objDiv.style.marginLeft = divSt + "px";
-
-			if (document.getElementById("menu") != null) {
-				document.getElementById("menu").style.width         = parseInt(divSt - 5) + "px";
-				document.getElementById("menu").style.marginLeft    = "0px";
-				document.getElementById("content").style.width      = parseInt(clWidth - divSt - 20) + "px";
-				document.getElementById("content").style.left       = parseInt(divSt + 2) + "px";
-			}else{
-				document.getElementById("graph_tree").style.width         = parseInt(divSt - 5) + "px";
-				document.getElementById("graph_tree").style.marginLeft    = "0px";
-				document.getElementById("graph_tree_content").style.width = parseInt(clWidth - divSt - 20) + "px";
-				document.getElementById("graph_tree_content").style.left  = parseInt(divSt + 2) + "px";
+			/* check for minimum width */
+			if (thSt >= 10 && objTh) {
+				objTh.style.width    = thSt + "px";
+				//$('#debug').text("Name:"+objTh.id+", MinX:"+minX+", ThWidth:"+objThWidth+", New Width:"+thSt);
 			}
 
-			vSplitterClosed = false;
-		}else{
-			vSplitterClosed = true;
-
-			if (document.getElementById("menu") != null) {
-				document.getElementById("vsplitter").style.marginLeft = "0px";
-				document.getElementById("menu").style.width           = "0px";
-				document.getElementById("menu").style.marginLeft      = "-200px";
-				document.getElementById("content").style.left         = "2px";
-				document.getElementById("content").style.width        = parseInt(clWidth + 200) + "px";
-			}else{
-				document.getElementById("vsplitter").style.marginLeft     = "0px";
-				document.getElementById("graph_tree").style.width         = "0px";
-				document.getElementById("graph_tree").style.marginLeft    = "-200px";
-				document.getElementById("graph_tree_content").style.width = parseInt(clWidth + 200) + "px";
-				document.getElementById("graph_tree_content").style.left  = "2px";
+			if ((browser == 'IE') && (document.selection)) {
+				document.selection.empty();
+			}else if (window.getSelection()) {
+				window.getSelection().removeAllRanges();
 			}
-		}
+		}else if (objDiv) {
+			divSt = event.clientX - startX + objDivWidth;
+			if (divSt >=30 ) {
+				vSplitterClosed = false;
+				$("#vsplitter").css("marginLeft", divSt + "px");
+				$("#menu").css("width", parseInt(divSt - 5) + "px").css("marginLeft", "0px");
+				$("#content").css("width", parseInt(clWidth - divSt - 20) + "px").css("left", parseInt(divSt + 2) + "px");
+				$("#graph_tree").css("width", parseInt(divSt - 5) + "px").css("marginLeft", "0px");
+				$("#graph_tree_content").css("width", parseInt(clWidth - divSt - 20) + "px").css("left", parseInt(divSt + 2) + "px");
 
-		if ((browser == 'IE') && (document.selection)) {
-			document.selection.empty();
-		}else if (window.getSelection) {
-			window.getSelection().removeAllRanges();
+			}else{
+				vSplitterClosed = true;
+				$("#vsplitter").css("marginLeft", "0px");
+				$("#menu").css("width", "0px").css("marginLeft", "-200px");
+				$("#content").css("left", "2px").css("width", parseInt(clWidth + 200) + "px");
+				$("#graph_tree").css("width", "0px").css("marginLeft", "-200px");
+				$("#graph_tree_content").css("left", "2px").css("width", parseInt(clWidth + 200) + "px");
+			}
+
+			if ((browser == 'IE') && (document.selection)) {
+				document.selection.empty();
+			}else if (window.getSelection) {
+				window.getSelection().removeAllRanges();
+			}
 		}
 	}
 }
 
-function MouseUp(event) {
+function mouseUp(event) {
 	if (!event) event = window.event;
 
 	if (objTh) {
@@ -585,6 +520,7 @@ function MouseUp(event) {
 		}
 
 		objTh = null;
+		doneColResize();
 	} else if (objDiv) {
 		if ((browser == 'IE') && (document.selection)) {
 			document.selection.empty();
@@ -593,7 +529,10 @@ function MouseUp(event) {
 		}
 
 		objDiv = null;
+		doneDivResize();
 	}
+
+	isMouseDown = false;
 }
 
 /* page load functions */
@@ -736,9 +675,9 @@ $().ready(function() {
 	detectBrowser();
 
 	/* initialize mouse functions */
-	document.onmousedown = MouseDown;
-	document.onmousemove = MouseMove;
-	document.onmouseup   = MouseUp;
+	document.onmousedown = mouseDown;
+	document.onmousemove = mouseMove;
+	document.onmouseup   = mouseUp;
 
 	/* set document focus */
 	setFocus();
@@ -753,7 +692,7 @@ $().ready(function() {
 	vSplitterPos();
 
 	/* restore column widths */
-	initColumnWidths();
+	initResizableColumns();
 
 	/* restore the page visibility */
 	transitionPage();

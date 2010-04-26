@@ -770,7 +770,7 @@ function graphs_new() {
 						if ($field_array["direction"] == "input") {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
-									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' onMousemove='doColResize(this,event)' onMouseover='doColResize(this,event)' onMouseup='doneColResize()' class='textSubHeaderDark'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></th>\n";
+									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' class='textSubHeaderDark'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></th>\n";
 									break;
 								}
 							}

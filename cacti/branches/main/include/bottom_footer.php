@@ -24,7 +24,9 @@
 ?>
 	</div>
 </div>
-<div id='footer'><br></div>
+<div id='footer'><br>
+	<p id='debug'></p>
+</div>
 </html>
 
 <?php
