@@ -166,7 +166,11 @@ function settings() {
 
 	form_hidden_box("referer", "graph_view.php","");
 	form_hidden_box("save_component_graph_config","1","");
-
+	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
+	
+	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
+	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
+	
 	form_save_button_alt("", "save", "save");
 
 	?>
@@ -189,6 +193,4 @@ function settings() {
 	//-->
 	</script>
 	<?php
-
-	include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
