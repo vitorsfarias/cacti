@@ -82,16 +82,16 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 	/* use popen to eliminate the zombie issue */
 	if (CACTI_SERVER_OS == "unix") {
-		$popen_mode = "r";
+		$pipe_mode = "r";
 	}else{
-		$popen_mode = "rb";
+		$pipe_mode = "rb";
 	}
 
 	/* an empty $rrdtool_pipe array means no fp is available */
 	if (!is_resource($rrdtool_pipe)) {
 		session_write_close();
-		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), $popen_mode);
-		if (!$fp) {
+		$fp = popen(read_config_option("path_rrdtool") . escape_command(" $command_line"), $pipe_mode);
+		if (!is_resource($fp)) {
 			unset($fp);
 		}
 	}else{
@@ -144,6 +144,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 			if (is_resource($fp)) {
 				$output = fgets($fp, 1000000);
 
+				pclose($fp);
+
 				if (substr($output, 1, 3) == "PNG") {
 					return __("PNG Output OK");
 				}
@@ -156,15 +158,12 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 					return __("SVG/XML Output OK");
 				}
 
-				pclose($fp);
-
 				print $output;
 			}
 
 			break;
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
 			if (is_resource($fp)) {
-				#return fpassthru($fp); /* TODO: this fails for SVG; still not clear, why (gandalf) */
 				$line = "";
 				while (!feof($fp)) {
 					$line .= fgets($fp, 4096);
