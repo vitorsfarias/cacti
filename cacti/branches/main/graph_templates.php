@@ -770,7 +770,7 @@ function template() {
 				form_alternate_row_color('line' . $template["id"], true);
 				form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
 				form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["description"]) : $template["description"]) . "</a>", $template["id"]);
-				form_selectable_cell((file_exists($template["image"]) ? "<img src='" . $template["image"] . "'>":""), $template["id"]);
+				form_selectable_cell((file_exists(CACTI_BASE_PATH . "/../" . $template["image"]) ? "<img src='" . $template["image"] . "'>":""), $template["id"]);
 				form_checkbox_cell($template["name"], $template["id"]);
 				form_end_row();
 			}
