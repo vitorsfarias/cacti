@@ -38,19 +38,15 @@ define("SNMP_POLLER", 0);
 define("SNMP_CMDPHP", 1);
 define("SNMP_WEBUI", 2);
 
-define("RRDTOOL_PIPE_CHILD_READ", 0);
-define("RRDTOOL_PIPE_CHILD_WRITE", 1);
-define("RRDTOOL_PIPE_STDERR_WRITE", 2);
-
 define("RRDTOOL_OUTPUT_NULL", 0);
 define("RRDTOOL_OUTPUT_STDOUT", 1);
 define("RRDTOOL_OUTPUT_STDERR", 2);
 define("RRDTOOL_OUTPUT_GRAPH_DATA", 3);
 
-define("RRD_VERSION_1_0",	"rrd-1.0.x");
-define("RRD_VERSION_1_2",	"rrd-1.2.x");
-define("RRD_VERSION_1_3",	"rrd-1.3.x");
-define("RRD_VERSION_1_4",	"rrd-1.4.x");
+define("RRD_VERSION_1_0", "rrd-1.0.x");
+define("RRD_VERSION_1_2", "rrd-1.2.x");
+define("RRD_VERSION_1_3", "rrd-1.3.x");
+define("RRD_VERSION_1_4", "rrd-1.4.x");
 
 define('OPER_MODE_NATIVE', 0);
 define('OPER_MODE_RESKIN', 1);
