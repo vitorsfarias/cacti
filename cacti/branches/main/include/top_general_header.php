@@ -24,7 +24,7 @@
 
 include_once(CACTI_BASE_PATH . "/lib/time.php");
 
-$page_title = api_plugin_hook_function('page_title', 'Cacti');
+$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -78,7 +78,7 @@ $page_title = api_plugin_hook_function('page_title', 'Cacti');
 	</div>
 	<div id='navbrcrumb'>
 		<div style='float:left'>
-			<?php draw_navigation_text();?>
+			<?php echo draw_navigation_text();?>
 		</div>
 		<div style='float:right'>
 			<a href="<?php echo cacti_wiki_url();?>" target="_blank">
