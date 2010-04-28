@@ -157,6 +157,7 @@ Cacti CHANGELOG
 -feature: tabbed view for templates (device, graph, data source)
 -feature: cli/rrd_datasouce_add.php allows for adding new datasouces to existing rrd files; supports RRD file version 0001, 0003
 -feature: Add error messages to upgrade script SQL failures
+-feature: Return nav as the title for the page.
 
 0.8.7e
 
