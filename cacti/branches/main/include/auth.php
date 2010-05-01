@@ -64,12 +64,18 @@ if (read_config_option("auth_method") != 0) {
 			$realm_id = $user_auth_realm_filenames{basename($_SERVER["PHP_SELF"])};
 		}
 
-		if ((!db_fetch_assoc("select
+		if ($realm_id != -1 && ((!db_fetch_assoc("select
 			user_auth_realm.realm_id
 			from
 			user_auth_realm
 			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
-			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id))) {
+			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id)))) {
+
+			if (isset($_SERVER["HTTP_REFERER"])) {
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __("Return") . "</a> | <a href='" . CACTI_URL_PATH . "logout.php'>" . __("Login Again") . "</a> )</td>";
+			}else{
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . CACTI_URL_PATH . "logout.php'>" . __("Login Again") . "</a> )</td>";
+			}
 
 			?>
 			<html>
@@ -90,7 +96,7 @@ if (read_config_option("auth_method") != 0) {
 					<td class='textArea' colspan='2'><?php echo __("You are not permitted to access this section of Cacti. If you feel that you need access to this particular section, please contact the Cacti administrator.");?></td>
 				</tr>
 				<tr>
-					<td class='textArea' colspan='2' align='center'>( <a href='' onclick='javascript: history.back();'><?php echo __("Return");?></a> | <a href='<?php echo CACTI_URL_PATH; ?>logout.php'><?php echo __("Login Again");?></a> )</td>
+					<?php print $goBack;?>
 				</tr>
 			</table>
 
