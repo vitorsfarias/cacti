@@ -2357,20 +2357,32 @@ function sanitize_search_string($string) {
     takes into account action=shift and tab setting
     @returns - the namespace and subpage if applicable */
 function cacti_wiki_url() {
-    $ref_ns = rtrim(basename($_SERVER["PHP_SELF"], ".php"));
-    $ref_sp = '';
-    if (isset($_GET["action"]) && ($_GET["action"] !== NULL ) && ($_GET["action"] !== "shift" )) {
-        if (isset($_GET["tab"])) {
-            $ref_sp = ":" . $_GET["action"] . ":" . $_GET["tab"];
-        } else {
-            $ref_sp = ":" . $_GET["action"];
-        }
-    } elseif (isset($_GET["action"]) && ($_GET["tab"] != NULL)) {
-        $ref_sp = ":" . $_GET["tab"];
-    }
-    return CACTI_WIKI_URL . $ref_ns . $ref_sp;
+	$ref_ns = rtrim(basename($_SERVER["PHP_SELF"], ".php"));
+	$ref_sp = '';
+	if (isset($_GET["action"]) && ($_GET["action"] !== NULL ) && ($_GET["action"] !== "shift" )) {
+		if (isset($_GET["tab"])) {
+			$ref_sp = ":" . $_GET["action"] . ":" . $_GET["tab"];
+		} else {
+			$ref_sp = ":" . $_GET["action"];
+		}
+	} elseif (isset($_GET["action"]) && ($_GET["tab"] != NULL)) {
+			$ref_sp = ":" . $_GET["tab"];
+	}
+	return CACTI_WIKI_URL . $ref_ns . $ref_sp;
 }
 
+function cacti_escapeshellcmd($string) {
+	if (CACTI_SERVER_OS == "unix") {
+		return escapeshellcmd($string);
+	}else{
+		$replacements = "#&;`|*?<>^()[]{}$\\";
+
+		for ($i=0; $i < strlen($replacements); $i++) {
+			$string = str_replace($replacements[$i], " ", $string);
+		}
+		return $string;
+	}
+}
 
 function cacti_escapeshellarg($string, $quote=true) {
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
@@ -2384,8 +2396,6 @@ function cacti_escapeshellarg($string, $quote=true) {
 			# remove first and last char
 			return substr($string, 1, (strlen($string)-2));
 		}
-
-
 	}else{
 		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
 			$string = str_replace(CACTI_ESCAPE_CHARACTER, "\\" . CACTI_ESCAPE_CHARACTER, $string);
