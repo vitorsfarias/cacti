@@ -51,18 +51,13 @@ if ($old_cacti_version == CACTI_VERSION) {
 	exit;
 }elseif (preg_match("/^0\.6/", $old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You are attempting to install cacti %s
-		onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and
-		update 'include/config.php' to point to the new database.", CACTI_VERSION) . "</p>";
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You are attempting to install cacti %s	onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and update 'include/config.php' to point to the new database.", CACTI_VERSION) . "</p>";
 	exit;
 }elseif (empty($old_cacti_version)) {
 	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You have created a new database, but have not yet imported
-		the 'cacti.sql' file. At the command line, execute the following to continue:") . "</p>
+		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:") . "</p>
 		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
-		<p>" . __("This error may also be generated if the cacti database user does not have correct permissions on the cacti database.
-		Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX
-		on the cacti database.") . "</p>";
+		<p>" . __("This error may also be generated if the cacti database user does not have correct permissions on the cacti database. Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the cacti database.") . "</p>";
 	exit;
 }
 
@@ -544,18 +539,11 @@ if (get_request_var_request("step") == "4") {
 
 						<p><?php echo __('Also, if this is an upgrade, be sure to reading the <a href="../docs/html/upgrade.html">Upgrade</a> information file.'); ?></p>
 
-						<p><?php echo __("Cacti is licensed under the GNU General Public License, you must agree
-						to its provisions before continuing:"); ?></p>
+						<p><?php echo __("Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:"); ?></p>
 
-						<p class="code"><?php echo __("This program is free software; you can redistribute it and/or
-						modify it under the terms of the GNU General Public License
-						as published by the Free Software Foundation; either version 2
-						of the License, or (at your option) any later version."); ?></p>
+						<p class="code"><?php echo __("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2	of the License, or (at your option) any later version."); ?></p>
 
-						<p class="code"><?php echo __("This program is distributed in the hope that it will be useful,
-						but WITHOUT ANY WARRANTY; without even the implied warranty of
-						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-						GNU General Public License for more details."); ?></p>
+						<p class="code"><?php echo __("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."); ?></p>
 
 						<?php }elseif (get_request_var_request("step") == "2") { ?>
 
@@ -568,8 +556,7 @@ if (get_request_var_request("step") == "4") {
 						</select>
 						</p>
 
-						<p><?php echo __("The following information has been determined from Cacti's configuration file.
-						If it is not correct, please edit 'include/config.php' before continuing."); ?></p>
+						<p><?php echo __("The following information has been determined from Cacti's configuration file. If it is not correct, please edit 'include/config.php' before continuing."); ?></p>
 
 						<p class="code">
 						<?php	print __("Database User:") . " $database_username<br>";
@@ -631,10 +618,7 @@ if (get_request_var_request("step") == "4") {
 							$i++;
 						}?>
 
-						<p><strong><font color="#FF0000"><?php echo __("NOTE:"); ?></font></strong> <?php echo __('Once you click "Finish",
-						all of your settings will be saved and your database will be upgraded if this
-						is an upgrade. You can change any of the settings on this screen at a later
-						time by going to "Cacti Settings" from within Cacti.'); ?></p>
+						<p><strong><font color="#FF0000"><?php echo __("NOTE:"); ?></font></strong> <?php echo __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.'); ?></p>
 
 						<?php }elseif (get_request_var_request("step") == "8") { ?>
 
@@ -677,11 +661,7 @@ if (get_request_var_request("step") == "4") {
 						}
 
 						if ($failed_sql_query == true) {
-							print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to
-								upgraded your Cacti installation has failed. Please see below for more details. Your
-								Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>
-								permissions. For each query that failed, you should evaluate the error message returned and take
-								appropriate action.") . "</p>\n";
+							print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>permissions. For each query that failed, you should evaluate the error message returned and take appropriate action.") . "</p>\n";
 						}
 
 						print $upgrade_results;
