@@ -31,20 +31,17 @@ api_plugin_hook('console_before');
 <table width="100%" align="center">
 	<tr>
 		<td class="textHeader">
-			<strong><?php print __('You are now logged into <a href="about.php">Cacti</a>. You can follow these basic steps to get
-			started.');?></strong>
+			<strong><?php print __('You are now logged into %s. You can follow these basic steps to get started.', '<a href="about.php">Cacti</a>');?></strong>
 
 			<ul>
-				<li><strong><?php print '<a href="devices.php">' . __('Create devices') . " </a>" . __('for your network');?></strong></li>
-				<li><strong><?php print '<a href="graphs_new.php">' . __('Create graphs') . " </a>" . __('for your new devices');?></strong></li>
-				<li><strong><?php print '<a href="graph_view.php">' . __('View') . " </a>" . __('your new graphs');?></strong></li>
+				<li><strong><?php print __('<a href="devices.php">Create devices</a> for your network');?></strong></li>
+				<li><strong><?php print __('<a href="graphs_new.php">Create graphs</a> for your new devices');?></strong></li>
+				<li><strong><?php print __('<a href="graph_view.php">View</a> your new graphs');?></strong></li>
 			</ul>
 			<strong>
-			<?php print __('Find help for each page when clicking the');?>
-			<a href="<?php echo cacti_wiki_url();?>" target="_blank">
-			<img src='images/help.gif' title="<?php print __("Help");?>" alt="<?php print __("Help");?>" align="top">
-			</a>
-			<?php print __('icon on the upper right.');?>
+			<?php print __('Find help for each page when clicking the %s icon on the upper right.',
+			'<a href=' . cacti_wiki_url() . ' target="_blank">' .
+			'<img src="images/help.gif" title="' . __("Help") . '" alt="' . __("Help") . '" align="top"></a>');?>
 			</strong>
 		</td>
 		<td class="textHeader" align="right" valign="top">
