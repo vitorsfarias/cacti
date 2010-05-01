@@ -890,35 +890,6 @@ function graph_settings_edit() {
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
 
-	?>
-	<script type="text/javascript">
-	<!--
-	$(document).ready(function(){
-
-		Show_if_Checked('#custom_colortags', ".colortags");
-		Show_if_Checked('#custom_fonts', ".custom_fonts");
-
-		$('#custom_colortags').click( function() {
-			Show_if_Checked('#custom_colortags', ".colortags");
-		});
-		$('#custom_fonts').click( function() {
-			Show_if_Checked('#custom_fonts', ".custom_fonts");
-		});
-
-		function Show_if_Checked(findstring, match) {
-			if ($(findstring).is(':checked')) {
-				$(match).each(function() { $(this).show(); });
-			} else {
-				$(match).each(function() { $(this).hide(); });
-			}
-		}
-
-	});
-
-	//-->
-	</script>
-	<?php
-
 	form_hidden_box("id", get_request_var_request("id"), "");
 	form_hidden_box("save_component_graph_settings","1","");
 }
