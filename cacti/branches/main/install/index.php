@@ -695,7 +695,7 @@ if (get_request_var_request("step") == "4") {
 
 						<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
 
-						<p><?php echo __('<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'); ?></p>
+						<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
 
 						<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
 
