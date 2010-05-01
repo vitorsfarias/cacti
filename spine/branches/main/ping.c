@@ -118,7 +118,7 @@ int ping_device(device_t *device, ping_t *ping) {
 				ping_result = ping_icmp(device, ping);
 
 				/* give up root privileges */
-				#if !(defined(__CYGWIN__) || defined(SOLAR_PRIV))
+				#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
 				seteuid(getuid());
 				#endif
 			}else if (device->ping_method == PING_UDP) {
