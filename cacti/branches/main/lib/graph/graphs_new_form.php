@@ -363,20 +363,18 @@ function graphs_new() {
 			kill_session_var("sess_graphs_new_device_id");
 		}
 
-		kill_session_var("sess_graphs_new_graph_type");
 		kill_session_var("sess_graphs_new_filter");
 
 		if (!substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
 			unset($_REQUEST["device_id"]);
 		}
 
-		unset($_REQUEST["graph_type"]);
 		unset($_REQUEST["filter"]);
 
 		$changed = true;
 	}else{
 		/* if any of the settings changed, reset the page number */
-		$changed = 0;
+		$changed = false;
 		$changed += check_changed("device_id",    "sess_graphs_new_device_id");
 		$changed += check_changed("graph_type", "sess_graphs_new_graph_type");
 		$changed += check_changed("filter",     "sess_graphs_new_filter");
@@ -496,6 +494,14 @@ function graphs_new() {
 	$total_rows = sizeof(db_fetch_assoc("select graph_template_id from device_graph where device_id=" . $_REQUEST["device_id"]));
 
 	$i = 0;
+
+	if ($changed) {
+		foreach($snmp_queries as $query) {
+			kill_session_var("sess_graphs_new_page" . $query["id"]);
+			unset($_REQUEST["page" . $query["id"]]);
+			load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
+		}
+	}
 
 	if (get_request_var_request("graph_type") > 0) {
 		load_current_session_value("page" . get_request_var_request("graph_type"), "sess_graphs_new_page" . get_request_var_request("graph_type"), "1");
