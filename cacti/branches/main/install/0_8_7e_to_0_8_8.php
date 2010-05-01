@@ -750,4 +750,13 @@ function upgrade_to_0_8_8() {
 	$field_id = db_fetch_cell("SELECT id FROM `data_input_fields` WHERE data_name LIKE '%%10min%%' AND data_input_id =" . $dim_id . " LIMIT 0,1");
 	db_install_execute("0.8.8", "UPDATE data_input_fields SET `name`='15 Minute Average', `data_name`='15min' WHERE `id`=" . $field_id);
 
+	/* custom font handling has changed
+	 * all font options may stay unchanged, when the custom_fonts checkbox has been checked == custom_fonts='on'
+	 * but if it is unchecked, the fonts and sizes have to been erased */
+	$users = db_fetch_assoc("SELECT user_id FROM settings_graphs WHERE name='custom_fonts' AND value=''");
+	if (sizeof($users)) {
+		foreach ($users as $user) {
+			db_install_execute("0.8.8", "UPDATE settings_graphs SET `value`='' WHERE  name IN ('title_size','title_font','legend_size','legend_font','axis_size','axis_font','unit_size','unit_font') AND `user_id`=" . $user);
+		}
+	}
 }

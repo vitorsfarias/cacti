@@ -2117,14 +2117,21 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
  */
 function rrdtool_set_font($type, $no_legend = "") {
 	global $config;
-	if (read_graph_config_option("custom_fonts") == CHECKED) {
+
+	/* first, fetch the font from user specific settings
+	 * if not available, use the global setting */
+	if (strlen(read_graph_config_option($type . "_font"))) {
 		$font = read_graph_config_option($type . "_font");
-		$size = read_graph_config_option($type . "_size");
 	}else{
 		$font = read_config_option($type . "_font");
-		$size = read_config_option($type . "_size");
 	}
-
+	if (strlen(read_graph_config_option($type . "_size"))) {
+		$font = read_graph_config_option($type . "_size");
+	}else{
+		$font = read_config_option($type . "_size");
+	}
+		
+	/* global font may be empty */
 	if(strlen($font)) {
 		/* do some simple checks */
 		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
@@ -2186,13 +2193,13 @@ function rrdtool_set_colortag($type, $colortag) {
 			break;
 
 		case COLORTAGS_UTG:
-			if (read_graph_config_option("custom_colortags") == CHECKED) {		# user tag "for all graphs" comes first
-				$colortag = read_graph_config_option("colortag_" . $type);
-				if (!empty($colortag)) {$tag = $colortag;}
-			}
+			$colortag = read_graph_config_option("colortag_" . $type);			# user tag "for all graphs" comes first
+			if (!empty($colortag)) {$tag = $colortag;}
+
 			if (empty($tag) && !empty($colortag)) {								# graph specific tag comes next
 				$tag = $colortag;
 			}
+			
 			if (empty($tag)) {													# global tag is least priority
 				$colortag = read_config_option("colortag_" . $type);
 				if (!empty($colortag)) {$tag = $colortag;}
@@ -2203,10 +2210,10 @@ function rrdtool_set_colortag($type, $colortag) {
 			if (empty($tag) && !empty($colortag)) {								# graph specific tag comes first
 				$tag = $colortag;
 			}
-			if (read_graph_config_option("custom_colortags") == CHECKED) {		# user tag "for all graphs" comes next
-				$colortag = read_graph_config_option("colortag_" . $type);
-				if (!empty($colortag)) {$tag = $colortag;}
-			}
+
+			$colortag = read_graph_config_option("colortag_" . $type);			# user tag "for all graphs" comes next
+			if (!empty($colortag)) {$tag = $colortag;}
+
 			if (empty($tag)) {													# global tag is least priority
 				$colortag = read_config_option("colortag_" . $type);
 				if (!empty($colortag)) {$tag = $colortag;}
