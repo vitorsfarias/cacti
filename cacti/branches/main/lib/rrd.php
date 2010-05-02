@@ -53,11 +53,15 @@ function rrd_init($output_to_term = TRUE) {
 
 function rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
-	pclose($rrdtool_pipe);
+	if (is_resource($rrdtool_pipe)) {
+		pclose($rrdtool_pipe);
+	}
 }
 
-function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = "", $logopt = "WEBLOG") {
+function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_pipe = "", $logopt = "WEBLOG") {
 	global $config;
+
+	static $last_command;
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -99,7 +103,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 		while (1) {
 			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") == false) {
-				cacti_log("ERROR: Detected RRDtool Crash on '$command_line', Restarting RRDtool");
+				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
 
 				/* close the invalid pipe */
 				rrd_close($rrdtool_pipe);
@@ -124,11 +128,14 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 		}
 	}
 
+	/* store the last command to provide rrdtool segfault diagnostics */
+	$last_command = $command_line;
+
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
 			return; break;
 		case RRDTOOL_OUTPUT_STDOUT:
-			if (is_resource($fp)) {
+			if (isset($fp) && is_resource($fp)) {
 				$line = "";
 				while (!feof($fp)) {
 					$line .= fgets($fp, 4096);
@@ -141,7 +148,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
-			if (is_resource($fp)) {
+			if (isset($fp) && is_resource($fp)) {
 				$output = fgets($fp, 1000000);
 
 				pclose($fp);
@@ -163,7 +170,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 
 			break;
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			if (is_resource($fp)) {
+			if (isset($fp) && is_resource($fp)) {
 				$line = "";
 				while (!feof($fp)) {
 					$line .= fgets($fp, 4096);
@@ -178,7 +185,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe) {
+function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = "") {
 	global $config;
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
@@ -293,7 +300,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe) {
 	}
 }
 
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe) {
+function rrdtool_function_update($update_cache_array, &$rrdtool_pipe = "") {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -485,7 +492,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "") {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
 	global $config;
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
@@ -1507,7 +1514,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $rrdtool_pipe = "") {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, &$rrdtool_pipe = "") {
 	global $config;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 

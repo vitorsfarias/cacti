@@ -302,7 +302,7 @@ function poller_update_poller_reindex_from_buffer($device_id, $data_query_id, &$
      results to RRDTool for processing
   @param $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @param $remainder - don't use LIMIT if TRUE */
-function process_poller_output($rrdtool_pipe, $remainder = FALSE) {
+function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	global $config;
 
 	include_once(CACTI_BASE_PATH . "/lib/rrd.php");
