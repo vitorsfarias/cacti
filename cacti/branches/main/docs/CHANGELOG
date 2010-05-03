@@ -69,6 +69,7 @@ Cacti CHANGELOG
 -bug: verify DS MAX value on data source create (courtesy Fireball)
 -bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
 -bug: Turn off process leveling if there are not enough poller items to substantiate it
+-bug: allow empty [upper|lower]_limit even without autoscaling
 -documentation: Remove sgml documentation.  See http://docs.cacti.net for Documentation
 -documentation: Explaining Cacti Special Data Sources used on CDEFs, lots of CDEF examples using Special data Sources
 -documentation: Documentation of specific rrdtool feature
