@@ -418,6 +418,9 @@ int main(int argc, char *argv[]) {
 		SPINE_LOG(("WARNING: MySQL is NOT Thread Safe!"));
 	}
 
+	/* test for asroot permissions for ICMP */
+	checkAsRoot();
+
 	/* initialize SNMP */
 	SPINE_LOG_DEBUG(("SPINE: Initializing Net-SNMP API"));
 	snmp_spine_init();
