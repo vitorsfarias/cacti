@@ -35,10 +35,12 @@ $(document).ready(function(){
 			method: "get",url: url_path + "lib/ajax/get_languages.php",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000); },
-			success: function(html){$('#menu_languages').DropDownMenu({timeout: 500,
+			success: function(html){$('#menu_languages').DropDownMenu({
+				timeout: 500,
 				name: 'dd_languages',
 				html: html,
 				title: '<?php print __('Languages');?>',
+				offsetY: 5,
 				rel: url_path
 			});}
 		});
@@ -53,13 +55,33 @@ $(document).ready(function(){
 			method: "get",url: url_path + "lib/ajax/get_timezones.php",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000);},
-			success: function(html){$('#menu_timezones').DropDownMenu({timeout: 500,
+			success: function(html){$('#menu_timezones').DropDownMenu({
+				timeout: 500,
 				name: 'dd_timezones',
 				html: html,
+				width: 150,
 				title: '<?php print __('Time zones');?>',
+				offsetY: 5,
 				rel: url_path
 			});}
 		});
 	}
+	);
+
+	// Ajax request for generic menus used in combination with a html_start_box
+	$('.html_start_box').click(
+		function () {
+			var menu_id = '#' + this.id;
+			var menu_title = this.name;
+			$.ajax({
+					method: "get",url: "lib/ajax/get_data_dd_menus.php?" + this.rel,
+					success: function(html){$(menu_id).DropDownMenu({
+						timeout: 500,
+						name: 'dd_menu_' + this.id,
+						title: menu_title,
+						html: html
+					});}
+			 });
+		}
 	);
 });
