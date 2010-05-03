@@ -30,7 +30,8 @@
    @param $cell_padding - the amount of cell padding to use inside of the box
    @param $align - the HTML alignment to use for the box (center, left, or right)
    @param $add_text - the url to use when the user clicks 'Add' in the upper-right
-     corner of the box ("" for no 'Add' link)
+     corner of the box ("" for no 'Add' link) or use "menu::menu_title:menu_id:menu_class:ajax_parameters"
+     to show a drop down menu instead
    @param $collapsing - tells wether or not the table collapses
    @param $table_id - the table id to make the table addressable by jQuery's table DND plugin */
 function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
@@ -98,10 +99,20 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 										</td>
 									</tr>
 								</table>
-							</td><?php if ($add_text != "") {?>
+							</td>
+							<?php
+							if ($add_text != "") {
+								if (strpos($add_text, "menu::") !== false) {
+										list($menu_title, $menu_id, $menu_class, $ajax_parameters) = explode(":", str_replace("menu::", "", $add_text));?>
+							<td class="textHeaderDark w1 right">
+								<a href="#" name="<?php print $menu_title;?>" id="<?php print $menu_id;?>" class="<?php print $menu_class;?>" rel="<?php print $ajax_parameters;?>"><img src="./images/cog.png" id="cog" width="16" height="16"></a>
+							</td><?php
+								}else {	?>
 							<td class="textHeaderDark w1 right">
 								<input type='button' onClick='<?php print $function_name;?>' style='font-size:10px;' value='Add'>
-							</td><?php }?>
+							</td><?php
+								}
+							}?>
 						</tr>
 					</table>
 				</td>
