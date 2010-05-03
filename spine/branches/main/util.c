@@ -1255,6 +1255,5 @@ void checkAsRoot() {
 		seteuid(getuid());
 	}
 	#endif
-	set.icmp_avail = TRUE;
 	#endif
 }

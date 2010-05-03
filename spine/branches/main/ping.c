@@ -58,7 +58,9 @@ int ping_device(device_t *device, ping_t *ping) {
 		(device->availability_method == AVAIL_SNMP_OR_PING)) {
 
 		if (device->ping_method == PING_ICMP) {
-			device->availability_method = PING_UDP;
+			if (set.icmp_avail == FALSE) {
+				device->ping_method = PING_UDP;
+			}
 		}
 
 		if (!strstr(device->hostname, "localhost")) {
@@ -258,7 +260,7 @@ int ping_icmp(device_t *device, ping_t *ping) {
 	while ( TRUE ) {
 		#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
 		thread_mutex_lock(LOCK_SETEUID);
-		seteuid(getuid());
+		seteuid(0);
 		#endif
 
 		if ((icmp_socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1) {
