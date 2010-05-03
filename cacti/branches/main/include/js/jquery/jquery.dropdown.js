@@ -25,18 +25,18 @@
  $.fn.DropDownMenu = function(options) {
 
 	var defaults = {
-		title: '',
-		subtitle: '',
-		name: 'myName',
-		maxHeight: 300,
-		width: 150,
-		timeout: 500,
-		auto_close: 10000,
-		html: '<h6>empty</h6>',
-		offsetX: 0,
-		offsetY: 15,
-		simultaneous: false,
-		rel: ''
+		title: 			'',
+		subtitle: 		'',
+		name: 			'myName',
+		maxHeight: 		300,
+		width: 			'auto',
+		timeout: 		500,
+		auto_close: 	10000,
+		html: 			'<h6>empty</h6>',
+		offsetX: 		0,
+		offsetY: 		0,
+		simultaneous: 	false,
+		rel: 			''
 	};
 
 	var timerref 		= null;
@@ -62,12 +62,12 @@
 
 	return this.each(function() {
 		obj = $(this);
-		newMenu = _init_menu(obj.offset());
+		newMenu = _init_menu(obj);
 		_open_menu(newMenu);
 	});
 
 
-	function _init_menu(initiator_position){
+	function _init_menu(initiator){
 
 		// integrate a base frame
 		$("<div id='" + options.name + "' style='display: none;' class='cacti_dd_menu'>"
@@ -86,10 +86,7 @@
 		menu_subhead 	= $('#' + options.name + '_subtitle');
 		menu_html 		= $('#' + options.name + '_html');
 
-		// position menu container
-		menu.css({	'left' 			: initiator_position.left + options.offsetX + 'px',	// x-position in relation to the initiator
-					'top' 			: initiator_position.top + options.offsetY + 'px'		// y-position in relation to the initiator
-				});
+
 
 		// "_html" holds the raw data
 		menu_html.append(options.html);
@@ -135,12 +132,31 @@
 		//reduce height to a minimum for best fit
 		menuHeight = (menu.height() > options.maxHeight) ? options.maxHeight : menu.height();
 
-		//IE5/6 does not support css option "min-width", so a workaround is required
-		if(menu.width() != options.width) {
-			menu.css({'min-width' : options.width + 'px'});
+		//set the width to a fixed value
+		if(!isNaN(parseInt(options.width))) {
+			menu.css({	'min-width' : options.width + 'px',
+						'max-width' : options.width + 'px'
+					});
 			menu.width(options.width);
+
+		}else {
+			// use real width plus 20px
+			var width = menu.outerWidth(true)+20;
+			menu.css({	'min-width' : width + 'px',
+						'max-width' : width + 'px'
+			});
+			menu.width(width);
 		}
 
+		// default position of the menu container
+		menu.css({	'left' 			: initiator.offset().left + options.offsetX + 'px',	// x-position in relation to the initiator
+					'top' 			: initiator.offset().top + initiator.height() + options.offsetY + 'px'	// y-position in relation to the initiator
+				});
+
+		//change the orientation from right to left if width exceeds the windows size
+		if((parseInt(menu.css('left')) + menu.outerWidth(true)) > $(window).width()) {
+			menu.css({'left' : (initiator.offset().left + initiator.width() - menu.outerWidth(true)) + 'px'});
+		}
 
 		menu.css({'height':0});
 		menu.bind('mouseover', _cancel_timer);
@@ -169,7 +185,6 @@
 		menu_back.click( function() { _toggle_subMenu( parentID); });
 
 		menu_content.empty().append(content.html());
-
 		menu_content.find("h6:has(div)").each(function() {
 			var subMenu = $(this)
 			var subsubMenuID = subMenu.attr('id');
@@ -218,6 +233,7 @@
 				obj.animate({height: menuHeight}, 600);
 
 				//setup contentHeight;
+				menu_content.height(menuHeight - menu_head.height() - menu_back.height() - menu_subhead.height()-4);
 				contentHeight = $('#' + options.name + '_content').height();
 				$('#' + options.name + '_content').css({'overflow-y':'auto'});
 
