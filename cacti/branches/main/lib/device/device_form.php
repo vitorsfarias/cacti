@@ -375,14 +375,18 @@ function api_device_form_actions() {
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
 	/* add a list of tree names to the actions dropdown */
-	$device_actions = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
+	if (isset($device_actions)) {
+		$device_actions = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
+	}else{
+		$device_actions = api_tree_add_tree_names_to_actions_array();
+	}
 
 	$device_actions[ACTION_NONE] = __("None");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_actions'>\n";
 	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
 
-	if (sizeof($device_array)) {
+	if (isset($device_array) && sizeof($device_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
 			print "	<tr>
 						<td class='textArea'>
@@ -541,7 +545,7 @@ function api_device_form_actions() {
 			</tr>\n";
 	}
 
-	if (!sizeof($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
+	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button_alt();
 	}else{
 		form_yesno_button_alt(serialize($device_array), get_request_var_post("drp_action"));
