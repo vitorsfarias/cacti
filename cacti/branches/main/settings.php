@@ -122,7 +122,7 @@ default:
 	# the id tag is required for our js code!
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 
-	form_save_button_alt("url!index.php", "save", "save");
+	form_save_button("", "save");
 
 	include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
