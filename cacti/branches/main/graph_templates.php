@@ -520,7 +520,7 @@ function graph_template_display_general($graph_template, $header_label) {
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 	#	html_end_box(false);
 
-	form_save_button_alt("url!graph_templates.php");
+	form_save_button("graph_templates.php", "return");
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
@@ -605,7 +605,7 @@ function graph_template_display_items() {
 	print "</table></td></tr>";
 	html_end_box(true);
 
-	form_save_button_alt("url!graph_templates.php");
+	form_save_button("graph_templates.php", "return");
 
 	?>
 <script type="text/javascript">

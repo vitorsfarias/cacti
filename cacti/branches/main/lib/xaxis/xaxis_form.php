@@ -43,11 +43,7 @@ function xaxis_form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: xaxis_presets.php?action=edit&id=" . (empty($xaxis_id) ? $_POST["id"] : $xaxis_id));
-		}else{
-			header("Location: xaxis_presets.php");
-		}
+		header("Location: xaxis_presets.php?action=edit&id=" . (empty($xaxis_id) ? $_POST["id"] : $xaxis_id));
 		exit;
 	}
 
@@ -352,7 +348,7 @@ function xaxis_edit() {
 
 	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
 	form_hidden_box("save_component_xaxis", "1", "");
-	form_save_button_alt("path!xaxis_presets.php");
+	form_save_button("xaxis_presets.php", "return");
 }
 
 

@@ -1013,7 +1013,7 @@ function device_template_display_general($device_template, $header_label) {
 	</script>
 	<?php
 
-	form_save_button_alt("url!device_templates.php");
+	form_save_button("device_templates.php", "return");
 }
 
 

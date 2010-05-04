@@ -109,11 +109,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
-		}else{
-			header("Location: data_input.php");
-		}
+		header("Location: data_input.php?action=edit&id=" . (empty($data_input_id) ? $_POST["id"] : $data_input_id));
 		exit;
 	}elseif (isset($_POST["save_component_field"])) {
 		/* ================= input validation ================= */
@@ -499,7 +495,7 @@ function data_edit() {
 		html_end_box();
 	}
 
-	form_save_button_alt("url!data_input.php");
+	form_save_button("data_input.php", "return");
 }
 
 function data() {
