@@ -28,14 +28,19 @@ require_once(dirname(__FILE__) . "/../../lib/functions.php");
 if (!isset($_REQUEST['cacti_dd_menu'])) {
 	$_REQUEST['cacti_dd_menu'] = '';
 }
-print_r($_GET);
+
 switch ($_REQUEST['cacti_dd_menu']) {
 	case 'graph_options':
 
-		$output	= "<h6><a id='changeGraphState' onClick='changeGraphState()' href='#'>Unlock/Lock</a></h6>"
-				. "<h6><a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $_GET["graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>"
-				. "<h6><a href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>"
-				. "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
+		$output	= "<h6><a id='changeGraphState' onClick='changeGraphState()' href='#'>Unlock/Lock</a></h6>";
+		$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $_GET["graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
+		
+		if (!empty($_GET["graph_template_id"])) {
+		    $output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
+		}
+		if (!empty($_GET["device_id"])) {
+		    $output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
+		}
 		break;
 
 	default:

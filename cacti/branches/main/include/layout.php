@@ -79,6 +79,7 @@ $(document).ready(function(){
 						timeout: 500,
 						name: 'dd_menu_' + this.id,
 						title: menu_title,
+						textAlign: 'right',
 						html: html
 					});}
 			 });

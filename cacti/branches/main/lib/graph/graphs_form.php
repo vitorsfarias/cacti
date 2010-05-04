@@ -856,6 +856,34 @@ function graph_edit() {
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
 		}
+                ?>
+                <script type="text/javascript">
+                <!--
+                var disabled = true;
+
+                $().ready(function() {
+                        $("input").attr("disabled","disabled");
+                        $("select").attr("disabled","disabled");
+                        $("#cancel").removeAttr("disabled");
+                });
+
+                function changeGraphState() {
+                        if (disabled) {
+                                $("input").removeAttr("disabled");
+                                $("select").removeAttr("disabled");
+                                disabled = false;
+                                rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
+                        }else{
+                                $("input").attr("disabled","disabled");
+                                $("select").attr("disabled","disabled");
+                                $("#cancel").removeAttr("disabled");
+                                disabled = true;
+                        }
+                }
+                //-->
+                </script>
+		<?php
+
 	}else{
 		$graphs = array();
 		$graphs_template = array();
@@ -872,55 +900,17 @@ function graph_edit() {
 		}
 	}
 
-	$tip_text  = "<tr><td align=\\'right\\'><a class=\\'popup_item\\' id=\\'changeGraphState\\' onClick=\\'changeGraphState()\\' href=\\'#\\'>Unlock/Lock</a></td></tr>";
-	$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset($_GET["id"]) ? get_request_var("id") : 0) . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "\\'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></td></tr>";
+	$dd_menu_options = 'cacti_dd_menu=graph_options&graph_id=' . (isset($_GET["id"]) ? get_request_var("id") : 0);
+
 	if (!empty($graphs["graph_template_id"])) {
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0")) . "\\'>" . __("Edit Template") . "</a></td></tr>";
+		$dd_menu_options .= '&graph_template_id=' . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0");
 	}
 	if (!empty($_GET["device_id"]) || !empty($device_id)) {
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('devices.php?action=edit&id=' . (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id)) . "\\'>" . __("Edit Host") . "</a></td></tr>";
-	}
-
-	if (!empty($_GET["id"])) {
-		?>
-		<script type="text/javascript">
-		<!--
-		var disabled = true;
-
-		$().ready(function() {
-			$("input").attr("disabled","disabled");
-			$("select").attr("disabled","disabled");
-			$("#cancel").removeAttr("disabled");
-		});
-
-		function changeGraphState() {
-			if (disabled) {
-				$("input").removeAttr("disabled");
-				$("select").removeAttr("disabled");
-				disabled = false;
-				rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
-			}else{
-				$("input").attr("disabled","disabled");
-				$("select").attr("disabled","disabled");
-				$("#cancel").removeAttr("disabled");
-				disabled = true;
-			}
-		}
-		//-->
-		</script>
-		<table width="100%" align="center">
-			<tr>
-				<td class="textInfo" colspan="2" valign="top">
-					<?php print get_graph_title(get_request_var("id"));?>
-				</td>
-				<td style="white-space:nowrap;" align="right" width="1"><a id='tooltip' class='popup_anchor' href='#' onMouseOver="Tip('<?php print $tip_text;?>', BGCOLOR, '#EEEEEE', FIX, ['tooltip', -45, 0], STICKY, true, SHADOW, true, CLICKCLOSE, true, FADEOUT, 400, TEXTALIGN, 'right', BORDERCOLOR, '#F5F5F5')" onMouseOut="UnTip()">Graph Options</a></td>
-			</tr>
-		</table>
-		<?php
+		$dd_menu_options .= '&device_id=' . (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id);
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_edit'>\n";
-	html_start_box("<strong>" . __("Graph Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Graph Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
 	$header_items = array(__("Field"), __("Value"));
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
