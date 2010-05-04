@@ -157,11 +157,7 @@ function api_device_form_save() {
 				(isset($_POST["template_enabled"]) ? get_request_var_post("template_enabled") : ""));
 		}
 
-		if ((is_error_message()) || ($_POST["device_template_id"] != $_POST["hidden_device_template_id"]) || $reindex_performed) {
-			header("Location: devices.php?action=edit&id=" . (empty($device_id) ? $_POST["id"] : $device_id));
-		}else{
-			header("Location: devices.php");
-		}
+		header("Location: devices.php?action=edit&id=" . (empty($device_id) ? $_POST["id"] : $device_id));
 		exit;
 	}
 }
@@ -1427,7 +1423,7 @@ function device_display_general($device, $device_text) {
 		html_end_box();
 	}
 
-	form_save_button_alt();
+	form_save_button("devices.php", "return");
 }
 
 function device() {
