@@ -36,6 +36,7 @@
 		offsetX: 		0,
 		offsetY: 		0,
 		simultaneous: 	false,
+		textAlign:		'left',
 		rel: 			''
 	};
 
@@ -141,7 +142,7 @@
 
 		}else {
 			// use real width plus 20px
-			var width = menu.outerWidth(true)+20;
+			var width = menu.outerWidth(true)*1.1;
 			menu.css({	'min-width' : width + 'px',
 						'max-width' : width + 'px'
 			});
@@ -158,7 +159,7 @@
 			menu.css({'left' : (initiator.offset().left + initiator.width() - menu.outerWidth(true)) + 'px'});
 		}
 
-		menu.css({'height':0});
+		menu.css({'height':0, 'text-align':options.textAlign});
 		menu.bind('mouseover', _cancel_timer);
 		menu.bind('mouseout', _set_timer);
 		return menu;
