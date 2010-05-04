@@ -2963,7 +2963,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source=TRUE) {
 			if ($show_source == true) {
 				print read_config_option("path_rrdtool") . " tune " . $line . $nl;
 			}else{
-				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT, array(), "POLLER");
+				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
 			}
 		}
 	}
@@ -2975,7 +2975,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source=TRUE) {
 				print read_config_option("path_rrdtool") . " resize " . $line . $nl;
 				print __("rename %s to %s", dirname($rrd_file) . "/resize.rrd", $rrd_file) . $nl;
 			}else{
-				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT, array(), "POLLER");
+				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
 				rename(dirname($rrd_file) . "/resize.rrd", $rrd_file);
 			}
 		}
