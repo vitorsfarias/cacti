@@ -112,11 +112,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: vdef.php?action=edit&id=" . (empty($vdef_id) ? $_POST["id"] : $vdef_id));
-		}else{
-			header("Location: vdef.php");
-		}
+		header("Location: vdef.php?action=edit&id=" . (empty($vdef_id) ? $_POST["id"] : $vdef_id));
 	}elseif (isset($_POST["save_component_item"])) {
 		$sequence = get_sequence($_POST["id"], "sequence", "vdef_items", "vdef_id=" . $_POST["vdef_id"]);
 
@@ -464,7 +460,7 @@ function vdef_edit() {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 	}
-	form_save_button_alt("path!vdef.php");
+	form_save_button("vdef.php", "return");
 ?>
 <script type="text/javascript">
 	$('#vdef_item').tableDnD({

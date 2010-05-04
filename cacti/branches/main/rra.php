@@ -202,11 +202,7 @@ function form_save() {
 			}
 		}
 
-		if (is_error_message()) {
-			header("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
-		}else{
-			header("Location: rra.php");
-		}
+		header("Location: rra.php?action=edit&id=" . (empty($rra_id) ? $_POST["id"] : $rra_id));
 		exit;
 	}
 }
@@ -244,7 +240,7 @@ function rra_edit() {
 	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
-	form_save_button_alt();
+	form_save_button("rra.php", "return");
 }
 
 function rra() {

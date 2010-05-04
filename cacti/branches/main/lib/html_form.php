@@ -868,7 +868,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
    @param string $on_change - specify a javascript onchange action */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0, $class = "", $on_change = "") {
 	global $config;
-	
+
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -891,7 +891,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
 			$extra_data = "";
 	} else {
-		
+
 		/* do some simple checks */
 		if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 			read_config_option("rrdtool_version") == "rrd-1.2.x") { # rrdtool 1.0 and 1.2 use font files
@@ -918,7 +918,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 				 * we can't perform any check */
 				$extra_data = "<span style='color:green'><br>[" . "NO FONT VERIFICATION POSSIBLE" . "]</span>";
 			}
-		}		
+		}
 	}
 
 	if (strlen($class)) {
@@ -978,29 +978,56 @@ function form_confirm_buttons($action_url, $cancel_url) {
      'save' or 'create'. otherwise this field should be properly auto-detected
    @param string $key_field  - required to dinstinguish between SAVE and CREATE */
 function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
-	global $config;
-	if (empty($force_type)) {
+	$calt = "Cancel";
+
+	if (empty($force_type) || $force_type == "return") {
 		if (empty($_GET[$key_field])) {
-			$img = "button_create.gif";
 			$alt = "Create";
 		}else{
-			$img = "button_save.gif";
 			$alt = "Save";
+
+			if (strlen($force_type)) {
+				$calt   = "Return";
+			}else{
+				$calt   = "Cancel";
+			}
 		}
+
 	}elseif ($force_type == "save") {
-		$img = "button_save.gif";
 		$alt = "Save";
 	}elseif ($force_type == "create") {
-		$img = "button_create.gif";
 		$alt = "Create";
+	}elseif ($force_type == "import") {
+		$alt = "Import";
+	}elseif ($force_type == "export") {
+		$alt = "Export";
 	}
+
+	if ($force_type != "import" && $force_type != "export" && $force_type != "save") {
+		$cancel_action = "<input type='button' onClick='returnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
+	}else{
+		$cancel_action = "";
+	}
+
 	?>
-	<table class='saveBox'>
+
+	<script type="text/javascript">
+	<!--
+	function returnTo(location) {
+		if (location != "") {
+			document.location = location;
+		}else{
+			document.history.back();
+		}
+	}
+	-->
+	</script>
+	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
-			<td>
+			<td bgcolor="#f5f5f5" align="right">
 				<input type='hidden' name='action' value='save'>
-				<a href='<?php print $cancel_url;?>'><img src='<?php echo CACTI_URL_PATH; ?>images/button_cancel2.gif' alt='<?php print __("Cancel");?>' align='middle' border='0'></a>
-				<input type='image' src='<?php echo CACTI_URL_PATH; ?>images/<?php print $img;?>' alt='<?php print $alt;?>' align='middle'>
+				<?php print $cancel_action;?>
+				<input type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>

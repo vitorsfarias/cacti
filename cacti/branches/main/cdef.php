@@ -113,11 +113,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: cdef.php?action=edit&id=" . (empty($cdef_id) ? $_POST["id"] : $cdef_id));
-		}else{
-			header("Location: cdef.php");
-		}
+		header("Location: cdef.php?action=edit&id=" . (empty($cdef_id) ? $_POST["id"] : $cdef_id));
 		exit;
 	}elseif (isset($_POST["save_component_item"])) {
 		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
@@ -456,7 +452,7 @@ function cdef_edit() {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 	}
-	form_save_button_alt("path!cdef.php");
+	form_save_button("cdef.php", "return");
 ?>
 <script type="text/javascript">
 	$('#cdef_item').tableDnD({
