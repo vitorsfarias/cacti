@@ -34,7 +34,7 @@ switch ($_REQUEST['cacti_dd_menu']) {
 
 		$output	= "<h6><a id='changeGraphState' onClick='changeGraphState()' href='#'>Unlock/Lock</a></h6>";
 		$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $_GET["graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
-		
+
 		if (!empty($_GET["graph_template_id"])) {
 		    $output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
 		}
@@ -42,6 +42,23 @@ switch ($_REQUEST['cacti_dd_menu']) {
 		    $output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
 		}
 		break;
+
+	case 'data_source_options':
+
+		$output = "<h6><a id='changeDSState' onClick='changeDSState()' href='#'>Unlock/Lock</a></h6>";
+		$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=data_source_toggle_status&id=' . $_GET["data_source_id"] . '&newstate=' . $_GET["newstate"] ) . "'>" . (($_GET["newstate"]) ? __("Disable") : __("Enable")) . "</a></h6>";
+		$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=data_source_edit&id=' . $_GET["data_source_id"] . '&debug=' . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
+		$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=data_source_edit&id=' . $_GET["data_source_id"] . '&info=' . (isset($_SESSION["ds_info_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_info_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("RRD Info Mode") . "</a></h6>";
+
+		if (!empty($_GET["data_template_id"])) {
+			$output .= "<h6><a href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . $_GET["data_template_id"]) . "'>" . __("Edit Data Source Template") . "</a></h6>";
+		}
+		if (!empty($_GET["device_id"])) {
+			$output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"]) . "'>" . __("Edit Host") . "</a></h6>";
+		}
+
+		break;
+
 
 	default:
 		$output = "<h6>Invalid</h6>";
