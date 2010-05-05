@@ -219,7 +219,7 @@
 
 	function _close_menu(){
 		menu = $('#' + options.name);
-		menu.slideUp();
+		menu.slideUp(menuHeight*3);
 		menu.queue(function () {
 			    menu.remove();
 			    menu.dequeue();
@@ -231,7 +231,7 @@
 		var wait = setInterval(function() {
 		    if( !oldMenus.is(":animated") ) {
 				clearInterval(wait);
-				obj.animate({height: menuHeight}, 600);
+				obj.animate({height: menuHeight}, menuHeight*3);
 
 				//setup contentHeight;
 				menu_content.height(menuHeight - menu_head.height() - menu_back.height() - menu_subhead.height()-4);
