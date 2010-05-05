@@ -649,6 +649,7 @@ function data_source_edit() {
 		if (empty($data_local["data_template_id"])) {
 			$use_data_template = false;
 		}
+
 	}else{
 		$header_label = __("[new]");
 
@@ -674,20 +675,6 @@ function data_source_edit() {
 	}
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
-	$tip_text = "";
-	if (isset($data)) {
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' id=\\'changeDSState\\' onClick=\\'changeDSState()\\' href=\\'#\\'>Unlock/Lock</a></td></tr>";
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('data_sources.php?action=data_source_toggle_status&id=' . (isset($_GET["id"]) ? $_GET["id"] : 0) . '&newstate=' . (($data["active"] == CHECKED) ? "0" : "1")) . "\\'>" . (($data["active"] == CHECKED) ? __("Disable") : __("Enable")) . "</a></td></tr>";
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('data_sources.php?action=data_source_edit&id=' . (isset($_GET["id"]) ? $_GET["id"] : 0) . '&debug=' . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1")) . "\\'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></td></tr>";
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('data_sources.php?action=data_source_edit&id=' . (isset($_GET["id"]) ? $_GET["id"] : 0) . '&info=' . (isset($_SESSION["ds_info_mode"]) ? "0" : "1")) . "\\'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_info_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("RRD Info Mode") . "</a><td></tr>";
-	}
-	if (!empty($data_template["id"])) {
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template["id"]) ? $data_template["id"] : "0")) . "\\'>" . __("Edit Data Source Template") . "<br></a></td></td>";
-	}
-	if (!empty($_GET["device_id"]) || !empty($data_local["device_id"])) {
-		$tip_text .= "<tr><td align=\\'right\\'><a class=\\'popup_item\\' href=\\'" . htmlspecialchars('devices.php?action=edit&id=' . (isset($_GET["device_id"]) ? $_GET["device_id"] : $data_local["device_id"])) . "\\'>" . __("Edit Host") . "</a></td></tr>";
-	}
 
 	if (!empty($_GET["id"])) {
 		?>
@@ -715,19 +702,23 @@ function data_source_edit() {
 		}
 		-->
 		</script>
-		<table width="100%" align="center">
-			<tr>
-				<td class="textInfo" colspan="2" valign="top">
-					<?php print get_data_source_title(get_request_var("id"));?>
-				</td>
-				<td style="white-space:nowrap;" align="right" class="w1"><a id='tooltip' class='popup_anchor' href='#' onMouseOver="Tip('<?php print $tip_text;?>', BGCOLOR, '#EEEEEE', FIX, ['tooltip', -20, 0], STICKY, true, SHADOW, true, CLICKCLOSE, true, FADEOUT, 400, TEXTALIGN, 'right', BORDERCOLOR, '#F5F5F5')" onMouseOut="UnTip()">Data Source Options</a></td>
-			</tr>
-		</table>
 		<?php
 	}
 
+	$dd_menu_options = "";
+	if (isset($data)) {
+		$dd_menu_options = 'cacti_dd_menu=data_source_options&data_source_id=' . (isset($_GET["id"]) ? get_request_var("id") : 0);
+		$dd_menu_options .= '&newstate=' . (($data["active"] == CHECKED) ? "0" : "1");
+	}
+	if (!empty($data_template["id"])) {
+		$dd_menu_options .= '&data_template_id=' . (isset($data_template["id"]) ? $data_template["id"] : "0");
+	}
+	if (!empty($_GET["device_id"]) || !empty($data_local["device_id"])) {
+		$dd_menu_options .= '&device_id=' . (isset($_GET["device_id"]) ? $_GET["device_id"] : $data_local["device_id"]);
+	}
+
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_source_edit'>\n";
-	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (isset($_GET["id"]) ? "menu::" . __("Data Source Options") . ":data_source_options:html_start_box:" . $dd_menu_options : ""),"");
 	$header_items = array(__("Field"), __("Value"));
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
