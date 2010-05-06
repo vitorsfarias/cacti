@@ -25,11 +25,12 @@ $no_http_headers = true;
 require(dirname(__FILE__) . "/../../include/global.php");
 require_once(dirname(__FILE__) . "/../../lib/functions.php");
 
-if (!isset($_REQUEST['cacti_dd_menu'])) {
-	$_REQUEST['cacti_dd_menu'] = '';
+if (!isset($_GET['cacti_dd_menu'])) {
+	$_GET['cacti_dd_menu'] = '';
 }
 
-switch ($_REQUEST['cacti_dd_menu']) {
+switch (get_request_var('cacti_dd_menu')) {
+
 	case 'graph_options':
 
 		$output	= "<h6><a id='changeGraphState' onClick='changeGraphState()' href='#'>Unlock/Lock</a></h6>";
@@ -56,13 +57,12 @@ switch ($_REQUEST['cacti_dd_menu']) {
 		if (!empty($_GET["device_id"])) {
 			$output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"]) . "'>" . __("Edit Host") . "</a></h6>";
 		}
-
 		break;
-
 
 	default:
-		$output = "<h6>Invalid</h6>";
+		$output = "";
 		break;
 }
-
 print $output;
+
+api_plugin_hook_function('start_box_menu', $_GET['cacti_dd_menu']);
