@@ -30,9 +30,8 @@ $(document).ready(function(){
 	// Ajax request for language menu
 	$('#menu_languages').click(
 	function () {
-		var url_path = this.rel;
 		$.ajax({
-			method: "get",url: url_path + "lib/ajax/get_languages.php",
+			method: "get",url: "<?php print CACTI_URL_PATH;?>lib/ajax/get_languages.php",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000); },
 			success: function(html){$('#menu_languages').DropDownMenu({
@@ -40,8 +39,7 @@ $(document).ready(function(){
 				name: 'dd_languages',
 				html: html,
 				title: '<?php print __('Languages');?>',
-				offsetY: 5,
-				rel: url_path
+				offsetY: 5
 			});}
 		});
 	}
@@ -50,9 +48,8 @@ $(document).ready(function(){
 	// Ajax request for timezone menu
 	$('#menu_timezones').click(
 	function () {
-		var url_path = this.rel;
 		$.ajax({
-			method: "get",url: url_path + "lib/ajax/get_timezones.php",
+			method: "get",url: "<?php print CACTI_URL_PATH;?>lib/ajax/get_timezones.php",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000);},
 			success: function(html){$('#menu_timezones').DropDownMenu({
@@ -62,7 +59,7 @@ $(document).ready(function(){
 				width: 150,
 				title: '<?php print __('Time zones');?>',
 				offsetY: 5,
-				rel: url_path
+				rel: '<?php print CACTI_URL_PATH;?>'
 			});}
 		});
 	}
@@ -74,8 +71,9 @@ $(document).ready(function(){
 			var menu_id = '#' + this.id;
 			var menu_title = this.name;
 			$.ajax({
-					method: "get",url: "lib/ajax/get_data_dd_menus.php?" + this.rel,
-					success: function(html){$(menu_id).DropDownMenu({
+					method: "get",url: "<?php print CACTI_URL_PATH; ?>lib/ajax/get_data_dd_menus.php?" + this.rel,
+					success: function(html){
+						$(menu_id).DropDownMenu({
 						timeout: 500,
 						name: 'dd_menu_' + this.id,
 						title: menu_title,
