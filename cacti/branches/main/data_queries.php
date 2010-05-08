@@ -263,7 +263,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$dq_list = ""; $i = 0; $dq_array = array();
+	$dq_list = ""; $dq_array = array();
 
 	/* loop through each of the data queries and process them */
 	while (list($var,$val) = each($_POST)) {
@@ -272,10 +272,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= "<li>" . db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'") . "<br>";
-			$dq_array[$i] = $matches[1];
-
-			$i++;
+			$dq_list .= "<li>" . db_fetch_cell("SELECT snmp_query.name FROM snmp_query WHERE id='" . $matches[1] . "'") . "</li>";
+			$dq_array[] = $matches[1];
 		}
 	}
 
@@ -298,10 +296,12 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following data queries?") . "</p>
+						<p>" . __("When you click \"Continue\", the following Data Queries will be deleted.") . "</p>
 						<p><ul>$dq_list</ul></p>
 					</td>
 				</tr>\n";
+
+			$title = __("Delete Data Querie(s)");
 		}
 	} else {
 		print "	<tr>
@@ -312,9 +312,9 @@ function form_actions() {
 	}
 
 	if (!sizeof($dq_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($dq_array), get_request_var_post("drp_action"));
+		from_continue(serialize($dq_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

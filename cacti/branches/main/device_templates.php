@@ -213,7 +213,7 @@ function device_template_form_save_gt() {
 					</tr>\n
 					";
 
-			form_yesno_button_alt2(serialize($device_array), "save_gt");
+			from_continue2(serialize($device_array), "save_gt");
 			html_end_box();
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 			exit;
@@ -358,7 +358,7 @@ function device_template_form_save_dq() {
 					</tr>\n
 					";
 
-			form_yesno_button_alt2(serialize($device_array), "save_dq");
+			from_continue2(serialize($device_array), "save_dq");
 			html_end_box();
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 			exit;
@@ -457,7 +457,7 @@ function device_template_form_actions() {
 	}
 
 	/* setup some variables */
-	$device_list = ""; $i = 0; $device_array = array();
+	$device_list = ""; $device_array = array();
 
 	/* loop through each of the device templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -466,10 +466,8 @@ function device_template_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$device_list .= "<li>" . db_fetch_cell("select name from device_template where id=" . $matches[1]) . "<br>";
-			$device_array[$i] = $matches[1];
-
-			$i++;
+			$device_list .= "<li>" . db_fetch_cell("select name from device_template where id=" . $matches[1]) . "</li>";
+			$device_array[] = $matches[1];
 		}
 	}
 
@@ -489,20 +487,22 @@ function device_template_form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following Device Templates? All devices currently attached this these Device Templates will lose their template assocation.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click \"Continue\", the following Device Template(s) will be deleted.  All devices currently attached this these Device Template(s) will lose their template assocation.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Device Template(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following Device Templates will be duplicated. You can optionally change the title format for the new Device Templates.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click \"Continue\", the following Device Template(s) will be duplicated. You can optionally change the title format for the new Device Template(s).") . "</p>
+						<p><ul>$device_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Duplicate Device Template(s)");
 		}
 	} else {
 		print "	<tr>
@@ -513,9 +513,9 @@ function device_template_form_actions() {
 	}
 
 	if (!sizeof($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($device_array), get_request_var_post("drp_action"));
+		from_continue(serialize($device_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

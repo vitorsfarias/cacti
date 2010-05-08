@@ -145,6 +145,14 @@ function form_actions() {
 
 				db_execute("update poller set disabled='on' where " . array_to_sql_or($selected_items, "id"));
 			}
+		}elseif (get_request_var_post("drp_action") === "3") { /* enable */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				db_execute("update poller set disabled='' where " . array_to_sql_or($selected_items, "id"));
+			}
 		}
 
 		header("Location: pollers.php");
@@ -152,7 +160,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$poller_list = ""; $i = 0; $poller_array = array();
+	$poller_list = ""; $poller_array = array();
 
 	/* loop through each of the pollers selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -161,10 +169,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$poller_list .= "<li>" . db_fetch_cell("select description from poller where id=" . $matches[1]) . "<br>";
-			$poller_array[$i] = $matches[1];
-
-			$i++;
+			$poller_list .= "<li>" . db_fetch_cell("select description from poller where id=" . $matches[1]) . "</li>";
+			$poller_array[] = $matches[1];
 		}
 	}
 
@@ -184,19 +190,30 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>". __("Are you sure you want to delete the following pollers? All devices currently attached this these pollers will be reassigned to the default poller.") . "</p>
+						<p>". __("When you click \"Continue\", the following Poller(s) will be deleted.  All devices currently attached this these Poller(s) will be reassigned to the default poller.") . "</p>
 						<p><ul>$poller_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Poller(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* disable */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to disable the following pollers? All devices currently attached to these pollers will no longer have their graphs updated.") . "</p>
+						<p>" . __("When you click \"Continue\", the following Poller(s) will be disabled.  All Devices currently attached to these Poller(s) will no longer have their Graphs updated.") . "</p>
 						<p><ul>$poller_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Disable Poller(s)");
+		}elseif (get_request_var_post("drp_action") === "3") { /* enable */
+			print "	<tr>
+					<td class='textArea'>
+						<p>" . __("When you click \"Continue\", the following Poller(s) will be enabled.  All Devices currently attached to these Poller(s) will resume updating their Graphs.") . "</p>
+						<p><ul>$poller_list</ul></p>
+					</td>
+				</tr>\n";
+
+			$title = __("Enable Poller(s)");
 		}
 	} else {
 		print "	<tr>
@@ -207,9 +224,9 @@ function form_actions() {
 	}
 
 	if (!sizeof($poller_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($poller_array), get_request_var_post("drp_action"));
+		from_continue(serialize($poller_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

@@ -198,7 +198,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$vdef_list = ""; $i = 0;
+	$vdef_list = "";
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -207,10 +207,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$vdef_list .= "<li>" . db_fetch_cell("select name from vdef where id=" . $matches[1]) . "<br>";
-			$vdef_array[$i] = $matches[1];
-
-			$i++;
+			$vdef_list .= "<li>" . db_fetch_cell("select name from vdef where id=" . $matches[1]) . "</li>";
+			$vdef_array[] = $matches[1];
 		}
 	}
 
@@ -230,7 +228,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("Are you sure you want to delete the following VDEFs?") . "</p>
+						<p>" . __("When you click \"Continue\", the following VDEF(s) will be deleted.") . "</p>
 						<p><ul>$vdef_list</ul></p>
 					</td>
 				</tr>\n
@@ -238,25 +236,23 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click save, the following VDEFs will be duplicated. You can optionally change the title format for the new VDEFs.") . "</p>
+						<p>" . __("When you click \"Continue\", the following VDEF(s) will be duplicated. You can optionally change the title format for the new VDEF(s).") . "</p>
 						<p><ul>$vdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+
+			$title = __("Duplicate VDEF(s)");
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one VDEF.") . "</span></td></tr>\n";
 	}
 
-	print "<div><input type='hidden' name='action' value='actions'></div>";
-	print "<div><input type='hidden' name='selected_items' value='" . (isset($vdef_array) ? serialize($vdef_array) : '') . "'></div>";
-	print "<div><input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'></div>";
-
 	if (!isset($vdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($vdef_array), get_request_var_post("drp_action"));
+		from_continue(serialize($vdef_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

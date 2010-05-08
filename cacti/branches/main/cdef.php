@@ -201,7 +201,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$cdef_list = ""; $i = 0;
+	$cdef_list = "";
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -211,9 +211,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			$cdef_list .= "<li>" . db_fetch_cell("select name from cdef where id=" . $matches[1]) . "<br>";
-			$cdef_array[$i] = $matches[1];
-
-			$i++;
+			$cdef_array[] = $matches[1];
 		}
 	}
 
@@ -233,33 +231,33 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("Are you sure you want to delete the following CDEFs?") . "</p>
+						<p>" . __("When you click \"Continue\", the selected CDEFs will be deleted.") . "</p>
 						<p><ul>$cdef_list</ul></p>
 					</td>
 				</tr>\n
 				";
+
+			$title = __("Delete CDEF(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click save, the following CDEFs will be duplicated. You can optionally change the title format for the new CDEFs.") . "</p>
+						<p>" . __("When you click \"Continue\", the following CDEFs will be duplicated. You can optionally change the title format for the new CDEFs.") . "</p>
 						<p><ul>$cdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n
 				";
+
+			$title = __("Duplicate CDEF(s)");
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one CDEF.") . "</span></td></tr>\n";
 	}
 
-	print "<div><input type='hidden' name='action' value='actions'></div>";
-	print "<div><input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'></div>";
-	print "<div><input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'></div>";
-
 	if (!isset($cdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($cdef_array), get_request_var_post("drp_action"));
+		from_continue(serialize($cdef_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

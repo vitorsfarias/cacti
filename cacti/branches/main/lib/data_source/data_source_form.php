@@ -344,7 +344,7 @@ function data_source_form_actions() {
 	}
 
 	/* setup some variables */
-	$ds_list = ""; $i = 0; $ds_array = array();
+	$ds_list = ""; $ds_array = array();
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -353,8 +353,8 @@ function data_source_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= "<li>" . get_data_source_title($matches[1]) . "<br>";
-			$ds_array[$i++] = $matches[1];
+			$ds_list .= "<li>" . get_data_source_title($matches[1]) . "</li>";
+			$ds_array[] = $matches[1];
 		}
 	}
 
@@ -392,89 +392,109 @@ function data_source_form_actions() {
 
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following data sources?") . "</p>
-						<p><ul>$ds_list</ul></p>
-						";
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be deleted.") . "</p>
+						<p><ul>$ds_list</ul></p>";
 						if (sizeof($graphs) > 0) {
 							form_alternate_row_color();
 
-							print "<td class='textArea'><p class='textArea'>" . __("The following graphs are using these data sources:") . "</p>\n";
+							print "<td class='textArea'><p class='textArea'>" . __("The following Graph(s) are using these Data Source(s):") . "</p>\n";
 
 							foreach ($graphs as $graph) {
 								print "<strong>" . $graph["title_cache"] . "</strong><br>\n";
 							}
 
 							print "<br>";
-							form_radio_button("delete_type", "3", "1", __("Leave the graphs untouched."), "1"); print "<br>";
-							form_radio_button("delete_type", "3", "2", __("Delete all <strong>graph items</strong> that reference these data sources."), "1"); print "<br>";
-							form_radio_button("delete_type", "3", "3", __("Delete all <strong>graphs</strong> that reference these data sources."), "1"); print "<br>";
+							form_radio_button("delete_type", "3", "1", __("Leave the Graph(s) untouched."), "1"); print "<br>";
+							form_radio_button("delete_type", "3", "2", __("Delete all <strong>Graph Item(s)</strong> that reference these Data Source(s)."), "1"); print "<br>";
+							form_radio_button("delete_type", "3", "3", __("Delete all <strong>Graph(s)</strong> that reference these Data Source(s)."), "1"); print "<br>";
 							print "</td></tr>";
 						}
 					print "
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Data Source(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_CHANGE_TEMPLATE) { /* change graph template */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Choose a data template and click save to change the data template for the following data souces. Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be re-associated with the choosen Graph Template. Be aware that all warnings will be suppressed during the conversion, so Graph data loss is possible.") . "</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>". __("New Data Source Template:") . "</strong><br>"; form_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Change Data Source(s) Graph Template");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_CHANGE_HOST) { /* change device */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Choose a new device for these data sources.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be re-associated with the Device below.") . "</p>
 						<p><ul>$ds_list</ul></p>
-						<p><strong>" . __("New Host:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
+						<p><strong>" . __("New Device:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Change Data Source(s) Device");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_DUPLICATE) { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following data sources will be duplicated. You can optionally change the title format for the new data sources.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be duplicated. You can optionally change the title format for the new Data Source(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<ds_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Duplicate Data Source(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_CONVERT_TO_TEMPLATE) { /* data source -> data template */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following data sources will be converted into data templates.  You can optionally change the title format for the new data templates.") . "</p>
+						<p>" . __("When you click 'Continue' the following Data Source(s) will be converted into Data Template(s).  You can optionally change the title format for the new Data Template(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<ds_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Convert Data Soruce(s) to Data Template(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_ENABLE) { /* data source enable */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click yes, the following data sources will be enabled.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be enabled.") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Enable Data Source(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_DISABLE) { /* data source disable */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click yes, the following data sources will be disabled.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will be disabled.") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+
+			$title = __("Disable Data Source(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_REAPPLY_SUGGESTED_NAMES) { /* reapply suggested data source naming */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click yes, the following data sources will will have their suggested naming conventions recalculated.") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Source(s) will will have their suggested naming conventions recalculated.") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Reapply Suggested Names");
+		} else {
+			$save['drp_action'] = $_POST['drp_action'];
+			$save['ds_list'] = $ds_list;
+			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
+			$save['title'] = '';
+			api_plugin_hook_function('data_source_action_prepare', $save);
+
+			if (strlen($save['title'])) {
+				$title = $save['title'];
+			}else{
+				$title = '';
 			}
+		}
 	} else {
 		print "	<tr>
 				<td class='textArea'>
@@ -484,9 +504,9 @@ function data_source_form_actions() {
 	}
 
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($ds_array), get_request_var_post("drp_action"));
+		from_continue(serialize($ds_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

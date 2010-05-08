@@ -166,7 +166,6 @@ function form_actions() {
 	/* loop through each of the users and process them */
 	$user_list = "";
 	$user_array = array();
-	$i = 0;
 	while (list($var,$val) = each($_POST)) {
 		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
@@ -174,22 +173,9 @@ function form_actions() {
 			/* ==================================================== */
 
 			if (get_request_var_post("drp_action") != "2") {
-				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "<br>";
+				$user_list .= "<li>" . db_fetch_cell("SELECT username FROM user_auth WHERE id=" . $matches[1]) . "</li>";
 			}
-			$user_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	/* Check for deleting of Graph Export User */
-	if ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
-		$exportuser = read_config_option('export_user_id');
-		if (in_array($exportuser, $user_array)) {
-			raise_message(22);
-			header("Location: user_admin.php");
-			exit;
-
+			$user_array[] = $matches[1];
 		}
 	}
 
@@ -199,32 +185,45 @@ function form_actions() {
 
 	print "<form action='user_admin.php' method='post'>\n";
 
-	if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
+	$user_id = "";
+
+	/* Check for deleting of Graph Export User */
+	if ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
+	}elseif (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
 		print "	<tr>
 					<td class='textArea'>
 						<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 					</td>
 				</tr>\n";
-	}
-
-	if ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
-		print "
-			<tr>
+	}elseif ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
+		$exportuser = read_config_option('export_user_id');
+		if (in_array($exportuser, $user_array)) {
+			print "	<tr>
 				<td class='textArea'>
-					<p>" . __("Are you sure you want to delete the following users?") . "</p>
-					<p>$user_list</p>
+					<p>" . __("You can not delete the Export User '") . $exportuser . __("'.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
-	}
-	$user_id = "";
-	if ((get_request_var_post("drp_action") === "2") && (sizeof($user_array))) { /* copy */
+
+			unset($user_array);
+		}else{
+			print "
+				<tr>
+					<td class='textArea'>
+						<p>" . __("When you click \"Continue\", the following User(s) will be deleted.") . "</p>
+						<p><ul>$user_list</ul></p>
+					</td>
+				</tr>\n";
+
+			$title = __("Delete Selected User(s)");
+		}
+	}elseif ((get_request_var_post("drp_action") === "2") && (sizeof($user_array))) { /* copy */
 		$user_id = $user_array[0];
 		$user_realm = db_fetch_cell("SELECT realm FROM user_auth WHERE id = " . $user_id);
 
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("Would you like to copy this user?") . "</p>
+					<p>" . __("When you click \"Continue\", the selected Users settings will be copied to the new User.") . "</p>
 				</td>
 			</tr><tr>
 				<td class='textArea'>\n" .
@@ -245,36 +244,35 @@ function form_actions() {
 					" . __("New Realm:") . " \n";
 		print form_dropdown("new_realm", $auth_realms, "", "", $user_realm, "", 0);
 		print "				</td>
-
 			</tr>\n";
-	}
 
-	if ((get_request_var_post("drp_action") === "3") && (sizeof($user_array))) { /* enable */
+		$title = __("Copy User");
+	}elseif ((get_request_var_post("drp_action") === "3") && (sizeof($user_array))) { /* enable */
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("Are you sure you want to enable the following users?") . "</p>
-					<p>$user_list</p>
+					<p>" . __("When you click \"Continue\", the following User(s) will be enabled.") . "</p>
+					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
-	}
 
-	if ((get_request_var_post("drp_action") === "4") && (sizeof($user_array))) { /* disable */
+		$title = __("Enable User(s)");
+	}elseif ((get_request_var_post("drp_action") === "4") && (sizeof($user_array))) { /* disable */
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("Are you sure you want to disable the following users?") . "</p>
-					<p>$user_list</p>
+					<p>" . __("When you click \"Continue\", the following User(s) will be disabled.") . "</p>
+					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
-	}
 
-	if ((get_request_var_post("drp_action") === "5") && (sizeof($user_array))) { /* batch copy */
+		$title = __("Disable User(s)");
+	}elseif ((get_request_var_post("drp_action") === "5") && (sizeof($user_array))) { /* batch copy */
 		$usernames = db_fetch_assoc("SELECT id,username FROM user_auth WHERE realm = 0 ORDER BY username");
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("Are you sure you want to overwrite the selected users with the selected template users settings and permissions?  Original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template user.") . "</p>
+					<p>" . __("When you click \"Continue\",  the following User(s) will have their settings reinitialized with the selected User.  The original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template User.") . "</p>
 				</td>
 			</tr>
 			<tr>
@@ -289,29 +287,15 @@ function form_actions() {
 					<p>$user_list</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Re-Template User(s)");
 	}
 
-	if (!sizeof($user_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one user.</span></td></tr>\n";
-		$save_html = "<a href='user_admin.php'><img src='images/button_cancel.gif' alt='Cancel' align='middle' border='0'></a>";
-
+	if (!isset($user_array) || get_request_var_post("drp_action") === ACTION_NONE) {
+		form_return_button();
 	}else{
-		$save_html = "<a href='user_admin.php'><img src='images/button_no.gif' alt='Cancel' align='middle' border='0'></a> <input type='image' src='images/button_yes.gif' alt='Save' align='middle'>";
+		from_continue(serialize($user_array), get_request_var_post("drp_action"), $title);
 	}
-
-	print " <tr>
-			<td align='right' bgcolor='#eaeaea'>
-				<input type='hidden' name='action' value='actions'>";
-	if (get_request_var_post("drp_action") === "2") { /* copy */
-		print "				<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
-	}else{
-		print "				<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
-	}
-	print "				<input type='hidden' name='drp_action' value='" . get_request_var_post("drp_action") . "'>
-				$save_html
-			</td>
-		</tr>
-		";
 
 	html_end_box();
 
