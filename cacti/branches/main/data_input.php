@@ -210,9 +210,9 @@ function form_actions() {
 
 			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "<br>";
 			$di_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");

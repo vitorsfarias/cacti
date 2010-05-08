@@ -209,9 +209,9 @@ function form_actions() {
 
 			$vdef_list .= "<li>" . db_fetch_cell("select name from vdef where id=" . $matches[1]) . "<br>";
 			$vdef_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

@@ -144,9 +144,9 @@ function form_actions() {
 			$site_info = db_fetch_cell("SELECT name FROM sites WHERE id=" . $matches[1]);
 			$site_list .= "<li>" . $site_info . "<br>";
 			$site_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

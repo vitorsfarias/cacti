@@ -314,9 +314,9 @@ function data_source_template_form_actions() {
 
 			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "<br>";
 			$ds_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");

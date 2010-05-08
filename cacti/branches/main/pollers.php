@@ -163,9 +163,9 @@ function form_actions() {
 
 			$poller_list .= "<li>" . db_fetch_cell("select description from poller where id=" . $matches[1]) . "<br>";
 			$poller_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
