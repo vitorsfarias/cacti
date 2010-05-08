@@ -161,9 +161,9 @@ function xaxis_form_actions() {
 
 			$xaxis_list .= "<li>" . db_fetch_cell("select name from graph_templates_xaxis where id=" . $matches[1]) . "<br>";
 			$xaxis_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	$xaxis_actions[ACTION_NONE] = __("None");

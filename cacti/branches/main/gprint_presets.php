@@ -117,9 +117,9 @@ function form_actions() {
 
 			$gprint_list .= "<li>" . db_fetch_cell("select name from graph_templates_gprint where id=" . $matches[1]) . "<br>";
 			$gprint_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once("./include/top_header.php");

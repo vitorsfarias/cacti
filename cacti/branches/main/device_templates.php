@@ -468,9 +468,9 @@ function device_template_form_actions() {
 
 			$device_list .= "<li>" . db_fetch_cell("select name from device_template where id=" . $matches[1]) . "<br>";
 			$device_array[$i] = $matches[1];
-		}
 
-		$i++;
+			$i++;
+		}
 	}
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
