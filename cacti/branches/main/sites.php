@@ -163,7 +163,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Site(s) will be deleted.") . "</p>
+						<p>" . __("When you click 'Continue', the following Site(s) will be deleted.") . "</p>
 						<p><ul>$site_list</ul></p>
 					</td>
 				</tr>\n";

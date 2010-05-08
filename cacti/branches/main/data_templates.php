@@ -333,7 +333,7 @@ function data_source_template_form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When  you click \"Continue\",  the following Data Template(s) will be deleted.  Any Data Source(s) attached to these Data Template(s) will become individual Data Source(s).") . "</p>
+						<p>" . __("When  you click 'Continue',  the following Data Template(s) will be deleted.  Any Data Source(s) attached to these Data Template(s) will become individual Data Source(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
 				</tr>\n";
@@ -342,7 +342,7 @@ function data_source_template_form_actions() {
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Data Template(s) will be duplicated. You can optionally change the title format for the new Data Template(s).") . "</p>
+						<p>" . __("When you click 'Continue', the following Data Template(s) will be duplicated. You can optionally change the title format for the new Data Template(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>

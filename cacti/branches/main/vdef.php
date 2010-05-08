@@ -228,7 +228,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click \"Continue\", the following VDEF(s) will be deleted.") . "</p>
+						<p>" . __("When you click 'Continue', the following VDEF(s) will be deleted.") . "</p>
 						<p><ul>$vdef_list</ul></p>
 					</td>
 				</tr>\n
@@ -236,7 +236,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click \"Continue\", the following VDEF(s) will be duplicated. You can optionally change the title format for the new VDEF(s).") . "</p>
+						<p>" . __("When you click 'Continue', the following VDEF(s) will be duplicated. You can optionally change the title format for the new VDEF(s).") . "</p>
 						<p><ul>$vdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
