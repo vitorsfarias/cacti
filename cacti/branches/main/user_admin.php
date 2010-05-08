@@ -829,7 +829,10 @@ function graph_settings_edit() {
 	html_start_box("<strong>" . __("Graph Settings") . "</strong>", "100", $colors["header"], 0, "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		$header_items = array($tabs_graphs[$tab_short_name], "&nbsp;");
+		$header_items = array(
+			array("name" => $tabs_graphs[$tab_short_name], "&nbsp;")
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 1, true, $tab_short_name);
 
@@ -930,7 +933,10 @@ function user_edit() {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
 	if (get_request_var("action") == "user_edit") {
 		html_start_box("<strong>" . __("General Settings") . "</strong>", "100", $colors["header"], 0, "center");
-		$header_items = array(__("Field"), __("Value"));
+		$header_items = array(
+			array("name" => __("Field")),
+			array("name" => __("Value"))
+		);
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'settings_general');
 
@@ -1072,12 +1078,12 @@ function user() {
 	html_end_box(false);
 
 	$display_text = array(
-		"username" => array(__("User Name"), "ASC"),
-		"full_name" => array(__("Full Name"), "ASC"),
-		"enabled" => array(__("Enabled"), "ASC"),
-		"realm" => array(__("Realm"), "ASC"),
-		"policy_graphs" => array(__("Default Graph Policy"), "ASC"),
-		"dtime" => array(__("Last Login"), "DESC"));
+		array("id" => "username", "name" => __("User Name"), "order" => "ASC"),
+		array("id" => "full_name", "name" => __("Full Name"), "order" => "ASC"),
+		array("id" => "enabled", "name" => __("Enabled"), "order" => "ASC"),
+		array("id" => "realm", "name" => __("Realm"), "order" => "ASC"),
+		array("id" => "policy_graphs", "name" => __("Default Graph Policy"), "order" => "ASC"),
+		array("id" => "dtime", "name" => __("Last Login"), "order" => "DESC", "align" => "right"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

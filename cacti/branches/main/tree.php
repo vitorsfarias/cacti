@@ -402,7 +402,11 @@ function tree_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='tree_edit'>\n";
 	html_start_box("<strong>" . __("Graph Trees") . "</strong> $header_label", "100", $colors["header"], "3", "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
 
@@ -418,7 +422,11 @@ function tree_edit() {
 		/* setup the tree div's */
 		echo "<div id='tree' style='float:left;width:50%;'>";
 		html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", $colors["header"], "3", "center", "");
-		$header_items = array(__("Item"), __("Value"));
+		$header_items = array(
+			array("name" => __("Item")),
+			array("name" => __("Value"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 3, true, 'tree');
 		grow_edit_graph_tree(get_request_var("id"), "", "");
@@ -429,7 +437,11 @@ function tree_edit() {
 		/* setup the graph items div */
 		echo "<div id='items' style='float:right;width:50%';>";
 		html_start_box("<strong>" . __("Item Filter") . "</strong>", "100", $colors["header"], "3", "center", "");
-		$header_items = array(__("Item"), __("Value"));
+		$header_items = array(
+			array("name" => __("Item")),
+			array("name" => __("Value"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 3, true, 'tree');
 		print "</table></td></tr>";		/* end of html_header */
@@ -446,7 +458,7 @@ function tree() {
 	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", $colors["header"], "3", "center", "tree.php?action=edit");
 
 	print "<tr><td>";
-	html_header(array(__("Name")), 2,'','','left wp100');
+	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');
 	print "</td></tr>";
 
 	$trees = db_fetch_assoc("SELECT * FROM graph_tree ORDER BY name");

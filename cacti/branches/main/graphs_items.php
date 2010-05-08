@@ -410,7 +410,11 @@ function item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_item_edit'>\n";
 	html_start_box("<strong>" . __("Graph Items") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'header_graph_item_edit');
 	draw_edit_form(

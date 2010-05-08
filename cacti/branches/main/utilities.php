@@ -328,7 +328,7 @@ function display_general() {
 	/* Display tech information */
 	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
-	html_header(array(__("General Information")), 2,'','','left wp100');
+	html_header(array(array("name" => __("General Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Date") . "</td>\n";
 	print "		<td class='textAreaNotes v'>\n";
@@ -380,7 +380,7 @@ function display_general() {
 
 	print "</table></td></tr>";		/* end of html_header */
 	print "<tr><td>";
-	html_header(array(__("Poller Information")), 2,'','','left wp100');
+	html_header(array(array("name" => __("Poller Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Interval") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . read_config_option("poller_interval") . "</td>\n";
@@ -438,7 +438,7 @@ function display_general() {
 
 	print "</table></td></tr>";		/* end of html_header */
 	print "<tr><td>";
-	html_header(array(__("PHP Information")), 2,'','','left wp100');
+	html_header(array(array("name" => __("PHP Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("PHP Version") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . phpversion() . "</td>\n";
@@ -501,7 +501,18 @@ function display_database() {
 	/* Get table status */
 	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
 
-	$display_array = array(__("Name"), __("Engine"), __("Version"), __("Row Format"), __("Rows"), __("Average Length"), __("Data Length"), __("Index Length"), __("Auto Increment"), __("Collation"), __("Comment"));
+	$display_array = array(
+		array("name" => __("Name"), "align" => "left"),
+		array("name" => __("Engine"), "align" => "left"),
+		array("name" => __("Version"), "align" => "left"),
+		array("name" => __("Row Format"), "align" => "left"),
+		array("name" => __("Rows"), "align" => "right"),
+		array("name" => __("Average Length"), "align" => "right"),
+		array("name" => __("Data Length"), "align" => "right"),
+		array("name" => __("Index Length"), "align" => "right"),
+		array("name" => __("Auto Increment"), "align" => "left"),
+		array("name" => __("Collation"), "align" => "left"),
+		array("name" => __("Comment"), "align" => "left"));
 
 	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
@@ -543,7 +554,16 @@ function display_database_processes() {
 	/* Get table status */
 	$db_processes = db_fetch_assoc("SHOW PROCESSLIST");
 
-	$display_array = array(__("ID"), __("User"), __("Host"), __("Database"), __("Command"), __("Time"), __("State"), __("Info"));
+	$display_array = array(
+		array("name" => __("ID")),
+		array("name" => __("User")),
+		array("name" => __("Host")),
+		array("name" => __("Database")),
+		array("name" => __("Command")),
+		array("name" => __("Time")),
+		array("name" => __("State")),
+		array("name" => __("Info"))
+	);
 
 	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", $colors["header"], "3", "center", "");
 	print "<tr><td>";
@@ -613,7 +633,7 @@ function display_languages() {
 
 
 	html_start_box("<strong>" . __("Language Information") . "</strong>", "100", $colors["header"], "3", "center", "");
-	html_header(array(__("General Information")), 2,'','','left','');
+	html_header(array(array("name" => __("General Information"))), 2,'','','left','');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Current Language") . "</td>\n";
 	print "		<td class='textAreaNotes v'>". $language . "</td>\n";
@@ -627,7 +647,7 @@ function display_languages() {
 	print "		<td class='textAreaNotes v'>" . __("English") . "</td>\n";
 	print "</tr>\n";
 	/* html_header is resizable by default, need to pass 'false' */
-	html_header(array(__("Supported Languages")), 2,'','','left wp100');
+	html_header(array(array("name" => __("Supported Languages"))), 2, '', '', 'left wp100');
 	$i = 0;
 	if(sizeof($supported_languages)>0) {
 		foreach($supported_languages as $domain => $languages) {
@@ -644,7 +664,7 @@ function display_languages() {
 			print "</tr>\n";
 	}
 	/* html_header is resizable by default, need to pass 'false' */
-	html_header(array(__("Loaded Language Files")), 2,'','','left wp100');
+	html_header(array(array("name" => __("Loaded Language Files"))), 2, '', '', 'left wp100');
 	$i = 0;
 	if(sizeof($cacti_textdomains)>0) {
 		foreach($cacti_textdomains as $domain => $paths) {
@@ -1468,7 +1488,7 @@ function utilities_view_snmp_cache() {
 	print $nav;
 	html_end_box(false);
 
-	html_header(array(__("Details")));
+	html_header(array(array("name" => __("Details"))));
 
 	if (sizeof($snmp_cache) > 0) {
 		foreach ($snmp_cache as $item) {
@@ -1797,7 +1817,7 @@ function utilities() {
 	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", $colors["header"], "3", "center", "");
 
 	print "<tr><td>";
-	html_header(array(__("Technical Support")), 2, '', '', 'left wp100'); ?>
+	html_header(array(array("name" => __("Technical Support"))), 2, '', '', 'left wp100'); ?>
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes">
@@ -1811,7 +1831,7 @@ function utilities() {
 	<?php
 	print "</table></td></tr>";		/* end of html_header */
 	print "<tr><td>";
-	html_header(array(__("Log Administration")), 2,'','','left wp100');?>
+	html_header(array(array("name" => __("Log Administration"))), 2,'','','left wp100');?>
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes">
@@ -1833,7 +1853,7 @@ function utilities() {
 	<?php
 	print "</table></td></tr>";		/* end of html_header */
 	print "<tr><td>";
-	html_header(array(__("Poller Cache Administration")), 2,'','','left wp100'); ?>
+	html_header(array(array("name" => __("Poller Cache Administration"))), 2,'','','left wp100'); ?>
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes">

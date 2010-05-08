@@ -506,7 +506,7 @@ function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page
      the sort the column and display the altered results.
    @param $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
+        dimensions associated with each element (id => column_id, name => display_text, order => default_sort_order, align => alignment)
    @param $sort_column - the value of current sort column.
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -527,38 +527,41 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	print "\t\t<table cellpadding=0 cellspacing=0 class='resizable startBoxHeader startBox3'><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
-
-	foreach($header_items as $db_column => $display_array) {
+	foreach($header_items as $item) {
+		$align = "align='left'";
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		$align = "left";
-		if ($sort_column == $db_column) {
+		if ($sort_column == $item["id"]) {
 			$direction    = $new_sort_direction;
-			$display_text = $display_array[0];
-			if (isset($display_array[2])) {
-				$align = $display_array[2];
+			$display_text = $item["name"];
+			if (isset($item["align"])) {
+				$align = "align='" . $item["align"] . "'";
 			}
 			$sort_class   = $selected_sort_class;
 		}else{
-			$display_text = $display_array[0];
-			$direction    = $display_array[1];
-			if (isset($display_array[2])) {
-				$align = $display_array[2];
+			$display_text = $item["name"];
+			if (isset($item["order"])) {
+				$direction = $item["order"];
+			}else{
+				$direction = "ASC";
+			}
+			if (isset($item["align"])) {
+				$align = "align='" . $item["align"] . "'";
 			}
 			$sort_class   = "";
 		}
 
 
-		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
+		if (($item["id"] == "") || (substr_count($item["id"], "nosort"))) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
 
 			print "\t\t\t<th style='display:block;' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>" . $display_text . "</th>\n";
 
 			$rand_id++;
 		}else{
-			$width = html_get_column_width($pathname, $db_column);
+			$width = html_get_column_width($pathname, $item["id"]);
 
-			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='$db_column'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $item["id"] . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $item["id"] . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
@@ -572,7 +575,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
      the altered results.
    @param $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
+        dimensions associated with each element (id => column_id, name => display_text, order => default sort order, align => text aligment)
    @param $sort_column - the value of current sort column.
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -600,38 +603,39 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "\t\t<tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
-
-	foreach($header_items as $db_column => $display_array) {
+	foreach($header_items as $item) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		$align = "left";
-		if ($sort_column == $db_column) {
+		$align = "align='left'";
+		if ($sort_column == $item["id"]) {
 			$direction    = $new_sort_direction;
-			$display_text = $display_array[0];
-			if (isset($display_array[2])) {
-				$align = $display_array[2];
+			$display_text = $item["name"];
+			if (isset($item["align"])) {
+				$align = "align='" . $item["align"] . "'";
 			}
 			$sort_class   = $selected_sort_class;
 		}else{
-			$display_text = $display_array[0];
-			$direction    = $display_array[1];
-			if (isset($display_array[2])) {
-				$align = $display_array[2];
+			$display_text = $item["name"];
+			if (isset($item["order"])) {
+				$direction    = $item["order"];
+			}
+			if (isset($item["align"])) {
+				$align = "align='" . $item["align"] . "'";
 			}
 			$sort_class   = "";
 		}
 
 
-		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
+		if (($item["id"] == "") || (substr_count($item["id"], "nosort"))) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
 			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark $align wp$width'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
-			$width = html_get_column_width($pathname, $db_column);
+			$width = html_get_column_width($pathname, $item["id"]);
 
-			print "\t\t\t<th id='$db_column' class='textSubHeaderDark wp$width'>";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			print "\t\t\t<th id='" . $item["id"] . "' class='textSubHeaderDark wp$width' $align>";
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $item["id"] . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
@@ -663,15 +667,24 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='startBoxHeader startBox3 $tclass'><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}
 
-	for ($i=0; $i<count($header_items); $i++) {
+	$i = 0;
+	$align = "align='left'";
+	foreach($header_items as $item) {
+		if (isset($item["align"])) {
+			$align = "align='" . $item["align"] . "'";
+		}else{
+			$align = "";
+		}
+
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hh_$rand_id");
 
-			print "\t\t\t<th id='hh_$rand_id' style='width: $width;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $header_items[$i] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' $align style='width: $width;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hh_$rand_id' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $header_items[$i] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' $align " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}
 		$rand_id++;
+		$i++;
 	}
 
 	print "\t\t</tr>\n";
@@ -700,12 +713,19 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 		print "\t\t<table cellpadding=0 cellspacing=1 class='startBox0 $tclass'><tr class='rowSubHeader $trclass'>\n";
 	}
 
-	for ($i=0; $i<count($header_items); $i++) {
+	$i = 0;
+	foreach($header_items as $item) {
+		if (isset($item["align"])) {
+			$align = "align='" . $item["align"] . "'";
+		}else{
+			$align = "";
+		}
+
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hhc_$rand_id");
-			print "\t\t\t<th id='hhc_$rand_id' style='width: $width;' class='textSubHeaderDark $thclass'>" . $header_items[$i] . "</th>\n";
+			print "\t\t\t<th id='hhc_$rand_id' style='width: $width;' $align class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hhc_$rand_id' class='textSubHeaderDark $thclass'>" . $header_items[$i] . "</th>\n";
+			print "\t\t\t<th id='hhc_$rand_id' $align class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}
 		$rand_id++;
 	}
@@ -870,7 +890,15 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 
-	$header_items = array(__("Graph Item"), __("Data Source"), __("Graph Item Type"), __("CF Type"), __("CDEF"), __("GPRINT Type"), __("Item Color"));
+	$header_items = array(
+		array("name" => __("Graph Item")),
+		array("name" => __("Data Source")),
+		array("name" => __("Graph Item Type")),
+		array("name" => __("CF Type")),
+		array("name" => __("CDEF")),
+		array("name" => __("GPRINT Type")),
+		array("name" => __("Item Color"))
+	);
 	$last_item_colspan = 3;
 
 	print "<tr><td>";
@@ -980,19 +1008,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	print "</table></td></tr>";
 }
 
-
-
 function draw_data_template_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $colors, $config;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	$header_items = array(
-	__("Item"),
-	__("Data Source Name"),
-	__("Data Source Item Type"),
-	__("Minimum"),
-	__("Maximum"),
-	__("Heartbeat"));
+		array("name" => __("Item")),
+		array("name" => __("Data Source Name")),
+		array("name" => __("Data Source Item Type")),
+		array("name" => __("Minimum"), "align" => "right"),
+		array("name" => __("Maximum"), "align" => "right"),
+		array("name" => __("Heartbeat"), "align" => "right")
+	);
 	$last_item_colspan = 3;
 
 	print "<tr><td>";

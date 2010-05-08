@@ -153,7 +153,11 @@ function data_sources_item_edit() {
 
 	# the template header
 	html_start_box("<strong>" . __("Data Source Item") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'header_data_sources_item_edit');
 

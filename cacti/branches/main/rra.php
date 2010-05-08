@@ -223,7 +223,11 @@ function rra_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='rra_edit'>\n";
 	html_start_box("<strong>" . __("Round Robin Archives") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array("Field", "Value");
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'header_rra_edit');
 
@@ -366,11 +370,11 @@ function rra() {
 	html_end_box(false);
 
 	$display_text = array(
-		"name" => array(__("Name"), "ASC"),
-		"xff" => array(__("X Files Factor"), "ASC"),
-		"steps" => array(__("Steps"), "ASC"),
-		"rows" => array(__("Rows"), "ASC"),
-		"timespan" => array(__("Timespan"), "ASC"));
+		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
+		array("id" => "xff", "name" => __("X Files Factor"), "order" => "ASC", "align" => "right"),
+		array("id" => "steps", "name" => __("Steps"), "order" => "ASC", "align" => "right"),
+		array("id" => "rows", "name" => __("Rows"), "order" => "ASC", "align" => "right"),
+		array("id" => "timespan", "name" => __("Timespan"), "order" => "ASC"), "align" => "right");
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

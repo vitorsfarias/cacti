@@ -422,7 +422,11 @@ function site_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='site_edit'>\n";
 	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'site_edit');
 
@@ -672,11 +676,11 @@ function site() {
 		html_end_box(false);
 
 		$display_text = array(
-			"name" => array(__("Site Name"), "ASC"),
-			"address1" => array(__("Address"), "ASC"),
-			"city" => array(__("City"), "ASC"),
-			"state" => array(__("State"), "DESC"),
-			"country" => array(__("Country"), "DESC"));
+			array("id" => "name", "name" => __("Site Name"), "order" => "ASC"),
+			array("id" => "address1", "name" => __("Address"), "order" => "ASC"),
+			array("id" => "city", "name" => __("City"), "order" => "ASC"),
+			array("id" => "state", "name" => __("State"), "order" => "DESC"),
+			array("id" => "country", "name" => __("Country"), "order" => "DESC"));
 
 		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
@@ -708,13 +712,13 @@ function site() {
 		html_end_box(false);
 
 		$display_text = array(
-			"name" => array(__("Site Name"), "ASC"),
-			"device_template_name" => array(__("Device Type"), "ASC"),
-			"total_devices" => array(__("Devices"), "DESC"),
-			"address1" => array(__("Address"), "ASC"),
-			"city" => array(__("City"), "ASC"),
-			"state" => array(__("State"), "DESC"),
-			"country" => array(__("Country"), "DESC"));
+			array("id" => "name", "name" => __("Site Name"), "order" => "ASC"),
+			array("id" => "device_template_name", "name" => __("Device Type"), "order" => "ASC"),
+			array("id" => "total_devices", "name" => __("Devices"), "order" => "DESC", "align" => "right"),
+			array("id" => "address1", "name" => __("Address"), "order" => "ASC"),
+			array("id" => "city", "name" => __("City"), "order" => "ASC"),
+			array("id" => "state", "name" => __("State"), "order" => "DESC"),
+			array("id" => "country", "name" => __("Country"), "order" => "DESC"));
 
 		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

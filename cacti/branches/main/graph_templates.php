@@ -465,7 +465,11 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	# the template header
 	html_start_box("<strong>" . __("Graph Template") . "</strong> $header_label", "100", $colors["header"], "0", "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'header_template');
 
@@ -758,9 +762,9 @@ function template() {
 		html_end_box(false);
 
 		$display_text = array(
-		"name" => array(__("Template Title"), "ASC"),
-		"description" => array(__("Description"), "ASC"),
-		"nosort" => array(__("Image"), "")
+			array("id" => "name", "name" => __("Template Title"), "order" => "ASC"),
+			array("id" => "description", "name" => __("Description"), "order" => "ASC"),
+			array("id" => "nosort", "name" => __("Image"), "align" => "center")
 		);
 
 		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));

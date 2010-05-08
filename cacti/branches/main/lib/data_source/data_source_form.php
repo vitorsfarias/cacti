@@ -739,7 +739,10 @@ function data_source_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_source_edit'>\n";
 	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (isset($_GET["id"]) ? "menu::" . __("Data Source Options") . ":data_source_options:html_start_box:" . $dd_menu_options : ""),"");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
 
@@ -1222,12 +1225,12 @@ function data_source() {
 	html_end_box(false);
 
 	$display_text = array(
-		"name_cache" => array(__("Name"), "ASC"),
-		"local_data_id" => array(__("ID"),"ASC"),
-		"data_input_name" => array(__("Data Input Method"), "ASC"),
-		"nosort" => array(__("Poller Interval"), "ASC"),
-		"active" => array(__("Active"), "ASC"),
-		"data_template_name" => array(__("Template Name"), "ASC"));
+		array("id" => "name_cache", "name" => __("Name"), "order" => "ASC"),
+		array("id" => "local_data_id", "name" => __("ID"), "order" => "ASC", "align" => "right"),
+		array("id" => "data_input_name", "name" => __("Data Input Method"), "order" => "ASC"),
+		array("id" => "nosort", "name" => __("Poller Interval"), "order" => "ASC", "align" => "right"),
+		array("id" => "active", "name" => __("Active"), "order" => "ASC"),
+		array("id" => "data_template_name", "name" => __("Template Name"), "order" => "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

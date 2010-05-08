@@ -273,7 +273,11 @@ function poller_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='poller_edit'>\n";
 	html_start_box("<strong>" . __("Pollers") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'poller_edit');
 
@@ -424,13 +428,13 @@ function poller() {
 	html_end_box(false);
 
 	$display_text = array(
-		"description" => array(__("Description"), "ASC"),
-		"id" => array(__("ID"), "ASC"),
-		"total_devices" => array(__("Devices"), "DESC"),
-		"nosort2" => array(__("Poller Items"), "DESC"),
-		"hostname" => array(__("Hostname"), "ASC"),
-		"nosort1" => array(__("Status"), ""),
-		"last_update" => array(__("Last Updated"), "ASC"));
+		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
+		array("id" => "id", "name" => __("ID"), "order" => "ASC"),
+		array("id" => "total_devices", "name" => __("Devices"), "order" => "DESC"),
+		array("id" => "nosort2", "name" => __("Poller Items"), "order" => "DESC"),
+		array("id" => "hostname", "name" => __("Hostname"), "order" => "ASC"),
+		array("id" => "nosort1", "name" => __("Status")),
+		array("id" => "last_update", "name" => __("Last Updated"), "order" => "ASC", "align" => "right"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

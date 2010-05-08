@@ -81,7 +81,11 @@ default:
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='settings'>\n";
 	html_start_box("<strong>" . __("Cacti Settings") . " (" . $tabs[$current_tab] . ")</strong>", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'settings','left wp100');
 

@@ -1274,7 +1274,10 @@ function html_simple_decode($string) {
  */
 function draw_template_edit_form ($table_id, $edit_struct, $edit_data, $use_template=false) {
 
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, true, $table_id);
 

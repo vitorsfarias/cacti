@@ -2137,7 +2137,7 @@ function rrdtool_set_font($type, $no_legend = "") {
 	}else{
 		$font = read_config_option($type . "_size");
 	}
-		
+
 	/* global font may be empty */
 	if(strlen($font)) {
 		/* do some simple checks */
@@ -2206,7 +2206,7 @@ function rrdtool_set_colortag($type, $colortag) {
 			if (empty($tag) && !empty($colortag)) {								# graph specific tag comes next
 				$tag = $colortag;
 			}
-			
+
 			if (empty($tag)) {													# global tag is least priority
 				$colortag = read_config_option("colortag_" . $type);
 				if (!empty($colortag)) {$tag = $colortag;}
@@ -3061,7 +3061,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	html_start_box("<strong>" . __("RRD File Information") . "</strong>", "100", $colors["header"], 0, "center", "");
 
 	# header data
-	$header_items = array(__("Header"), '');
+	$header_items = array(array("name" => __("Header")), array("name" => ''));
 	print "<tr><td>";
 	html_header($header_items, 1, false, 'info_header');
 	# add human readable timestamp
@@ -3082,7 +3082,16 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	form_end_table();
 
 	# data sources
-	$header_items = array(__("Data Source Items"), __('Type'), __('Minimal Heartbeat'), __('Min'), __('Max'), __('Last DS'), __('Value'), __('Unkown Sec'));
+	$header_items = array(
+		array("name" => __("Data Source Items")),
+		array("name" => __('Type')),
+		array("name" => __('Minimal Heartbeat'), "align" => "right"),
+		array("name" => __('Min'), "align" => "right"),
+		array("name" => __('Max'), "align" => "right"),
+		array("name" => __('Last DS'), "align" => "right"),
+		array("name" => __('Value'), "align" => "right"),
+		array("name" => __('Unkown Sec'), "align" => "right")
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, false, 'info_ds');
 	if (sizeof($info_array["ds"]) > 0) {
@@ -3103,7 +3112,16 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 
 	# round robin archive
-	$header_items = array(__("Round Robin Archive"), __('Consolidation Function'), __('Rows'), __('Cur Row'), __('PDP per Row'), __('X Files Factor'), __('CDP Prep Value (0)'), __('CDP Unknown Datapoints (0)'));
+	$header_items = array(
+		array("name" => __("Round Robin Archive")),
+		array("name" => __('Consolidation Function')),
+		array("name" => __('Rows'), "align" => "right"),
+		array("name" => __('Cur Row'), "align" => "right"),
+		array("name" => __('PDP per Row'), "align" => "right"),
+		array("name" => __('X Files Factor'), "align" => "right"),
+		array("name" => __('CDP Prep Value (0)'), "align" => "right"),
+		array("name" => __('CDP Unknown Datapoints (0)'), "align" => "right")
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, false, 'info_rra');
 	if (sizeof($info_array['rra']) > 0) {

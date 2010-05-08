@@ -661,7 +661,6 @@ table.resizable th {
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	background: #1f2328 url('../images/rowSubHeader.png') repeat-x scroll top left;
 	border-right: 2px ridge #a5a5a5;
-	text-align: left;
 	font-size: 12px;
 	padding: 3px;
 	color: #ffffff;
@@ -681,14 +680,12 @@ table.resizable th {
 .textSubSortHeaderDark, .textSubSortHeaderDark:visited {
 	background: #1f2328 url('../images/rowSubHeader.png') repeat-x scroll top left;
 	border-right: 2px groove #000000;
-	text-align: left;
 	font-size: 10px;
 	color: #ffffff;
 	font-weight: bold;
 }
 
 .textRowSubHeaderDark {
-	text-align: left;
 	padding:3px;
 	font-weight: bold;
 	font-size: 10px;
@@ -704,14 +701,17 @@ table.resizable th {
 .textAreaNotes {
 	font-size: 12px;
 	font-family: Arial, Verdana, Helvetica, sans-serif;
+	padding:10px 5px;
 }
 .textAreaNotes.e {
 	width: 10%;
 	font-size: 11px;
 	font-weight: bold;
+	padding:10px 5px;
 }
 .textAreaNotes.v {
 	font-size: 11px;
+	padding:10px 5px;
 }
 .center td.e {
 	width:10%;

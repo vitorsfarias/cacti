@@ -119,7 +119,11 @@ function settings() {
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tab_short_name) . "'>\n";
 		html_start_box("<strong>" . __("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")</strong>", "100", $colors["header"], 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
-		$header_items = array(__("Field"), __("Value"));
+		$header_items = array(
+			array("name" => __("Field")),
+			array("name" => __("Value"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, "Header_Settings_" . clean_up_name($tab_short_name),'left wp100');
 
@@ -167,10 +171,10 @@ function settings() {
 	form_hidden_box("referer", "graph_view.php","");
 	form_hidden_box("save_component_graph_config","1","");
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
-	
+
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
-	
+
 	form_save_button_alt("", "save", "save");
 
 	?>
