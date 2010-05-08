@@ -234,7 +234,7 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the selected Data Input Method(s) will be deleted") . "</p>
+						<p>" . __("When you click 'Continue', the selected Data Input Method(s) will be deleted") . "</p>
 						<p>$di_list</p>
 					</td>
 				</tr>\n";

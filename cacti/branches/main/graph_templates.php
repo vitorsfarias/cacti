@@ -329,7 +329,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Graph Template(s) will be deleted.  Any Graph(s) attached to these Graph Template(s) will become individual Graph(s).") . "</p>
+						<p>" . __("When you click 'Continue', the following Graph Template(s) will be deleted.  Any Graph(s) attached to these Graph Template(s) will become individual Graph(s).") . "</p>
 						<p><ul>$graph_list</ul></p>
 					</td>
 				</tr>\n";
@@ -338,7 +338,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Graph Template(s) will be duplicated. You can optionally change the title format for the new Graph Template(s).") . "</p>
+						<p>" . __("When you click 'Continue', the following Graph Template(s) will be duplicated. You can optionally change the title format for the new Graph Template(s).") . "</p>
 						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>

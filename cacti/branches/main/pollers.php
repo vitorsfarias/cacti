@@ -190,7 +190,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>". __("When you click \"Continue\", the following Poller(s) will be deleted.  All devices currently attached this these Poller(s) will be reassigned to the default poller.") . "</p>
+						<p>". __("When you click 'Continue', the following Poller(s) will be deleted.  All devices currently attached this these Poller(s) will be reassigned to the default poller.") . "</p>
 						<p><ul>$poller_list</ul></p>
 					</td>
 				</tr>\n";
@@ -199,7 +199,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "2") { /* disable */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Poller(s) will be disabled.  All Devices currently attached to these Poller(s) will no longer have their Graphs updated.") . "</p>
+						<p>" . __("When you click 'Continue', the following Poller(s) will be disabled.  All Devices currently attached to these Poller(s) will no longer have their Graphs updated.") . "</p>
 						<p><ul>$poller_list</ul></p>
 					</td>
 				</tr>\n";
@@ -208,7 +208,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "3") { /* enable */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following Poller(s) will be enabled.  All Devices currently attached to these Poller(s) will resume updating their Graphs.") . "</p>
+						<p>" . __("When you click 'Continue', the following Poller(s) will be enabled.  All Devices currently attached to these Poller(s) will resume updating their Graphs.") . "</p>
 						<p><ul>$poller_list</ul></p>
 					</td>
 				</tr>\n";

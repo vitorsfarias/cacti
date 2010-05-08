@@ -138,7 +138,7 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("When you click \"Continue\", the following RRA(s) will be deleted.") . "</p>
+						<p>" . __("When you click 'Continue', the following RRA(s) will be deleted.") . "</p>
 						<p><ul>$rra_list</ul></p>
 					</td>
 				</tr>\n";

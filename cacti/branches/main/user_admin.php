@@ -209,7 +209,7 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea'>
-						<p>" . __("When you click \"Continue\", the following User(s) will be deleted.") . "</p>
+						<p>" . __("When you click 'Continue', the following User(s) will be deleted.") . "</p>
 						<p><ul>$user_list</ul></p>
 					</td>
 				</tr>\n";
@@ -223,7 +223,7 @@ function form_actions() {
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("When you click \"Continue\", the selected Users settings will be copied to the new User.") . "</p>
+					<p>" . __("When you click 'Continue', the selected Users settings will be copied to the new User.") . "</p>
 				</td>
 			</tr><tr>
 				<td class='textArea'>\n" .
@@ -251,7 +251,7 @@ function form_actions() {
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("When you click \"Continue\", the following User(s) will be enabled.") . "</p>
+					<p>" . __("When you click 'Continue', the following User(s) will be enabled.") . "</p>
 					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
@@ -261,7 +261,7 @@ function form_actions() {
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("When you click \"Continue\", the following User(s) will be disabled.") . "</p>
+					<p>" . __("When you click 'Continue', the following User(s) will be disabled.") . "</p>
 					<p><ul>$user_list</ul></p>
 				</td>
 			</tr>\n";
@@ -272,7 +272,7 @@ function form_actions() {
 		print "
 			<tr>
 				<td class='textArea'>
-					<p>" . __("When you click \"Continue\",  the following User(s) will have their settings reinitialized with the selected User.  The original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template User.") . "</p>
+					<p>" . __("When you click 'Continue',  the following User(s) will have their settings reinitialized with the selected User.  The original user Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from template User.") . "</p>
 				</td>
 			</tr>
 			<tr>
