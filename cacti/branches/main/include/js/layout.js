@@ -256,12 +256,14 @@ function isOnBorderRight(type, object, event) {
 	var pos      = findPos(object);
 	var absRight = pos[0] + width;
 
-	if (event.clientX > (absRight - iEdgeThreshold)) {
-		if (type == "column") {
-			objTh = object;
-			objThWidth = width - iEdgeThreshold;
+	if (object.id != 'checkbox' && $('#'+object.id).next("th").attr('id') != 'checkbox') {
+		if (event.clientX > (absRight - iEdgeThreshold)) {
+			if (type == "column") {
+				objTh = object;
+				objThWidth = width - iEdgeThreshold;
+			}
+			return true;
 		}
-		return true;
 	}
 
 	return false;
@@ -269,6 +271,7 @@ function isOnBorderRight(type, object, event) {
 
 function findPos(obj) {
 	var curleft = curtop = 0;
+
 	if (obj.offsetParent) {
 		curleft = obj.offsetLeft;
 		curtop  = obj.offsetTop;
