@@ -725,70 +725,54 @@ function template() {
 	</form>
 	</td>
 </tr>
-				<?php
-				html_end_box(false);
+	<?php
+	html_end_box(false);
 
-				/* form the 'where' clause for our main sql query */
-				if ($_REQUEST["filter"] != "") {
-					$sql_where = "WHERE (graph_templates.name LIKE '%%" . $_REQUEST["filter"] . "%%')
+	/* form the 'where' clause for our main sql query */
+	if ($_REQUEST["filter"] != "") {
+		$sql_where = "WHERE (graph_templates.name LIKE '%%" . $_REQUEST["filter"] . "%%')
 			OR graph_templates.description LIKE '%%" . get_request_var_request("filter") . "%%'";
-				}else{
-					$sql_where = "";
-				}
+	}else{
+		$sql_where = "";
+	}
 
-				html_start_box("", "100", $colors["header"], "0", "center", "");
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
 
-				$total_rows = db_fetch_cell("SELECT
+	$rows = db_fetch_assoc("SELECT *
+		FROM graph_templates
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
+
+	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates.id)
 		FROM graph_templates
 		$sql_where");
 
-		if (get_request_var_request("rows") == "-1") {
-			$rows = read_config_option("num_rows_device");
-		}else{
-			$rows = get_request_var_request("rows");
-		}
+	$table_format = array(
+		"name" => array(
+			"name" => __("Template Title"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"description" => array(
+			"name" => __("Description"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"image" => array(
+			"name" => __("Image"),
+			"sort" => false,
+			"align" => "center")
+	);
 
-		$template_list = db_fetch_assoc("SELECT *
-		FROM graph_templates
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-		/* generate page list navigation */
-		$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "graph_templates.php");
-
-		print $nav;
-		html_end_box(false);
-
-		$display_text = array(
-			array("id" => "name", "name" => __("Template Title"), "order" => "ASC"),
-			array("id" => "description", "name" => __("Description"), "order" => "ASC"),
-			array("id" => "nosort", "name" => __("Image"), "align" => "center")
-		);
-
-		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-		if (sizeof($template_list) > 0) {
-			foreach ($template_list as $template) {
-				form_alternate_row_color('line' . $template["id"], true);
-				form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
-				form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graph_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["description"]) : $template["description"]) . "</a>", $template["id"]);
-				form_selectable_cell((file_exists(CACTI_BASE_PATH . "/../" . $template["image"]) ? "<img src='" . $template["image"] . "'>":""), $template["id"]);
-				form_checkbox_cell($template["name"], $template["id"]);
-				form_end_row();
-			}
-
-			form_end_table();
-
-			print $nav;
-		}else{
-			print "<tr><td><em>" . __("No Graph Templates") . "</em></td></tr>\n";
-		}
-
-		print "</table>\n";	# end table of html_header_sort_checkbox
-
-		/* draw the dropdown containing a list of available actions for this form */
-		draw_actions_dropdown($graph_template_actions);
-		print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "gprint_presets.php",
+		$graph_template_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

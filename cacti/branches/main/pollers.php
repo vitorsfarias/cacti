@@ -399,70 +399,70 @@ function poller() {
 		$sql_where = "";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM poller
-		$sql_where");
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$poller_list = db_fetch_assoc("SELECT p.*,
+	$rows = db_fetch_assoc("SELECT p.*,
 		sum(CASE WHEN h.poller_id IS NOT NULL THEN 1 ELSE NULL END) AS total_devices
 		FROM poller AS p
 		LEFT JOIN device AS h ON h.poller_id=p.id
 		$sql_where
 		GROUP BY p.id
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "pollers.php");
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM poller
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"description" => array(
+			"name" => __("Description"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
+		"total_devices" => array(
+			"name" => __("Devices"),
+			"order" => "DESC"
+		),
+		"nosort" => array(
+			"name" => __("Poller Items"),
+			"sort" => false,
+			"function" => "display_poller_poller_items",
+			"order" => "DESC"
+		),
+		"hostname" => array(
+			"name" => __("Hostname"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"nosort1" => array(
+			"name" => __("Status"),
+			"function" => "get_colored_poller_status",
+			"params" => array("disabled", "last_update"),
+			"sort" => false
+		),
+		"last_update" => array(
+			"name" => __("Last Updated"),
+			"order" => "ASC",
+			"align" => "right"
+		)
+	);
 
-	$display_text = array(
-		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
-		array("id" => "id", "name" => __("ID"), "order" => "ASC"),
-		array("id" => "total_devices", "name" => __("Devices"), "order" => "DESC"),
-		array("id" => "nosort2", "name" => __("Poller Items"), "order" => "DESC"),
-		array("id" => "hostname", "name" => __("Hostname"), "order" => "ASC"),
-		array("id" => "nosort1", "name" => __("Status")),
-		array("id" => "last_update", "name" => __("Last Updated"), "order" => "ASC", "align" => "right"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "pollers.php",
+		$poller_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($poller_list) > 0) {
-		foreach ($poller_list as $poller) {
-			form_alternate_row_color('line' . $poller["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("pollers.php?action=edit&id=" . $poller["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $poller["description"]) : $poller["description"]) . "</a>", $poller["id"]);
-			form_selectable_cell($poller["id"], $poller["id"]);
-			form_selectable_cell($poller["total_devices"], $poller["id"]);
-			form_selectable_cell(db_fetch_cell("SELECT count(*) FROM poller_item WHERE poller_id=" . $poller["id"]), $poller["id"]);
-			form_selectable_cell($poller["hostname"], $poller["id"]);
-			form_selectable_cell(get_colored_poller_status(($poller["disabled"] == CHECKED ? true : false), $poller["last_update"]), $poller["id"]);
-			form_selectable_cell($poller["last_update"], $poller["id"]);
-			form_checkbox_cell($poller["description"], $poller["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Pollers Defined") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($poller_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+function display_poller_poller_items($id) {
+	return db_fetch_cell("SELECT count(*) FROM poller_item WHERE poller_id=" . $id);
 }

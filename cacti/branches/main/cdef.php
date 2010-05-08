@@ -508,7 +508,6 @@ function cdef() {
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
-
 	}
 
 	?>
@@ -574,54 +573,34 @@ function cdef() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (cdef.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	$table_format = array(
+		"name" => array(
+			"name" => __("CDEF Title"),
+			"order" => "ASC",
+			"filter" => true,
+			"link" => true)
+	);
+
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
+
+	$rows = db_fetch_assoc("SELECT
+		cdef.id,cdef.name
+		FROM cdef
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(cdef.id)
 		FROM cdef
 		$sql_where");
 
-	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
-	}else{
-		$rows = get_request_var_request("rows");
-	}
-
-	$cdef_list = db_fetch_assoc("SELECT
-		cdef.id,cdef.name
-		FROM cdef
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 11, "cdef.php?filter=" . $_REQUEST["filter"]);
-
-	print $nav;
-	html_end_box(false);
-
-	$display_text = array(array("id" => "name", "name" => __("CDEF Title"), "order" => "ASC"));
-
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($cdef_list) > 0) {
-		foreach ($cdef_list as $cdef) {
-			form_alternate_row_color('line' . $cdef["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("cdef.php?action=edit&id=" . $cdef["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $cdef["name"]) : $cdef["name"]) . "</a>", $cdef["id"]);
-			form_checkbox_cell($cdef["name"], $cdef["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No CDEF's") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($cdef_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "cdef.php",
+		$cdef_actions, get_request_var_request("filter"),
+		true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

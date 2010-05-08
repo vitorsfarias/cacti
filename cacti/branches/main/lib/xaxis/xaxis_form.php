@@ -463,70 +463,45 @@ function xaxis() {
 	</form>
 	</td>
 </tr>
-				<?php
-				html_end_box(false);
+	<?php
+	html_end_box(false);
 
-				/* form the 'where' clause for our main sql query */
-				if (strlen(get_request_var_request("filter"))) {
-					$sql_where = "where (name like '%%" . $_REQUEST["filter"] . "%%')";
-				}else{
-					$sql_where = "";
-				}
+	/* form the 'where' clause for our main sql query */
+	if (strlen(get_request_var_request("filter"))) {
+		$sql_where = "where (name like '%%" . $_REQUEST["filter"] . "%%')";
+	}else{
+		$sql_where = "";
+	}
 
-				html_start_box("", "100", $colors["header"], "0", "center", "");
-
-				$total_rows = db_fetch_cell("select
+	$total_rows = db_fetch_cell("select
 		COUNT(id)
 		from graph_templates_xaxis
 		$sql_where");
 
-		if (get_request_var_request("rows") == "-1") {
-			$rows = read_config_option("num_rows_device");
-		}else{
-			$rows = get_request_var_request("rows");
-		}
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
 
-		$sql_query = "SELECT * " .
+	$sql_query = "SELECT * " .
 		"FROM graph_templates_xaxis " .
 		$sql_where .
 		" ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp;
 
-		//print $sql_query;
+	$rows = db_fetch_assoc($sql_query);
 
-		$xaxis_array = db_fetch_assoc($sql_query);
+	$table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		)
+	);
 
-		/* generate page list navigation */
-		$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 2, "xaxis_presets.php");
-
-		print $nav;
-		html_end_box(false);
-
-		$display_text = array(array("id" => "name", "name" => __("Name"), "order" => "ASC"));
-
-		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-		if (sizeof($xaxis_array) > 0) {
-			foreach ($xaxis_array as $xaxis) {
-				form_alternate_row_color('line' . $xaxis["id"], true);
-				form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars("xaxis_presets.php?action=edit&id=" . $xaxis["id"]) . "'>" .
-				(strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $xaxis["name"]) : $xaxis["name"]) . "</a>", $xaxis["id"]);
-				form_checkbox_cell($xaxis["name"], $xaxis["id"]);
-				form_end_row();
-			}
-
-			form_end_table();
-
-			/* put the nav bar on the bottom as well */
-			print $nav;
-		}else{
-			print "<tr><td><em>" . __("No X-Axis Presets") . "</em></td></tr>";
-		}
-
-		print "</table>\n";
-
-		/* draw the dropdown containing a list of available actions for this form */
-		draw_actions_dropdown($xaxis_actions);
-
-		print "</form>\n";
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "xaxis_presets.php",
+		$xaxis_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

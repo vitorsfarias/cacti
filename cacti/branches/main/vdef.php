@@ -583,54 +583,33 @@ function vdef() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (vdef.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
+
+	$rows = db_fetch_assoc("SELECT
+		vdef.id,vdef.name
+		FROM vdef
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(vdef.id)
 		FROM vdef
 		$sql_where");
 
-	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
-	}else{
-		$rows = get_request_var_request("rows");
-	}
+	$table_format = array(
+		"name" => array(
+			"name" => __("VDEF Title"),
+			"link" => true,
+			"order" => "ASC"
+		)
+	);
 
-	$vdef_list = db_fetch_assoc("SELECT
-		vdef.id,vdef.name
-		FROM vdef
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 11, "vdef.php?filter=" . $_REQUEST["filter"]);
-
-	print $nav;
-	html_end_box(false);
-
-	$display_text = array(array("id" => "name", "name" => __("VDEF Title"), "order" => "ASC"));
-
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($vdef_list) > 0) {
-		foreach ($vdef_list as $vdef) {
-			form_alternate_row_color('line' . $vdef["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("vdef.php?action=edit&id=" . $vdef["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $vdef["name"]) : $vdef["name"]) . "</a>", $vdef["id"]);
-			form_checkbox_cell($vdef["name"], $vdef["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No VDEF's") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($vdef_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "vdef.php",
+		$vdef_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

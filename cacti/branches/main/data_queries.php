@@ -842,8 +842,6 @@ function data_query() {
 	<?php
 	html_end_box(false);
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var_request("filter"))) {
 		$sql_where = "WHERE (snmp_query.name LIKE '%%" . $_REQUEST["filter"] . "%%'
@@ -853,18 +851,13 @@ function data_query() {
 		$sql_where = "";
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		count(*)
-		FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id=data_input.id)
-		$sql_where");
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$snmp_queries = db_fetch_assoc("SELECT
+	$rows = db_fetch_assoc("SELECT
 		snmp_query.id,
 		snmp_query.name,
 		snmp_query.description,
@@ -873,45 +866,39 @@ function data_query() {
 		FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id=data_input.id)
 		$sql_where
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
-		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
+		LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "data_queries.php");
+	$total_rows = db_fetch_cell("SELECT
+		count(*)
+		FROM snmp_query INNER JOIN data_input ON (snmp_query.data_input_id=data_input.id)
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
-
-	$display_text = array(
-		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
-		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
-		array("id" => "nosort", "name" => __("Image"), "align" => "center"),
-		array("id" => "data_input_method", "name" => __("Data Input Method"), "order" => "ASC")
+	$table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"description" => array(
+			"name" => __("Description"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"image" => array(
+			"name" => __("Image"),
+			"sort" => false,
+			"align" => "center"
+		),
+		"data_input_method" => array(
+			"name" => __("Data Input Method"),
+			"filter" => true,
+			"order" => "ASC"
+		)
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($snmp_queries) > 0) {
-		foreach ($snmp_queries as $snmp_query) {
-			form_alternate_row_color('line' . $snmp_query["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_queries.php?action=edit&id=" . $snmp_query["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $snmp_query["name"]) : $snmp_query["name"]) . "</a>", $snmp_query["id"]);
-			form_selectable_cell((strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $snmp_query["description"]) : $snmp_query["description"]), $snmp_query["id"]);
-			form_selectable_cell((file_exists(CACTI_BASE_PATH . "/../" . $snmp_query["image"]) ? "<img src='" . $snmp_query["image"] . "'>":""), $snmp_query["id"]);
-			form_selectable_cell((strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $snmp_query["data_input_method"]) : $snmp_query["data_input_method"]), $snmp_query["id"]);
-			form_checkbox_cell($snmp_query["name"], $snmp_query["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Data Queries") . "</em></td></tr>";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($dq_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "data_queries.php",
+		$dq_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
 ?>

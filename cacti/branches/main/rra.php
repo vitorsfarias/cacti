@@ -344,62 +344,53 @@ function rra() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (rra.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
+
+	$rows = db_fetch_assoc("SELECT *
+		FROM rra
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rra.id)
 		FROM rra
 		$sql_where");
 
-	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
-	}else{
-		$rows = get_request_var_request("rows");
-	}
+	$table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"x_files_factor" => array(
+			"name" => __("X Files Factor"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"steps" => array(
+			"name" => __("Steps"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"rows" => array(
+			"name" => __("Rows"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"timespan" => array(
+			"name" => __("Timespan"),
+			"order" => "ASC",
+			"align" => "right"
+		)
+	);
 
-	$rra_list = db_fetch_assoc("SELECT *
-		FROM rra
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 11, "rra.php?filter=" . $_REQUEST["filter"]);
-
-	print $nav;
-	html_end_box(false);
-
-	$display_text = array(
-		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
-		array("id" => "xff", "name" => __("X Files Factor"), "order" => "ASC", "align" => "right"),
-		array("id" => "steps", "name" => __("Steps"), "order" => "ASC", "align" => "right"),
-		array("id" => "rows", "name" => __("Rows"), "order" => "ASC", "align" => "right"),
-		array("id" => "timespan", "name" => __("Timespan"), "order" => "ASC"), "align" => "right");
-
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($rra_list) > 0) {
-		foreach ($rra_list as $rra) {
-			form_alternate_row_color('line' . $rra["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("rra.php?action=edit&id=" . $rra["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $rra["name"]) : $rra["name"]) . "</a>", $rra["id"]);
-			form_selectable_cell($rra["x_files_factor"], $rra["id"]);
-			form_selectable_cell($rra["steps"], $rra["id"]);
-			form_selectable_cell($rra["rows"], $rra["id"]);
-			form_selectable_cell($rra["timespan"], $rra["id"]);
-			form_checkbox_cell($rra["name"], $rra["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No RRAs") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($rra_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "rra.php",
+		$rra_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

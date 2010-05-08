@@ -517,7 +517,7 @@ function data_edit() {
 
 function data() {
 	global $colors, $di_actions, $item_rows;
-	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -614,8 +614,6 @@ function data() {
 	<?php
 	html_end_box(FALSE);
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (data_input.name like '%%" . $_REQUEST["filter"] . "%%')";
 
@@ -624,56 +622,43 @@ function data() {
 		AND data_input.name!='Get SNMP Data'
 		AND data_input.name!='Get SNMP Data (Indexed)')";
 
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
+
+	$rows = db_fetch_assoc("SELECT *
+		FROM data_input
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
+		LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
+
 	$total_rows = db_fetch_cell("SELECT
 		count(*)
 		FROM data_input
 		$sql_where");
 
-	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
-	}else{
-		$rows = get_request_var_request("rows");
-	}
-
-	$data_inputs = db_fetch_assoc("SELECT *
-		FROM data_input
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') . "
-		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "data_input.php");
-
-	print $nav;
-	html_end_box(FALSE);
-
-	$display_text = array(
-		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
-		array("id" => "type_id", "name" => __("Data Input Method"), "order" => "ASC")
+	$table_format = array(
+		"name" => array("name" => __("Name"),
+			"order" => "ASC",
+			"link" => true,
+			"filter" => true
+		),
+		"type_id" => array("name" => __("Data Input Method"),
+			"order" => "ASC",
+			"function" => "display_data_input_type",
+			"params" => array("type_id"),
+			"filter" => true
+		)
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "data_input.php",
+		$di_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	if (sizeof($data_inputs) > 0) {
-		foreach ($data_inputs as $data_input) {
-			/* hide system types */
-			form_alternate_row_color('line' . $data_input["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_input.php?action=edit&id=" . $data_input["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $data_input["name"]) : $data_input["name"]) . "</a>", $data_input["id"]);
-			form_selectable_cell($input_types{$data_input["type_id"]}, $data_input["id"]);
-			form_checkbox_cell($data_input["name"], $data_input["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Data Input Methods") . "</em></td></tr>";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($di_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+function display_data_input_type($type_id) {
+	include(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+	return $input_types[$type_id];
 }

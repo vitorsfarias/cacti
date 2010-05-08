@@ -974,11 +974,12 @@ function user_edit() {
 }
 
 function user() {
-	global $colors, $user_actions;
+	global $colors, $user_actions, $item_rows;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -1002,15 +1003,30 @@ function user() {
 		kill_session_var("sess_user_admin_filter");
 		kill_session_var("sess_user_admin_sort_column");
 		kill_session_var("sess_user_admin_sort_direction");
+		kill_session_var("sess_user_admin_rows");
 
 		unset($_REQUEST["page"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
+		unset($_REQUEST["rows"]);
 	}
+
+	?>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
+	<?php
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("page", "sess_user_admin_current_page", "1");
+	load_current_session_value("rows", "sess_user_admin_rows", "-1");
 	load_current_session_value("filter", "sess_user_admin_filter", "");
 	load_current_session_value("sort_column", "sess_user_admin_sort_column", "username");
 	load_current_session_value("sort_direction", "sess_user_admin_sort_direction", "ASC");
@@ -1027,6 +1043,21 @@ function user() {
 					</td>
 					<td class="w1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyFilterChange(document.form_user_admin)">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php echo __('Go');?>" name="go" align="middle">
@@ -1048,14 +1079,13 @@ function user() {
 		$sql_where = "";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(user_auth.id)
-		FROM user_auth
-		$sql_where");
-
-	$user_list = db_fetch_assoc("SELECT
+	$rows = db_fetch_assoc("SELECT
 		id,
 		user_auth.username,
 		full_name,
@@ -1069,59 +1099,78 @@ function user() {
 		$sql_where
 		GROUP BY id
 		ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . (read_config_option("num_rows_device") * (get_request_var_request("page") - 1)) . "," . read_config_option("num_rows_device"));
+		" LIMIT " . ($rowspp * (get_request_var_request("page") - 1)) . "," . $rowspp);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, 7, "user_admin.php");
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(user_auth.id)
+		FROM user_auth
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"username" => array(
+			"name" => __("User Name"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"full_name" => array(
+			"name" => __("Full Name"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"enabled" => array(
+			"name" => __("Enabled"),
+			"function" => "display_user_status",
+			"params" => array("enabled"),
+			"order" => "ASC"
+		),
+		"realm" => array(
+			"name" => __("Realm"),
+			"function" => "display_auth_realms",
+			"params" => array("realm"),
+			"order" => "ASC"
+		),
+		"policy_graphs" => array(
+			"name" => __("Default Graph Policy"),
+			"function" => "display_policy_graphs",
+			"params" => array("policy_graphs"),
+			"order" => "ASC"
+		),
+		"dtime" => array(
+			"name" => __("Last Login"),
+			"function" => "display_last_login",
+			"order" => "DESC",
+			"align" => "right"
+		)
+	);
 
-	$display_text = array(
-		array("id" => "username", "name" => __("User Name"), "order" => "ASC"),
-		array("id" => "full_name", "name" => __("Full Name"), "order" => "ASC"),
-		array("id" => "enabled", "name" => __("Enabled"), "order" => "ASC"),
-		array("id" => "realm", "name" => __("Realm"), "order" => "ASC"),
-		array("id" => "policy_graphs", "name" => __("Default Graph Policy"), "order" => "ASC"),
-		array("id" => "dtime", "name" => __("Last Login"), "order" => "DESC", "align" => "right"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "user_admin.php",
+		$user_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($user_list) > 0) {
-		foreach ($user_list as $user) {
-			if (empty($user["dtime"]) || ($user["dtime"] == "12/31/1969")) {
-				$last_login = "N/A";
-			}else{
-				$last_login = strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($user["dtime"]));;
-			}
-			if ($user["enabled"] == CHECKED) {
-				$enabled = __("Yes");
-			}else{
-				$enabled = __("No");
-			}
-
-			form_alternate_row_color('line' . $user["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("user_admin.php?action=user_edit&id=" . $user["id"]) . "'>" .
-			(strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>",  $user["username"]) : $user["username"]) . "</a>"
-			, $user["id"]);
-			form_selectable_cell((strlen(get_request_var_request("filter")) ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>",  $user["full_name"]) : $user["full_name"]), $user["id"]);
-			form_selectable_cell($enabled, $user["id"]);
-			form_selectable_cell($auth_realms[$user["realm"]], $user["id"]);
-			form_selectable_cell($graph_policy_array[$user["policy_graphs"]], $user["id"]);
-			form_selectable_cell($last_login, $user["id"]);
-			form_checkbox_cell($user["username"], $user["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
+function display_last_login($date) {
+	if (empty($date) || ($date == "12/31/1969")) {
+		return "N/A";
 	}else{
-		print "<tr><td><em>" . __("No Users") ."</em></td></tr>";
+		return strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($date));;
 	}
+}
 
-	print "</table>\n";	# end table of html_header_sort_checkbox
+function display_user_status($status) {
+	if ($status == CHECKED) {
+		return __("Yes");
+	}else{
+		return __("No");
+	}
+}
 
-	draw_actions_dropdown($user_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+function display_policy_graphs($policy) {
+	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	return $graph_policy_array[$policy];
+}
+
+function display_auth_realms($realm) {
+	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	return $auth_realms[$realm];
 }

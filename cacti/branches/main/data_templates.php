@@ -61,7 +61,7 @@ switch (get_request_var_request("action")) {
 
 		header("Location: data_templates.php");
 		break;
-	case 'template_edit':
+	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
 		data_source_template_edit();
@@ -706,21 +706,13 @@ function data_source_template() {
 		$sql_where = "WHERE data_template_data.local_data_id = 0";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
-	$total_rows = db_fetch_cell("SELECT " .
-		"COUNT(data_template.id) " .
-		"FROM data_template " .
-		"LEFT JOIN data_template_data ON (data_template.id = data_template_data.data_template_id) " .
-		$sql_where);
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$template_list = db_fetch_assoc("SELECT " .
+	$rows = db_fetch_assoc("SELECT " .
 		"data_template.id, " .
 		"data_template.name, " .
 		"data_template.description, " .
@@ -731,44 +723,41 @@ function data_source_template() {
 		"LEFT JOIN data_input ON (data_template_data.data_input_id = data_input.id) " .
 		$sql_where .
 		" ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "data_templates.php");
+	$total_rows = db_fetch_cell("SELECT " .
+		"COUNT(data_template.id) " .
+		"FROM data_template " .
+		"LEFT JOIN data_template_data ON (data_template.id = data_template_data.data_template_id) " .
+		$sql_where);
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"name" => array(
+			"name" => __("Template Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"description" => array(
+			"name" => ("Description"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"data_input_method" => array(
+			"name" => __("Data Input Method"),
+			"emptyval" => "<em>None</em>",
+			"order" => "ASC"
+		),
+		"active" => array(
+			"name" => __("Status"),
+			"function" => "display_checkbox_status",
+			"params" => array("active"),
+			"order" => "ASC"
+		)
+	);
 
-	$display_text = array(
-		array("id" => "name", "name" => __("Template Name"), "order" => "ASC"),
-		array("id" => "description", "name" => ("Description"), "order" => "ASC"),
-		array("id" => "data_input_method", "name" => __("Data Input Method"), "order" => "ASC"),
-		array("id" => "active", "name" => __("Status"), "order" => "ASC"));
-
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($template_list) > 0) {
-		foreach ($template_list as $template) {
-			form_alternate_row_color('line' . $template["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_templates.php?action=template_edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["description"]) : $template["description"]) . "</a>", $template["id"]);
-			form_selectable_cell((empty($template["data_input_method"]) ? "<em>" . __("None") . "</em>": $template["data_input_method"]), $template["id"]);
-			form_selectable_cell((($template["active"] == CHECKED) ? __("Active") : __("Disabled")), $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Data Source Templates") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($ds_template_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "data_templates.php",
+		$ds_template_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
