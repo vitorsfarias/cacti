@@ -702,6 +702,8 @@ $().ready(function() {
 
 	/* restore the page visibility */
 	transitionPage();
+
+	$("#messasge").slideUp("slow");
 });
 
 function sizeContentDivs() {
