@@ -393,7 +393,11 @@ function data_query_item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_item_edit'>\n";
 	html_start_box("<strong>" . __("Associated Graph/Data Source Templates") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, false, 'assoc_templates', 'left wp100');
 
@@ -407,7 +411,12 @@ function data_query_item_edit() {
 
 	if (!empty($snmp_query_item["id"])) {
 		html_start_box("<strong>" . __("Associated Data Source Templates") . "</strong>", "100", $colors["header"], "0", "center", "", false, "assoc_data_templates");
-		$header_items = array(__("Data Source Name"), __("Associated XML Field"), __("Use this Field"));
+		$header_items = array(
+			array("name" => __("Data Source Name")),
+			array("name" => __("Associated XML Field")),
+			array("name" => __("Use this Field"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 1, true, 'data_templates', 'left wp100');
 
@@ -485,7 +494,10 @@ function data_query_item_edit() {
 		if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
 
-				$header_items = array(__("Data Source Template") . " - " . $data_template["name"], "&nbsp;");
+				$header_items = array(
+					array("name" => __("Data Source Template") . " - " . $data_template["name"], "&nbsp;")
+				);
+
 				print "<tr><td>";
 				html_header($header_items, 2, true, 'data_template_suggested_values_' . $data_template["id"], 'left wp100');
 
@@ -559,7 +571,10 @@ function data_query_item_edit() {
 			order by field_name,sequence");
 
 		html_start_box("<strong>" . __("Suggested Values: Graph Templates") . "</strong>", "100", $colors["header"], 0, "center", "");
-		$header_items = array(__("Graph Template") . " - " . db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"]), "&nbsp;");
+		$header_items = array(
+			array("name" => __("Graph Template") . " - " . db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"]), "&nbsp;")
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'graph_template_suggested_values_' . get_request_var("id"), 'left wp100');
 
@@ -650,7 +665,11 @@ function data_query_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_edit'>\n";
 	html_start_box("<strong>" . __("Data Queries") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, false, 'data_query', 'left wp100');
 
@@ -679,7 +698,10 @@ function data_query_edit() {
 
 		if ($xml_file_exists == true) {
 			html_start_box("<strong>" . __("Associated Graph Templates") . "</strong>", "100", $colors["header"], "0", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
-			$header_items = array(__("Name"), __("Graph Template Name"));
+			$header_items = array(
+				array("name" => __("Name")),
+				array("name" => __("Graph Template Name")));
+
 			print "<tr><td>";
 			html_header($header_items, 2, true, 'assoc_graph_templates', 'left wp100');
 
@@ -860,10 +882,11 @@ function data_query() {
 	html_end_box(false);
 
 	$display_text = array(
-		"name" => array(__("Name"), "ASC"),
-		"description" => array(__("Description"), "ASC"),
-		"nosort" => array(__("Image"), ""),
-		"data_input_method" => array(__("Data Input Method"), "ASC"));
+		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
+		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
+		array("id" => "nosort", "name" => __("Image"), "align" => "center"),
+		array("id" => "data_input_method", "name" => __("Data Input Method"), "order" => "ASC")
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

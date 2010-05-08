@@ -414,7 +414,11 @@ function data_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_input_edit'>\n";
 	html_start_box("<strong>" . __("Data Input Methods") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'data_input','left wp100');
 
@@ -428,7 +432,11 @@ function data_edit() {
 
 	if (!empty($_GET["id"])) {
 		html_start_box("<strong>" . __("Input Fields") . "</strong>", "100", $colors["header"], 0, "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
-		$header_items = array(__("Name"), __("Field Order"), __("Friendly Name"));
+		$header_items = array(
+			array("name" => __("Name"), "align" => "left"),
+			array("name" => __("Field Order"), "align" => "left"),
+			array("name" => __("Friendly Name"), "align" => "left"));
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'data_input_fields', 'left wp100');
 
@@ -462,7 +470,13 @@ function data_edit() {
 		html_end_box();
 
 		html_start_box("<strong>" . __("Output Fields"). "</strong>", "100", $colors["header"], 0, "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
-		$header_items = array(__("Name"), __("Field Order"), __("Friendly Name"), __("Update RRA"));
+		$header_items = array(
+			array("name" => __("Name")),
+			array("name" => __("Field Order")),
+			array("name" => __("Friendly Name")),
+			array("name" => __("Update RRA"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'data_output_fields', 'left wp100');
 
@@ -634,8 +648,9 @@ function data() {
 	html_end_box(FALSE);
 
 	$display_text = array(
-		"name" => array(__("Name"), "ASC"),
-		"type_id" => array(__("Data Input Method"), "ASC"));
+		array("id" => "name", "name" => __("Name"), "order" => "ASC"),
+		array("id" => "type_id", "name" => __("Data Input Method"), "order" => "ASC")
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

@@ -651,7 +651,11 @@ function device_template_display_general($device_template, $header_label) {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_edit'>\n";
 	html_start_box("<strong>" . __("Device Templates") . "</strong> $header_label", "100", $colors["header"], "0", "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'device_template');
 
@@ -1316,10 +1320,10 @@ function device_template() {
 	html_end_box(false);
 
 	$display_text = array(
-		"name" => array(__("Template Title"), "ASC"),
-		"description" => array(__("Description"), "ASC"),
-		"nosort1" => array(__("Availbility/SNMP Settings"), "ASC"),
-		"nosort2" => array(__("Image"), "")
+		array("id" => "name", "name" => __("Template Title"), "order" => "ASC"),
+		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
+		array("id" => "nosort1", "name" => __("Availbility/SNMP Settings"), "order" => "ASC"),
+		array("id" => "nosort2", "name" => __("Image"), "align" => "center")
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));

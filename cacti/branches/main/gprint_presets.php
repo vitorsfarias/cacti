@@ -209,7 +209,11 @@ function gprint_presets_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='gprint_edit'>\n";
 	html_start_box("<strong>" . __("GPRINT Presets") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'header_gprint_preset');
 
@@ -352,8 +356,7 @@ function gprint_presets() {
 	print $nav;
 	html_end_box(false);
 
-	$display_text = array(
-		"name" => array(__("Name"), "ASC"));
+	$display_text = array(array("id" => "name", "name" => __("Name"), "order" => "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

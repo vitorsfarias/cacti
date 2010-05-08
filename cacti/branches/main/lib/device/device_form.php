@@ -847,7 +847,10 @@ function device_display_general($device, $device_text) {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", $colors["header"], 0, "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'device');
 
@@ -1758,17 +1761,17 @@ function device() {
 	html_end_box(false);
 
 	$display_text = array(
-		"description" => array(__("Description"), "ASC"),
-		"device.hostname" => array(__("Hostname"), "ASC"),
-		"id" => array(__("ID"), "ASC"),
-		"nosort1" => array(__("Graphs"), "ASC"),
-		"nosort2" => array(__("Data Sources"), "ASC"),
-		"status" => array(__("Status"), "ASC"),
-		"status_event_count" => array(__("Event Count"), "ASC"),
-		"cur_time" => array(__("Current (ms)"), "DESC"),
-		"avg_time" => array(__("Average (ms)"), "DESC"),
-		"availability" => array(__("Availability"), "ASC"),
-		"polling_time" => array(__("Poll Time"), "DESC"));
+		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
+		array("id" => "device.hostname", "name" => __("Hostname"), "order" => "ASC"),
+		array("id" => "id", "name" => __("ID"), "order" => "ASC"),
+		array("id" => "nosort1", "name" => __("Graphs"), "order" => "ASC", "align" => "right"),
+		array("id" => "nosort2", "name" => __("Data Sources"), "order" => "ASC", "align" => "right"),
+		array("id" => "status", "name" => __("Status"), "order" => "ASC"),
+		array("id" => "status_event_count", "name" => __("Event Count"), "order" => "ASC", "align" => "right"),
+		array("id" => "cur_time", "name" => __("Current (ms)"), "order" => "DESC", "align" => "right"),
+		array("id" => "avg_time", "name" => __("Average (ms)"), "order" => "DESC", "align" => "right"),
+		array("id" => "availability", "name" => __("Availability"), "order" => "ASC", "align" => "right"),
+		array("id" => "polling_time", "name" => __("Poll Time"), "order" => "DESC", "align" => "right"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

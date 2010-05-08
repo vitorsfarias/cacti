@@ -497,7 +497,10 @@ function data_source_template_display_general($data_template, $header_label) {
 
 	# the template header
 	html_start_box("<strong>" . __("Data Source Template") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value")));
+
 	print "<tr><td>";
 	html_header($header_items, 2, true, 'header_data_template');
 
@@ -525,7 +528,11 @@ function data_source_template_display_general($data_template, $header_label) {
 		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
 
 		html_start_box("<strong>" . __("Custom Data") . "</strong> [data input: " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", $colors["header"], 0, "center", "", true);
-		$header_items = array(__("Field"), __("Value"));
+		$header_items = array(
+			array("name" => __("Field")),
+			array("name" => __("Value"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'data_source_custom_data');
 
@@ -733,10 +740,10 @@ function data_source_template() {
 	html_end_box(false);
 
 	$display_text = array(
-		"name" => array(__("Template Name"), "ASC"),
-		"description" => array(__("Description"), "ASC"),
-		"data_input_method" => array(__("Data Input Method"), "ASC"),
-		"active" => array(__("Status"), "ASC"));
+		array("id" => "name", "name" => __("Template Name"), "order" => "ASC"),
+		array("id" => "description", "name" => ("Description"), "order" => "ASC"),
+		array("id" => "data_input_method", "name" => __("Data Input Method"), "order" => "ASC"),
+		array("id" => "active", "name" => __("Status"), "order" => "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

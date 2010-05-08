@@ -928,7 +928,10 @@ function graph_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_edit'>\n";
 	html_start_box("<strong>" . __("Graph Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
 
@@ -1377,10 +1380,10 @@ function graph() {
 	html_end_box(false);
 
 	$display_text = array(
-		"title_cache" => array(__("Graph Title"), "ASC"),
-		"local_graph_id" => array(__("ID"), "ASC"),
-		"name" => array(__("Template Name"), "ASC"),
-		"height" => array(__("Size"), "ASC"));
+		array("id" => "title_cache", "name" => __("Graph Title"), "order" => "ASC"),
+		array("id" => "local_graph_id", "name" => __("ID"), "order" => "ASC", "align" => "right"),
+		array("id" => "name", "name" => __("Template Name"), "order" => "ASC"),
+		array("id" => "height", "name" => __("Size"), "order" => "ASC", "align" => "right"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

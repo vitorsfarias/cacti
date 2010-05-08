@@ -404,7 +404,11 @@ function cdef_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='cdef_edit'>\n";
 	html_start_box("<strong>". __("CDEF's") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+
 	print "<tr><td>";
 	html_header($header_items, 2, false, 'header_cdef_edit','left wp100');
 
@@ -422,7 +426,12 @@ function cdef_edit() {
 		html_end_box();
 
 		html_start_box("<strong>" . __("CDEF Items") . "</strong>", "100", $colors["header"], 0, "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"], false, "cdef");
-		$header_items = array(__("Item"), __("Item Value"));
+
+		$header_items = array(
+			array("name" => __("Item")),
+			array("name" => __("Item Value"))
+		);
+
 		print "<tr><td>";
 		html_header($header_items, 2, true, 'cdef_item','left wp100');
 
@@ -591,8 +600,7 @@ function cdef() {
 	print $nav;
 	html_end_box(false);
 
-	$display_text = array(
-		"name" => array(__("CDEF Title"), "ASC"));
+	$display_text = array(array("id" => "name", "name" => __("CDEF Title"), "order" => "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 

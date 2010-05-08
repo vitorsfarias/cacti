@@ -244,7 +244,10 @@ function item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_item_edit'>\n";
 	html_start_box("<strong>" . __("X-Axis Items") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 1, true, 'template');
 
@@ -265,8 +268,6 @@ function item_edit() {
 	form_save_button_alt("path!xaxis_presets.php|action!edit|id!" . get_request_var("xaxis_id"));
 }
 
-
-
 function xaxis_edit() {
 	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
@@ -285,7 +286,10 @@ function xaxis_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_edit'>\n";
 	html_start_box("<strong>". __("X-Axis Presets") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
-	$header_items = array(__("Field"), __("Value"));
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
 	print "<tr><td>";
 	html_header($header_items, 2, false, 'header_xaxis_edit','left wp100');
 
@@ -302,11 +306,19 @@ function xaxis_edit() {
 		$xaxis_items = db_fetch_assoc($sql_query);
 
 		html_start_box("<strong>" . __("X-Axis Items") . "</strong>", "100", $colors["header"], 0, "center", "xaxis_presets.php?action=item_edit&xaxis_id=" . $_GET["id"], false, "xaxis");
-		$header_items = array(__("Item"), __("Name"), __("Timespan"),
-		__("Global Grid Span"), __("Steps"),
-		__("Major Grid Span"), __("Steps"),
-		__("Label Grid Span"), __("Steps"),
-		__("Relative Label Position"), __("Label Format"));
+		$header_items = array(
+			array("name" => __("Item")),
+			array("name" => __("Name")),
+			array("name" => __("Timespan"), "align" => "right"),
+			array("name" => __("Global Grid Span"), "align" => "right"),
+			array("name" => __("Steps"), "align" => "right"),
+			array("name" => __("Major Grid Span"), "align" => "right"),
+			array("name" => __("Steps"), "align" => "right"),
+			array("name" => __("Label Grid Span"), "align" => "right"),
+			array("name" => __("Steps"), "align" => "right"),
+			array("name" => __("Relative Label Position")),
+			array("name" => __("Label Format"))
+		);
 		print "<tr><td>";
 		html_header($header_items, 12, true, 'xaxis_item','left wp100');
 
@@ -490,9 +502,7 @@ function xaxis() {
 		print $nav;
 		html_end_box(false);
 
-		$display_text = array(
-		"name" => array(__("Name"), "ASC"),
-		);
+		$display_text = array(array("id" => "name", "name" => __("Name"), "order" => "ASC"));
 
 		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
