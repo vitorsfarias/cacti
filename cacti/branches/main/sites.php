@@ -132,7 +132,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$site_list = ""; $i = 0;
+	$site_list = "";
 
 	/* loop through each of the sites selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -142,10 +142,8 @@ function form_actions() {
 			/* ==================================================== */
 
 			$site_info = db_fetch_cell("SELECT name FROM sites WHERE id=" . $matches[1]);
-			$site_list .= "<li>" . $site_info . "<br>";
-			$site_array[$i] = $matches[1];
-
-			$i++;
+			$site_list .= "<li>" . $site_info . "</li>";
+			$site_array[] = $matches[1];
 		}
 	}
 
@@ -165,25 +163,21 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following site(s)?") . "</p>
-						<p><ul>$site_list</ul></p>";
-						print "</td></tr>
+						<p>" . __("When you click \"Continue\", the following Site(s) will be deleted.") . "</p>
+						<p><ul>$site_list</ul></p>
 					</td>
-				</tr>\n
-				";
-		}
+				</tr>\n";
 
-		print "<div><input type='hidden' name='action' value='actions'></div>";
-		print "<div><input type='hidden' name='selected_items' value='" . (isset($site_array) ? serialize($site_array) : '') . "'></div>";
-		print "<div><input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'></div>";
+			$title = __("Delete Site(s)");
+		}
 	}else{
 		print "<tr><td class='textArea'><span class='textError'>" . __("You must select at least one site.") . "</span></td></tr>\n";
 	}
 
 	if (!isset($site_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($site_array), get_request_var_post("drp_action"));
+		from_continue(serialize($site_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

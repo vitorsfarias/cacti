@@ -352,7 +352,7 @@ function api_device_form_actions() {
 	}
 
 	/* setup some variables */
-	$device_list = ""; $i = 0; $device_array = array();
+	$device_list = ""; $device_array = array();
 
 	/* loop through each of the device templates selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -361,10 +361,8 @@ function api_device_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$device_list .= "<li>" . db_fetch_cell("select description from device where id=" . $matches[1]) . "<br>";
-			$device_array[$i] = $matches[1];
-
-			$i++;
+			$device_list .= "<li>" . db_fetch_cell("select description from device where id=" . $matches[1]) . "</li>";
+			$device_array[] = $matches[1];
 		}
 	}
 
@@ -392,22 +390,26 @@ function api_device_form_actions() {
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_ENABLE) { /* Enable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("To enable the following devices, press the \"yes\" button below.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be enabled.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
+
+			$title = __("Enable Device(s)");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_DISABLE) { /* Disable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("To disable the following devices, press the \"yes\" button below.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be disabled.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
+
+			$title = __("Disable Device(s)");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_SNMP_OPTIONS) { /* change snmp options */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("To change SNMP parameters for the following devices, check the box next to the fields you want to update, fill in the new value, and click \"yes\".") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will have their SNMP settings changed.  Make sure you check the box next to the fields you want to update, and fill in the new values before continuing.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
 
@@ -432,11 +434,13 @@ function api_device_form_actions() {
 					"fields" => $form_array
 					)
 				);
+
+			$title = __("Change Device(s) SNMP options");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS) { /* change availability options */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("To change availability parameters for the following devices, check the box next to the fields you want to update, fill in the new value, and click yes.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) Availability options will be changed.  Make sure you check the box next to the fields you want to update, and fill in the new values before continuing.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
 
@@ -461,36 +465,41 @@ function api_device_form_actions() {
 					"fields" => $form_array
 					)
 				);
+
+			$title = __("Change Device(s) Availability options");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CLEAR_STATISTICS) { /* Clear Statisitics for Selected Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("To clear the counters for the following devices, press the \"yes\" button below.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) statistics will be reset.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
+
+			$title = __("Clear Device(s) Statistics");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_DELETE) { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following devices?") . "</p>
-						<p>$device_list</p>";
-						form_radio_button("delete_type", "2", "1", __("Leave all graphs and data sources untouched.  Data sources will be disabled however."), "1"); print "<br>";
-						form_radio_button("delete_type", "2", "2", __("Delete all associated <strong>graphs</strong> and <strong>data sources</strong>."), "1"); print "<br>";
+						<p>" . __("When you click 'Continue', the following Device(s) will be deleted.") . "</p>
+						<p><ul>$device_list</ul></p>";
+						form_radio_button("delete_type", "2", "1", __("Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."), "1"); print "<br>";
+						form_radio_button("delete_type", "2", "2", __("Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>."), "1"); print "<br>";
 						print "</td></tr>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Device(s)");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_POLLER) { /* Change Poller */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("Select the new poller below for the devices(s) below and select 'yes' to continue, or 'no' to return.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Poller below.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
 
 			$form_array = array();
 			$field_name = "poller_id";
 			$form_array += array($field_name => $fields_device_edit["poller_id"]);
-			$form_array[$field_name]["description"] = __("Please select the new poller for the selected device(s).");
+			$form_array[$field_name]["description"] = __("Please select the new Poller for the selected Device(s).");
 
 			draw_edit_form(
 				array(
@@ -498,18 +507,20 @@ function api_device_form_actions() {
 					"fields" => $form_array
 					)
 				);
+
+			$title = __("Change Device(s) Poller");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_SITE) { /* Change Site */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
-						<p>" . __("Select the new site for the devices(s) below and select 'yes' to continue, or 'no' to return.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Site below.") . "</p>
+						<p><ul>$device_list</ul></p>
 					</td>
 					</tr>";
 
 			$form_array = array();
 			$field_name = "site_id";
 			$form_array += array($field_name => $fields_device_edit["site_id"]);
-			$form_array[$field_name]["description"] = __("Please select the new site for the selected device(s).");
+			$form_array[$field_name]["description"] = __("Please select the new Site for the selected Device(s).");
 
 			draw_edit_form(
 				array(
@@ -517,21 +528,33 @@ function api_device_form_actions() {
 					"fields" => $form_array
 					)
 				);
+
+
+			$title = __("Change Device(s) Site");
 		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following devices will be placed under the branch selected below.") . "</p>
-						<p>$device_list</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be placed under the Tree Branch selected below.") . "</p>
+						<p><ul>$device_list</ul></p>
 						<p><strong>" . __("Destination Branch:") . "</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
 				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
 				";
+
+			$title = __("Place Device(s) on a Tree");
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['device_list'] = $device_list;
 			$save['device_array'] = (isset($device_array)? $device_array : array());
+			$save['title'] = '';
 			api_plugin_hook_function('device_action_prepare', $save);
+
+			if (strlen($save['title'])) {
+				$title = $save['title'];
+			}else{
+				$title = '';
+			}
 		}
 	} else {
 		print "	<tr>
@@ -542,9 +565,9 @@ function api_device_form_actions() {
 	}
 
 	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($device_array), get_request_var_post("drp_action"));
+		from_continue(serialize($device_array), get_request_var_post("drp_action"));
 	}
 
 	html_end_box();

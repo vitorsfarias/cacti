@@ -364,7 +364,7 @@ function graph_form_actions() {
 	}
 
 	/* setup some variables */
-	$graph_list = ""; $i = 0; $graph_array = array();
+	$graph_list = ""; $graph_array = array();
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -373,8 +373,8 @@ function graph_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= "<li>" . get_graph_title($matches[1]) . "<br>";
-			$graph_array[$i++] = $matches[1];
+			$graph_list .= "<li>" . get_graph_title($matches[1]) . "</li>";
+			$graph_array[] = $matches[1];
 		}
 	}
 
@@ -415,110 +415,127 @@ function graph_form_actions() {
 
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following graphs?") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be deleted.") . "</p>
+						<p><ul>$graph_list</ul></p>
 						";
 						if (sizeof($data_sources) > 0) {
-							print "<tr class='rowAlternate1'><td class='textArea'><p class='textArea'>" . __("The following data sources are in use by these graphs:") . "</p>\n";
+							print "<tr class='rowAlternate1'><td class='textArea'><p class='textArea'>" . __("The following Data Source(s) are in use by these Graph(s):") . "</p>\n";
 
 							foreach ($data_sources as $data_source) {
 								print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
 							}
 
 							print "<br>";
-							form_radio_button("delete_type", "1", "1", __("Leave the data sources untouched."), "1"); print "<br>";
-							form_radio_button("delete_type", "1", "2", __("Delete all <strong>data sources</strong> referenced by these graphs."), "1"); print "<br>";
+							form_radio_button("delete_type", "1", "1", __("Leave the Data Source(s) untouched."), "1"); print "<br>";
+							form_radio_button("delete_type", "1", "2", __("Delete all <strong>Data Source(s)</strong> referenced by these Graph(s)."), "1"); print "<br>";
 							print "</td></tr>";
 						}
 					print "
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Graph(s)");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_TEMPLATE) { /* change graph template */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Choose a graph template and click save to change the graph template for the following graphs. Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be re-associated with the Graph Template below.  Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.") . "</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("New Graph Template:") . "</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Change Graph(s) Graph Template");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_DUPLICATE) { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be duplicated. You can optionally change the title format for the new graphs.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be duplicated. You can optionally change the title format for the new Graph(s).") . "</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", __("<graph_title> (1)"), "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Duplicate Graph(s)");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CONVERT_TO_TEMPLATE) { /* graph -> graph template */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be converted into graph templates.  You can optionally change the title format for the new graph templates.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be converted into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).") . "</p>
+						<p><ul>$graph_list<ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", __("<graph_title> Template"), "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Convert Graph(s) to Graph Template(s)");
 		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be placed under the branch selected below.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be placed under the Tree Branch selected below.") . "</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("Destination Branch:") . "</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
-				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
-				";
+				<div><input type='hidden' name='tree_id' value='" . $matches[1] . "'></div>\n";
+
+			$title = __("Place Graph(s) on a Tree");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_HOST) { /* change device */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Choose a new device for these graphs:") . "</p>
-						<p>$graph_list</p>
-						<p><strong>" . __("New Host:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be re-associated with the Device selected below.") . "</p>
+						<p><ul>$graph_list</ul></p>
+						<p><strong>" . __("New Device:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Change Graph(s) Device");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_REAPPLY_SUGGESTED_NAMES) { /* reapply suggested naming to device */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will have their suggested naming conventions recalculated and applied to the graphs.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will have their suggested naming conventions recalculated and applied to the Graph(s).") . "</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Reapply Suggested Names");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_RESIZE) { /* reapply suggested naming to device */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be resized per your specifications.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be resized per your specifications.") . "</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("Graph Height:") . "</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
 						<p><strong>" . __("Graph Width:") . "</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Resize Graph(s)");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_ENABLE_EXPORT) { /* enable graph export */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be enabled for graph export.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be enabled for Graph Export.") . "</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Enable Graph Export");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_DISABLE_EXPORT) { /* disable graph export */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graphs will be disabled for graph export.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click 'Continue', the following Graph(s) will be disabled for Graph Export.") . "</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Disable Graph Export");
 		} else {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['graph_list'] = $graph_list;
 			$save['graph_array'] = $graph_array;
+			$save['title'] = "";
 			api_plugin_hook_function('graphs_action_prepare', $save);
+
+			if (strlen($save['title'])) {
+				$title = $save['title'];
+			}else{
+				$title = '';
+			}
 		}
 	} else {
 		print "	<tr>
@@ -529,9 +546,9 @@ function graph_form_actions() {
 	}
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($graph_array), get_request_var_post("drp_action"));
+		from_continue(serialize($graph_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

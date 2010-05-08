@@ -1170,46 +1170,60 @@ function form_cancel_action_compose($cancel_action) {
 	}
 }
 
-/** form_return_button_alt - draws a return button at the bottom of
+/** form_return_button - draws a return button at the bottom of
      an html edit form
 */
-function form_return_button_alt() {
+function form_return_button() {
 	?>
 	<tr>
 		<td bgcolor="#f5f5f5" align="right">
-			<input type='button' value='<?php print __("Return");?>' onClick='window.location.assign("<?php print htmlspecialchars($_SERVER['HTTP_REFERER']);?>")' name='cancel'>
+			<input type='button' value='<?php print __("Return");?>' onClick='window.history.back()' name='cancel'>
 		</td>
 	</tr>
 	</form>
 	<?php
 }
 
-/** form_yesno_button_alt - draws a yes and no button at the bottom of an html edit form
-   @param string $device_list 	- serialized device array
+/** form_cancel_button - draws a cancel button at the bottom of
+     an html edit form
+*/
+function form_return_button() {
+	?>
+	<tr>
+		<td bgcolor="#f5f5f5" align="right">
+			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
+		</td>
+	</tr>
+	</form>
+	<?php
+}
+
+/** from_continue - draws a Continue/Cancel button at the bottom of an html edit form
+   @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected
  */
-function form_yesno_button_alt($device_list, $drp_action = "none") {
+function from_continue($item_list, $drp_action = "none", $title = "") {
 	global $config;
 
 	?>
 	<tr>
 		<td align="right">
 			<div><input type='hidden' name='action' value='actions'></div>
-			<div><input type='hidden' name='selected_items' value='<?php print $device_list;?>'></div>
+			<div><input type='hidden' name='selected_items' value='<?php print $items_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
-			<input type='button' value='<?php print __("No");?>' onClick='window.location.assign("<?php print htmlspecialchars($_SERVER['HTTP_REFERER']);?>")' name='cancel'>
-			<input type='submit' value='<?php print __("Yes");?>' name='yes'>
+			<input type='button' value='<?php print __("Continue");?>' name='yes' onClick='window.history.back()' title='<?php print $title;?>'>
+			<input type='submit' value='<?php print __("Cancel");?>' name='cancel'>
 		</td>
 	</tr>
 	</form>
 	<?php
 }
 
-/** form_yesno_button_alt2 		- draws a yes and no button at the bottom of an html edit form
+/** from_continue2 		- draws a Continue/Cancel button at the bottom of an html edit form
    @param string $device_list 	- serialized item array
    @param string $action 		- specifies the action code, e.g. "save_gt" for the main procedure select directive
  */
-function form_yesno_button_alt2($item_list, $action = "none") {
+function from_continue2($item_list, $action = "none", $title = "") {
 	global $config;
 
 	?>
@@ -1217,8 +1231,8 @@ function form_yesno_button_alt2($item_list, $action = "none") {
 		<td align="right">
 			<div><input type='hidden' name='action' value='<?php print $action;?>'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
-			<input type='button' value='<?php print __("No");?>' onClick='window.location.assign("<?php print htmlspecialchars($_SERVER['HTTP_REFERER']);?>")' name='cancel'>
-			<input type='submit' value='<?php print __("Yes");?>' name='yes'>
+			<input type='submit' value='<?php print __("Continue");?>' name='yes' title='<?php print $title;?>'>
+			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
 		</td>
 	</tr>
 	</form>

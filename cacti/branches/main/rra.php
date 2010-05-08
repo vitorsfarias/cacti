@@ -108,7 +108,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$rra_list = ""; $i = 0;
+	$rra_list = "";
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -117,10 +117,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$rra_list .= "<li>" . db_fetch_cell("select name from rra where id=" . $matches[1]) . "<br>";
-			$rra_array[$i] = $matches[1];
-
-			$i++;
+			$rra_list .= "<li>" . db_fetch_cell("select name from rra where id=" . $matches[1]) . "</li>";
+			$rra_array[] = $matches[1];
 		}
 	}
 
@@ -140,24 +138,21 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("Are you sure you want to delete the following RRAs?") . "</p>
+						<p>" . __("When you click \"Continue\", the following RRA(s) will be deleted.") . "</p>
 						<p><ul>$rra_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete RRA(s)");
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one RRA.") . "</span></td></tr>\n";
 	}
 
-	print "<div><input type='hidden' name='action' value='actions'></div>";
-	print "<div><input type='hidden' name='selected_items' value='" . (isset($rra_array) ? serialize($rra_array) : '') . "'></div>";
-	print "<div><input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'></div>";
-
 	if (!isset($rra_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($rra_array), get_request_var_post("drp_action"));
+		from_continue(serialize($rra_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

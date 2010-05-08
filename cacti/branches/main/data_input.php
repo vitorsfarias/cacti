@@ -234,10 +234,12 @@ function form_actions() {
 			print "
 				<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following data input methods?") . "</p>
+						<p>" . __("When you click \"Continue\", the selected Data Input Method(s) will be deleted") . "</p>
 						<p>$di_list</p>
 					</td>
 				</tr>\n";
+
+			$title = __("Delete Data Input Method(s)");
 		}
 	} else {
 		print "	<tr>
@@ -245,12 +247,13 @@ function form_actions() {
 					<p>" . __("You must first select a Data Input Method.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+		form_return_button();
 	}
 
-	if (!sizeof($di_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+	if (!isset($di_array) || get_request_var_post("drp_action") === ACTION_NONE) {
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($di_array), get_request_var_post("drp_action"));
+		from_continue(serialize($di_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

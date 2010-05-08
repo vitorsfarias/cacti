@@ -106,7 +106,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$gprint_list = ""; $i = 0;
+	$gprint_list = "";
 
 	/* loop through each of the items selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -115,10 +115,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$gprint_list .= "<li>" . db_fetch_cell("select name from graph_templates_gprint where id=" . $matches[1]) . "<br>";
-			$gprint_array[$i] = $matches[1];
-
-			$i++;
+			$gprint_list .= "<li>" . db_fetch_cell("select name from graph_templates_gprint where id=" . $matches[1]) . "</li>";
+			$gprint_array[] = $matches[1];
 		}
 	}
 
@@ -138,24 +136,21 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>" . __("Are you sure you want to delete the following GPRINT presets?") . "</p>
+						<p>" . __("When you click \"Continue\", the following GPRINT Preset(s) will be delete.") . "</p>
 						<p><ul>$gprint_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete GPRINT Preset(s)");
 		}
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one GPRINT preset.") . "</span></td></tr>\n";
 	}
 
-	print "<div><input type='hidden' name='action' value='actions'></div>";
-	print "<div><input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'></div>";
-	print "<div><input type='hidden' name='drp_action' value='" . $_POST["drp_action"] . "'></div>";
-
 	if (!isset($gprint_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($gprint_array), get_request_var_post("drp_action"));
+		from_continue(serialize($gprint_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

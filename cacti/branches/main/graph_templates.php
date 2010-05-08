@@ -299,7 +299,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$graph_list = ""; $i = 0; $graph_array = array();
+	$graph_list = ""; $graph_array = array();
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -308,10 +308,8 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= "<li>" . db_fetch_cell("select name from graph_templates where id=" . $matches[1]) . "<br>";
-			$graph_array[$i] = $matches[1];
-
-			$i++;
+			$graph_list .= "<li>" . db_fetch_cell("select name from graph_templates where id=" . $matches[1]) . "</li>";
+			$graph_array[] = $matches[1];
 		}
 	}
 
@@ -331,20 +329,22 @@ function form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following graph templates? Any graphs attached to these templates will become individual graphs.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click \"Continue\", the following Graph Template(s) will be deleted.  Any Graph(s) attached to these Graph Template(s) will become individual Graph(s).") . "</p>
+						<p><ul>$graph_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Graph Template(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following graph templates will be duplicated. You can optionally change the title format for the new graph templates.") . "</p>
-						<p>$graph_list</p>
+						<p>" . __("When you click \"Continue\", the following Graph Template(s) will be duplicated. You can optionally change the title format for the new Graph Template(s).") . "</p>
+						<p><ul>$graph_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Duplidate Graph Template(s)");
 		}
 	} else {
 		print "	<tr>
@@ -355,9 +355,9 @@ function form_actions() {
 	}
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($graph_array), get_request_var_post("drp_action"));
+		from_continue(serialize($graph_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

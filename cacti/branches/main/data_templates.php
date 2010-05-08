@@ -303,7 +303,7 @@ function data_source_template_form_actions() {
 	}
 
 	/* setup some variables */
-	$ds_list = ""; $i = 0; $ds_array = array();
+	$ds_list = ""; $ds_array = array();
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
@@ -312,10 +312,8 @@ function data_source_template_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "<br>";
-			$ds_array[$i] = $matches[1];
-
-			$i++;
+			$ds_list .= "<li>" . db_fetch_cell("select name from data_template where id=" . $matches[1]) . "</li>";
+			$ds_array[] = $matches[1];
 		}
 	}
 
@@ -335,20 +333,22 @@ function data_source_template_form_actions() {
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("Are you sure you want to delete the following data templates? Any data sources attached to these templates will become individual data sources.") . "</p>
+						<p>" . __("When  you click \"Continue\",  the following Data Template(s) will be deleted.  Any Data Source(s) attached to these Data Template(s) will become individual Data Source(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete Data Template(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='textArea'>
-						<p>" . __("When you click save, the following data templates will be duplicated. You can optionally change the title format for the new data templates.") . "</p>
+						<p>" . __("When you click \"Continue\", the following Data Template(s) will be duplicated. You can optionally change the title format for the new Data Template(s).") . "</p>
 						<p><ul>$ds_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Duplicate Data Template(s)");
 		}
 	} else {
 		print "	<tr>
@@ -359,9 +359,9 @@ function data_source_template_form_actions() {
 	}
 
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button_alt();
+		form_return_button();
 	}else{
-		form_yesno_button_alt(serialize($ds_array), get_request_var_post("drp_action"));
+		from_continue(serialize($ds_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();
