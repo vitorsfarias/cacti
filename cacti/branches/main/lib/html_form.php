@@ -1187,7 +1187,7 @@ function form_return_button() {
 /** form_cancel_button - draws a cancel button at the bottom of
      an html edit form
 */
-function form_return_button() {
+function form_cancel_button() {
 	?>
 	<tr>
 		<td bgcolor="#f5f5f5" align="right">
