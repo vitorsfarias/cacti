@@ -1294,62 +1294,54 @@ function device_template() {
 		$sql_where = "";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	if (get_request_var_request("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = get_request_var_request("rows");
+	}
+
+	$rows = db_fetch_assoc("SELECT *
+		FROM device_template
+		$sql_where
+		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(device_template.id)
 		FROM device_template
 		$sql_where");
 
-	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
-	}else{
-		$rows = get_request_var_request("rows");
-	}
-
-	$template_list = db_fetch_assoc("SELECT *
-		FROM device_template
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
-
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "device_templates.php");
-
-	print $nav;
-	html_end_box(false);
-
-	$display_text = array(
-		array("id" => "name", "name" => __("Template Title"), "order" => "ASC"),
-		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
-		array("id" => "nosort1", "name" => __("Availbility/SNMP Settings"), "order" => "ASC"),
-		array("id" => "nosort2", "name" => __("Image"), "align" => "center")
+	$table_format = array(
+		"name" => array(
+			"name" => __("Template Title"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"description" => array(
+			"name" => __("Description"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"nosort" => array(
+			"name" => __("Availbility/SNMP Settings"),
+			"function" => "display_device_template_control",
+			"params" => array("override_defaults", "override_permitted"),
+			"sort" => false
+		),
+		"image" => array(
+			"name" => __("Image"),
+			"sort" => false,
+			"align" => "center"
+		)
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "device_templates.php",
+		$device_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	if (sizeof($template_list) > 0) {
-		foreach ($template_list as $template) {
-			form_alternate_row_color('line' . $template["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("device_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("device_templates.php?action=edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["description"]) : $template["description"]) . "</a>", $template["id"]);
-			form_selectable_cell(($template["override_defaults"] == "on" ? __("Template controls Availability and SNMP") . ($template["override_permitted"] == "on" ? __(", User can override"):__(", Template propagation is forced")):__("Using System Defaults")) , $template["id"]);
-			form_selectable_cell((file_exists(CACTI_BASE_PATH . "/../" . $template["image"]) ? "<img src='" . $template["image"] . "'>":""), $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Device Templates") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($device_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+function display_device_template_control($override_defaults, $override_permitted) {
+	return ($override_defaults == "on" ? __("Template controls Availability and SNMP") . ($override_permitted == "on" ? __(", User can override"):__(", Template propagation is forced")):__("Using System Defaults"));
 }

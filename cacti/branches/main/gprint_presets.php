@@ -330,54 +330,34 @@ function gprint_presets() {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (name LIKE '%%" . $_REQUEST["filter"] . "%%')";
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(id)
-		FROM graph_templates_gprint
-		$sql_where");
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$template_list = db_fetch_assoc("SELECT
+	$rows = db_fetch_assoc("SELECT
 		id,
 		name
 		FROM graph_templates_gprint
 		$sql_where
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction'));
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 11, "gprint_presets.php?filter=" . $_REQUEST["filter"]);
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(id)
+		FROM graph_templates_gprint
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		)
+	);
 
-	$display_text = array(array("id" => "name", "name" => __("Name"), "order" => "ASC"));
-
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($template_list) > 0) {
-		foreach ($template_list as $template) {
-			form_alternate_row_color('line' . $template["id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("gprint_presets.php?action=edit&id=" . $template["id"]) . "'>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template["name"]) : $template["name"]) . "</a>", $template["id"]);
-			form_checkbox_cell($template["name"], $template["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Items") . "</em></td></tr>\n";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($gprint_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "gprint_presets.php",
+		$gprint_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }

@@ -1719,17 +1719,10 @@ function device() {
 		$sql_where .= (strlen($sql_where) ? " and device.site_id=" . $_REQUEST["site"] : "where device.site_id=" . $_REQUEST["site"]);
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
-	$total_rows = db_fetch_cell("select
-		COUNT(device.id)
-		from device
-		$sql_where");
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
 	$sortby = $_REQUEST["sort_column"];
@@ -1740,7 +1733,9 @@ function device() {
 	$device_graphs       = array_rekey(db_fetch_assoc("SELECT device_id, count(*) as graphs FROM graph_local GROUP BY device_id"), "device_id", "graphs");
 	$device_data_sources = array_rekey(db_fetch_assoc("SELECT device_id, count(*) as data_sources FROM data_local GROUP BY device_id"), "device_id", "data_sources");
 
-	$sql_query = "SELECT device.*, poller.description AS poller, sites.name AS site
+	$sql_query = "SELECT device.*, poller.description AS poller, sites.name AS site,
+		(SELECT count(*) FROM graph_local WHERE device.id=graph_local.device_id) AS total_graphs,
+		(SELECT count(*) FROM data_local WHERE device.id=data_local.device_id) AS total_datasources
 		FROM device
 		LEFT JOIN poller
 		ON device.poller_id=poller.id
@@ -1748,73 +1743,87 @@ function device() {
 		ON device.site_id=sites.id
 		$sql_where
 		ORDER BY " . $sortby . " " . get_request_var_request("sort_direction") . "
-		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+		LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp;
 
 	//print $sql_query;
 
-	$devices = db_fetch_assoc($sql_query);
+	$rows = db_fetch_assoc($sql_query);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 13, "devices.php");
+	$total_rows = db_fetch_cell("select
+		COUNT(device.id)
+		from device
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"description" => array(
+			"name" => __("Description"),
+			"link" => true,
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"device.hostname" => array(
+			"name" => __("Hostname"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
+		"total_graphs" => array(
+			"name" => __("Graphs"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"total_datasources" => array(
+			"name" => __("Data Sources"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"status" => array(
+			"name" => __("Status"),
+			"function" => "get_colored_device_status",
+			"params" => array("disabled", "status"),
+			"order" => "ASC"
+		),
+		"status_event_count" => array(
+			"name" => __("Time in State"),
+			"order" => "ASC",
+			"function" => "display_device_down_time",
+			"params" => array("id", "status_event_count"),
+			"align" => "right"
+		),
+		"cur_time" => array(
+			"name" => __("Current (ms)"),
+			"order" => "DESC",
+			"format" => "round,2",
+			"align" => "right"
+		),
+		"avg_time" => array(
+			"name" => __("Average (ms)"),
+			"order" => "DESC",
+			"format" => "round,2",
+			"align" => "right"
+		),
+		"availability" => array(
+			"name" => __("Availability"),
+			"order" => "ASC",
+			"format" => "round,2",
+			"align" => "right"
+		),
+		"polling_time" => array(
+			"name" => __("Poll Time"),
+			"order" => "DESC",
+			"format" => "round,2",
+			"align" => "right"
+		)
+	);
 
-	$display_text = array(
-		array("id" => "description", "name" => __("Description"), "order" => "ASC"),
-		array("id" => "device.hostname", "name" => __("Hostname"), "order" => "ASC"),
-		array("id" => "id", "name" => __("ID"), "order" => "ASC"),
-		array("id" => "nosort1", "name" => __("Graphs"), "order" => "ASC", "align" => "right"),
-		array("id" => "nosort2", "name" => __("Data Sources"), "order" => "ASC", "align" => "right"),
-		array("id" => "status", "name" => __("Status"), "order" => "ASC"),
-		array("id" => "status_event_count", "name" => __("Event Count"), "order" => "ASC", "align" => "right"),
-		array("id" => "cur_time", "name" => __("Current (ms)"), "order" => "DESC", "align" => "right"),
-		array("id" => "avg_time", "name" => __("Average (ms)"), "order" => "DESC", "align" => "right"),
-		array("id" => "availability", "name" => __("Availability"), "order" => "ASC", "align" => "right"),
-		array("id" => "polling_time", "name" => __("Poll Time"), "order" => "DESC", "align" => "right"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "devices.php",
+		array_merge($device_actions, api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
+		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($devices) > 0) {
-		foreach ($devices as $device) {
-			$spanextra = "";
-			if($device["disabled"] != CHECKED && $device["status"] == DEVICE_DOWN) {
-				$date = __date("D, " . date_time_format() . " T", strtotime($device['status_fail_date']));
-				$spanextra = 'title="' . __("Down since %s with error: '%s'", $date, $device['status_last_error']) . '"';
-			}
-
-			form_alternate_row_color('line' . $device["id"], true);
-			form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars("devices.php?action=edit&id=" . $device["id"]) . "'>" .
-				(strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $device["description"]) : $device["description"]) . "</a>", $device["id"]);
-			form_selectable_cell((strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $device["hostname"]) : $device["hostname"]), $device["id"]);
-			form_selectable_cell(round(($device["id"]), 2), $device["id"]);
-			form_selectable_cell((isset($device_graphs[$device["id"]]) ? $device_graphs[$device["id"]] : 0), $device["id"]);
-			form_selectable_cell((isset($device_data_sources[$device["id"]]) ? $device_data_sources[$device["id"]] : 0), $device["id"]);
-			form_selectable_cell( "<span $spanextra>".get_colored_device_status(($device["disabled"] == CHECKED ? true : false), $device["status"]) . "</span>", $device["id"]);
-			form_selectable_cell(round(($device["status_event_count"]), 2), $device["id"]);
-			form_selectable_cell(round(($device["cur_time"]), 2), $device["id"]);
-			form_selectable_cell(round(($device["avg_time"]), 2), $device["id"]);
-			form_selectable_cell(round($device["availability"], 2), $device["id"]);
-			form_selectable_cell(round($device["polling_time"], 2), $device["id"]);
-			form_checkbox_cell($device["description"], $device["id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Hosts") . "</em></td></tr>";
-	}
-
-	print "</table>\n";
-
-	/* add a list of tree names to the actions dropdown */
-	$device_actions = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($device_actions);
-
-	print "</form>\n";
+function display_device_down_time($id, $count) {
+	return "Hello";
 }

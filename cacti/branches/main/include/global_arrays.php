@@ -136,10 +136,10 @@ if (CACTI_SERVER_OS != "win32") {
 }
 
 $i18n_modes = array(
-    0 => __("Disabled"),
-    1 => __("Enabled"),
-    2 => __("Enabled (strict mode)"),
-    );
+	0 => __("Disabled"),
+	1 => __("Enabled"),
+	2 => __("Enabled (strict mode)"),
+);
 
 $menu = array(
 	"management" => array(
@@ -155,7 +155,7 @@ $menu = array(
 	"data_collection" => array(
 		"description"	=> __("Data Collection"),
 		"items" 		=> array(
-//			"pollers.php" => __("Pollers"),
+			"pollers.php" => __("Pollers"),
 			"data_queries.php" => __("Data Queries"),
 			"data_input.php" => __("Data Input Methods"),
 			),

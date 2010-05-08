@@ -527,10 +527,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	print "\t\t<table cellpadding=0 cellspacing=0 class='resizable startBoxHeader startBox3'><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
-	foreach($header_items as $item) {
+	foreach($header_items as $column => $item) {
 		$align = "align='left'";
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		if ($sort_column == $item["id"]) {
+		if ($sort_column == $column) {
 			$direction    = $new_sort_direction;
 			$display_text = $item["name"];
 			if (isset($item["align"])) {
@@ -551,7 +551,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 
-		if (($item["id"] == "") || (substr_count($item["id"], "nosort"))) {
+		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
 
 			print "\t\t\t<th style='display:block;' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>" . $display_text . "</th>\n";
@@ -560,8 +560,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}else{
 			$width = html_get_column_width($pathname, $item["id"]);
 
-			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $item["id"] . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $item["id"] . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
@@ -603,10 +603,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "\t\t<tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
-	foreach($header_items as $item) {
+	if (sizeof($header_items)) {
+	foreach($header_items as $column => $item) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
 		$align = "align='left'";
-		if ($sort_column == $item["id"]) {
+		if ($sort_column == $column) {
 			$direction    = $new_sort_direction;
 			$display_text = $item["name"];
 			if (isset($item["align"])) {
@@ -625,19 +626,20 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 
-		if (($item["id"] == "") || (substr_count($item["id"], "nosort"))) {
+		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
 			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark $align wp$width'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
-			$width = html_get_column_width($pathname, $item["id"]);
+			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th id='" . $item["id"] . "' class='textSubHeaderDark wp$width' $align>";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $item["id"] . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width' $align>";
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
+	}
 	}
 
 	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
@@ -732,6 +734,161 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
 	print "\t\t</tr>\n";
+}
+
+/** html_draw_table - draws a full html table based upon specification
+   @param $table_format - an array that contains all of the columns to draw.  Attributes of the array include:
+     id => The column name,
+     name => The display name for the column
+     align => The text alignment for the column
+     order => The default sort order of the column
+     filter => Is the column filterable
+     link => The link status of the column 'true'/'false'
+     href => (Optional) The link href for the column.  Otherwise contructed from input options
+   @param $rows - The database rows sent to the function
+   @param $total_rows - The total rows that are to be displayed, if -1 then don't display page X of Y
+   @param $rows_per_page - The number of rows per page
+   @param $key_field - The primary key field for the row's
+   @param $href - The base href for linkable columns
+   @param $actions - The list of dropdown actions to present to the user
+   @param $filter - The current filter for this table
+   @param $resizeable - Is the table resizable
+   @param $checkbox - Either true or false if this is to be a checkbox table
+   @param $sortable - Is the table sortable
+   @param $sort_columns - The current sort column array
+   @param $sort_orders - The current sort order array */
+function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $page, $key_field = "id", $href = "",
+	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_orders = "") {
+
+	/* generate page list navigation */
+	if ($checkbox) {
+		$columns = sizeof($table_format)+1;
+	}else{
+		$columns = sizeof($table_forma);
+	}
+
+	html_start_box("", "100", "", "0", "center", "");
+
+	/* calculate the navagation bar */
+	$nav = html_create_nav($page, MAX_DISPLAY_PAGES, $rows_per_page, $total_rows, $columns, $href . "?filter=" . $filter);
+
+	/* display the navigation bar */
+	print $nav;
+
+	html_end_box(false);
+
+	/* draw the header */
+	if ($checkbox) {
+		if ($sortable) {
+			html_header_sort_checkbox($table_format, $sort_columns, $sort_orders);
+		}else{
+			html_header_checkbox($table_format);
+		}
+	}else{
+		if ($sortable) {
+			html_header_sort($table_foramt, $sort_columns, $sort_orders);
+		}else{
+			html_header($table_format);
+		}
+	}
+
+	/* drow the rows */
+	if (sizeof($rows)) {
+		foreach ($rows as $row) {
+			$row = api_plugin_hook_function(str_replace(".php", "", $href) . '_table', $row);
+
+			form_alternate_row_color('line' . $row[$key_field], true);
+
+			$checkbox_title = "";
+			foreach($table_format as $column => $data) {
+				$text = "";
+
+				/* remove any '.' from the column name, they are not permitted */
+				if (substr_count($column, ".")) {
+					$nc = explode(".", $column);
+					$column = $nc[sizeof($nc)-1];
+				}
+
+				/* check to see if this is a link column */
+				if (isset($data["link"])) {
+					if (!strlen($checkbox_title)) {
+						$checkbox_title = $row[$column];
+					}
+					if ( isset( $data["href"] ) ) {
+						$text = "<a class='linkEditMain' href='" . htmlspecialchars($data["href"] . "&id=" . $row[$key_field]) . "'>";
+					}else{
+						$text = "<a class='linkEditMain' href='" . htmlspecialchars($href . "?action=edit&id=" . $row[$key_field]) . "'>";
+					}
+				}
+
+				/* check to see if this is a filterable column */
+				if (!isset($data["function"])) {
+					$value = $row[$column];
+				}elseif (!isset($data["params"])) {
+					$value = call_user_func($data["function"], $row[$key_field]);
+				}else{
+					$passarray = array();
+					if (sizeof($data["params"])) {
+					foreach($data["params"] as $param) {
+						if (isset($row[$param])) {
+							$passarray[] = $row[$param];
+						}
+					}
+					}
+
+					$value = call_user_func_array($data["function"], $passarray);
+				}
+
+				if (isset($data["format"])) {
+					$format_array = explode(",", $data["format"]);
+					switch($format_array[0]) {
+						case "round":
+							$value = round($value, $format_array[1]);
+							break;
+						default:
+							break;
+					}
+				}
+
+				if (isset($data["filter"]) && strlen($filter)) {
+					$text .= preg_replace("/(" . preg_quote($filter) . ")/i", "<span class=\"filter\">\\1</span>", $value);
+				}else{
+					$text .= $value;
+				}
+
+				if (!strlen($text) && isset($data["noneval"])) {
+					$text = $data["noneval"];
+				}
+
+				/* does the column have alignment */
+				if (isset($data["align"])) {
+					$align = $data["align"];
+				}else{
+					$align = "";
+				}
+
+				form_selectable_cell($text, $row[$key_field]);
+			}
+
+			if ($checkbox) {
+				form_checkbox_cell($checkbox_title, $row[$key_field]);
+			}
+			form_end_row();
+		}
+		form_end_table();
+
+		print $nav;
+	}else{
+		print "<tr><td><em>" . __("No Rows Found") . "</em></td></tr>\n";
+	}
+
+	print "</table>\n";	# end table of html_header_sort_checkbox
+
+	/* draw the dropdown containing a list of available actions for this form */
+	if (is_array($actions)) {
+		draw_actions_dropdown($actions);
+	}
+	print "</form>\n";	# end form of html_header_sort_checkbox
 }
 
 /* html_create_list - draws the items for an html dropdown given an array of data

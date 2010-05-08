@@ -1343,22 +1343,13 @@ function graph() {
 		$sql_where .= " AND graph_templates_graph.graph_template_id=" . $_REQUEST["template_id"];
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_graph");
+		$rowspp = read_config_option("num_rows_graph");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(graph_templates_graph.id)
-		FROM (graph_local,graph_templates_graph)
-		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
-		WHERE graph_local.id=graph_templates_graph.local_graph_id
-		$sql_where");
-
-	$graph_list = db_fetch_assoc("SELECT
+	$rows = db_fetch_assoc("SELECT
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -1371,49 +1362,47 @@ function graph() {
 		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
 		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
+		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
-	/* generate page list navigation */
-	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "graphs.php");
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(graph_templates_graph.id)
+		FROM (graph_local,graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
+		$sql_where");
 
-	print $nav;
-	html_end_box(false);
+	$table_format = array(
+		"title_cache" => array(
+			"name" => __("Graph Title"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"local_graph_id" => array(
+			"name" => __("ID"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"name" => array(
+			"name" => __("Template Name"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"height" => array(
+			"name" => __("Size"),
+			"order" => "ASC",
+			"function" => "display_graph_size",
+			"params" => array("height", "width"),
+			"sort" => false,
+			"align" => "right"
+		)
+	);
 
-	$display_text = array(
-		array("id" => "title_cache", "name" => __("Graph Title"), "order" => "ASC"),
-		array("id" => "local_graph_id", "name" => __("ID"), "order" => "ASC", "align" => "right"),
-		array("id" => "name", "name" => __("Template Name"), "order" => "ASC"),
-		array("id" => "height", "name" => __("Size"), "order" => "ASC", "align" => "right"));
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "graphs.php",
+		array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
+		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+}
 
-	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-	if (sizeof($graph_list) > 0) {
-		foreach ($graph_list as $graph) {
-			$template_name = ((empty($graph["name"])) ? "<em>" . __("None") . "</em>" : $graph["name"]);
-
-			form_alternate_row_color('line' . $graph["local_graph_id"], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . $graph["local_graph_id"] . "' title='" . $graph["title_cache"]) . "'>" . (($_REQUEST["filter"] != "") ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", title_trim($graph["title_cache"], read_config_option("max_title_graph"))) : title_trim($graph["title_cache"], read_config_option("max_title_graph"))) . "</a>", $graph["local_graph_id"]);
-			form_selectable_cell($graph["local_graph_id"], $graph["local_graph_id"]);
-			form_selectable_cell((($_REQUEST["filter"] != "") ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $template_name) : $template_name), $graph["local_graph_id"]);
-			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
-			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"]);
-			form_end_row();
-		}
-
-		form_end_table();
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
-	}else{
-		print "<tr><td><em>" . __("No Graphs Found") . "</em></td></tr>";
-	}
-
-	print "</table>\n";	# end table of html_header_sort_checkbox
-
-	/* add a list of tree names to the actions dropdown */
-	$graph_actions = array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array());
-
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($graph_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+function display_graph_size($height, $width) {
+	return $height . " x " . $width;
 }

@@ -638,17 +638,15 @@ function site() {
 
 	site_filter();
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
-
 	$sql_where = "";
 
 	if (get_request_var_request("rows") == "-1") {
-		$rows = read_config_option("num_rows_device");
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rows = get_request_var_request("rows");
+		$rowspp = get_request_var_request("rows");
 	}
 
-	$sites = site_get_site_records($sql_where, $rows);
+	$rows = site_get_site_records($sql_where, $rowspp);
 
 	if (get_request_var_request("detail") == "false") {
 		$total_rows = db_fetch_cell("SELECT
@@ -665,88 +663,67 @@ function site() {
 			GROUP BY sites.name, device_template.id"));
 	}
 
-	/* generate page list */
-	$url_page_select = str_replace("&page", "?page", get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, "sites.php"));
-
 	if (get_request_var_request("detail") == "false") {
-		/* generate page list navigation */
-		$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, 6, "sites.php");
-
-		print $nav;
-		html_end_box(false);
-
-		$display_text = array(
-			array("id" => "name", "name" => __("Site Name"), "order" => "ASC"),
-			array("id" => "address1", "name" => __("Address"), "order" => "ASC"),
-			array("id" => "city", "name" => __("City"), "order" => "ASC"),
-			array("id" => "state", "name" => __("State"), "order" => "DESC"),
-			array("id" => "country", "name" => __("Country"), "order" => "DESC"));
-
-		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-		if (sizeof($sites) > 0) {
-			foreach ($sites as $site) {
-				form_alternate_row_color('line' . $site["id"], true);
-				form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("sites.php?action=edit&id=" . $site["id"]) . "'>" .
-					(strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $site["name"]) : $site["name"]) . "</a>", $site["id"], "20%");
-				form_selectable_cell($site["address1"], $site["id"]);
-				form_selectable_cell($site["city"], $site["id"]);
-				form_selectable_cell($site["state"], $site["id"]);
-				form_selectable_cell($site["country"], $site["id"]);
-				form_checkbox_cell($site["name"], $site["id"]);
-				form_end_row();
-			}
-
-			form_end_table();
-
-			/* put the nav bar on the bottom as well */
-			print $nav;
-		}else{
-			print "<tr><td><em>" . __("No Sites") . "</em></td></tr>";
-		}
-		print "</table>\n";	# end table of html_header_sort_checkbox
+		$table_format = array(
+			"name" => array(
+				"name" => __("Site Name"),
+				"filter" => true,
+				"link" => true,
+				"order" => "ASC"
+			),
+			"address1" => array(
+				"name" => __("Address"),
+				"order" => "ASC"
+			),
+			"city" => array(
+				"name" => __("City"),
+				"order" => "ASC"
+			),
+			"state" => array(
+				"name" => __("State"),
+				"order" => "DESC"
+			),
+			"country" => array(
+				"name" => __("Country"),
+				"order" => "DESC"
+			)
+		);
 	}else{
-		$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, 10, "sites.php");
-
-		print $nav;
-		html_end_box(false);
-
 		$display_text = array(
-			array("id" => "name", "name" => __("Site Name"), "order" => "ASC"),
-			array("id" => "device_template_name", "name" => __("Device Type"), "order" => "ASC"),
-			array("id" => "total_devices", "name" => __("Devices"), "order" => "DESC", "align" => "right"),
-			array("id" => "address1", "name" => __("Address"), "order" => "ASC"),
-			array("id" => "city", "name" => __("City"), "order" => "ASC"),
-			array("id" => "state", "name" => __("State"), "order" => "DESC"),
-			array("id" => "country", "name" => __("Country"), "order" => "DESC"));
+			"name" => array(
+				"name" => __("Site Name"),
+				"order" => "ASC"
+			),
+			"device_template_name" => array(
+				"name" => __("Device Type"),
+				"order" => "ASC"
+			),
+			"total_devices" => array(
+				"name" => __("Devices"),
+				"order" => "DESC",
+				"align" => "right"
+			),
+			"address1" => array(
+				"name" => __("Address"),
+				"order" => "ASC"
+			),
+			"city" => array(
+				"name" => __("City"),
+				"order" => "ASC"
+			),
+			"state" => array(
+				"name" => __("State"),
+				"order" => "DESC"
+			),
+			"country" => array(
+				"name" => __("Country"),
+				"order" => "DESC"
+			)
+		);
 
-		html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
-
-		$i = 0;
-		if (sizeof($sites) > 0) {
-			foreach ($sites as $site) {
-				form_alternate_row_color($site["id"], true); $i++;
-				form_selectable_cell("<a class='linkEditMain' href='sites.php?action=edit&id=" . $site["id"] . "'>" .
-					(strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $site["name"]) : $site["name"]) . "</a>", $site["id"], "20%");
-				form_selectable_cell(preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $site["device_template_name"]), $site["id"]);
-				form_selectable_cell($site["total_devices"], $site["id"]);
-				form_selectable_cell($site["address1"], $site["id"]);
-				form_selectable_cell($site["city"], $site["id"]);
-				form_selectable_cell($site["state"], $site["id"]);
-				form_selectable_cell($site["country"], $site["id"]);
-				form_checkbox_cell($site["name"], $site["id"]);
-				form_end_row();
-			}
-
-			/* put the nav bar on the bottom as well */
-			print $nav;
-		}else{
-			print "<tr><td><em>" . __("No Sites") . "</em></td></tr>";
-		}
-		print "</table>\n";	# end table of html_header_sort_checkbox
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($site_actions);
-	print "</form>\n";	# end form of html_header_sort_checkbox
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "sites.php",
+		$site_actions, get_request_var_request("filter"), true, true, true,
+		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
