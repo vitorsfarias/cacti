@@ -510,18 +510,14 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<table class='topBoxAlt'>";
-						print "<tr class='rowAlternate1'><td class='textInfo'>$message</td></tr>";
-						print "</table>";
+						print "<div id='message' class='topBoxAlt textInfo'>$message</div>";
 
 						/* we don't need these if there are no error messages */
 						kill_session_var("sess_field_values");
 					}
 					break;
 				case 'error':
-					print "<table class='topBoxError'>";
-					print "<tr class='rowAlternate1'><td class='textError'>" . __("Error:") . " $message</td></tr>";
-					print "</table><br>";
+					print "<div class='topBoxError textError'>" . __("Error:") . " $message</div>";
 					break;
 				}
 			}
@@ -537,9 +533,7 @@ function display_output_messages() {
      the pre-defined error messages
    @param $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<table class='topBoxError'>";
-	print "<tr><td bgcolor='#f5f5f5'><p class='textError'>" . __("Error:") . " $message</p></td></tr>";
-	print "</table><br>";
+	print "<div class='topBoxError textError'>" . __("Error:") . " $message</div>";
 }
 
 /* clear_messages - clears the message cache */
