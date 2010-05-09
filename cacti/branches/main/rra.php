@@ -124,7 +124,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $rra_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $rra_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='rra.php' method='post'>\n";
 
@@ -222,7 +222,7 @@ function rra_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='rra_edit'>\n";
-	html_start_box("<strong>" . __("Round Robin Archives") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Round Robin Archives") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -300,7 +300,7 @@ function rra() {
 	load_current_session_value("sort_column", "sess_rra_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_rra_sort_direction", "ASC");
 
-	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", $colors["header"], "3", "center", "rra.php?action=edit", true);
+	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

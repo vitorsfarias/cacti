@@ -362,7 +362,7 @@ function data_source_form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $ds_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $ds_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='data_sources.php' method='post'>\n";
 
@@ -559,7 +559,7 @@ function data_source_data_edit() {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("select * from data_input_fields where data_input_id=" . $data["data_input_id"] . " and input_output='in' order by sequence");
 
-		html_start_box("<strong>" . __("Custom Data") . "</strong> " . __("[data input:") . " " . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "]", "100", $colors["header"], "3", "center", "");
+		html_start_box("<strong>" . __("Custom Data") . "</strong> " . __("[data input:") . " " . db_fetch_cell("select name from data_input where id=" . $data["data_input_id"]) . "]", "100", "3", "center", "");
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -738,7 +738,7 @@ function data_source_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_source_edit'>\n";
-	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (isset($_GET["id"]) ? "menu::" . __("Data Source Options") . ":data_source_options:html_start_box:" . $dd_menu_options : ""),"");
+	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", 0, "center", (isset($_GET["id"]) ? "menu::" . __("Data Source Options") . ":data_source_options:html_start_box:" . $dd_menu_options : ""),"");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -771,7 +771,7 @@ function data_source_edit() {
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data["data_template_id"])) {
 
-		html_start_box("<strong>" . __("Supplemental Data Source Template Data") . "</strong>", "100", $colors["header"], 0, "center", "");
+		html_start_box("<strong>" . __("Supplemental Data Source Template Data") . "</strong>", "100", 0, "center", "");
 
 		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], $data, "|field|", "<strong>" . __("Data Source Fields") . "</strong>", true, true, 0);
 		draw_nontemplated_fields_data_source_item($data["data_template_id"], $data_source_items, "|field|_|id|", "<strong>" . __("Data Source Item Fields") . "</strong>", true, true, true, 0);
@@ -783,7 +783,7 @@ function data_source_edit() {
 	}
 
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($data["data_template_id"]))) {
-		html_start_box("<strong>" . __("Data Source") . "</strong>", "100", $colors["header"], "3", "center", "");
+		html_start_box("<strong>" . __("Data Source") . "</strong>", "100", "3", "center", "");
 
 		$form_array = array();
 
@@ -811,7 +811,7 @@ function data_source_edit() {
 
 		if (!empty($_GET["id"])) {
 
-			html_start_box("<strong>" . __("Data Source Items") . "</strong>", "100", $colors["header"], "0", "center", "data_sources_items.php?action=item_edit&local_data_id=" . $_GET["id"], true);
+			html_start_box("<strong>" . __("Data Source Items") . "</strong>", "100", "0", "center", "data_sources_items.php?action=item_edit&local_data_id=" . $_GET["id"], true);
 			draw_data_template_items_list($data_source_items, "data_sources_items.php", "local_data_id=" . $_GET["id"], $use_data_template);
 			html_end_box(false);
 		}
@@ -1018,7 +1018,7 @@ function data_source() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", $colors["header"], "3", "center", "data_sources.php?action=data_source_edit&device_id=" . $_REQUEST["device_id"], true);
+	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "data_sources.php?action=data_source_edit&device_id=" . $_REQUEST["device_id"], true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -166,7 +166,7 @@ function item_edit() {
 
 	print "<form action='tree.php' name='form_tree' method='post'>\n";
 
-	html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", "3", "center", "");
 
 	form_alternate_row_color("parent_item");
 	?>
@@ -401,7 +401,7 @@ function tree_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='tree_edit'>\n";
-	html_start_box("<strong>" . __("Graph Trees") . "</strong> $header_label", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("Graph Trees") . "</strong> $header_label", "100", "3", "center", "", true);
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -421,7 +421,7 @@ function tree_edit() {
 	if (!empty($_GET["id"])) {
 		/* setup the tree div's */
 		echo "<div id='tree' style='float:left;width:50%;'>";
-		html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", $colors["header"], "3", "center", "");
+		html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", "3", "center", "");
 		$header_items = array(
 			array("name" => __("Item")),
 			array("name" => __("Value"))
@@ -436,7 +436,7 @@ function tree_edit() {
 
 		/* setup the graph items div */
 		echo "<div id='items' style='float:right;width:50%';>";
-		html_start_box("<strong>" . __("Item Filter") . "</strong>", "100", $colors["header"], "3", "center", "");
+		html_start_box("<strong>" . __("Item Filter") . "</strong>", "100", "3", "center", "");
 		$header_items = array(
 			array("name" => __("Item")),
 			array("name" => __("Value"))
@@ -455,7 +455,7 @@ function tree_edit() {
 function tree() {
 	global $colors;
 
-	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", $colors["header"], "3", "center", "tree.php?action=edit");
+	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", "3", "center", "tree.php?action=edit");
 
 	print "<tr><td>";
 	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');

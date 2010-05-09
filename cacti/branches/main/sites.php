@@ -149,7 +149,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $site_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $site_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='sites.php' method='post'>\n";
 
@@ -387,7 +387,7 @@ function site_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='site_edit'>\n";
-	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -407,7 +407,7 @@ function site_edit() {
 	form_hidden_box("hidden_id", (isset($site["hidden_id"]) ? $site["hidden_id"] : "0"), "");
 	form_hidden_box("save_component_site", "1", "");
 
-	form_save_button_alt();
+	form_save_button("sites.php", "return");
 }
 
 function site_filter() {
@@ -432,7 +432,7 @@ function site_filter() {
 	}
 	-->
 	</script>
-	<?php html_start_box("<strong>" . __("Site Filters") . "</strong>", "100", $colors["header"], "3", "center", "sites.php?action=edit", true);?>
+	<?php html_start_box("<strong>" . __("Site Filters") . "</strong>", "100", "3", "center", "sites.php?action=edit", true);?>
 	<tr class='rowAlternate2'>
 		<td>
 			<form method='get' action='<?php print basename($_SERVER["PHP_SELF"]);?>' name='form_sites'>

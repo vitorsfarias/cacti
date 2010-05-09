@@ -196,8 +196,7 @@ function device_template_form_save_gt() {
 
 			/* now draw the html page */
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-			html_start_box("<strong>" . __("Confirm") . "</strong>", "60", $colors["header_panel"], "3", "center", "");
-
+			html_start_box("<strong>" . __("Confirm") . "</strong>", "60", "3", "center", "");
 
 			print "<form action='device_templates.php' method='post' id='device_template_add_gt'>";
 			# pass device template id and graph_template id to the updating code below
@@ -340,7 +339,7 @@ function device_template_form_save_dq() {
 
 			/* now draw the html page */
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-			html_start_box("<strong>" . __("Confirm") . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+			html_start_box("<strong>" . __("Confirm") . "</strong>", "60", "3", "center", "");
 
 
 			print "<form action='device_templates.php' method='post' id='device_template_add_dq'>";
@@ -473,7 +472,7 @@ function device_template_form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='device_templates.php' method='post'>\n";
 
@@ -648,7 +647,7 @@ function device_template_display_general($device_template, $header_label) {
 	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_edit'>\n";
-	html_start_box("<strong>" . __("Device Templates") . "</strong> $header_label", "100", $colors["header"], "0", "center", "", true);
+	html_start_box("<strong>" . __("Device Templates") . "</strong> $header_label", "100", "0", "center", "", true);
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -1023,7 +1022,7 @@ function device_template_display_gt($device_template, $header_label) {
 	global $colors;
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_gt_edit'>\n";
-	html_start_box("<strong>" . __("Associated Graph Templates") . " $header_label</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("Associated Graph Templates") . " $header_label</strong>", "100", "3", "center", "", true);
 	print "<tr><td>";
 	html_header(array(__("Graph Template Name")), 3);
 
@@ -1101,7 +1100,7 @@ function device_template_display_dq($device_template, $header_label) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_dq_edit'>\n";
-	html_start_box("<strong>" . __("Associated Data Queries") . " $header_label</strong>", "100", $colors["header"], "0", "center", "", true);
+	html_start_box("<strong>" . __("Associated Data Queries") . " $header_label</strong>", "100", "0", "center", "", true);
 	print "<tr><td>";
 	html_header(array(__("Data Query Name"), __("Re-Index Method")), 2);
 
@@ -1241,7 +1240,7 @@ function device_template() {
 	load_current_session_value("sort_column", "sess_device_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_device_template_sort_direction", "ASC");
 
-	html_start_box("<strong>" . __("Device Templates") . "</strong>", "100", $colors["header"], "3", "center", "device_templates.php?action=edit", true);
+	html_start_box("<strong>" . __("Device Templates") . "</strong>", "100", "3", "center", "device_templates.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -79,7 +79,7 @@ function graph_view_filter_table($mode = "mode") {
 	</script>
 	<?php
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	?>
 	<tr class="rowGraphFilter noprint">
@@ -245,7 +245,7 @@ function get_graph_list_content() {
 	$_SESSION["sess_graph_view_list_graph_list"] = $graph_list;
 
 	/* display graph view filter selector */
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	?>
 
@@ -462,7 +462,7 @@ function get_graph_list_content() {
 	<form name='chk' id='chk' action='graph_view.php' method='get' onSubmit='form_graph(document.chk,document.chk)'>
 	<?php
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	if ($total_rows > get_request_var_request("graphs")) {
 		$url_page_select = get_page_list($_REQUEST["page"], MAX_DISPLAY_PAGES, $_REQUEST["graphs"], $total_rows, "pageChange");
@@ -732,7 +732,7 @@ function get_graph_preview_content () {
 	</script>
 	<?php
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	print "<table cellpadding='0' cellspacing='0' style='width:100%;border:1px solid #BEBEBE;'>\n";
 	/* generate page list */
@@ -1091,7 +1091,7 @@ function graph_view_timespan_selector($mode = "tree") {
 	//-->
 	</script>
 	<?php
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 	?>
 	<tr class="rowGraphFilter noprint">
 		<td class="noprint">
@@ -1243,7 +1243,7 @@ function graph_view_search_filter() {
 	</script>
 	<?php
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 	?>
 	<tr class="rowGraphFilter noprint">
 		<td class="noprint">

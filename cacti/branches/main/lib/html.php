@@ -25,8 +25,6 @@
 /* html_start_box - draws the start of an HTML box with an optional title
    @param $title - the title of this box ("" for no title)
    @param $width - the width of the box in pixels or percent
-   @param $background_color - the color of the box border and title row background
-     color
    @param $cell_padding - the amount of cell padding to use inside of the box
    @param $align - the HTML alignment to use for the box (center, left, or right)
    @param $add_text - the url to use when the user clicks 'Add' in the upper-right
@@ -34,7 +32,7 @@
      to show a drop down menu instead
    @param $collapsing - tells wether or not the table collapses
    @param $table_id - the table id to make the table addressable by jQuery's table DND plugin */
-function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
+function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
 	global $colors, $config;
 	static $form_number = 0;
 	$form_number++;
@@ -113,7 +111,7 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 					<table cellpadding=0 cellspacing=1 <?php print $table_id;?> class="startBox<?php print $cell_padding;?>"><?php
 }
 
-function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width, $background_color, $cell_padding, $align) {
+function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width, $cell_padding, $align) {
 	global $colors;
 
 	$temp_string = str_replace("strong", "", $query_name);
@@ -452,46 +450,6 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 	}
 }
 
-/* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
-     page information
-   @param $background_color - the background color of this navigation bar row
-   @param $colspan - the colspan for the entire row
-   @param $current_page - the current page in the navigation system
-   @param $rows_per_page - the number of rows that are displayed on a single page
-   @param $total_rows - the total number of rows in the navigation system
-   @param $nav_url - the url to use when presenting users with previous/next links. the variable
-     <PAGE> will be substituted with the correct page number if included */
-function html_nav_bar($background_color, $colspan, $current_page, $rows_per_page, $total_rows, $nav_url) {
-	if (substr_count($nav_url, "?")) {
-		$nav_url .= "&";
-	}else{
-		$nav_url .= "?";
-	}
-	?>
-	<tr class='rowHeader noprint'>
-		<td colspan='<?php print $colspan;?>'>
-			<table cellpadding=0 cellspacing=1 class="startBox0">
-				<tr>
-					<td class='textHeaderDark wp15 right'>
-						<?php if ($current_page > 1) {
-							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page-1), $nav_url)) . "'>&lt;&lt;&nbsp;" . __("Previous") . "</a></strong>";
-						} ?>
-					</td>
-					<td class='textHeaderDark wp70 center'>
-						<?php print __("Showing Rows");?> <?php print (($rows_per_page*($current_page-1))+1);?> <?php print __("to");?> <?php print ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page));?> <?php print __("of");?> <?php print $total_rows;?>
-					</td>
-					<td class='textHeaderDark wp15 right'>
-						<?php if (($current_page * $rows_per_page) < $total_rows) {
-							print "<strong><a class='linkOverDark' href='" . htmlspecialchars(str_replace("<PAGE>", ($current_page+1), $nav_url)) . "'>" . __("Next") . "&gt;&gt;</a></strong>";
-						} ?>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<?php
-}
-
 /* html_header_sort - draws a header row suitable for display inside of a box element.  When
      a user selects a column header, the collback function "filename" will be called to handle
      the sort the column and display the altered results.
@@ -758,7 +716,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 		$columns = sizeof($table_forma);
 	}
 
-	html_start_box("", "100", "", "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	/* calculate the navagation bar */
 	$nav = html_create_nav($page, MAX_DISPLAY_PAGES, $rows_per_page, $total_rows, $columns, $href . "?filter=" . $filter);

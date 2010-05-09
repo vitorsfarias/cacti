@@ -324,7 +324,7 @@ function import_colors() {
 	?><form name="import" method="post" action="color.php" enctype="multipart/form-data"><?php
 
 	if ((isset($_SESSION["import_debug_info"])) && (is_array($_SESSION["import_debug_info"]))) {
-		html_start_box("<strong>Import Results</strong>", "100", "aaaaaa", "3", "center", "", true);
+		html_start_box("<strong>Import Results</strong>", "100", "3", "center", "", true);
 
 		if (sizeof($_SESSION["import_debug_info"])) {
 			foreach($_SESSION["import_debug_info"] as $import_result) {
@@ -337,7 +337,7 @@ function import_colors() {
 		kill_session_var("import_debug_info");
 	}
 
-	html_start_box("<strong>Import Cacti Colors</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>Import Cacti Colors</strong>", "100", "3", "center", "", true);
 
 	form_alternate_row_color();?>
 		<td width='50%'><font class='textEditTitle'>Cacti Color CSV File</font><br>
@@ -360,7 +360,7 @@ function import_colors() {
 
 	html_end_box(FALSE);
 
-	html_start_box("<strong>File Format Notes</strong>", "100", $colors["header"], "3", "center", "", true, false);
+	html_start_box("<strong>File Format Notes</strong>", "100", "3", "center", "", true, false);
 
 	form_alternate_row_color();?>
 		<td>The CSV file <strong>must</strong> contain a header row with the following column headings.
@@ -455,7 +455,7 @@ function color_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='color_edit'>\n";
-	html_start_box("<strong>" . __("Colors") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Colors") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -562,7 +562,7 @@ function color() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Color Actions") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("Color Actions") . "</strong>", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -634,7 +634,7 @@ function color() {
 	<?php
 	html_end_box(false);
 
-	html_start_box("<strong>" . __("Colors") . "</strong>", "100", $colors["header"], "3", "center", "color.php?action=edit");
+	html_start_box("<strong>" . __("Colors") . "</strong>", "100", "3", "center", "color.php?action=edit");
 
 	print "<tr class='rowSubHeader'>";
 	$i = 0;
