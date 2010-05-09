@@ -1149,28 +1149,3 @@ function user() {
 		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
 
-function display_last_login($date) {
-	if (empty($date) || ($date == "12/31/1969")) {
-		return "N/A";
-	}else{
-		return strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($date));;
-	}
-}
-
-function display_user_status($status) {
-	if ($status == CHECKED) {
-		return __("Yes");
-	}else{
-		return __("No");
-	}
-}
-
-function display_policy_graphs($policy) {
-	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
-	return $graph_policy_array[$policy];
-}
-
-function display_auth_realms($realm) {
-	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
-	return $auth_realms[$realm];
-}

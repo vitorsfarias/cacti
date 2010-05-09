@@ -1826,38 +1826,3 @@ function device() {
 		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
 
-function display_device_down_time($id, $count) {
-	$poller_interval = read_config_option("poller_interval");
-	$seconds = $poller_interval * $count;
-	$days    = 0;
-	$hours   = 0;
-	$minutes = 0;
-	if ($seconds > 86400) {
-		$days = floor($seconds/86400);
-		$seconds = $seconds % 86400;
-		if ($seconds > 3600) {
-			$hours = floor($seconds/3600);
-			$seconds = $seconds % 3600;
-			if ($seconds > 60) {
-				$minutes = floor($seconds/60);
-				$seconds = $seconds % 60;
-			}
-		}
-	}elseif ($seconds > 3600) {
-		$hours = floor($seconds/3600);
-		$seconds = $seconds % 3600;
-		if ($seconds > 60) {
-			$minutes = floor($seconds/60);
-			$seconds = $seconds % 60;
-		}
-	}elseif ($seconds > 60) {
-		$minutes = floor($seconds/60);
-		$seconds = $seconds % 60;
-	}
-
-	return trim(
-		($days    > 0 ?       $days    . " " . __("D"):"") .
-		($hours   > 0 ? " " . $hours   . " " . __("H"):"") .
-		($minutes > 0 ? " " . $minutes . " " . __("M"):"") .
-		($seconds > 0 ? " " . $seconds . " " . __("S"):""));
-}

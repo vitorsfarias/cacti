@@ -1241,27 +1241,3 @@ function data_source() {
 		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
 
-function display_data_template($template) {
-	return (empty($template) ? "<em>" . __("None") . "</em>" : $template);
-}
-
-function display_data_input_name($input) {
-	return ((empty($input)) ? "<em>" . __("External") . "</em>" : $input);
-}
-
-function display_poller_interval($id) {
-	$poller_interval = db_fetch_cell("SELECT Min(data_template_data.rrd_step*rra.steps) AS poller_interval
-		FROM data_template
-		INNER JOIN (data_local
-		INNER JOIN ((data_template_data_rra
-		INNER JOIN data_template_data ON data_template_data_rra.data_template_data_id=data_template_data.id)
-		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id) ON data_local.id = data_template_data.local_data_id) ON data_template.id = data_template_data.data_template_id
-		WHERE data_local.id=$id
-		GROUP BY data_template_data.local_data_id");
-
-	if ($poller_interval < 60) {
-		return "<em>" . $poller_interval . " " . __("Seconds") . "</em>";
-	}else{
-		return "<em>" . ($poller_interval / 60) . " " . __("Minutes") . "</em>";
-	}
-}

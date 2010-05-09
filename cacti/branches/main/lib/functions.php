@@ -529,17 +529,108 @@ function display_output_messages() {
 	kill_session_var("sess_messages");
 }
 
+/* display_custom_error_message - displays a custom error message to the browser that looks like
+     the pre-defined error messages
+   @param $text - the actual text of the error message to display */
+function display_custom_error_message($message) {
+	print "<div class='topBoxError textError'>" . __("Error:") . " $message</div>";
+}
+
 /* display_checkbox_status - displays the text value for a checkbox.  Valid values are 'Acvive'/'Disabled'
    @param $value - the value of the checkbox field from the database */
 function display_checkbox_status($value) {
 	return ($value == CHECKED ? __("Active") : __("Disabled"));
 }
 
-/* display_custom_error_message - displays a custom error message to the browser that looks like
-     the pre-defined error messages
-   @param $text - the actual text of the error message to display */
-function display_custom_error_message($message) {
-	print "<div class='topBoxError textError'>" . __("Error:") . " $message</div>";
+function display_graph_size($height, $width) {
+	return $height . " x " . $width;
+}
+
+function display_device_down_time($id, $count) {
+	$poller_interval = read_config_option("poller_interval");
+	$seconds = $poller_interval * $count;
+	$days    = 0;
+	$hours   = 0;
+	$minutes = 0;
+	if ($seconds > 86400) {
+		$days = floor($seconds/86400);
+		$seconds = $seconds % 86400;
+		if ($seconds > 3600) {
+			$hours = floor($seconds/3600);
+			$seconds = $seconds % 3600;
+			if ($seconds > 60) {
+				$minutes = floor($seconds/60);
+				$seconds = $seconds % 60;
+			}
+		}
+	}elseif ($seconds > 3600) {
+		$hours = floor($seconds/3600);
+		$seconds = $seconds % 3600;
+		if ($seconds > 60) {
+			$minutes = floor($seconds/60);
+			$seconds = $seconds % 60;
+		}
+	}elseif ($seconds > 60) {
+		$minutes = floor($seconds/60);
+		$seconds = $seconds % 60;
+	}
+
+	return trim(
+		($days    > 0 ?       $days    . " " . __("D"):"") .
+		($hours   > 0 ? " " . $hours   . " " . __("H"):"") .
+		($minutes > 0 ? " " . $minutes . " " . __("M"):"") .
+		($seconds > 0 ? " " . $seconds . " " . __("S"):""));
+}
+
+function display_data_template($template) {
+	return (empty($template) ? "<em>" . __("None") . "</em>" : $template);
+}
+
+function display_data_input_name($input) {
+	return ((empty($input)) ? "<em>" . __("External") . "</em>" : $input);
+}
+
+function display_poller_interval($id) {
+	$poller_interval = db_fetch_cell("SELECT Min(data_template_data.rrd_step*rra.steps) AS poller_interval
+		FROM data_template
+		INNER JOIN (data_local
+		INNER JOIN ((data_template_data_rra
+		INNER JOIN data_template_data ON data_template_data_rra.data_template_data_id=data_template_data.id)
+		INNER JOIN rra ON data_template_data_rra.rra_id = rra.id) ON data_local.id = data_template_data.local_data_id) ON data_template.id = data_template_data.data_template_id
+		WHERE data_local.id=$id
+		GROUP BY data_template_data.local_data_id");
+
+	if ($poller_interval < 60) {
+		return "<em>" . $poller_interval . " " . __("Seconds") . "</em>";
+	}else{
+		return "<em>" . ($poller_interval / 60) . " " . __("Minutes") . "</em>";
+	}
+}
+
+function display_last_login($date) {
+	if (empty($date) || ($date == "12/31/1969")) {
+		return "N/A";
+	}else{
+		return strftime("%A, %B %d, %Y %H:%M:%S ", strtotime($date));;
+	}
+}
+
+function display_user_status($status) {
+	if ($status == CHECKED) {
+		return __("Yes");
+	}else{
+		return __("No");
+	}
+}
+
+function display_policy_graphs($policy) {
+	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	return $graph_policy_array[$policy];
+}
+
+function display_auth_realms($realm) {
+	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	return $auth_realms[$realm];
 }
 
 /* clear_messages - clears the message cache */
