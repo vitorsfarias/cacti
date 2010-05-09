@@ -110,12 +110,30 @@ function plugins_show($status = 'all') {
 	print "<table width='100%' cellspacing=0 cellpadding=3>";
 
 	$display_text = array(
-		array("id" => "", "name" => __(" "), "order" => "ASC"),
-		array("id" => "directory", "name" => __("Plugin"), "order" => "ASC"),
-		array("id" => "longname", "name" => __("Name"), "order" => "ASC"),
-		array("id" => "version", "name" => __("Version"), "order" => "ASC"),
-		array("id" => "author", "name" => __("Author"), "order" => "ASC"),
-		array("id" => "webpage", "name" => __("Webpage"), "order" => "ASC")
+		"name" => array(
+			"name" => __(" "),
+			"order" => "ASC"
+		),
+		"directory" => array(
+			"name" => __("Plugin"),
+			"order" => "ASC"
+		),
+		"longname" => array(
+			"name" => __("Name"),
+			"order" => "ASC"
+		),
+		"version" => array(
+			"name" => __("Version"),
+			"order" => "ASC"
+		),
+		"author" => array(
+			"name" => __("Author"),
+			"order" => "ASC"
+		),
+		"webpage" => array(
+			"name" => __("Webpage"),
+			"order" => "ASC"
+		)
 	);
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
