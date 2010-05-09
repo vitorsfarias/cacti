@@ -1324,7 +1324,7 @@ function device_display_general($device, $device_text) {
 					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
 				<td>
-					<?php print (($is_being_graphed == true) ? "<span class=\"success\">" . __("Is Being Graphed") . "</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and device_id=" . get_request_var("id") . " limit 0,1")) . "'>" . __("Edit") . "</a>)" : "<span class=\"unknown\">" . __("Not Being Graphed") . "</span>");?>
+					<?php print (($is_being_graphed == true) ? "<span class=\"success\">" . __("Is Being Graphed") . "</span> (<a href='" . htmlspecialchars("graphs.php?action=edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and device_id=" . get_request_var("id") . " limit 0,1")) . "'>" . __("Edit") . "</a>)" : "<span class=\"unknown\">" . __("Not Being Graphed") . "</span>");?>
 				</td>
 				<td align='right' nowrap>
 					<a href='devices.php?action=gt_remove&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>'><img align='middle' class='buttonSmall' src='images/delete_icon_large.gif' title='<?php print __("Delete Graph Template Association");?>' alt='<?php print __("Delete");?>'></a>

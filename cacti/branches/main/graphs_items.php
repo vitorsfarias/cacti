@@ -36,7 +36,7 @@ switch (get_request_var_request("action")) {
 	case 'item_remove':
 		item_remove();
 
-		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+		header("Location: graphs.php?action=edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -48,12 +48,12 @@ switch (get_request_var_request("action")) {
 	case 'item_movedown':
 		item_movedown();
 
-		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+		header("Location: graphs.php?action=edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header("Location: graphs.php?action=graph_edit&id=" . $_GET["local_graph_id"]);
+		header("Location: graphs.php?action=edit&id=" . $_GET["local_graph_id"]);
 		break;
 }
 
@@ -195,7 +195,7 @@ function form_save() {
 		if (is_error_message()) {
 			header("Location: graphs.php?action=item_edit&graph_template_item_id=" . (empty($graph_template_item_id) ? $_POST["graph_template_item_id"] : $graph_template_item_id) . "&id=" . $_POST["local_graph_id"]);
 		}else{
-			header("Location: graphs.php?action=graph_edit&id=" . $_POST["local_graph_id"]);
+			header("Location: graphs.php?action=edit&id=" . $_POST["local_graph_id"]);
 		}
 		exit;
 	}
@@ -437,7 +437,7 @@ function item_edit() {
 	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
-	form_save_button_alt("path!graphs.php|action!graph_edit|id!" . get_request_var_request("local_graph_id"));
+	form_save_button_alt("path!graphs.php|action!edit|id!" . get_request_var_request("local_graph_id"));
 
 	include_once(CACTI_BASE_PATH . "/access/js/graph_item_dependencies.js");	# this one modifies attr("disabled")
 	include_once(CACTI_BASE_PATH . "/access/js/line_width.js");

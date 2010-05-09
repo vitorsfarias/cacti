@@ -224,9 +224,9 @@ function graph_form_save() {
 	}
 
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
-		header("Location: graphs.php?action=graph_edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: graphs.php?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) || ($_POST["device_id"] != $_POST["_device_id"])) {
-		header("Location: graphs.php?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
+		header("Location: graphs.php?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}else{
 		header("Location: graphs.php");
 	}
@@ -848,7 +848,7 @@ function graph_diff() {
 	<input type="hidden" name="graph_template_id" value="<?php print get_request_var("graph_template_id");?>">
 	<?php
 
-	form_save_button_alt("action!graph_edit|id!" . get_request_var("id"));
+	form_save_button_alt("action!edit|id!" . get_request_var("id"));
 }
 
 function graph_edit() {
@@ -865,6 +865,7 @@ function graph_edit() {
 		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . get_request_var("id"));
 
 		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . get_request_var("id"));
+
 		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
 
 		$device_id = db_fetch_cell("select device_id from graph_local where id=" . get_request_var("id"));
@@ -873,34 +874,33 @@ function graph_edit() {
 		if ($graphs["graph_template_id"] == "0") {
 			$use_graph_template = false;
 		}
-                ?>
-                <script type="text/javascript">
-                <!--
-                var disabled = true;
+		?>
+		<script type="text/javascript">
+		<!--
+		var disabled = true;
 
-                $().ready(function() {
-                        $("input").attr("disabled","disabled");
-                        $("select").attr("disabled","disabled");
-                        $("#cancel").removeAttr("disabled");
-                });
+		$().ready(function() {
+			$("input").attr("disabled","disabled");
+			$("select").attr("disabled","disabled");
+			$("#cancel").removeAttr("disabled");
+		});
 
-                function changeGraphState() {
-                        if (disabled) {
-                                $("input").removeAttr("disabled");
-                                $("select").removeAttr("disabled");
-                                disabled = false;
-                                rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
-                        }else{
-                                $("input").attr("disabled","disabled");
-                                $("select").attr("disabled","disabled");
-                                $("#cancel").removeAttr("disabled");
-                                disabled = true;
-                        }
-                }
-                //-->
-                </script>
+		function changeGraphState() {
+			if (disabled) {
+				$("input").removeAttr("disabled");
+				$("select").removeAttr("disabled");
+				disabled = false;
+				rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
+			}else{
+				$("input").attr("disabled","disabled");
+				$("select").attr("disabled","disabled");
+				$("#cancel").removeAttr("disabled");
+				disabled = true;
+			}
+		}
+		//-->
+		</script>
 		<?php
-
 	}else{
 		$graphs = array();
 		$graphs_template = array();
@@ -1228,7 +1228,7 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Graph Management") . "</strong>", "100", $colors["header"], "3", "center", "graphs.php?action=graph_edit&device_id=" . $_REQUEST["device_id"], true);
+	html_start_box("<strong>" . __("Graph Management") . "</strong>", "100", $colors["header"], "3", "center", "graphs.php?action=edit&device_id=" . $_REQUEST["device_id"], true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1398,7 +1398,7 @@ function graph() {
 		)
 	);
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "graphs.php",
+	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "local_graph_id", "graphs.php",
 		array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
 		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
