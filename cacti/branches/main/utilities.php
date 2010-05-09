@@ -1169,7 +1169,7 @@ function utilities_view_logfile() {
 			while ($ds_start) {
 				$ds_end   = strpos($item, "]", $ds_start);
 				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $ds_id) . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . "</a>";
+				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='" . htmlspecialchars("data_sources.php?action=edit&id=" . $ds_id) . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . "</a>";
 				$item     = substr($item, $ds_end);
 				$ds_start = strpos($item, "DS[");
 			}
@@ -1762,7 +1762,7 @@ function utilities_view_poller_cache() {
 			form_alternate_row_color();
 				?>
 				<td width="375">
-					<a class="linkEditMain" href="<?php print htmlspecialchars("data_sources.php?action=ds_edit&id=" . $item["local_data_id"]);?>"><?php print (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $item["name_cache"]) : $item["name_cache"]);?></a>
+					<a class="linkEditMain" href="<?php print htmlspecialchars("data_sources.php?action=edit&id=" . $item["local_data_id"]);?>"><?php print (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $item["name_cache"]) : $item["name_cache"]);?></a>
 				</td>
 
 				<td>

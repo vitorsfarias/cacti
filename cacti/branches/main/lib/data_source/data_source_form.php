@@ -223,9 +223,9 @@ function data_source_form_save() {
 	}
 
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
-		header("Location: data_sources.php?action=data_source_edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: data_sources.php?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["hidden_data_template_id"]) || ($_POST["data_input_id"] != $_POST["hidden_data_input_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: data_sources.php?action=data_source_edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
+		header("Location: data_sources.php?action=edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
 	}else{
 		header("Location: data_sources.php");
 	}
@@ -622,7 +622,7 @@ function data_source_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
 	db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $_GET["id"]);
 
-	header("Location: data_sources.php?action=data_source_edit&id=" . $_GET["local_data_id"]);
+	header("Location: data_sources.php?action=edit&id=" . $_GET["local_data_id"]);
 	exit;
 }
 
@@ -635,7 +635,7 @@ function data_source_rrd_add() {
 		data_source_name) values (" . get_request_var("id") . ",100,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header("Location: data_sources.php?action=data_source_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+	header("Location: data_sources.php?action=edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 	exit;
 }
 
@@ -1018,7 +1018,7 @@ function data_source() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "data_sources.php?action=data_source_edit&device_id=" . $_REQUEST["device_id"], true);
+	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "data_sources.php?action=edit&device_id=" . $_REQUEST["device_id"], true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

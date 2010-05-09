@@ -66,7 +66,7 @@ switch (get_request_var_request("action")) {
 
 		header ("Location: data_sources.php");
 		break;
-	case 'data_source_edit':
+	case 'edit':
 		data_source_edit();
 
 		break;
