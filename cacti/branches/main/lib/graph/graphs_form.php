@@ -1402,7 +1402,3 @@ function graph() {
 		array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
 		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
-
-function display_graph_size($height, $width) {
-	return $height . " x " . $width;
-}
