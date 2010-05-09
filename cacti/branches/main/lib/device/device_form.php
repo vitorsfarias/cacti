@@ -1280,7 +1280,7 @@ function device_display_general($device, $device_text) {
 	if (isset($device["id"])) {
 		html_start_box("<strong>". __("Associated Graph Templates") . "</strong>", "100", 0, "center", "", true);
 		print "<tr><td>";
-		html_header(array(__("Graph Template Name"), __("Status")), 2);
+		html_header(array(array("name" => __("Graph Template Name")), array("name" => __("Status"))), 2);
 
 		$selected_graph_templates = db_fetch_assoc("select
 			graph_templates.id,
@@ -1357,7 +1357,7 @@ function device_display_general($device, $device_text) {
 
 		html_start_box("<strong>" . __("Associated Data Queries") . "</strong>", "100", 0, "center", "", true);
 		print "<tr><td>";
-		html_header(array(__("Data Query Name"), __("Debugging"), __("Re-Index Method"), __("Status")), 2);
+		html_header(array(array("name" => __("Data Query Name")), array("name" => __("Debugging")), array("name" => __("Re-Index Method")), array("name" =>__("Status"))), 2);
 
 		$selected_data_queries = db_fetch_assoc("select
 			snmp_query.id,

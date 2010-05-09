@@ -579,7 +579,7 @@ function graph_template_display_items() {
 	/* graph template inputs */
 	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong>", "100", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . $_REQUEST["id"], true);
 	print "<tr><td>\n";
-	html_header(array(__("Name")), 2,'','','left wp100');
+	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');
 
 	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=" . $_REQUEST["id"] . " order by name");
 

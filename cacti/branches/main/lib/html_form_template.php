@@ -73,7 +73,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
 				print "<tr><td>";
-				html_header(array($header_title, "&nbsp;"), 1, false, 'template_graph_' . $field_name);
+				html_header(array(array("name" => $header_title), array("name" => "&nbsp;")), 1, false, 'template_graph_' . $field_name);
 			}
 
 			$draw_any_items = true;

@@ -1024,7 +1024,7 @@ function device_template_display_gt($device_template, $header_label) {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_gt_edit'>\n";
 	html_start_box("<strong>" . __("Associated Graph Templates") . " $header_label</strong>", "100", "3", "center", "", true);
 	print "<tr><td>";
-	html_header(array(__("Graph Template Name")), 3);
+	html_header(array(array("name" => __("Graph Template Name"))), 3);
 
 	/* list all graph templates that are currentyl associated */
 	$selected_graph_templates = db_fetch_assoc("SELECT " .
@@ -1102,7 +1102,7 @@ function device_template_display_dq($device_template, $header_label) {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_dq_edit'>\n";
 	html_start_box("<strong>" . __("Associated Data Queries") . " $header_label</strong>", "100", "0", "center", "", true);
 	print "<tr><td>";
-	html_header(array(__("Data Query Name"), __("Re-Index Method")), 2);
+	html_header(array(array("name" => __("Data Query Name")), array("name" => __("Re-Index Method")))), 2);
 
 	/* list all data queries that are currently associated */
 	$selected_data_queries = db_fetch_assoc("SELECT " .
