@@ -315,17 +315,21 @@ function getParentNode(objReference, nodeName, className) {
 function doColResize(object, event){
 	if(!event) event = window.event;
 
-	if (!isMouseDown) {
-		if (isOnBorderRight("column", object, event)) {
-			overColumn          = true;
-			$("th").css("cursor", "e-resize");
-		}else{
-			overColumn          = false;
-			$("th").css("cursor", "");
-			$("th > a").css("cursor", "");
+	if ($("#"+object.id).parents("table").hasClass("resizable")) {
+		if (!isMouseDown) {
+			if (isOnBorderRight("column", object, event)) {
+				overColumn          = true;
+				$("th").css("cursor", "e-resize");
+			}else{
+				overColumn          = false;
+				$("th").css("cursor", "");
+				$("th > a").css("cursor", "");
+			}
+		} else {
+			$("th > a").css("cursor", "e-resize");
 		}
-	} else {
-		$("th > a").css("cursor", "e-resize");
+	}else{
+		overColumn = false;
 	}
 
 	return overColumn;
