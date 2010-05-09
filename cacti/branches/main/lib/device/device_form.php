@@ -637,8 +637,6 @@ function device_edit() {
 	input_validate_input_number(get_request_var("device_id"));
 	/* ==================================================== */
 
-	display_output_messages();
-
 	$device_tabs = array(
 		"general" => __("General"),
 		"newgraphs" => __("New Graphs"),

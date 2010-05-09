@@ -410,8 +410,6 @@ function data_source_template_edit() {
 	input_validate_input_number(get_request_var("view_rrd"));
 	/* ==================================================== */
 
-	display_output_messages();
-
 	$data_template_tabs = array(
 		"general" 		=> __("General"),
 		"items" 		=> __("Items"),
