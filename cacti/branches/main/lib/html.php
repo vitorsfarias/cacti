@@ -507,7 +507,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 			$rand_id++;
 		}else{
-			$width = html_get_column_width($pathname, $item["id"]);
+			$width = html_get_column_width($pathname, $column);
 
 			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($_SERVER["PHP_SELF"] . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";

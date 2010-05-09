@@ -911,12 +911,31 @@ function utilities_view_user_log() {
 
 
 	$display_text = array(
-		"username" => array(__("Username"), "ASC"),
-		"full_name" => array(__("Full Name"), "ASC"),
-		"realm" => array(__("Authentication Realm"), "ASC"),
-		"time" => array(__("Date"), "ASC"),
-		"result" => array(__("Result"), "DESC"),
-		"ip" => array(__("IP Address"), "DESC"));
+		"username" => array(
+			"name" => __("Username"),
+			"order" => "ASC"
+		),
+		"full_name" => array(
+			"name" => __("Full Name"),
+			"order" => "ASC"
+		),
+		"realm" => array(
+			"name" => __("Authentication Realm"),
+			"order" => "ASC"
+		),
+		"time" => array(
+			"name" => __("Date"),
+			"order" => "ASC"
+		),
+		"result" => array(
+			"name" => __("Result"),
+			"order" => "DESC"
+		),
+		"ip" => array(
+			"name" => __("IP Address"),
+			"order" => "DESC"
+		)
+	);
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
@@ -1752,8 +1771,16 @@ function utilities_view_poller_cache() {
 	html_end_box(false);
 
 	$display_text = array(
-		"data_template_data.name_cache" => array(__("Data Source Name"), "ASC"),
-		"" => array(__("Details"), "ASC"));
+		"data_template_data.name_cache" => array(
+			"name" => __("Data Source Name"),
+			"order" => "ASC"
+		),
+		"" => array(
+			"name" => __("Details"),
+			"sort" => false,
+			"order" => "ASC"
+		)
+	);
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 
