@@ -99,7 +99,7 @@ function data_sources_item_save() {
 		if (is_error_message()) {
 			header("Location: data_sources_items.php?action=item_edit&id=" . (empty($data_sources_rrd_id) ? $_POST["data_sources_rrd_id"] : $data_sources_rrd_id) . "&local_data_id=" . $_POST["local_data_id"]);
 		}else{
-			header("Location: data_sources.php?action=data_source_edit&id=" . $_POST["local_data_id"]);
+			header("Location: data_sources.php?action=edit&id=" . $_POST["local_data_id"]);
 		}
 	}
 }
@@ -123,7 +123,7 @@ function data_sources_item_remove() {
 		}
 	}
 
-	header("Location: data_sources.php?action=data_source_edit&id=" . $_GET["local_data_id"]);
+	header("Location: data_sources.php?action=edit&id=" . $_GET["local_data_id"]);
 	exit;
 }
 
