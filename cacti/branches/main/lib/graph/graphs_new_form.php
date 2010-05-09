@@ -235,7 +235,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 
-				html_start_box("<strong>" . __("Create Graph from '%s'", db_fetch_cell("select name from graph_templates where id=$graph_template_id")), "100", $colors["header"], "3", "center", "");
+				html_start_box("<strong>" . __("Create Graph from '%s'", db_fetch_cell("select name from graph_templates where id=$graph_template_id")), "100", "3", "center", "");
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					/* ================= input validation ================= */
@@ -256,7 +256,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 				}
 
 				/* DRAW: Data Query */
-				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "100", $colors["header"], "3", "center", "");
+				html_start_box("<strong>Create $num_graphs Graph" . (($num_graphs>1) ? "s" : "") . " from '" . db_fetch_cell("select name from snmp_query where id=$snmp_query_id") . "'", "100", "3", "center", "");
 			}
 
 			/* ================= input validation ================= */
@@ -411,7 +411,7 @@ function graphs_new() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong> " . db_fetch_cell("select name from device_template where id=" . $device["device_template_id"]), "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong> " . db_fetch_cell("select name from device_template where id=" . $device["device_template_id"]), "100", "3", "center", "");
 
 	?>
 	<tr class='rowAlternate2'>
@@ -550,7 +550,7 @@ function graphs_new() {
 
 		$onReadyFuncs[] = "setGraphStatus()";
 
-		html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", $colors["header"], "3", "center", "");
+		html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", "3", "center", "");
 		print "	<tr class='rowSubHeader'>
 				<td class='textSubHeaderDark'>" . __("Graph Template Name") . "</td>
 				<td class='rowSubHeader' width='1%' align='center' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all_cg' title='" . __("Select All") . "' onClick='selectAllGraphs(\"cg\",this.checked)'></td>\n
@@ -667,7 +667,7 @@ function graphs_new() {
 				print "//-->\n</script>\n";
 			}
 
-			html_start_box_dq($snmp_query["name"], $snmp_query["id"], $device["id"], $num_input_fields+1, "100", $colors["header"], "0", "center");
+			html_start_box_dq($snmp_query["name"], $snmp_query["id"], $device["id"], $num_input_fields+1, "100", "0", "center");
 
 			if ($xml_array != false) {
 				$html_dq_header = "";

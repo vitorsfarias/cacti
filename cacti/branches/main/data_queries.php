@@ -131,11 +131,7 @@ function form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
-			header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
-		}else{
-			header("Location: data_queries.php");
-		}
+		header("Location: data_queries.php?action=edit&id=" . (empty($snmp_query_id) ? $_POST["id"] : $snmp_query_id));
 		exit;
 	}elseif (isset($_POST["save_component_snmp_query_item"])) {
 		/* ================= input validation ================= */
@@ -279,7 +275,7 @@ function form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $dq_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $dq_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='data_queries.php' method='post'>\n";
 
@@ -392,7 +388,7 @@ function data_query_item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_item_edit'>\n";
-	html_start_box("<strong>" . __("Associated Graph/Data Source Templates") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Associated Graph/Data Source Templates") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -410,7 +406,7 @@ function data_query_item_edit() {
 	html_end_box(true);
 
 	if (!empty($snmp_query_item["id"])) {
-		html_start_box("<strong>" . __("Associated Data Source Templates") . "</strong>", "100", $colors["header"], "0", "center", "", false, "assoc_data_templates");
+		html_start_box("<strong>" . __("Associated Data Source Templates") . "</strong>", "100", "0", "center", "", false, "assoc_data_templates");
 		$header_items = array(
 			array("name" => __("Data Source Name")),
 			array("name" => __("Associated XML Field")),
@@ -486,7 +482,7 @@ function data_query_item_edit() {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 
-		html_start_box("<strong>" . __("Suggested Values: Data Source Templates") . "</strong>", "100", $colors["header"], 0, "center", "");
+		html_start_box("<strong>" . __("Suggested Values: Data Source Templates") . "</strong>", "100", 0, "center", "");
 
 		reset($data_templates);
 
@@ -570,7 +566,7 @@ function data_query_item_edit() {
 			where snmp_query_graph_id=" . $_GET["id"] . "
 			order by field_name,sequence");
 
-		html_start_box("<strong>" . __("Suggested Values: Graph Templates") . "</strong>", "100", $colors["header"], 0, "center", "");
+		html_start_box("<strong>" . __("Suggested Values: Graph Templates") . "</strong>", "100", 0, "center", "");
 		$header_items = array(
 			array("name" => __("Graph Template") . " - " . db_fetch_cell("select name from graph_templates where id=" . $snmp_query_item["graph_template_id"]), "&nbsp;")
 		);
@@ -664,7 +660,7 @@ function data_query_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_edit'>\n";
-	html_start_box("<strong>" . __("Data Queries") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Data Queries") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -692,12 +688,12 @@ function data_query_edit() {
 			$xml_file_exists = false;
 		}
 
-		html_start_box("", "100", "aaaaaa", "3", "center", "");
+		html_start_box("", "100", "3", "center", "");
 		print "<tr class='textArea'><td>$text</td></tr>";
 		html_end_box();
 
 		if ($xml_file_exists == true) {
-			html_start_box("<strong>" . __("Associated Graph Templates") . "</strong>", "100", $colors["header"], "0", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
+			html_start_box("<strong>" . __("Associated Graph Templates") . "</strong>", "100", "0", "center", "data_queries.php?action=item_edit&snmp_query_id=" . $snmp_query["id"]);
 			$header_items = array(
 				array("name" => __("Name")),
 				array("name" => __("Graph Template Name")));
@@ -741,7 +737,7 @@ function data_query_edit() {
 		}
 	}
 
-	form_save_button_alt("path!data_queries.php");
+	form_save_button("data_queries.php", "return");
 }
 
 function data_query() {
@@ -801,7 +797,7 @@ function data_query() {
 	load_current_session_value("sort_column", "sess_data_queries_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_queries_sort_direction", "ASC");
 
-	html_start_box("<strong>" . __("Data Queries") . "</strong>", "100", $colors["header"], "3", "center", "data_queries.php?action=edit", true);
+	html_start_box("<strong>" . __("Data Queries") . "</strong>", "100", "3", "center", "data_queries.php?action=edit", true);
 	?>
 	<tr class="rowAlternate2 noprint">
 		<td class="noprint">

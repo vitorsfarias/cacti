@@ -378,7 +378,7 @@ function api_device_form_actions() {
 	$device_actions[ACTION_NONE] = __("None");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_actions'>\n";
-	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	if (isset($device_array) && sizeof($device_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -738,7 +738,7 @@ function device_display_general($device, $device_text) {
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 
 	if (isset($device["id"])) {
-		html_start_box($device_text, "100", $colors["header"], "3", "center", "", true);
+		html_start_box($device_text, "100", "3", "center", "", true);
 		?>
 			<tr class="rowAlternate2">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
@@ -838,13 +838,13 @@ function device_display_general($device, $device_text) {
 			</tr>
 		<?php
 	}else{
-		html_start_box($device_text, "100", $colors["header"], "3", "center", "", false);
+		html_start_box($device_text, "100", "3", "center", "", false);
 	}
 
 	html_end_box(FALSE);
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
-	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", $colors["header"], 0, "center", "", true);
+	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center", "", true);
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -1270,7 +1270,7 @@ function device_display_general($device, $device_text) {
 	<?php
 
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box("<strong>" . __("Data Query Debug Information") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+		html_start_box("<strong>" . __("Data Query Debug Information") . "</strong>", "100", "3", "center", "", true);
 
 		print "<tr><td><span class=\"log\">" . debug_log_return("data_query") . "</span></td></tr>";
 
@@ -1278,7 +1278,7 @@ function device_display_general($device, $device_text) {
 	}
 
 	if (isset($device["id"])) {
-		html_start_box("<strong>". __("Associated Graph Templates") . "</strong>", "100", $colors["header"], 0, "center", "", true);
+		html_start_box("<strong>". __("Associated Graph Templates") . "</strong>", "100", 0, "center", "", true);
 		print "<tr><td>";
 		html_header(array(__("Graph Template Name"), __("Status")), 2);
 
@@ -1355,7 +1355,7 @@ function device_display_general($device, $device_text) {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box(FALSE);
 
-		html_start_box("<strong>" . __("Associated Data Queries") . "</strong>", "100", $colors["header"], 0, "center", "", true);
+		html_start_box("<strong>" . __("Associated Data Queries") . "</strong>", "100", 0, "center", "", true);
 		print "<tr><td>";
 		html_header(array(__("Data Query Name"), __("Debugging"), __("Re-Index Method"), __("Status")), 2);
 
@@ -1560,7 +1560,7 @@ function device() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Devices") . "</strong>", "100", $colors["header"], "3", "center", "devices.php?action=edit&template_id=" . $_REQUEST["template_id"] . "&status=" . $_REQUEST["status"], true);
+	html_start_box("<strong>" . __("Devices") . "</strong>", "100", "3", "center", "devices.php?action=edit&template_id=" . $_REQUEST["template_id"] . "&status=" . $_REQUEST["status"], true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -37,7 +37,7 @@ switch (get_request_var_request("action")) {
 	case 'input_remove':
 		input_remove();
 
-		header("Location: graph_templates.php?action=template_edit&id=" . get_request_var("graph_template_id") . "&template_id=" . get_request_var("graph_template_id") . "&tab=items");
+		header("Location: graph_templates.php?action=edit&id=" . get_request_var("graph_template_id") . "&template_id=" . get_request_var("graph_template_id") . "&tab=items");
 		break;
 	case 'input_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -112,7 +112,7 @@ function form_save() {
 			header("Location: graph_templates_inputs.php?action=input_edit&graph_template_input_id=" . (empty($graph_template_input_id) ? $_POST["graph_template_input_id"] : $graph_template_input_id) . "&graph_template_id=" . $_POST["graph_template_id"]);
 			exit;
 		}else{
-			header("Location: graph_templates.php?action=template_edit&id=" . $_POST["graph_template_id"] . "&template_id=" . $_POST["graph_template_id"] . "&tab=items");
+			header("Location: graph_templates.php?action=edit&id=" . $_POST["graph_template_id"] . "&template_id=" . $_POST["graph_template_id"] . "&tab=items");
 			exit;
 		}
 	}
@@ -130,7 +130,7 @@ function input_remove() {
 
 	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
 		include(CACTI_BASE_PATH . "/include/top_header.php");
-		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the input item") . " <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
+		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the input item") . " <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php?action=edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		exit;
 	}
@@ -172,7 +172,7 @@ function input_edit() {
 		$graph_template_input = db_fetch_row("select * from graph_template_input where id=" . $_GET["id"]);
 	}
 
-	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong> $header_label", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong> $header_label", "100", "3", "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),

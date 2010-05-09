@@ -65,7 +65,7 @@ include(CACTI_BASE_PATH . "/include/top_header.php");
 
 plugins_draw_tabs($ptabs, $current_tab);
 
-html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', $colors['header'], '3', 'center', '');
+html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
 
 print "<tr><td><table width='100%'>";
 

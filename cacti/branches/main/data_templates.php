@@ -220,12 +220,7 @@ function data_source_template_save() {
 
 	}
 
-	if ((is_error_message()) || (empty($_POST["data_template_id"]))) {
-		header("Location: data_templates.php?action=template_edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
-	}else{
-		header("Location: data_templates.php");
-	}
-
+	header("Location: data_templates.php?action=edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
 }
 
 /* ------------------------
@@ -319,7 +314,7 @@ function data_source_template_form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $ds_template_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $ds_template_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='data_templates.php' method='post'>\n";
 
@@ -397,7 +392,7 @@ function template_rrd_add() {
 	}
 	}
 
-	header("Location: data_templates.php?action=template_edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+	header("Location: data_templates.php?action=edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 	exit;
 }
 
@@ -439,7 +434,7 @@ function data_source_template_edit() {
 
 	if (sizeof($data_template_tabs) > 0) {
 		foreach (array_keys($data_template_tabs) as $tab_short_name) {
-			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("data_templates.php?action=template_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$data_template_tabs[$tab_short_name]</a></div>";
+			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("data_templates.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$data_template_tabs[$tab_short_name]</a></div>";
 
 			if (!isset($_REQUEST["id"])) break;
 		}
@@ -494,7 +489,7 @@ function data_source_template_display_general($data_template, $header_label) {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_data_source_template_edit'>\n";
 
 	# the template header
-	html_start_box("<strong>" . __("Data Source Template") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
+	html_start_box("<strong>" . __("Data Source Template") . "</strong> $header_label", "100", 0, "center", "", true);
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value")));
@@ -515,7 +510,7 @@ function data_source_template_display_general($data_template, $header_label) {
 	form_hidden_box("save_component_template", 1, "");
 
 
-	html_start_box("<strong>" . __("Data Source") . "</strong>", "100", $colors["header"], 0, "center", "", true);
+	html_start_box("<strong>" . __("Data Source") . "</strong>", "100", 0, "center", "", true);
 	draw_template_edit_form('header_data_source', data_source_form_list(), $template_data, false);
 	html_end_box();
 
@@ -525,7 +520,7 @@ function data_source_template_display_general($data_template, $header_label) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
 
-		html_start_box("<strong>" . __("Custom Data") . "</strong> [data input: " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", $colors["header"], 0, "center", "", true);
+		html_start_box("<strong>" . __("Custom Data") . "</strong> [data input: " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", 0, "center", "", true);
 		$header_items = array(
 			array("name" => __("Field")),
 			array("name" => __("Value"))
@@ -565,7 +560,7 @@ function data_source_template_display_general($data_template, $header_label) {
 		html_end_box(false);
 	}
 
-	form_save_button_alt("url!data_templates.php");
+	form_save_button("data_templates.php", "return");
 }
 
 /**
@@ -588,7 +583,7 @@ function data_template_display_items() {
 		$header_label = __("[new]");
 	}
 
-	html_start_box("<strong>" . __("Data Source Items") . "</strong> $header_label", "100", $colors["header"], "0", "center", "data_templates_items.php?action=item_edit&data_template_id=" . $_REQUEST["id"], true);
+	html_start_box("<strong>" . __("Data Source Items") . "</strong> $header_label", "100", "0", "center", "data_templates_items.php?action=item_edit&data_template_id=" . $_REQUEST["id"], true);
 	draw_data_template_items_list($template_item_list, "data_templates_items.php", "data_template_id=" . $_REQUEST["id"], false);
 	html_end_box(true);
 	form_save_button_alt("url!data_templates.php");
@@ -654,7 +649,7 @@ function data_source_template() {
 	load_current_session_value("sort_column", "sess_data_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
 
-	html_start_box("<strong>Data Source Templates</strong>", "100", $colors["header"], "3", "center", "data_templates.php?action=template_edit", true);
+	html_start_box("<strong>Data Source Templates</strong>", "100", "3", "center", "data_templates.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -268,7 +268,7 @@ function display_php() {
 
 	$php_info = utilities_php_modules();
 
-	html_start_box("<strong>" . __("PHP Module Information") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("PHP Module Information") . "</strong>", "100", "3", "center", "");
 	print "<tr>\n";
 	print "<td class='textAreaNotes left'>" . $php_info . "</td>\n";
 	print "</tr>\n";
@@ -326,7 +326,7 @@ function display_general() {
 	}
 
 	/* Display tech information */
-	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", "3", "center", "");
 	print "<tr><td>";
 	html_header(array(array("name" => __("General Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
@@ -514,7 +514,7 @@ function display_database() {
 		array("name" => __("Collation"), "align" => "left"),
 		array("name" => __("Comment"), "align" => "left"));
 
-	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($table_status) > 0) {
@@ -565,7 +565,7 @@ function display_database_processes() {
 		array("name" => __("Info"))
 	);
 
-	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($db_processes) > 0) {
@@ -632,7 +632,7 @@ function display_languages() {
 	}
 
 
-	html_start_box("<strong>" . __("Language Information") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("Language Information") . "</strong>", "100", "3", "center", "");
 	html_header(array(array("name" => __("General Information"))), 2,'','','left','');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Current Language") . "</td>\n";
@@ -764,7 +764,7 @@ function utilities_view_user_log() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("User Login History") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("User Login History") . "</strong>", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -870,7 +870,7 @@ function utilities_view_user_log() {
 		}
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -1049,7 +1049,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Log File Filters") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("Log File Filters") . "</strong>", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1143,7 +1143,7 @@ function utilities_view_logfile() {
 		$start_string = "<strong>" . __("Log File") . "</strong> [" . __("Total Lines:") . " " . sizeof($logcontents) . " - " . __("All Items Shown") . "]";
 	}
 
-	html_start_box($start_string, "100", $colors["header"], "0", "center", "");
+	html_start_box($start_string, "100", "0", "center", "");
 
 	$i = 0;
 	$j = 0;
@@ -1241,7 +1241,7 @@ function utilities_clear_logfile() {
 		$logfile = "./log/cacti.log";
 	}
 
-	html_start_box("<strong>" . __("Clear Cacti Log File") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("Clear Cacti Log File") . "</strong>", "100", "3", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = format_date();
@@ -1333,7 +1333,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("SNMP Cache Items") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("SNMP Cache Items") . "</strong>", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1453,7 +1453,7 @@ function utilities_view_snmp_cache() {
 			OR device_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -1615,7 +1615,7 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Poller Cache Items") . "</strong>", "100", $colors["header"], "3", "center", "", true);
+	html_start_box("<strong>" . __("Poller Cache Items") . "</strong>", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1711,7 +1711,7 @@ function utilities_view_poller_cache() {
 			OR poller_item.rrd_path  LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
-	html_start_box("", "100", $colors["header"], "0", "center", "");
+	html_start_box("", "100", "0", "center", "");
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(*)
@@ -1814,7 +1814,7 @@ function utilities_view_poller_cache() {
 function utilities() {
 	global $colors;
 
-	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", "3", "center", "");
 
 	print "<tr><td>";
 	html_header(array(array("name" => __("Technical Support"))), 2, '', '', 'left wp100'); ?>

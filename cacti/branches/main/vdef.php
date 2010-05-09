@@ -214,7 +214,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $vdef_actions{get_request_var_post("drp_action")} . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $vdef_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
 
 	print "<form action='vdef.php' method='post'>\n";
 
@@ -288,7 +288,7 @@ function item_edit() {
 		$values[$current_type] = $vdef["value"];
 	}
 
-	html_start_box("", "100", "aaaaaa", "3", "center", "");
+	html_start_box("", "100", "3", "center", "");
 	draw_vdef_preview(get_request_var("vdef_id"));
 	html_end_box();
 
@@ -299,7 +299,7 @@ function item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='form_vdef'>\n";
-	html_start_box("<strong>" . __("VDEF Items") . "</strong> $header_label", "100", $colors["header"], 0, "center", "", true);
+	html_start_box("<strong>" . __("VDEF Items") . "</strong> $header_label", "100", 0, "center", "", true);
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -412,7 +412,7 @@ function vdef_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='vdef_edit'>\n";
-	html_start_box("<strong>". __("VDEF's") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>". __("VDEF's") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -432,11 +432,11 @@ function vdef_edit() {
 	form_hidden_box("save_component_vdef", "1", "");
 
 	if (!empty($_GET["id"])) {
-		html_start_box("", "100", "aaaaaa", "3", "center", "");
+		html_start_box("", "100", "3", "center", "");
 		draw_vdef_preview(get_request_var("id"));
 		html_end_box();
 
-		html_start_box("<strong>" . __("VDEF Items") . "</strong>", "100", $colors["header"], 0, "center", "vdef.php?action=item_edit&vdef_id=" . $vdef["id"], false, "vdef");
+		html_start_box("<strong>" . __("VDEF Items") . "</strong>", "100", 0, "center", "vdef.php?action=item_edit&vdef_id=" . $vdef["id"], false, "vdef");
 		$header_items = array(
 			array("name" => __("Item")),
 			array("name" => __("Item Value"))
@@ -539,7 +539,7 @@ function vdef() {
 	load_current_session_value("sort_column", "sess_vdef_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_vdef_sort_direction", "ASC");
 
-	html_start_box("<strong>" . __("VDEF's") . "</strong>", "100", $colors["header"], "3", "center", "vdef.php?action=edit", true);
+	html_start_box("<strong>" . __("VDEF's") . "</strong>", "100", "3", "center", "vdef.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

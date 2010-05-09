@@ -217,7 +217,7 @@ function form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $di_actions[get_request_var_post("drp_action")] . "</strong>", "60", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $di_actions[get_request_var_post("drp_action")] . "</strong>", "60", "3", "center", "");
 
 	print "<form action='data_input.php' method='post'>\n";
 
@@ -343,7 +343,7 @@ function field_edit() {
 		return;
 	}
 
-	html_start_box("<strong>$header_name " . __("Fields") . "</strong> " . __("[edit: ") . $data_input["name"] . "]", "100", $colors["header"], "3", "center", "");
+	html_start_box("<strong>$header_name " . __("Fields") . "</strong> " . __("[edit: ") . $data_input["name"] . "]", "100", "3", "center", "");
 
 	$form_array = array();
 
@@ -413,7 +413,7 @@ function data_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_input_edit'>\n";
-	html_start_box("<strong>" . __("Data Input Methods") . "</strong> $header_label", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("Data Input Methods") . "</strong> $header_label", "100", 0, "center", "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
@@ -431,7 +431,7 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>" . __("Input Fields") . "</strong>", "100", $colors["header"], 0, "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>" . __("Input Fields") . "</strong>", "100", 0, "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
 		$header_items = array(
 			array("name" => __("Name"), "align" => "left"),
 			array("name" => __("Field Order"), "align" => "left"),
@@ -469,7 +469,7 @@ function data_edit() {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 
-		html_start_box("<strong>" . __("Output Fields"). "</strong>", "100", $colors["header"], 0, "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>" . __("Output Fields"). "</strong>", "100", 0, "center", "data_input.php?action=field_edit&type=out&data_input_id=" . $_GET["id"]);
 		$header_items = array(
 			array("name" => __("Name")),
 			array("name" => __("Field Order")),
@@ -573,7 +573,7 @@ function data() {
 	load_current_session_value("sort_column", "sess_data_input_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_data_input_sort_direction", "ASC");
 
-	html_start_box("<strong>" . __("Data Input Methods") . "</strong>", "100", $colors["header"], "3", "center", "data_input.php?action=edit", true);
+	html_start_box("<strong>" . __("Data Input Methods") . "</strong>", "100", "3", "center", "data_input.php?action=edit", true);
 	?>
 	<tr class="rowAlternate2 noprint">
 		<td class="noprint">
