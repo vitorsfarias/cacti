@@ -524,6 +524,19 @@ function display_output_messages() {
 		}else{
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
+		?>
+		<script type='text/javascript'>
+		<!--
+		$().ready(function() {
+			t = setTimeout("hideMessage()", 2000);
+		});
+
+		function hideMessage() {
+			$("#message").slideUp("fast");
+		}
+		-->
+		</script>
+		<?php
 	}
 
 	kill_session_var("sess_messages");
@@ -692,7 +705,7 @@ function timer_end($message = "default") {
 	list($micro,$seconds) = explode(" ", microtime());
 	$timer_end = $seconds + $micro;
 
-	echo "TIMER: '$message' Time:'" . ($timer_end - $timer_start) . "' seconds\n";
+	echo "TIMER: '$message' Time:'" . round($timer_end - $timer_start,3) . "' seconds\n";
 	$timer_start = $timer_end;
 }
 
