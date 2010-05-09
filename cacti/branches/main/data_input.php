@@ -420,7 +420,7 @@ function data_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'data_input','left wp100');
+	html_header($header_items, 1, false, 'data_input','left wp100');
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -438,7 +438,7 @@ function data_edit() {
 			array("name" => __("Friendly Name"), "align" => "left"));
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'data_input_fields', 'left wp100');
+		html_header($header_items, 2, false, 'data_input_fields', 'left wp100');
 
 		$fields = db_fetch_assoc("select id,data_name,name,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='in' order by sequence, data_name");
 
@@ -478,7 +478,7 @@ function data_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'data_output_fields', 'left wp100');
+		html_header($header_items, 2, false, 'data_output_fields', 'left wp100');
 
 		$fields = db_fetch_assoc("select id,name,data_name,update_rra,sequence from data_input_fields where data_input_id=" . $_GET["id"] . " and input_output='out' order by sequence, data_name");
 		if (sizeof($fields) > 0) {

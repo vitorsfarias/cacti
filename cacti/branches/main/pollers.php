@@ -279,7 +279,7 @@ function poller_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'poller_edit');
+	html_header($header_items, 1, false, 'poller_edit');
 
 	draw_edit_form(array(
 		"config" => array(),

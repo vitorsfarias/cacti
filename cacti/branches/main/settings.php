@@ -87,7 +87,7 @@ default:
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'settings','left wp100');
+	html_header($header_items, 2, false, 'settings','left wp100');
 
 	$form_array = array();
 

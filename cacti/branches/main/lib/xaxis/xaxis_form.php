@@ -249,7 +249,7 @@ function item_edit() {
 		array("name" => __("Value"))
 	);
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'template');
+	html_header($header_items, 1, false, 'template');
 
 	draw_edit_form(
 		array(
@@ -320,7 +320,7 @@ function xaxis_edit() {
 			array("name" => __("Label Format"))
 		);
 		print "<tr><td>";
-		html_header($header_items, 12, true, 'xaxis_item','left wp100');
+		html_header($header_items, 12, false, 'xaxis_item','left wp100');
 
 		if (sizeof($xaxis_items) > 0) {
 			$i = 0;

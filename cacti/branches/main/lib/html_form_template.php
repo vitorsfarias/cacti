@@ -73,7 +73,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
 				print "<tr><td>";
-				html_header(array($header_title, "&nbsp;"), 1, true, 'template_graph_' . $field_name);
+				html_header(array($header_title, "&nbsp;"), 1, false, 'template_graph_' . $field_name);
 			}
 
 			$draw_any_items = true;
@@ -189,7 +189,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				if (($draw_any_items == false) && ($header_title != "")) {
 					$header_items = array(array("name" => $header_title), array("name" => ""));
 					print "<tr><td>";
-					html_header($header_items, 1, true, 'template_graph_item');
+					html_header($header_items, 1, false, 'template_graph_item');
 				}
 
 				$draw_any_items = true;
@@ -280,7 +280,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			if (($draw_any_items == false) && ($header_title != "")) {
 				$header_items = array(array("name" => $header_title), array("name" => ""));
 				print "<tr><td>";
-				html_header($header_items, 1, true, 'template_data_source');
+				html_header($header_items, 1, false, 'template_data_source');
 			}
 
 			$draw_any_items = true;
@@ -387,11 +387,11 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != "")) {
 					$header_items = array(array("name" => $header_title), array("name" => ""));
 					print "<tr><td>";
-					html_header($header_items, 1, true, 'template_data_source_item_' . $form_field_name);
+					html_header($header_items, 1, false, 'template_data_source_item_' . $form_field_name);
 				}elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != "")) {
 					$header_items = array(array("name" => $header_title ." [" . $rrd["data_source_name"] . "]"), array("name" => ""));
 					print "<tr><td>";
-					html_header($header_items, 1, true, 'template_data_source_item_' . $form_field_name);
+					html_header($header_items, 1, false, 'template_data_source_item_' . $form_field_name);
 				}
 
 				$draw_any_items = true;
@@ -488,7 +488,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			if (($draw_any_items == false) && ($header_title != "")) {
 				$header_items = array(array("name" => $header_title), array("name" => ""));
 				print "<tr><td>";
-				html_header($header_items, 1, true, 'template_custom_data');
+				html_header($header_items, 1, false, 'template_custom_data');
 			}
 
 			if ($alternate_colors == true) {

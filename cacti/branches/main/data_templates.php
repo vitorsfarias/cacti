@@ -495,7 +495,7 @@ function data_source_template_display_general($data_template, $header_label) {
 		array("name" => __("Value")));
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_data_template');
+	html_header($header_items, 2, false, 'header_data_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -527,7 +527,7 @@ function data_source_template_display_general($data_template, $header_label) {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'data_source_custom_data');
+		html_header($header_items, 2, false, 'data_source_custom_data');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {

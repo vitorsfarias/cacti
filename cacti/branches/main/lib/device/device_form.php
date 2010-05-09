@@ -850,7 +850,7 @@ function device_display_general($device, $device_text) {
 		array("name" => __("Value"))
 	);
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'device');
+	html_header($header_items, 1, false, 'device');
 
 	/* preserve the device template id if passed in via a GET variable */
 	$fields_device_edit = device_form_list();

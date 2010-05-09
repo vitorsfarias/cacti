@@ -229,7 +229,7 @@ function rra_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_rra_edit');
+	html_header($header_items, 2, false, 'header_rra_edit');
 
 	draw_edit_form(array(
 		"config" => array(),
