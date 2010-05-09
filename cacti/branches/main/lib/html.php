@@ -801,7 +801,9 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 
 			$checkbox_title = "";
 			foreach($table_format as $column => $data) {
-				$text = "";
+				$text  = "";
+				$class = "";
+				$width = "";
 
 				/* remove any '.' from the column name, they are not permitted */
 				if (substr_count($column, ".")) {
@@ -867,7 +869,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 					$align = "";
 				}
 
-				form_selectable_cell($text, $row[$key_field]);
+				form_selectable_cell($text, $row[$key_field], $width, $class, $align);
 			}
 
 			if ($checkbox) {

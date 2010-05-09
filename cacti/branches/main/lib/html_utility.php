@@ -134,7 +134,7 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
    @param $width - the width of the table element
    @param $class - the class to apply to the table element */
 function form_selectable_cell($contents, $id, $width="", $class="", $align="") {
-	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($width) ? " align='$align'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
+	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($align) ? " align='$align'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
