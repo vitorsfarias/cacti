@@ -70,7 +70,7 @@ switch (get_request_var_request("action")) {
 
 		header("Location: graphs.php");
 		break;
-	case 'graph_edit':
+	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
 		graph_edit();
