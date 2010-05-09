@@ -553,8 +553,6 @@ function device_template_edit() {
 	/* ==================================================== */
 
 	/* remember if there's something we want to show to the user */
-	display_output_messages();
-
 	$device_template_tabs = array(
 		"general" 			=> __("General"),
 		"graph_templates" 	=> __("Associated Graph Templates"),
@@ -1242,8 +1240,6 @@ function device_template() {
 	load_current_session_value("filter", "sess_device_template_filter", "");
 	load_current_session_value("sort_column", "sess_device_template_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_device_template_sort_direction", "ASC");
-
-	display_output_messages();
 
 	html_start_box("<strong>" . __("Device Templates") . "</strong>", "100", $colors["header"], "3", "center", "device_templates.php?action=edit", true);
 	?>

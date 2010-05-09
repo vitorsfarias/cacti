@@ -41,19 +41,6 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 
 	$function_name = "addObject" . $form_number . "()";
 
-	if ($add_text != "") {
-		?>
-		<script type="text/javascript">
-		<!--
-		function <?php print $function_name;?> {
-			document.location = '<?php echo $add_text;?>';
-			return false;
-		}
-		//-->
-		</script>
-		<?php
-	}
-
 	$temp_string = str_replace("strong", "", $title);
 	if (strpos($temp_string, "[")) {
 		$temp_string = substr($temp_string, 0, strpos($temp_string, "[")-1);
@@ -78,6 +65,10 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	if ($collapsing) { ?>
 		<script type="text/javascript">
 		<!--
+		function <?php print $function_name;?> {
+			document.location = '<?php echo $add_text;?>';
+			return false;
+		}
 		$().ready(function() {
 			htmlStartBoxFilterChange('<?php print $item_id;?>', true);
 		});

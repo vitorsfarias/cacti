@@ -349,8 +349,6 @@ function poller() {
 	load_current_session_value("sort_column", "sess_poller_sort_column", "description");
 	load_current_session_value("sort_direction", "sess_poller_sort_direction", "ASC");
 
-	display_output_messages();
-
 	html_start_box("<strong>" . __("Pollers") . "</strong>", "100", $colors["header"], "3", "center", "pollers.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>

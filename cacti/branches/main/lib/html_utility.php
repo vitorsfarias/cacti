@@ -180,6 +180,117 @@ function html_boolean_friendly($html_boolean) {
 	}
 }
 
+/* html_verify_request_variables - validate request, get, and post variables,
+     sets a value to be used by the caller and stores those values in session
+     variables.  If the variables have changed, the page variable, if found
+     will be set to 1.
+
+     @param $fvars - The filter variables used the the caller
+        type => numeric or string
+        method => get, request, or post
+        sessionvar => to be used if the variable does not use a common session prefix
+        default => the default value if one is not set
+        value => the value of the variable once validated
+     @param $session_prefix - the prefix to use for the session variable
+     @param $clear - should the session variable and request variables be set to
+        default
+     @returns - NULL */
+function html_verify_request_variables($filter_vars, $session_prefix, $clear = false) {
+	global $fvars;
+
+	$changed = false;
+
+	if (sizeof($filter_vars)) {
+	foreach($filter_vars as $name => $attr) {
+		if (isset($attr["sessionvar"])) {
+			$sessionvar = $attr["sessionvar"];
+		}else{
+			$sessionvar = $session_prefix . "_" . $name;
+		}
+
+		/* perform escape checks first */
+		if ($attr["type"] == "numeric") {
+			if (!isset($attr["method"]) || $attr["method"] == "request") {
+				if (isset($_REQUEST[$name])) {
+					input_validate_input_number(get_request_var_request($name));
+					$fvars[$name]["value"] = get_request_var_request($name);
+				}
+			}elseif ($attr["method"] == "get") {
+				if (isset($_GET[$name])) {
+					input_validate_input_number(get_request_var($name));
+					$fvars[$name]["value"] = get_request_var_get($name);
+				}
+			}else{
+				if (isset($_POST[$name])) {
+					input_validate_input_number(get_request_var_post($name));
+					$fvars[$name]["value"] = get_request_var_post($name);
+				}
+			}
+		}else{
+			if (!isset($attr["method"]) || $attr["method"] == "request") {
+				if (isset($_REQUEST[$name])) {
+					$fvars[$name]["value"] = sanitize_search_string(get_request_var_request($name));
+				}
+			}elseif ($attr["method"] == "get") {
+				if (isset($_GET[$name])) {
+					$fvars[$name]["value"] = sanitize_search_string(get_request_var($name));
+				}
+			}else{
+				if (isset($_POST[$name])) {
+					$fvars[$name]["value"] = sanitize_search_string(get_request_var_post($name));
+				}
+			}
+		}
+
+		if ($clear) {
+			kill_session_var($sessionvar);
+			if (!isset($attr["method"]) || $attr["method"] == "request") {
+				unset($_REQUEST[$name]);
+			}elseif ($attr["method"] == "get") {
+				unset($_GET[$name]);
+			}else{
+				unset($_POST[$name]);
+			}
+			unset($fvars[$name]["value"]);
+		}else{
+			$changed += check_changed($name, $sessionvar);
+		}
+
+		/* store and/or initialize the variable in it's session */
+		if (isset($fvars[$name]["value"])) {
+			$_SESSION[$sessionvar] = $fvars[$name]["value"];
+		}elseif (isset($_SESSION[$sessionvar])) {
+			$fvars[$name]["value"] = $_SESSION[$sessionvar];
+		}else if (isset($attr["default"])) {
+			$fvars[$name]["value"]  = $attr["default"];
+			$_SESSION[$sessionvar] = $attr["default"];
+		}else{
+			$fvars[$name]["value"]  = "";
+			$_SESSION[$sessionvar] = "";
+		}
+	}
+	}
+
+	if ($clear && isset($filter_vars["page"])) {
+		$fvars["page"]["value"] = 1;
+		if (isset($filter_vars["page"]["sessionvar"])) {
+			$_SESSION[$filter_vars["page"]["sessionvar"]] = 1;
+		}else{
+			$_SESSION[$session_prefix . "_page"] = 1;
+		}
+	}
+}
+
+function html_get_page_variable($variable) {
+	global $fvars;
+
+	if (isset($fvars[$variable]["value"])) {
+		return $fvars[$variable]["value"];
+	}else{
+		return "";
+	}
+}
+
 /* get_checkbox_style - finds the proper CSS padding to apply based on the
      current client browser in use
    @returns - a CSS style string which should be used with an HTML checkbox

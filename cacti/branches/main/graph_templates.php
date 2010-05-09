@@ -56,7 +56,7 @@ switch (get_request_var_request("action")) {
 	case 'input_remove':
 		input_remove();
 
-		header("Location: graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
+		header("Location: graph_templates.php?action=edit&id=" . $_GET["graph_template_id"]);
 		break;
 	case 'input_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -65,7 +65,7 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'template_edit':
+	case 'edit':
 		include_once (CACTI_BASE_PATH . "/include/top_header.php");
 
 		template_edit();
@@ -221,7 +221,7 @@ function form_save() {
 		}
 	}
 
-	header("Location: graph_templates.php?action=template_edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
+	header("Location: graph_templates.php?action=edit&id=" . (empty($graph_template_id) ? $_POST["graph_template_id"] : $graph_template_id));
 	exit;
 }
 
@@ -370,12 +370,9 @@ function form_actions() {
  ---------------------------- */
 
 function template_edit() {
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
-
-	display_output_messages();
 
 	$graph_template_tabs = array(
 		"general" 	=> __("General"),
@@ -389,7 +386,6 @@ function template_edit() {
 	}else{
 		$graph_template = array();
 		$header_label = __("[new]");
-		#$_REQUEST["id"] = 0;
 	}
 
 	/* set the default settings category */
@@ -407,7 +403,7 @@ function template_edit() {
 
 	if (sizeof($graph_template_tabs) > 0) {
 		foreach (array_keys($graph_template_tabs) as $tab_short_name) {
-			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("graph_templates.php?action=template_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$graph_template_tabs[$tab_short_name]</a></div>";
+			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("graph_templates.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$graph_template_tabs[$tab_short_name]</a></div>";
 
 			if (!isset($_REQUEST["id"])) break;
 		}
@@ -421,15 +417,15 @@ function template_edit() {
 	switch (get_request_var_request("tab")) {
 		case "graphs":
 			include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
+//			include_once(CACTI_BASE_PATH . "/lib/utility.php");
+//			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
-			include_once(CACTI_BASE_PATH . "/lib/template.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+//			include_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
+//			include_once(CACTI_BASE_PATH . "/lib/template.php");
+//			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
+//			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
+//			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+//			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 			graph();
 
@@ -451,9 +447,10 @@ function template_edit() {
 
 function graph_template_display_general($graph_template, $header_label) {
 	global $colors;
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
+	include_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
+	include_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
 
+timer_start();
 	# fetch all settings for this graph template
 	if (isset($graph_template["id"])) {
 		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $graph_template["id"] . " and local_graph_id=0");
@@ -484,14 +481,11 @@ function graph_template_display_general($graph_template, $header_label) {
 	form_hidden_box("graph_template_graph_id", (isset($template_graph["id"]) ? $template_graph["id"] : "0"), "");
 	form_hidden_box("save_component_template", 1, "");
 
-
-	# the global graph template fields go here
-	#	html_start_box("<strong>" . __("Graph Template") . "</strong>", "100", $colors["header"], "0", "center", "", true, "table_graph_template");
-
 	/* id tags of tables (set via html_start_box) required for initial js on load */
 	html_start_box("<strong>" . __("Graph Template Labels") . "</strong>", "100", $colors["header"], "0", "center", "", true, "table_graph_template_labels");
 	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
 	html_end_box(false);
+
 	/* TODO: we should not use rrd version in the code, when going data-driven */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 		html_start_box("<strong>" . __("Graph Template Right Axis Settings") . "</strong>", "100", $colors["header"], "0", "center", "", true, "table_graph_template_right_axis");
@@ -505,6 +499,7 @@ function graph_template_display_general($graph_template, $header_label) {
 	draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $template_graph, false);
 	html_end_box(false);
 	html_start_box("<strong>" . __("Graph Template Grid") . "</strong>", "100", $colors["header"], "0", "center", "", true, "table_graph_template_grid");
+
 	draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $template_graph, false);
 	html_end_box(false);
 	html_start_box("<strong>" . __("Graph Template Color") . "</strong>", "100", $colors["header"], "0", "center", "", true, "table_graph_template_color");
@@ -526,9 +521,9 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	form_save_button("graph_templates.php", "return");
 
+timer_end();
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
-
 }
 
 
@@ -592,86 +587,99 @@ function graph_template_display_items() {
 		foreach ($template_item_list as $item) {
 			form_alternate_row_color("item" . $item["id"]);
 			?>
-<td><a class="linkEditMain"
-	href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>'><?php print $item["name"];?></a>
-</td>
-<td align="right"><a
-	href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>'><img
-	class="buttonSmall" src="images/delete_icon.gif"
-	alt="<?php print __("Delete");?>" align='right'></a></td>
+			<td>
+				<a class="linkEditMain" href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>'><?php print $item["name"];?></a>
+			</td>
+			<td align="right">
+				<a href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>'>
+					<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='right'>
+				</a>
+			</td>
 			<?php
 			form_end_row();
 		}
 	}else{
 		print "<tr class='rowAlternate1'><td colspan='2'><em>" . __("No Inputs") . "</em></td></tr>";
 	}
-
 	print "</table></td></tr>";
+
 	html_end_box(true);
 
 	form_save_button("graph_templates.php", "return");
 
 	?>
-<script type="text/javascript">
+	<script type="text/javascript">
 	<!--
 	$(document).ready(function(){
-
 		//drag and drop for graph items
 		$('#graph_item').tableDnD({
 			onDrop: function(table, row) {
-//				alert($.tableDnD.serialize());
+//					alert($.tableDnD.serialize());
 				$('#AjaxResult').load("lib/ajax/jquery.tablednd/graph_templates_item.ajax.php?id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
 			}
 		});
-
 	});
 	//-->
-
-</script>
+	</script>
 	<?php
 }
 
+function template_process_page_variables() {
+	$page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
 
-function template() {
-	global $colors, $graph_template_actions, $item_rows;
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST["clear"])) {
+		$clear = true;
+	}else{
+		$clear = false;
 	}
 
-	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
+	html_verify_request_variables($page_variables, "sess_user_graph_template", $clear);
+}
 
-	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
+function template_filter() {
+	global $colors, $item_rows;
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_graph_template_current_page");
-		kill_session_var("sess_graph_template_rows");
-		kill_session_var("sess_graph_template_filter");
-		kill_session_var("sess_graph_template_sort_column");
-		kill_session_var("sess_graph_template_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-	}
-
+	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", $colors["header"], "3", "center", "graph_templates.php?action=edit", true);
 	?>
-<script type="text/javascript">
+	<tr class='rowAlternate2'>
+		<td>
+		<form name="form_graph_template" action='<?php print basename($_SERVER["PHP_SELF"]);?>'>
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
+					<td class="w1"><input type="text" name="filter" size="40"
+						value="<?php print html_get_page_variable("filter");?>"></td>
+					<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
+					<td class="w1"><select name="rows"
+						onChange="applyFilterChange(document.form_graph_template)">
+						<option value="-1"
+						<?php if (html_get_page_variable("rows") == "-1") {?> selected
+						<?php }?>>Default</option>
+						<?php
+						if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+						}
+						?>
+					</select></td>
+					<td style='white-space: nowrap; width: 120px;'>&nbsp;<input
+						type="submit" Value="<?php print __("Go");?>" name="go"
+						align="middle"> <input type="submit"
+						Value="<?php print __("Clear");?>" name="clear" align="middle">
+					<div><input type='hidden' name='page' value='1'></div>
+					</td>
+				</tr>
+			</table>
+		</form>
+		</td>
+	</tr>
+	<script type="text/javascript">
 	<!--
 	function applyFilterChange(objForm) {
 		strURL = '?rows=' + objForm.rows.value;
@@ -681,79 +689,38 @@ function template() {
 	//-->
 	</script>
 	<?php
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_graph_template_current_page", "1");
-	load_current_session_value("rows", "sess_graph_template_rows", "-1");
-	load_current_session_value("filter", "sess_graph_template_filter", "");
-	load_current_session_value("sort_column", "sess_graph_template_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_graph_template_sort_direction", "ASC");
-
-	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", $colors["header"], "3", "center", "graph_templates.php?action=template_edit", true);
-	?>
-<tr class='rowAlternate2'>
-	<td>
-	<form name="form_graph_template"
-		action='<?php print basename($_SERVER["PHP_SELF"]);?>'>
-	<table cellpadding="0" cellspacing="3">
-		<tr>
-			<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
-			<td class="w1"><input type="text" name="filter" size="40"
-				value="<?php print $_REQUEST["filter"];?>"></td>
-			<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
-			<td class="w1"><select name="rows"
-				onChange="applyFilterChange(document.form_graph_template)">
-				<option value="-1"
-				<?php if (get_request_var_request("rows") == "-1") {?> selected
-				<?php }?>>Default</option>
-				<?php
-				if (sizeof($item_rows) > 0) {
-					foreach ($item_rows as $key => $value) {
-						print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-					}
-				}
-				?>
-			</select></td>
-			<td style='white-space: nowrap; width: 120px;'>&nbsp;<input
-				type="submit" Value="<?php print __("Go");?>" name="go"
-				align="middle"> <input type="submit"
-				Value="<?php print __("Clear");?>" name="clear_x" align="middle">
-			<div><input type='hidden' name='page' value='1'></div>
-			</td>
-		</tr>
-	</table>
-	</form>
-	</td>
-</tr>
-	<?php
 	html_end_box(false);
+}
 
+function template_get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST["filter"] != "") {
-		$sql_where = "WHERE (graph_templates.name LIKE '%%" . $_REQUEST["filter"] . "%%')
-			OR graph_templates.description LIKE '%%" . get_request_var_request("filter") . "%%'";
+	if (html_get_page_variable("filter") != "") {
+		$sql_where = "WHERE (graph_templates.name LIKE '%%" . html_get_page_variable("filter") . "%%')
+			OR graph_templates.description LIKE '%%" . html_get_page_variable("filter") . "%%'";
 	}else{
 		$sql_where = "";
 	}
 
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
-
-	$rows = db_fetch_assoc("SELECT *
-		FROM graph_templates
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(graph_templates.id)
 		FROM graph_templates
 		$sql_where");
 
-	$table_format = array(
+	return db_fetch_assoc("SELECT *
+		FROM graph_templates
+		$sql_where
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
+
+function template_get_table_format() {
+	return array(
 		"name" => array(
 			"name" => __("Template Title"),
 			"link" => true,
@@ -771,8 +738,19 @@ function template() {
 			"sort" => false,
 			"align" => "center")
 	);
+}
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "gprint_presets.php",
+function template() {
+	global $graph_template_actions;
+
+	$total_rows = 0; $rowspp = 0;
+
+	template_process_page_variables();
+	template_filter();
+
+	$rows = template_get_records($total_rows, $rowspp);
+
+	html_draw_table(template_get_table_format(), $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "graph_templates.php",
 		$graph_template_actions, get_request_var_request("filter"), true, true, true,
 		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
 }
