@@ -744,7 +744,7 @@ function data_source_edit() {
 		array("name" => __("Value"))
 	);
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'template');
+	html_header($header_items, 1, false, 'template');
 
 	$form_array = fields_data_source_form_list();
 	$form_array["data_template_id"]["id"] = (isset($data_template["id"]) ? $data_template["id"] : "0");

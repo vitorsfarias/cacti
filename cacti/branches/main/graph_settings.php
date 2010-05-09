@@ -125,7 +125,7 @@ function settings() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, "Header_Settings_" . clean_up_name($tab_short_name),'left wp100');
+		html_header($header_items, 2, false, "Header_Settings_" . clean_up_name($tab_short_name),'left wp100');
 
 		$form_array = array();
 

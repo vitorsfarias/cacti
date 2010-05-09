@@ -416,7 +416,7 @@ function item_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_graph_item_edit');
+	html_header($header_items, 2, false, 'header_graph_item_edit');
 	draw_edit_form(
 		array(
 			"config" => array("no_form_tag" => true),

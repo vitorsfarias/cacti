@@ -215,7 +215,7 @@ function gprint_presets_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_gprint_preset');
+	html_header($header_items, 2, false, 'header_gprint_preset');
 
 	draw_edit_form(array(
 		"config" => array(),

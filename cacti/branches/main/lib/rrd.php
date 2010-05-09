@@ -3058,7 +3058,7 @@ function rrdtool_function_info($data_source_id) {
 function rrdtool_info2html($info_array, $diff=array()) {
 	global $colors;
 
-	html_start_box("<strong>" . __("RRD File Information") . "</strong>", "100", $colors["header"], 0, "center", "");
+	html_start_box("<strong>" . __("RRD File Information") . "</strong>", "100", 0, "center", "");
 
 	# header data
 	$header_items = array(array("name" => __("Header")), array("name" => ''));

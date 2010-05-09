@@ -306,7 +306,7 @@ function item_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_vdef_edit');
+	html_header($header_items, 2, false, 'header_vdef_edit');
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
@@ -443,7 +443,7 @@ function vdef_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'vdef_item','left wp100');
+		html_header($header_items, 2, false, 'vdef_item','left wp100');
 
 		$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=" . get_request_var("id") . " order by sequence");
 		$i = 0;

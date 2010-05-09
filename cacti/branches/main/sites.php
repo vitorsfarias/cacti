@@ -394,7 +394,7 @@ function site_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'site_edit');
+	html_header($header_items, 1, false, 'site_edit');
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk", "no_form_tag" => true),

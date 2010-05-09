@@ -161,7 +161,7 @@ function data_template_item_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 2, true, 'header_data_template_item_edit');
+	html_header($header_items, 2, false, 'header_data_template_item_edit');
 
 	/* data input fields list */
 	$struct_data_source_item = data_source_item_form_list();

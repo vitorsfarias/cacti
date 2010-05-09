@@ -433,7 +433,7 @@ function cdef_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'cdef_item','left wp100');
+		html_header($header_items, 2, false, 'cdef_item','left wp100');
 
 		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_GET["id"] . " order by sequence");
 

@@ -834,7 +834,7 @@ function graph_settings_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 1, true, $tab_short_name);
+		html_header($header_items, 1, false, $tab_short_name);
 
 		$form_array = array();
 
@@ -934,7 +934,7 @@ function user_edit() {
 			array("name" => __("Value"))
 		);
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'settings_general');
+		html_header($header_items, 2, false, 'settings_general');
 
 		draw_edit_form(array(
 			"config" => array("form_name" => "chk"),

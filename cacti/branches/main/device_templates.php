@@ -654,7 +654,7 @@ function device_template_display_general($device_template, $header_label) {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'device_template');
+	html_header($header_items, 1, false, 'device_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),

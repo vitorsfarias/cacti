@@ -468,7 +468,7 @@ timer_start();
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'header_template');
+	html_header($header_items, 1, false, 'header_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),

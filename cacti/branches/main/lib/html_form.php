@@ -1279,7 +1279,7 @@ function draw_template_edit_form ($table_id, $edit_struct, $edit_data, $use_temp
 		array("name" => __("Value"))
 	);
 	print "<tr><td>";
-	html_header($header_items, 1, true, $table_id);
+	html_header($header_items, 1, false, $table_id);
 
 	$form_array = array();
 

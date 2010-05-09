@@ -927,13 +927,13 @@ function graph_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_edit'>\n";
-	html_start_box("<strong>" . __("Graph Template Selection") . "</strong> $header_label", "100", $colors["header"], 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
+	html_start_box("<strong>" . __("Graph Template Selection") . "</strong> $header_label", "100", 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
 	$header_items = array(
 		array("name" => __("Field")),
 		array("name" => __("Value"))
 	);
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'template');
+	html_header($header_items, 1, false, 'template');
 
 	$form_array = array(
 		"graph_template_id" => array(

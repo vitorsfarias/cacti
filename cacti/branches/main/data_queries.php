@@ -414,7 +414,7 @@ function data_query_item_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 1, true, 'data_templates', 'left wp100');
+		html_header($header_items, 1, false, 'data_templates', 'left wp100');
 
 		$data_templates = db_fetch_assoc("select
 			data_template.id,
@@ -572,7 +572,7 @@ function data_query_item_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, true, 'graph_template_suggested_values_' . get_request_var("id"), 'left wp100');
+		html_header($header_items, 2, false, 'graph_template_suggested_values_' . get_request_var("id"), 'left wp100');
 
 		if (sizeof($suggested_values) > 0) {
 			foreach ($suggested_values as $suggested_value) {
@@ -699,7 +699,7 @@ function data_query_edit() {
 				array("name" => __("Graph Template Name")));
 
 			print "<tr><td>";
-			html_header($header_items, 2, true, 'assoc_graph_templates', 'left wp100');
+			html_header($header_items, 2, false, 'assoc_graph_templates', 'left wp100');
 
 			$snmp_query_graphs = db_fetch_assoc("select
 				snmp_query_graph.id,

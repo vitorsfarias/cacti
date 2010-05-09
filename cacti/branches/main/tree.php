@@ -408,7 +408,7 @@ function tree_edit() {
 	);
 
 	print "<tr><td>";
-	html_header($header_items, 1, true, 'template');
+	html_header($header_items, 1, false, 'template');
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -428,7 +428,7 @@ function tree_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 3, true, 'tree');
+		html_header($header_items, 3, false, 'tree');
 		grow_edit_graph_tree(get_request_var("id"), "", "");
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
@@ -443,7 +443,7 @@ function tree_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 3, true, 'tree');
+		html_header($header_items, 3, false, 'tree');
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 		echo "</div>";
