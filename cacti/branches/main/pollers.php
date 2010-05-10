@@ -291,7 +291,7 @@ function poller_edit() {
 	form_save_button_alt();
 }
 
-function poller_process_page_variables() {
+function process_page_variables() {
 	$page_variables = array(
 		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
 		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
@@ -308,7 +308,7 @@ function poller_process_page_variables() {
 	html_verify_request_variables($page_variables, "sess_poller", $clear);
 }
 
-function poller_filter() {
+function filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Pollers") . "</strong>", "100", "3", "center", "pollers.php?action=edit", true);
@@ -362,7 +362,7 @@ function poller_filter() {
 	html_end_box(false);
 }
 
-function poller_get_records(&$total_rows, &$rowspp) {
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (html_get_page_variable("filter") != "") {
 		$sql_where = "WHERE (p.description LIKE '%%" . $_REQUEST["filter"] . "%%')";
@@ -391,7 +391,7 @@ function poller_get_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
-function poller_get_table_format() {
+function get_table_format() {
 	return array(
 		"description" => array(
 			"name" => __("Description"),
@@ -437,13 +437,13 @@ function poller($refresh = true) {
 
 	$total_rows = 0; $rowspp = 0;
 
-	poller_process_page_variables();
+	process_page_variables();
 
-	if ($refresh) poller_filter();
+	if ($refresh) filter();
 
-	$rows = poller_get_records($total_rows, $rowspp);
+	$rows = get_records($total_rows, $rowspp);
 
-	html_draw_table(poller_get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "pollers.php",
+	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "pollers.php",
 		$poller_actions, html_get_page_variable("filter"), true, true, true,
 		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 }
