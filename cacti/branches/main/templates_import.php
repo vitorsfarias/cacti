@@ -84,7 +84,7 @@ function form_save() {
    --------------------------- */
 
 function import() {
-	global $colors, $hash_type_names;
+	global $hash_type_names;
 
 	?>
 	<form action="templates_import.php" method="post" enctype="multipart/form-data">

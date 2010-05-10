@@ -99,7 +99,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $poller_actions;
+	global $poller_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -239,7 +239,6 @@ function form_actions() {
    --------------------- */
 
 function poller_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/poller/poller_info.php");
 
 	/* ================= input validation ================= */
@@ -253,7 +252,7 @@ function poller_edit() {
 		debug_log_clear("poller");
 		?>
 		<table class='topBoxAlt'>
-			<tr bgcolor="<?php print $colors["light"];?>">
+			<tr>
 				<td class='mono'>
 					<?php print $debug_log;?>
 				</td>
@@ -293,7 +292,7 @@ function poller_edit() {
 }
 
 function poller() {
-	global $colors, $poller_actions, $item_rows;
+	global $poller_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

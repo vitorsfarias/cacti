@@ -201,7 +201,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $colors, $dq_actions;
+	global $dq_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -368,7 +368,6 @@ function data_query_item_remove() {
 }
 
 function data_query_item_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
 
 	/* ================= input validation ================= */
@@ -645,7 +644,7 @@ function data_query_remove($id) {
 }
 
 function data_query_edit() {
-	global $colors, $config;
+	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
 
 	/* ================= input validation ================= */
@@ -741,7 +740,7 @@ function data_query_edit() {
 }
 
 function data_query() {
-	global $colors, $dq_actions, $item_rows;
+	global $dq_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

@@ -137,7 +137,6 @@ function form_save() {
    ----------------------- */
 
 function item_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 
@@ -381,7 +380,6 @@ function tree_remove() {
 }
 
 function tree_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/graph_tree/graph_tree_info.php");
 
 	/* ================= input validation ================= */
@@ -453,8 +451,6 @@ function tree_edit() {
 }
 
 function tree() {
-	global $colors;
-
 	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", "3", "center", "tree.php?action=edit");
 
 	print "<tr><td>";

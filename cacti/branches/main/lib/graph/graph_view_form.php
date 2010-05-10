@@ -25,8 +25,6 @@
 function graph_view_filter_table($mode = "mode") {
 	global $current_user;
 	global $graphs_per_page;
-	global $colors;
-
 	?>
 	<script type='text/javascript'>
 	<!--
@@ -157,7 +155,6 @@ function graph_view_filter_table($mode = "mode") {
 
 function get_graph_list_content() {
 	global $graphs_per_page;
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
 	/* Make sure nothing is cached */
@@ -555,7 +552,6 @@ function get_graph_list_content() {
 }
 
 function get_graph_preview_content () {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
 	/* Make sure nothing is cached */
@@ -979,7 +975,7 @@ function get_graph_tree_graphs() {
 }
 
 function graph_view_timespan_selector($mode = "tree") {
-	global $colors, $config;
+	global $config;
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 
 	?>
@@ -1167,8 +1163,6 @@ function graph_view_timespan_selector($mode = "tree") {
 }
 
 function graph_view_tree_filter() {
-	global $colors;
-
 	load_current_session_value("tree_id", "sess_graph_view_tree_id", "-2");
 
 	$trees = db_fetch_assoc("SELECT * FROM graph_tree WHERE user_id=" . $_SESSION["sess_user_id"] . " OR user_id=0 ORDER BY user_id, name");
@@ -1217,7 +1211,6 @@ function graph_view_tree_filter() {
 
 function graph_view_search_filter() {
 	global $graphs_per_page;
-	global $colors;
 
 	?>
 	<script type='text/javascript'>

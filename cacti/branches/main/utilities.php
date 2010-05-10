@@ -201,7 +201,7 @@ function memory_readable($val) {
 
 
 function utilities_view_tech() {
-	global $colors, $config, $rrdtool_versions;
+	global $config, $rrdtool_versions;
 
 	/* Remove all cached settings, cause read of database */
 	kill_session_var("sess_config_array");
@@ -264,7 +264,7 @@ function utilities_view_tech() {
 }
 
 function display_php() {
-	global $colors, $config;
+	global $config;
 
 	$php_info = utilities_php_modules();
 
@@ -277,7 +277,7 @@ function display_php() {
 }
 
 function display_general() {
-	global $colors, $config, $rrdtool_versions;
+	global $config, $rrdtool_versions;
 	require(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
 	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 
@@ -496,7 +496,7 @@ function display_general() {
 }
 
 function display_database() {
-	global $colors, $config, $rrdtool_versions;
+	global $config, $rrdtool_versions;
 
 	/* Get table status */
 	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
@@ -549,7 +549,7 @@ function display_database() {
 }
 
 function display_database_processes() {
-	global $colors, $config, $rrdtool_versions;
+	global $config, $rrdtool_versions;
 
 	/* Get table status */
 	$db_processes = db_fetch_assoc("SHOW PROCESSLIST");
@@ -589,7 +589,7 @@ function display_database_processes() {
 }
 
 function display_languages() {
-	global $colors, $config, $cacti_textdomains, $lang2locale, $i18n_modes, $cacti_locale;
+	global $config, $cacti_textdomains, $lang2locale, $i18n_modes, $cacti_locale;
 
 	$loaded_extensions = get_loaded_extensions();
 
@@ -684,7 +684,7 @@ function display_languages() {
 }
 
 function utilities_view_user_log() {
-	global $colors, $item_rows;
+	global $item_rows;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 	define("MAX_DISPLAY_PAGES", 21);
@@ -1004,7 +1004,7 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $colors, $log_tail_lines, $page_refresh_interval;
+	global $log_tail_lines, $page_refresh_interval;
 
 	$logfile = read_config_option("path_cactilog");
 
@@ -1245,8 +1245,6 @@ function utilities_view_logfile() {
 }
 
 function utilities_clear_logfile() {
-	global $colors;
-
 	load_current_session_value("refresh", "sess_logfile_refresh", read_config_option("log_refresh_interval"));
 
 	$refresh["seconds"] = $_REQUEST["refresh"];
@@ -1277,7 +1275,7 @@ function utilities_clear_logfile() {
 }
 
 function utilities_view_snmp_cache() {
-	global $colors, $poller_actions, $item_rows;
+	global $poller_actions, $item_rows;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -1542,7 +1540,7 @@ function utilities_view_snmp_cache() {
 }
 
 function utilities_view_poller_cache() {
-	global $colors, $poller_actions, $item_rows;
+	global $poller_actions, $item_rows;
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -1839,8 +1837,6 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	global $colors;
-
 	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", "3", "center", "");
 
 	print "<tr><td>";

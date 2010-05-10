@@ -378,7 +378,6 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	/* ================= input validation ================= */

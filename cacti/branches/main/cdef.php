@@ -84,7 +84,7 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function draw_cdef_preview($cdef_id) {
-	global $colors; ?>
+	?>
 	<tr>
 		<td>
 			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
@@ -149,7 +149,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $cdef_actions;
+	global $cdef_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -224,23 +224,22 @@ function form_actions() {
 	if (isset($cdef_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
 			print "	<tr>
-						<td class='textArea'>
-							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
-						</td>
-					</tr>\n";
+					<td class='topBoxAlt'>
+						<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
+					</td>
+				</tr>\n";
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the selected CDEFs will be deleted.") . "</p>
 						<p><ul>$cdef_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
 
 			$title = __("Delete CDEF(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following CDEFs will be duplicated. You can optionally change the title format for the new CDEFs.") . "</p>
 						<p><ul>$cdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
@@ -251,7 +250,7 @@ function form_actions() {
 			$title = __("Duplicate CDEF(s)");
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one CDEF.") . "</span></td></tr>\n";
+		print "<tr><td class='topBoxAlt'><p>" . __("You must select at least one CDEF.") . "</p></td></tr>\n";
 	}
 
 	if (!isset($cdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -279,7 +278,6 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 
 	/* ================= input validation ================= */
@@ -387,7 +385,6 @@ function cdef_remove() {
 }
 
 function cdef_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
 
@@ -473,7 +470,7 @@ function cdef_edit() {
 }
 
 function cdef() {
-	global $colors, $cdef_actions, $item_rows;
+	global $cdef_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

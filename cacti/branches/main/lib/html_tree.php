@@ -23,7 +23,7 @@
  */
 
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
-	global $colors, $current_user, $config;
+	global $current_user, $config;
 
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
@@ -226,8 +226,6 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 
 			if ($leaf["local_graph_id"] > 0) {
 				if ($visible) {
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>" . $leaf["graph_title"] . "</a></td>\n";
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Graph</td>";
 					print "<tr>";
 					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>" . $leaf["graph_title"] . "</a></td>\n";
 					print "<td bgcolor='#$row_color'>Graph</td>";
@@ -235,16 +233,12 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			}elseif ($leaf["title"] != "") {
 				$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
 				if ($visible) {
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt='' border='0'></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"] . "'>Add</a>)</td>\n";
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Heading</td>";
 					print "<tr>";
 					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt=''></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
 					print "<td bgcolor='#$row_color'>Heading</td>";
 				}
 			}elseif ($leaf["device_id"] > 0) {
 				if ($visible) {
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
-					#				print "<td bgcolor='#$row_color' bgcolor='#" . $colors["panel"] . "'>Host</td>";
 					print "<tr>";
 					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
 					print "<td bgcolor='#$row_color'>Host</td>";
@@ -379,7 +373,7 @@ function tree_tier_string($order_key, $chars_per_tier = CHARS_PER_TIER) {
 }
 
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
-	global $colors, $config;
+	global $config;
 
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 
@@ -414,7 +408,7 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 }
 
 function grow_dhtml_trees() {
-	global $colors, $config;
+	global $config;
 
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
@@ -1006,7 +1000,7 @@ function get_device_grouping_data_query_items($leaf, $device_group_data) {
 }
 
 function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
-	global $current_user, $colors, $config, $graphs_per_page;
+	global $current_user, $config, $graphs_per_page;
 
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
@@ -1402,14 +1396,12 @@ function find_first_folder_url() {
 }
 
 function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_title, $use_expand_contract, $expand_contract_status, $show_url) {
-	global $colors;
-
 	/* start the nested table for the heading */
 	print "<tr><td colspan='2'><table width='100%' cellpadding='2' cellspacing='1' border='0'><tr>\n";
 
 	/* draw one vbar for each tier */
 	for ($j=0;($j<($current_tier-1));$j++) {
-		print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
+		print "<td width='10'></td>\n";
 	}
 
 	/* draw the '+' or '-' icons if configured to do so */
@@ -1422,16 +1414,16 @@ function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_t
 			$ec_icon =  'hide';
 		}
 
-		print "<td bgcolor='" . $colors["panel"] . "' align='center' width='1%'><a
+		print "<td align='center' width='1%'><a
 			href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&hide=$other_status&branch_id=$tree_item_id") . "'>
 			<img src='images/$ec_icon.gif' alt=''></a></td>\n";
 	}elseif (!($use_expand_contract) && (!empty($current_title))) {
-		print "<td bgcolor='" . $colors["panel"] . "' width='10'></td>\n";
+		print "<td width='10'></td>\n";
 	}
 
 	/* draw the actual cell containing the header */
 	if (!empty($current_title)) {
-		print "<td bgcolor='" . $colors["panel"] . "' NOWRAP><strong>
+		print "<td style='white-space:nowrap;'><strong>
 			" . (($show_url == true) ? "<a href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id") . "'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</strong></td>\n";
 	}
 
@@ -1440,15 +1432,13 @@ function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_t
 }
 
 function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $current_tier, $local_graph_id, $rra_id, $graph_title) {
-	global $colors;
-
 	/* start the nested table for the graph group */
 	if ($already_open == false) {
 		print "<tr><td><table width='100%' cellpadding='2' cellspacing='1'><tr>\n";
 
 		/* draw one vbar for each tier */
 		for ($j=0;($j<($current_tier-1));$j++) {
-			print "<td width='10' bgcolor='#" . $colors["panel"] . "'></td>\n";
+			print "<td width='10'></td>\n";
 		}
 
 		print "<td><table width='100%' cellspacing='0' cellpadding='2'><tr>\n";
@@ -1499,8 +1489,6 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 }
 
 function draw_tree_dropdown($current_tree_id) {
-	global $colors;
-
 	$html = "";
 
 	$tree_list = get_graph_tree_array();
@@ -1528,13 +1516,13 @@ function draw_tree_dropdown($current_tree_id) {
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
 		$html ="<form name='form_tree_id' action='graph_view.php'>
-			<td valign='middle' height='30' bgcolor='#" . $colors["panel"] . "'>\n
+			<td valign='middle' height='30'>\n
 				<table width='100%' cellspacing='0' cellpadding='0'>\n
 					<tr>\n
 						<td width='200' class='textHeader'>\n
 							&nbsp;&nbsp;" . __("Select a Graph Hierarchy") . ":&nbsp;\n
 						</td>\n
-						<td bgcolor='#" . $colors["panel"] . "'>\n
+						<td>\n
 							<select name='cbo_tree_id' onChange='window.location=document.form_tree_id.cbo_tree_id.options[document.form_tree_id.cbo_tree_id.selectedIndex].value'>\n";
 
 		foreach ($tree_list as $tree) {
@@ -1547,7 +1535,6 @@ function draw_tree_dropdown($current_tree_id) {
 		$html .= "</td></tr></table></td></form>\n";
 	}elseif (sizeof($tree_list) == 1) {
 		/* there is only one tree; use it */
-		//print "	<td valign='middle' height='5' colspan='3' bgcolor='#" . $colors["panel"] . "'>";
 	}
 
 	return $html;

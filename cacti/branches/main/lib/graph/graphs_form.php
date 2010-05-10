@@ -238,7 +238,6 @@ function graph_form_save() {
    ------------------------ */
 
 function graph_form_actions() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
@@ -561,8 +560,6 @@ function graph_form_actions() {
    ----------------------- */
 
 function graph_item() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
@@ -852,7 +849,6 @@ function graph_diff() {
 }
 
 function graph_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	/* ================= input validation ================= */
@@ -1094,7 +1090,7 @@ function graph_edit() {
 
 
 function graph() {
-	global $colors, $item_rows;
+	global $item_rows;
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 

@@ -230,7 +230,7 @@ function form_save() {
  ------------------------ */
 
 function form_actions() {
-	global $colors, $graph_template_actions;
+	global $graph_template_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -446,11 +446,9 @@ function template_edit() {
 }
 
 function graph_template_display_general($graph_template, $header_label) {
-	global $colors;
 	include_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 	include_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
 
-timer_start();
 	# fetch all settings for this graph template
 	if (isset($graph_template["id"])) {
 		$template_graph = db_fetch_row("select * from graph_templates_graph where graph_template_id=" . $graph_template["id"] . " and local_graph_id=0");
@@ -521,14 +519,12 @@ timer_start();
 
 	form_save_button("graph_templates.php", "return");
 
-timer_end();
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
 }
 
 
 function graph_template_display_items() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
@@ -642,7 +638,7 @@ function template_process_page_variables() {
 }
 
 function template_filter() {
-	global $colors, $item_rows;
+	global $item_rows;
 
 	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", "3", "center", "graph_templates.php?action=edit", true);
 	?>

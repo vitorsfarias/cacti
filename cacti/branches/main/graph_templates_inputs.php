@@ -142,7 +142,6 @@ function input_remove() {
 }
 
 function input_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");

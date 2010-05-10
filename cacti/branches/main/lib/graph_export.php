@@ -1005,7 +1005,7 @@ function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index =
 			LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id=graph_local.id)
 			LEFT JOIN device ON (device.id=graph_local.device_id)
 			$sql_join
-			$sql_where" . (strlen($sql_where) ? " AND ":"WHERE ") . 
+			$sql_where" . (strlen($sql_where) ? " AND ":"WHERE ") .
 			"graph_templates_graph.export='on'
 			ORDER BY graph_templates_graph.title_cache";
 
@@ -1859,7 +1859,7 @@ define("HTML_HEADER_CLASSIC", "
 /* Traditional Graph Export Representation Graph Headers */
 define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table class='topBoxAlt'>
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
+		<tr>
 			<td colspan='" . read_config_option("export_num_columns") . "'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 					<tr>

@@ -72,7 +72,7 @@ function form_save() {
    --------------------------- */
 
 function export() {
-	global $colors, $export_types;
+	global $export_types;
 
 	/* 'graph_template' should be the default */
 	if (!isset($_REQUEST["export_type"])) {

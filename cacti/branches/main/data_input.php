@@ -154,7 +154,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $colors, $di_actions;
+	global $di_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -300,7 +300,7 @@ function field_remove() {
 }
 
 function field_edit() {
-	global $colors, $registered_cacti_names;
+	global $registered_cacti_names;
 	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
 
 	/* ================= input validation ================= */
@@ -398,7 +398,6 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
 
 	/* ================= input validation ================= */
@@ -516,7 +515,7 @@ function data_edit() {
 }
 
 function data() {
-	global $colors, $di_actions, $item_rows;
+	global $di_actions, $item_rows;
 	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 
 	/* ================= input validation ================= */

@@ -139,7 +139,6 @@ function device_template_form_save() {
  * Optionally, ask for confirmation to update related devices.
  */
 function device_template_form_save_gt() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/functions.php");
 
 	/* ================= input validation ================= */
@@ -400,7 +399,7 @@ function device_template_form_save_dq() {
    ------------------------ */
 
 function device_template_form_actions() {
-	global $colors, $device_actions;
+	global $device_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -545,8 +544,6 @@ function device_template_item_remove_dq() {
 }
 
 function device_template_edit() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
@@ -642,7 +639,6 @@ function device_template_edit() {
 
 
 function device_template_display_general($device_template, $header_label) {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
 
@@ -1019,8 +1015,6 @@ function device_template_display_general($device_template, $header_label) {
 
 
 function device_template_display_gt($device_template, $header_label) {
-	global $colors;
-
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_gt_edit'>\n";
 	html_start_box("<strong>" . __("Associated Graph Templates") . " $header_label</strong>", "100", "3", "center", "", true);
 	print "<tr><td>";
@@ -1096,7 +1090,6 @@ function device_template_display_gt($device_template, $header_label) {
 
 
 function device_template_display_dq($device_template, $header_label) {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_dq_edit'>\n";
@@ -1184,7 +1177,7 @@ function device_template_display_dq($device_template, $header_label) {
 
 
 function device_template() {
-	global $colors, $device_actions, $item_rows;
+	global $device_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

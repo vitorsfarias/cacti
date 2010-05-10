@@ -439,10 +439,8 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
    @param int $snmp_query_id 				- if this graph template is part of a data query, specify the data query id here. this
      										  will be used to determine if a given field is associated with a suggested value */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
-	global $colors;
-
-	$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
-	$device_id = db_fetch_cell("select device.id from (data_local,device) where data_local.device_id=device.id and data_local.id=" . $data["local_data_id"]);
+	$data          = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
+	$device_id     = db_fetch_cell("select device.id from (data_local,device) where data_local.device_id=device.id and data_local.id=" . $data["local_data_id"]);
 	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
 
 	$draw_any_items = false;
@@ -494,7 +492,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			if ($alternate_colors == true) {
 				form_alternate_row_color();
 			}else{
-				print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
+				print "<tr class='topBoxAlt'>\n";
 			}
 
 			print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";

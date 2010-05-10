@@ -65,7 +65,7 @@ switch (get_request_var_request("action")) {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $rra_actions, $messages;
+	global $rra_actions, $messages;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -137,7 +137,7 @@ function form_actions() {
 					</tr>\n";
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following RRA(s) will be deleted.") . "</p>
 						<p><ul>$rra_list</ul></p>
 					</td>
@@ -146,7 +146,7 @@ function form_actions() {
 			$title = __("Delete RRA(s)");
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one RRA.") . "</span></td></tr>\n";
+		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one RRA.") . "</span></td></tr>\n";
 	}
 
 	if (!isset($rra_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -207,7 +207,6 @@ function form_save() {
    ------------------- */
 
 function rra_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_rra_info.php");
 
 	/* ================= input validation ================= */
@@ -243,7 +242,7 @@ function rra_edit() {
 }
 
 function rra() {
-	global $colors, $rra_actions, $item_rows;
+	global $rra_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

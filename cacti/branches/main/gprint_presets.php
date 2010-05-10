@@ -64,7 +64,7 @@ switch (get_request_var_request("action")) {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $gprint_actions;
+	global $gprint_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -135,7 +135,7 @@ function form_actions() {
 					</tr>\n";
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following GPRINT Preset(s) will be delete.") . "</p>
 						<p><ul>$gprint_list</ul></p>
 					</td>
@@ -144,7 +144,7 @@ function form_actions() {
 			$title = __("Delete GPRINT Preset(s)");
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one GPRINT preset.") . "</span></td></tr>\n";
+		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one GPRINT preset.") . "</span></td></tr>\n";
 	}
 
 	if (!isset($gprint_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -193,7 +193,6 @@ function form_save() {
    ----------------------------------- */
 
 function gprint_presets_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_gprint_info.php");
 
 	/* ================= input validation ================= */
@@ -229,7 +228,7 @@ function gprint_presets_edit() {
 }
 
 function gprint_presets() {
-	global $colors, $gprint_actions, $item_rows;
+	global $gprint_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
