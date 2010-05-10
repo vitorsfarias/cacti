@@ -24,7 +24,7 @@
 
 include_once(CACTI_BASE_PATH . "/lib/time.php");
 
-global $colors, $config, $lang2locale;
+global $config, $lang2locale;
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
 

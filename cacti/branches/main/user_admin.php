@@ -70,7 +70,7 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function form_actions() {
-	global $colors, $user_actions;
+	global $user_actions;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 	/* if we are to save this form, instead of display it */
@@ -497,7 +497,6 @@ function perm_remove() {
 }
 
 function graph_perms_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 	/* ================= input validation ================= */
@@ -552,7 +551,7 @@ function graph_perms_edit() {
 
 	?>
 
-	<tr bgcolor="#<?php print $colors['form_alternate1'];?>">
+	<tr>
 		<td class="nw100">
 			<font class="textEditTitle" title="The default allow/deny graph policy for this user"><?php print __("Default Policy");?></font>
 		</td>
@@ -608,7 +607,7 @@ function graph_perms_edit() {
 		ORDER BY device.description,device.hostname");
 
 	?>
-	<tr bgcolor="#<?php print $colors['form_alternate1'];?>">
+	<tr>
 		<td class="nw100">
 			<font class="textEditTitle" title="<?php print __("The default allow/deny graph policy for this user");?>"><?php print __("Default Policy");?></font>
 		</td>
@@ -664,7 +663,7 @@ function graph_perms_edit() {
 		ORDER BY graph_templates.name");
 
 	?>
-	<tr bgcolor="#<?php print $colors['form_alternate1'];?>">
+	<tr>
 		<td class="nw100">
 			<font class="textEditTitle" title="<?php print __("The default allow/deny graph policy for this user");?>"><?php print __("Default Policy");?></font>
 		</td>
@@ -719,7 +718,7 @@ function graph_perms_edit() {
 		ORDER BY graph_tree.name");
 
 	?>
-	<tr bgcolor="#<?php print $colors['form_alternate1'];?>">
+	<tr>
 		<td class="nw100">
 			<font class="textEditTitle" title="<?php print __("The default allow/deny graph policy for this user");?>"><?php print __("Default Policy");?></font>
 		</td>
@@ -767,7 +766,7 @@ function graph_perms_edit() {
 }
 
 function user_realms_edit() {
-	global $colors, $user_auth_realms;
+	global $user_auth_realms;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -820,7 +819,7 @@ function user_realms_edit() {
 }
 
 function graph_settings_edit() {
-	global $settings_graphs, $tabs_graphs, $colors;
+	global $settings_graphs, $tabs_graphs;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -886,7 +885,7 @@ function graph_settings_edit() {
    -------------------------- */
 
 function user_edit() {
-	global $colors, $fields_user_user_edit_device;
+	global $fields_user_user_edit_device;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -987,7 +986,7 @@ function user_process_page_variables() {
 }
 
 function user_filter() {
-	global $colors, $item_rows;
+	global $item_rows;
 
 	html_start_box("<strong>" . __('User Management') . "</strong>", "100", "3", "center", "user_admin.php?action=edit", true);
 	?>

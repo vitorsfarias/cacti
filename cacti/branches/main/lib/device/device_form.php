@@ -167,7 +167,6 @@ function api_device_form_save() {
    ------------------------ */
 
 function api_device_form_actions() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 
@@ -630,8 +629,6 @@ function device_remove() {
 }
 
 function device_edit() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("device_id"));
@@ -733,7 +730,6 @@ function device_edit() {
 }
 
 function device_display_general($device, $device_text) {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 
@@ -1451,7 +1447,7 @@ function device_display_general($device, $device_text) {
 }
 
 function device() {
-	global $colors, $item_rows;
+	global $item_rows;
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 
 	/* ================= input validation ================= */

@@ -105,7 +105,7 @@ function plugins_draw_tabs ($tabs, $current_tab) {
 }
 
 function plugins_show($status = 'all') {
-	global $plugins, $colors, $config, $status_names;
+	global $plugins, $config, $status_names;
 
 	print "<table width='100%' cellspacing=0 cellpadding=3>";
 

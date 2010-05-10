@@ -33,7 +33,7 @@
    @param $collapsing - tells wether or not the table collapses
    @param $table_id - the table id to make the table addressable by jQuery's table DND plugin */
 function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
-	global $colors, $config;
+	global $config;
 	static $form_number = 0;
 	$form_number++;
 
@@ -112,8 +112,6 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 }
 
 function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width, $cell_padding, $align) {
-	global $colors;
-
 	$temp_string = str_replace("strong", "", $query_name);
 	if (strpos($temp_string, "[")) {
 		$temp_string = substr($temp_string, 0, strpos($temp_string, "[")-1);
@@ -461,7 +459,6 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
         will be opposite this direction if the user selects the same named column.
    @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1) {
-	global $colors;
 	static $rand_id = 0;
 
 	/* reverse the sort direction */
@@ -530,7 +527,6 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
         will be opposite this direction if the user selects the same named column.
    @param $form_action - the url to post the 'select all' form to */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "") {
-	global $colors;
 	static $rand_id = 0;
 
 	/* reverse the sort direction */
@@ -605,7 +601,6 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
    @param $thclass - optional class extension for table header cell
  */
 function html_header($header_items, $last_item_colspan = 1, $resizable = false, $table_id = '', $tclass = '', $trclass = '', $thclass = '') {
-	global $colors;
 	static $rand_id = 0;
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
@@ -651,7 +646,6 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
    @param $thclass - optional class extension for table header cell
  */
 function html_header_checkbox($header_items, $form_action = "", $resizable = false, $tclass = '', $trclass= '', $thclass = '') {
-	global $colors;
 	static $rand_id = 0;
 
 	/* default to the 'current' file */
@@ -1110,14 +1104,14 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$i++;
 	}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='" . (sizeof($header_items)+$last_item_colspan-1) . "'><em>" . __("No Items") . "</em></td></tr>";
+		print "<tr class='topBoxAlt'><td colspan='" . (sizeof($header_items)+$last_item_colspan-1) . "'><em>" . __("No Items") . "</em></td></tr>";
 	}
 
 	print "</table></td></tr>";
 }
 
 function draw_data_template_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $colors, $config;
+	global $config;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	$header_items = array(
@@ -1159,7 +1153,7 @@ function draw_data_template_items_list($item_list, $filename, $url_data, $disabl
 			form_end_row();
 		}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='" . (sizeof($header_items)+$last_item_colspan-1) . "'><em>" . __("No Items") . "</em></td></tr>";
+		print "<tr class='topBoxAlt'><td colspan='" . (sizeof($header_items)+$last_item_colspan-1) . "'><em>" . __("No Items") . "</em></td></tr>";
 	}
 	print "</table></td></tr>";		/* end of html_header */
 }
@@ -1249,7 +1243,7 @@ function html_read_cookie_element($name, $element) {
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $colors, $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
+	global $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;

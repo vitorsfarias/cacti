@@ -209,8 +209,6 @@ function device_new_graphs_save() {
 }
 
 function device_new_graphs($device_id, $device_template_id, $selected_graphs_array) {
-	global $colors;
-
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
 		$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
 		$file2 = "devices.php";
@@ -776,7 +774,7 @@ function graphs_new() {
 						if ($field_array["direction"] == "input") {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
-									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' class='textSubHeaderDark'><strong><font color='#" . $colors["header_text"] . "'>" . $field_array["name"] . "</font></strong></th>\n";
+									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' class='textSubHeaderDark'><strong>" . $field_array["name"] . "</strong></th>\n";
 									break;
 								}
 							}

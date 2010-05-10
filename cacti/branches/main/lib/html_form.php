@@ -31,8 +31,6 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array */
 function draw_edit_form($array) {
-	global $colors;
-
 	if (sizeof($array) > 0) {
 		while (list($top_branch, $top_children) = each($array)) {
 			if ($top_branch == "config") {
@@ -1176,7 +1174,7 @@ function form_cancel_action_compose($cancel_action) {
 function form_return_button() {
 	?>
 	<tr>
-		<td bgcolor="#f5f5f5" align="right">
+		<td align="right">
 			<input type='button' value='<?php print __("Return");?>' onClick='window.history.back()' name='cancel'>
 		</td>
 	</tr>
@@ -1190,7 +1188,7 @@ function form_return_button() {
 function form_cancel_button() {
 	?>
 	<tr>
-		<td bgcolor="#f5f5f5" align="right">
+		<td align="right">
 			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
 		</td>
 	</tr>

@@ -230,7 +230,7 @@ function data_source_template_save() {
  * data_source_template_form_actions	- perform actions on a list of selected data templates
  */
 function data_source_template_form_actions() {
-	global $colors, $ds_template_actions;
+	global $ds_template_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -475,7 +475,6 @@ function data_source_template_edit() {
 }
 
 function data_source_template_display_general($data_template, $header_label) {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
 	require_once(CACTI_BASE_PATH . "/lib/data_template/data_template_info.php");
 
@@ -567,7 +566,6 @@ function data_source_template_display_general($data_template, $header_label) {
  * data_source_template_item	- list all data template items
  */
 function data_template_display_items() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
@@ -593,7 +591,7 @@ function data_template_display_items() {
  * data_source_template	- show all data templates
  */
 function data_source_template() {
-	global $colors, $ds_template_actions, $item_rows;
+	global $ds_template_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

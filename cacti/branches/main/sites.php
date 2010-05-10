@@ -87,7 +87,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $config, $site_actions;
+	global $config, $site_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -186,7 +186,7 @@ function form_actions() {
 }
 
 function site_export() {
-	global $colors, $site_actions, $config;
+	global $site_actions, $config;
 
 	site_process_page_variables();
 
@@ -372,7 +372,6 @@ function site_get_site_records(&$sql_where, $rows = 30, $apply_limits = TRUE) {
 }
 
 function site_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/site/site_info.php");
 
 	/* ================= input validation ================= */
@@ -411,7 +410,7 @@ function site_edit() {
 }
 
 function site_filter() {
-	global $item_rows, $colors;
+	global $item_rows;
 
 	?>
 	<script type="text/javascript">
@@ -551,7 +550,7 @@ function site_process_page_variables() {
 
 
 function site() {
-	global $colors, $site_actions, $config;
+	global $site_actions, $config;
 
 	$total_rows = 0; $rowspp = 0;
 

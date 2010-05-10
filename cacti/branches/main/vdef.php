@@ -83,8 +83,8 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function draw_vdef_preview($vdef_id) {
-	global $colors; ?>
-	<tr bgcolor='#<?php print $colors["panel"];?>'>
+	?>
+	<tr>
 		<td>
 			<pre>vdef=<?php print get_vdef($vdef_id, true);?></pre>
 		</td>
@@ -146,7 +146,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $vdef_actions;
+	global $vdef_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -227,7 +227,7 @@ function form_actions() {
 					</tr>\n";
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following VDEF(s) will be deleted.") . "</p>
 						<p><ul>$vdef_list</ul></p>
 					</td>
@@ -235,7 +235,7 @@ function form_actions() {
 				";
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following VDEF(s) will be duplicated. You can optionally change the title format for the new VDEF(s).") . "</p>
 						<p><ul>$vdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
@@ -246,7 +246,7 @@ function form_actions() {
 			$title = __("Duplicate VDEF(s)");
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one VDEF.") . "</span></td></tr>\n";
+		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one VDEF.") . "</span></td></tr>\n";
 	}
 
 	if (!isset($vdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -274,7 +274,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $custom_vdef_data_source_types;
+	global $custom_vdef_data_source_types;
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
 
 	/* ================= input validation ================= */
@@ -395,7 +395,6 @@ function vdef_remove() {
 }
 
 function vdef_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
 
@@ -482,7 +481,7 @@ function vdef_edit() {
 }
 
 function vdef() {
-	global $colors, $vdef_actions, $item_rows;
+	global $vdef_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));

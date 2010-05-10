@@ -316,7 +316,7 @@ function import_processor($import_data) {
 }
 
 function import_colors() {
-	global $colors, $config;
+	global $config;
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("method", "sess_color_method", "merge");
@@ -440,7 +440,6 @@ function color_remove() {
 }
 
 function color_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_color_info.php");
 
 	/* ================= input validation ================= */
@@ -478,8 +477,6 @@ function color_edit() {
 }
 
 function color() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("columns"));
 	/* ==================================================== */

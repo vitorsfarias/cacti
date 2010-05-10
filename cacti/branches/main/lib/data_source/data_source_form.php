@@ -237,7 +237,6 @@ function data_source_form_save() {
    ------------------------ */
 
 function data_source_form_actions() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	/* if we are to save this form, instead of display it */
@@ -475,7 +474,7 @@ function data_source_form_actions() {
 			$title = __("Disable Data Source(s)");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_REAPPLY_SUGGESTED_NAMES) { /* reapply suggested data source naming */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will will have their suggested naming conventions recalculated.") . "</p>
 						<p><ul>$ds_list</ul></p>
 					</td>
@@ -539,7 +538,7 @@ function data_source_data_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	global $config, $colors;
+	global $config;
 
 	if (!empty($_GET["id"])) {
 		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["id"]);
@@ -640,7 +639,6 @@ function data_source_rrd_add() {
 }
 
 function data_source_edit() {
-	global $colors;
 	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
 
 	/* ================= input validation ================= */
@@ -894,7 +892,7 @@ function data_source_validate() {
 }
 
 function data_source() {
-	global $colors, $item_rows;
+	global $item_rows;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	/* validate request variables */

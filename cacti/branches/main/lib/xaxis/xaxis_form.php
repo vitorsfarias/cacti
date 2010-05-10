@@ -86,7 +86,7 @@ function xaxis_form_save() {
  ------------------------ */
 
 function xaxis_form_actions() {
-	global $colors, $xaxis_actions;
+	global $xaxis_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -181,7 +181,7 @@ function xaxis_form_actions() {
 					</tr>\n";
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following X-Axis Preset(s) will be deleted.") . "</p>
 						<p><ul>$xaxis_list</ul></p>
 					</td>
@@ -190,7 +190,7 @@ function xaxis_form_actions() {
 			$title = __("Delete X-Axis Preset(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following X-Axis Preset(s) will be duplicated. You can optionally change the title format for the new X-Axis Preset(s).") . "</p>
 						<p><ul>$xaxis_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<xaxis_title> (1)", "", "255", "30", "text"); print "</p>
@@ -200,7 +200,7 @@ function xaxis_form_actions() {
 			$title = __("Duplicate X-Axis Preset(s)");
 		}
 	}else{
-		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>" . __("You must select at least one CDEF.") . "</span></td></tr>\n";
+		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one CDEF.") . "</span></td></tr>\n";
 	}
 
 	if (!isset($xaxis_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -227,7 +227,6 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
 
 	/* ================= input validation ================= */
@@ -269,7 +268,6 @@ function item_edit() {
 }
 
 function xaxis_edit() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
 
@@ -362,7 +360,7 @@ function xaxis_edit() {
 
 
 function xaxis() {
-	global $colors, $xaxis_actions, $item_rows;
+	global $xaxis_actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
