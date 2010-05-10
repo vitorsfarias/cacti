@@ -350,10 +350,6 @@ function initResizableColumns() {
 		doColResize(this,e);
 	});
 
-	$('th').mouseover(function(e) {
-		doColResize(this,e);
-	});
-
 	$('th > a').mousedown(function(e) {
 		return false;
 	});
@@ -364,7 +360,7 @@ function initResizableColumns() {
 
 			if (cur_value) {
 				if (cur_value != "NaN") {
-					columns[i].style.width = cur_value + "px";
+					columns[i].style.width = cur_value - 8 + "px";
 				}
 			} else {
 				try { eval("value=sess_cacti_ui_"+pathname); }
@@ -373,7 +369,7 @@ function initResizableColumns() {
 					cur_value = readVariableAsCookie(value, columns[i].id);
 
 					if (cur_value && cur_value != "NaN") {
-						columns[i].style.width = cur_value + "px";
+						columns[i].style.width = cur_value - 8 + "px";
 					}
 				}
 			}
