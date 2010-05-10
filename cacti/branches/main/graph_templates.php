@@ -634,7 +634,7 @@ function template_process_page_variables() {
 		$clear = false;
 	}
 
-	html_verify_request_variables($page_variables, "sess_user_graph_template", $clear);
+	html_verify_request_variables($page_variables, "sess_graph_template", $clear);
 }
 
 function template_filter() {
@@ -736,17 +736,18 @@ function template_get_table_format() {
 	);
 }
 
-function template() {
+function template($refresh = true) {
 	global $graph_template_actions;
 
 	$total_rows = 0; $rowspp = 0;
 
 	template_process_page_variables();
-	template_filter();
+
+	if ($refresh) template_filter();
 
 	$rows = template_get_records($total_rows, $rowspp);
 
-	html_draw_table(template_get_table_format(), $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "graph_templates.php",
-		$graph_template_actions, get_request_var_request("filter"), true, true, true,
-		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	html_draw_table(template_get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "graph_templates.php",
+		$graph_template_actions, html_get_page_variable("filter"), true, true, true,
+		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 }
