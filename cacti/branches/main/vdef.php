@@ -480,63 +480,25 @@ function vdef_edit() {
 
 }
 
-function vdef() {
-	global $vdef_actions, $item_rows;
+function process_page_variables() {
+	$page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
 
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	if (isset($_REQUEST["clear"])) {
+		$clear = true;
+	}else{
+		$clear = false;
 	}
 
-	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
+	html_verify_request_variables($page_variables, "sess_vdef", $clear);
+}
 
-	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_vdef_current_page");
-		kill_session_var("sess_vdef_rows");
-		kill_session_var("sess_vdef_filter");
-		kill_session_var("sess_vdef_sort_column");
-		kill_session_var("sess_vdef_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-
-	}
-
-	?>
-	<script type="text/javascript">
-	<!--
-	function applyFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
-	}
-	-->
-	</script>
-	<?php
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_vdef_current_page", "1");
-	load_current_session_value("rows", "sess_vdef_rows", "-1");
-	load_current_session_value("filter", "sess_vdef_filter", "");
-	load_current_session_value("sort_column", "sess_vdef_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_vdef_sort_direction", "ASC");
+function filter() {
+	global $item_rows;
 
 	html_start_box("<strong>" . __("VDEF's") . "</strong>", "100", "3", "center", "vdef.php?action=edit", true);
 	?>
@@ -549,18 +511,18 @@ function vdef() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyFilterChange(document.form_vdef)">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
 							}
 							}
 							?>
@@ -568,7 +530,7 @@ function vdef() {
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="submit" Value="<?php print __("Clear");?>" name="clear_x" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
 					</td>
 				</tr>
 			</table>
@@ -576,39 +538,64 @@ function vdef() {
 			</form>
 		</td>
 	</tr>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
 	<?php
 	html_end_box(false);
+}
 
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (vdef.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
+	$sql_where = "WHERE (vdef.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
 
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
-
-	$rows = db_fetch_assoc("SELECT
-		vdef.id,vdef.name
-		FROM vdef
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(vdef.id)
 		FROM vdef
 		$sql_where");
 
-	$table_format = array(
+	return db_fetch_assoc("SELECT
+		vdef.id,vdef.name
+		FROM vdef
+		$sql_where
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
+
+function get_table_format() {
+	return array(
 		"name" => array(
 			"name" => __("VDEF Title"),
 			"link" => true,
 			"order" => "ASC"
 		)
 	);
+}
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "vdef.php",
-		$vdef_actions, get_request_var_request("filter"), true, true, true,
-		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+function vdef($refresh = true) {
+	global $vdef_actions;
+
+	$total_rows = 0; $rowspp = 0;
+
+	process_page_variables();
+
+	if ($refresh) filter();
+
+	$rows = get_records($total_rows, $rowspp);
+
+	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "vdef.php",
+		$vdef_actions, html_get_page_variable("filter"), true, true, true,
+		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 }

@@ -241,126 +241,8 @@ function rra_edit() {
 	form_save_button("rra.php", "return");
 }
 
-function rra() {
-	global $rra_actions, $item_rows;
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_rra_current_page");
-		kill_session_var("sess_rra_rows");
-		kill_session_var("sess_rra_filter");
-		kill_session_var("sess_rra_sort_column");
-		kill_session_var("sess_rra_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-
-	}
-
-	?>
-	<script type="text/javascript">
-	<!--
-	function applyFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
-	}
-	-->
-	</script>
-	<?php
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_rra_current_page", "1");
-	load_current_session_value("rows", "sess_rra_rows", "-1");
-	load_current_session_value("filter", "sess_rra_filter", "");
-	load_current_session_value("sort_column", "sess_rra_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_rra_sort_direction", "ASC");
-
-	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
-	?>
-	<tr class='rowAlternate2'>
-		<td>
-			<form name='form_rra' action="<?php print basename($_SERVER['PHP_SELF']);?>" method="post">
-			<table cellpadding="0" cellspacing="3">
-				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="rows" onChange="applyFilterChange(document.form_rra)">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
-							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="submit" Value="<?php print __("Clear");?>" name="clear_x" align="middle">
-					</td>
-				</tr>
-			</table>
-			<input type='hidden' name='page' value='1'>
-			</form>
-		</td>
-	</tr>
-	<?php
-	html_end_box(false);
-
-	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (rra.name LIKE '%%" . $_REQUEST["filter"] . "%%')";
-
-	if (get_request_var_request("rows") == "-1") {
-		$rowspp = read_config_option("num_rows_device");
-	}else{
-		$rowspp = get_request_var_request("rows");
-	}
-
-	$rows = db_fetch_assoc("SELECT *
-		FROM rra
-		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
-
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(rra.id)
-		FROM rra
-		$sql_where");
-
-	$table_format = array(
+function get_table_format() {
+	return array(
 		"name" => array(
 			"name" => __("Name"),
 			"filter" => true,
@@ -388,8 +270,112 @@ function rra() {
 			"align" => "right"
 		)
 	);
+}
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "rra.php",
-		$rra_actions, get_request_var_request("filter"), true, true, true,
-		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+function filter() {
+	global $item_rows;
+	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
+	?>
+	<tr class='rowAlternate2'>
+		<td>
+			<form name='form_rra' action="<?php print basename($_SERVER['PHP_SELF']);?>" method="post">
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyFilterChange(document.form_rra)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
+					</td>
+				</tr>
+			</table>
+			<input type='hidden' name='page' value='1'>
+			</form>
+		</td>
+	</tr>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
+	<?php
+	html_end_box(false);
+}
+
+function process_page_variables() {
+	$page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
+
+	if (isset($_REQUEST["clear"])) {
+		$clear = true;
+	}else{
+		$clear = false;
+	}
+
+	html_verify_request_variables($page_variables, "sess_rra", $clear);
+}
+
+function get_records(&$total_rows, &$rowspp) {
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE (rra.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = html_get_page_variable("rows");
+	}
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(rra.id)
+		FROM rra
+		$sql_where");
+
+	return db_fetch_assoc("SELECT *
+		FROM rra
+		$sql_where
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
+
+function rra($refresh = true) {
+	global $rra_actions;
+
+	$total_rows = 0; $rowspp = 0;
+
+	process_page_variables();
+
+	if ($refresh) filter();
+
+	$rows = get_records($total_rows, $rowspp);
+
+	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "rra.php",
+		$rra_actions, html_get_page_variable("filter"), true, true, true,
+		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 }

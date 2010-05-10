@@ -620,7 +620,7 @@ function graph_template_display_items() {
 	<?php
 }
 
-function template_process_page_variables() {
+function process_page_variables() {
 	$page_variables = array(
 		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
 		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
@@ -637,7 +637,7 @@ function template_process_page_variables() {
 	html_verify_request_variables($page_variables, "sess_graph_template", $clear);
 }
 
-function template_filter() {
+function filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", "3", "center", "graph_templates.php?action=edit", true);
@@ -688,7 +688,7 @@ function template_filter() {
 	html_end_box(false);
 }
 
-function template_get_records(&$total_rows, &$rowspp) {
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (html_get_page_variable("filter") != "") {
 		$sql_where = "WHERE (graph_templates.name LIKE '%%" . html_get_page_variable("filter") . "%%')
@@ -715,7 +715,7 @@ function template_get_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
-function template_get_table_format() {
+function get_table_format() {
 	return array(
 		"name" => array(
 			"name" => __("Template Title"),
@@ -741,13 +741,13 @@ function template($refresh = true) {
 
 	$total_rows = 0; $rowspp = 0;
 
-	template_process_page_variables();
+	process_page_variables();
 
-	if ($refresh) template_filter();
+	if ($refresh) filter();
 
-	$rows = template_get_records($total_rows, $rowspp);
+	$rows = get_records($total_rows, $rowspp);
 
-	html_draw_table(template_get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "graph_templates.php",
+	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "graph_templates.php",
 		$graph_template_actions, html_get_page_variable("filter"), true, true, true,
 		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 }
