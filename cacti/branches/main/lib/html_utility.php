@@ -185,7 +185,7 @@ function html_boolean_friendly($html_boolean) {
      variables.  If the variables have changed, the page variable, if found
      will be set to 1.
 
-     @param $fvars - The filter variables used the the caller
+     @param $_pageVars - The filter variables used the the caller
         type => numeric or string
         method => get, request, or post
         sessionvar => to be used if the variable does not use a common session prefix
@@ -196,7 +196,7 @@ function html_boolean_friendly($html_boolean) {
         default
      @returns - NULL */
 function html_verify_request_variables($filter_vars, $session_prefix, $clear = false) {
-	global $fvars;
+	global $_pageVars;
 
 	$changed = false;
 
@@ -213,31 +213,31 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 			if (!isset($attr["method"]) || $attr["method"] == "request") {
 				if (isset($_REQUEST[$name])) {
 					input_validate_input_number(get_request_var_request($name));
-					$fvars[$name]["value"] = get_request_var_request($name);
+					$_pageVars[$name]["value"] = get_request_var_request($name);
 				}
 			}elseif ($attr["method"] == "get") {
 				if (isset($_GET[$name])) {
 					input_validate_input_number(get_request_var($name));
-					$fvars[$name]["value"] = get_request_var_get($name);
+					$_pageVars[$name]["value"] = get_request_var_get($name);
 				}
 			}else{
 				if (isset($_POST[$name])) {
 					input_validate_input_number(get_request_var_post($name));
-					$fvars[$name]["value"] = get_request_var_post($name);
+					$_pageVars[$name]["value"] = get_request_var_post($name);
 				}
 			}
 		}else{
 			if (!isset($attr["method"]) || $attr["method"] == "request") {
 				if (isset($_REQUEST[$name])) {
-					$fvars[$name]["value"] = sanitize_search_string(get_request_var_request($name));
+					$_pageVars[$name]["value"] = sanitize_search_string(get_request_var_request($name));
 				}
 			}elseif ($attr["method"] == "get") {
 				if (isset($_GET[$name])) {
-					$fvars[$name]["value"] = sanitize_search_string(get_request_var($name));
+					$_pageVars[$name]["value"] = sanitize_search_string(get_request_var($name));
 				}
 			}else{
 				if (isset($_POST[$name])) {
-					$fvars[$name]["value"] = sanitize_search_string(get_request_var_post($name));
+					$_pageVars[$name]["value"] = sanitize_search_string(get_request_var_post($name));
 				}
 			}
 		}
@@ -251,28 +251,28 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 			}else{
 				unset($_POST[$name]);
 			}
-			unset($fvars[$name]["value"]);
+			unset($_pageVars[$name]["value"]);
 		}else{
 			$changed += check_changed($name, $sessionvar);
 		}
 
 		/* store and/or initialize the variable in it's session */
-		if (isset($fvars[$name]["value"])) {
-			$_SESSION[$sessionvar] = $fvars[$name]["value"];
+		if (isset($_pageVars[$name]["value"])) {
+			$_SESSION[$sessionvar] = $_pageVars[$name]["value"];
 		}elseif (isset($_SESSION[$sessionvar])) {
-			$fvars[$name]["value"] = $_SESSION[$sessionvar];
+			$_pageVars[$name]["value"] = $_SESSION[$sessionvar];
 		}else if (isset($attr["default"])) {
-			$fvars[$name]["value"]  = $attr["default"];
+			$_pageVars[$name]["value"]  = $attr["default"];
 			$_SESSION[$sessionvar] = $attr["default"];
 		}else{
-			$fvars[$name]["value"]  = "";
+			$_pageVars[$name]["value"]  = "";
 			$_SESSION[$sessionvar] = "";
 		}
 	}
 	}
 
 	if ($clear && isset($filter_vars["page"])) {
-		$fvars["page"]["value"] = 1;
+		$_pageVars["page"]["value"] = 1;
 		if (isset($filter_vars["page"]["sessionvar"])) {
 			$_SESSION[$filter_vars["page"]["sessionvar"]] = 1;
 		}else{
@@ -282,10 +282,10 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 }
 
 function html_get_page_variable($variable) {
-	global $fvars;
+	global $_pageVars;
 
-	if (isset($fvars[$variable]["value"])) {
-		return $fvars[$variable]["value"];
+	if (isset($_pageVars[$variable]["value"])) {
+		return $_pageVars[$variable]["value"];
 	}else{
 		return "";
 	}
