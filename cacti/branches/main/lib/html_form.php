@@ -1209,8 +1209,8 @@ function from_continue($item_list, $drp_action = "none", $title = "") {
 			<div><input type='hidden' name='action' value='actions'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $items_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
-			<input type='button' value='<?php print __("Continue");?>' name='yes' onClick='window.history.back()' title='<?php print $title;?>'>
 			<input type='submit' value='<?php print __("Cancel");?>' name='cancel'>
+			<input type='button' value='<?php print __("Continue");?>' name='yes' onClick='window.history.back()' title='<?php print $title;?>'>
 		</td>
 	</tr>
 	</form>
