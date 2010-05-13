@@ -26,6 +26,9 @@ include_once(CACTI_BASE_PATH . "/lib/time.php");
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
 
+/* store the current tab */
+load_current_session_value("toptab", "sess_cacti_toptab", "general");
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
