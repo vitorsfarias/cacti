@@ -1169,23 +1169,13 @@ function draw_header_tab($name, $title, $location, $image = "") {
 }
 
 function html_selected_tab($name, $location) {
-	if (isset($_COOKIE["navbar_id"])) {
-		if ($name == "graphs") {
-			if (substr_count($_SERVER["REQUEST_URI"], "graph_view.php")) {
-				switch($_COOKIE["navbar_id"]) {
-					case "list":
-					case "preview":
-					case "tree":
-					case "graphs":
-						return true;
-				}
-			}
-		}else if ($name == "console" && $_COOKIE["navbar_id"] == "console") {
-			return true;
-		}else if (substr_count($_SERVER["REQUEST_URI"], $location)) {
-			return true;
-		}
-	}elseif ($name == "console") {
+	if (get_request_var_request("toptab") == $name) {
+		return true;
+	}elseif ($name == "graphs" && preg_match("/(graph_settings|tree|preview|list)/", get_request_var_request("toptab"))) {
+		return true;
+	}elseif (get_request_var_request("toptab") == "graphs" && get_request_var_request("action") == $name) {
+		return true;
+	}elseif (!api_plugin_hook_function('top_tab_selected', array($name, $location))) {
 		return true;
 	}
 

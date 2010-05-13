@@ -58,27 +58,13 @@ if ((isset($_SESSION["sess_graph_view_url_cache"])) &&
 	header("Location: " . $_SESSION["sess_graph_view_url_cache"]);
 }
 
-/* set default action */
-if (!isset($_REQUEST["action"])) {
-	$_REQUEST["action"] = "";
-}
+/* store the current tab */
+load_current_session_value("toptab", "sess_cacti_toptab", "graphs");
+load_current_session_value("action", "sess_cacti_topaction", read_graph_config_option("default_view_mode"));
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
 if ($_REQUEST["action"] == "zoom") {
 	$_SESSION["sess_nav_level_cache"][2]["url"] = htmlspecialchars("graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all");
-}
-
-/* set the default action if none has been set */
-if ((!preg_match('/^(tree|list|preview)$/', $_REQUEST["action"])) &&
-	(basename($_SERVER["PHP_SELF"]) == "graph_view.php")) {
-
-	if (read_graph_config_option("default_view_mode") == GRAPH_TREE_VIEW) {
-		$_REQUEST["action"] = "tree";
-	}elseif (read_graph_config_option("default_view_mode") == GRAPH_LIST_VIEW) {
-		$_REQUEST["action"] = "list";
-	}elseif (read_graph_config_option("default_view_mode") == GRAPH_PREVIEW_VIEW) {
-		$_REQUEST["action"] = "preview";
-	}
 }
 
 /* setup tree selection defaults if the user has not been here before */
@@ -154,7 +140,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</div>
 		<div id='navbar_r'>
 			<ul>
-				<?php if (substr_count($_SERVER["REQUEST_URI"], "graph_view.php")) { ?>
+				<?php if (preg_match("/(graphs|graph_settings|tree|preview|list)/", get_request_var_request("toptab"))) { ?>
 				<?php echo draw_header_tab("graph_settings", __("Settings"), CACTI_URL_PATH . "graph_settings.php");?>
 				<?php echo draw_header_tab("tree", __("Tree"), CACTI_URL_PATH . "graph_view.php?action=tree", CACTI_URL_PATH . "images/tab_mode_tree_new.gif");?>
 				<?php echo draw_header_tab("list", __("List"), CACTI_URL_PATH . "graph_view.php?action=list", CACTI_URL_PATH . "images/tab_mode_list_new.gif");?>
