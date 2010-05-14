@@ -997,7 +997,6 @@ function update_device_status($status, $device_id, &$devices, &$ping, $ping_avai
 			($ping_availability == AVAIL_SNMP_OR_PING) ||
 			($ping_availability == AVAIL_SNMP)) &&
 			(!is_numeric($ping->snmp_status))) {
-			cacti_log("WARNING: Poller[0] Host[$device_id] SNMP Time was not numeric", TRUE, "POLLER");
 			$ping->snmp_status = 0.000;
 		}
 
@@ -1005,7 +1004,6 @@ function update_device_status($status, $device_id, &$devices, &$ping, $ping_avai
 			($ping_availability == AVAIL_SNMP_OR_PING) ||
 			($ping_availability == AVAIL_PING)) &&
 			(!is_numeric($ping->ping_status))) {
-			cacti_log("WARNING: Poller[0] Host[$device_id] Ping Time was not numeric", TRUE, "POLLER");
 			$ping->ping_status = 0.000;
 		}
 		/* determine the ping statistic to set and do so */
