@@ -163,8 +163,6 @@ function setSelections() {
 }
 
 function navigation_select(name, location) {
-	createCookie("navbar_id", name);
-
 	document.location = location + (location.indexOf("?") > 0 ? '&':'?') + 'toptab=' + name;
 }
 
