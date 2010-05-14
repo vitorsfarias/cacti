@@ -5,8 +5,10 @@ $(document).ready(function(){
 	// set background color before page load
 	$('.colortags').each(function() {
 		var background_color_hex = this.value;
-		var color_hex = invertColor(background_color_hex);
-		$(this).css('background-color', '#' + background_color_hex).attr('title', background_color_hex).css('color', color_hex);
+		if (background_color_hex != '') {
+			var color_hex = invertColor(background_color_hex);
+			$(this).css('background-color', '#' + background_color_hex).attr('title', background_color_hex).css('color', color_hex);
+		}
 	});
 
 	$('.colortags').ColorPicker({
@@ -33,7 +35,7 @@ $(document).ready(function(){
 	.bind('keyup', function() {
 		$(this).ColorPickerSetColor(this.value).attr('title', this.value);
 	});
-	
+
 	function invertColor(color_hex) {
 		var result;
 		if (result = /([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color_hex)) {
