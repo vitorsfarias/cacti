@@ -67,6 +67,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 			$snmp_value = @snmp3_get("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
+
+		if ($snmp_value === false) {
+			cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
+		}
 	}else {
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
@@ -114,6 +118,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
 		}else {
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+		}
+
+		if (substr_count($snmp_value, "Timeout:")) {
+			cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 	}
 
@@ -169,6 +177,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 			$snmp_value = @snmp3_getnext("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
+
+		if ($snmp_value === false) {
+			cacti_log("WARNING: SNMP GetNext Timeout for Host:'$hostname', and OID:'$oid'", false);
+		}
 	}else {
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
@@ -216,6 +228,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
 		}else {
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+		}
+
+		if (substr_count($snmp_value, "Timeout:")) {
+			cacti_log("WARNING: SNMP GetNext Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 	}
 
@@ -290,6 +306,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			$temp_array = @snmp3_real_walk("$hostname:$port", "$username", $proto, $auth_proto, "$password", $priv_proto, "$priv_pass", "$oid", ($timeout * 1000), $retries);
 		}
 
+		if ($temp_array === false) {
+			cacti_log("WARNING: SNMP Walk Timeout for Host:'$hostname', and OID:'$oid'", false);
+		}
+
 		/* check for bad entries */
 		if (is_array($temp_array) && sizeof($temp_array)) {
 		foreach($temp_array as $key => $value) {
@@ -358,6 +378,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 			}else{
 				$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
 			}
+		}
+
+		if (substr_count(implode(" ", $tmp_array), "Timeout:")) {
+			cacti_log("WARNING: SNMP Walk Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 
 		/* check for bad entries */
@@ -446,10 +470,12 @@ function format_snmp_string($string, $snmp_oid_included) {
 	$string = trim($string);
 
 	if ((substr_count($string, "Hex-STRING:")) ||
+		(substr_count($string, "Hex-")) ||
 		(substr_count($string, "Hex:"))) {
 		/* strip of the 'Hex-STRING:' */
 		$string = preg_replace("/Hex-STRING: ?/i", "", $string);
 		$string = preg_replace("/Hex: ?/", "", $string);
+		$string = preg_replace("/Hex- ?/", "", $string);
 
 		$string_array = explode(" ", $string);
 
