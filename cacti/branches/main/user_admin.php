@@ -402,10 +402,10 @@ function form_save() {
 		$save["show_preview"] = form_input_validate(get_request_var_post("show_preview", ""), "show_preview", "", true, 3);
 		$save["graph_settings"] = form_input_validate(get_request_var_post("graph_settings", ""), "graph_settings", "", true, 3);
 		$save["login_opts"] = form_input_validate(get_request_var_post("login_opts"), "login_opts", "", true, 3);
-		$save["policy_graphs"] = form_input_validate(get_request_var_post("policy_graphs", get_request_var_post("_policy_graphs")), "policy_graphs", "", true, 3);
-		$save["policy_trees"] = form_input_validate(get_request_var_post("policy_trees", get_request_var_post("_policy_trees")), "policy_trees", "", true, 3);
-		$save["policy_devices"] = form_input_validate(get_request_var_post("policy_devices", get_request_var_post("_policy_devices")), "policy_devices", "", true, 3);
-		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("_policy_graph_templates")), "policy_graph_templates", "", true, 3);
+		$save["policy_graphs"] = form_input_validate(get_request_var_post("policy_graphs", get_request_var_post("hidden_policy_graphs")), "policy_graphs", "", true, 3);
+		$save["policy_trees"] = form_input_validate(get_request_var_post("policy_trees", get_request_var_post("hidden_policy_trees")), "policy_trees", "", true, 3);
+		$save["policy_devices"] = form_input_validate(get_request_var_post("policy_devices", get_request_var_post("hidden_policy_devices")), "policy_devices", "", true, 3);
+		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("hidden_policy_graph_templates")), "policy_graph_templates", "", true, 3);
 		$save["realm"] = get_request_var_post("realm", 0);
 		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
@@ -829,9 +829,9 @@ function graph_settings_edit() {
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		$header_items = array(
-			array("name" => $tabs_graphs[$tab_short_name], "&nbsp;")
+			array("name" => $tabs_graphs[$tab_short_name], "align" => 'left'),
+			array("name" => "&nbsp;")
 		);
-
 		print "<tr><td>";
 		html_header($header_items, 1, false, $tab_short_name);
 
@@ -926,7 +926,7 @@ function user_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
 
-	if (get_request_var("action") == "edit") {
+	if (get_request_var("tab") == "user_edit") {
 		html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
 		$header_items = array(
 			array("name" => __("Field")),
@@ -936,11 +936,19 @@ function user_edit() {
 		html_header($header_items, 2, false, 'settings_general');
 
 		draw_edit_form(array(
-			"config" => array("form_name" => "chk"),
+			"config" => array("no_form_tag" => true),
 			"fields" => inject_form_variables($fields_user_user_edit_device, (isset($user) ? $user : array()))
 		));
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
+	
+		form_hidden_box("id", (isset($_GET["id"]) ? get_request_var("id") : "0"), "");
+		form_hidden_box("hidden_policy_graphs", (isset($_GET["policy_graphs"]) ? get_request_var("policy_graphs") : "2"), "");
+		form_hidden_box("hidden_policy_trees", (isset($_GET["policy_trees"]) ? get_request_var("policy_trees") : "2"), "");
+		form_hidden_box("hidden_policy_devices", (isset($_GET["policy_devices"]) ? get_request_var("policy_devices") : "2"), "");
+		form_hidden_box("hidden_policy_graph_templates", (isset($_GET["policy_graph_templates"]) ? get_request_var("policy_graph_templates") : "2"), "");
+		form_hidden_box("save_component_user", "1", "");
+		
 	}else{
 #		print "<span style='display:none;'>";
 #
@@ -953,11 +961,11 @@ function user_edit() {
 #
 #		print "</span>";
 
-		if (get_request_var("action") == "graph_settings_edit") {
+		if (get_request_var("tab") == "graph_settings_edit") {
 			graph_settings_edit();
-		}elseif (get_request_var("action") == "user_realms_edit") {
+		}elseif (get_request_var("tab") == "user_realms_edit") {
 			user_realms_edit();
-		}elseif (get_request_var("action") == "graph_perms_edit") {
+		}elseif (get_request_var("tab") == "graph_perms_edit") {
 			graph_perms_edit();
 		}else{
 			if (!api_plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
