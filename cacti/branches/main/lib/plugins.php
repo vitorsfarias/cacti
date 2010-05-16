@@ -67,7 +67,7 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	return $ret;
 }
 
-function api_plugin_db_table_create ($plugin, $table, $data) {
+function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=false) {
 	global $config, $database_default;
 	include_once(CACTI_BASE_PATH . "/lib/database.php");
 
@@ -85,72 +85,39 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 			if (isset($column['name'])) {
 				if ($c > 0)
 					$sql .= ",\n";
-				$sql .= '`' . $column['name'] . '`';
-				if (isset($column['type']))
-					$sql .= ' ' . $column['type'];
-				if (isset($column['unsigned']))
-					$sql .= ' unsigned';
-				if (isset($column['NULL']) && $column['NULL'] == false)
-					$sql .= ' NOT NULL';
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
-					$sql .= ' default NULL';
-				if (isset($column['default']))
-					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-				if (isset($column['auto_increment']))
-					$sql .= ' auto_increment';
+				$sql .= plugin_db_format_column_sql($column);
 				$c++;
 			}
 		}
 
-		/* primary keys, multi-key columns are allowed */
+		/* primary keys, multi-key columns are allowed, deprecated, so we convert to new format */
 		if (isset($data['primary'])) {
-			$sql .= ",\n PRIMARY KEY (`";
-			/* remove blanks */
-			$no_blanks = str_replace(" ", "", $data['primary']);
-			/* add tics to columns names */
-			$sql .=  str_replace(",", "`, `", $no_blanks) . '`)';
+			$data['keys'][] = array('columns' => $data["primary"], 'primary' => true, 'name' => 'PRIMARY');
 		}
 
-		/* "normal" keys, multi-key columns are allowed, multiple keys per run are allowed as well */
+		/* "normal" and "unique" keys, multi-key columns are allowed, multiple keys per run are allowed as well */
 		if (isset($data['keys'])) {
 			foreach ($data['keys'] as $key) {
-				if (isset($key['name'])) {
-					$sql .= ",\n KEY `" . $key['name'] . '` (`';
-					if (isset($key['columns'])) {
-						/* remove blanks */
-						$no_blanks = str_replace(" ", "", $key['columns']);
-						/* add tics to columns names */
-						$sql .=  str_replace(",", "`, `", $no_blanks) . '`)';
-					}
-				}
+				$sql .= ",\n " . plugin_db_format_key_sql($key);
 			}
 		}
-
-		/* "unique" keys, multi-key columns are allowed, multiple keys per run are allowed as well */
-		if (isset($data['unique'])) {
-			foreach ($data['unique'] as $unique) {
-				if (isset($unique['name'])) {
-					$sql .= ",\n UNIQUE KEY `" . $unique['name'] . '` (`';
-					if (isset($unique['columns'])) {
-						/* remove blanks */
-						$no_blanks = str_replace(" ", "", $unique['columns']);
-						/* add tics to columns names */
-						$sql .=  str_replace(",", "`, `", $no_blanks) . '`)';
-					}
-				}
-			}
+		
+		# close parenthesis for column and index specification
+		$sql .= ') ';
+		
+		if (isset($data['type'])) {
+			$sql .= plugin_db_format_type_sql($data['type']);
 		}
-
-		$sql .= ') TYPE = ' . $data['type'];
-
+		
 		if (isset($data['comment'])) {
-			$sql .= " COMMENT = '" . $data['comment'] . "'";
+			$sql .= plugin_db_format_comment_sql($data['comment']);
 		}
-		if (db_execute($sql)) {
-			db_execute("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES ('$plugin', '$table', 'create')");
+
+		if (plugin_db_execute($sql, $plugin, $sql_install_cache)) {
+			db_execute("INSERT INTO `plugin_db_changes` (`plugin`, `table`, `method`) VALUES ('$plugin', '$table', 'create')");
 		}
 	} else {
-		db_execute("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES ('$plugin', '$table', 'create')");
+		db_execute("INSERT INTO `plugin_db_changes` (`plugin`, `table`, `method`) VALUES ('$plugin', '$table', 'create')");
 	}
 }
 
@@ -173,7 +140,7 @@ function api_plugin_db_changes_remove ($plugin) {
 	}
 }
 
-function api_plugin_db_add_column ($plugin, $table, $column) {
+function api_plugin_db_add_column ($plugin, $table, $column, $sql_install_cache=false) {
 	// Example: api_plugin_db_add_column ('thold', 'plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
 	global $config, $database_default;
@@ -187,23 +154,10 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 		}
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type']))
-			$sql .= ' ' . $column['type'];
-		if (isset($column['unsigned']))
-			$sql .= ' unsigned';
-		if (isset($column['NULL']) && $column['NULL'] == false)
-			$sql .= ' NOT NULL';
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
-			$sql .= ' default NULL';
-		if (isset($column['default']))
-			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-		if (isset($column['auto_increment']))
-			$sql .= ' auto_increment';
-		if (isset($column['after']))
-			$sql .= ' AFTER ' . $column['after'];
+		$sql = 'ALTER TABLE `' . $table . '` ADD ';
+		$sql .= plugin_db_format_column_sql($column);
 
-		if (db_execute($sql)) {
+		if (plugin_db_execute($sql, $plugin, $sql_install_cache)) {
 			db_execute("INSERT INTO plugin_db_changes (plugin, `table`, `column`, `method`) VALUES ('$plugin', '$table', '" . $column['name'] . "', 'addcolumn')");
 		}
 	}
@@ -407,75 +361,304 @@ function plugin_draw_navigation_text ($nav) {
 	return $nav;
 }
 
-function api_plugin_upgrade_table ($plugin, $table, $data) {
-	global $config, $database_default;
-	include_once($config['library_path'] . '/database.php');
-	$result = db_fetch_assoc('SHOW tables FROM `' . $database_default . '`') or die (mysql_error());
+/**
+ * upgrades or creates a table
+ * @param string $plugin			- name of the plugin
+ * @param string $table				- new/existing table name
+ * @param array $data				- description of the new table
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ * @param bool $drop_items			- do you want to drop "superfluous" keys and columns?
+ * 	$data['columns'][] = array('name' => 'id', 				'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'name',		 	'type' => 'varchar(100)'							, 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'description',		'type' => 'varchar(255)'							, 'NULL' => true , 'default' => 'NULL');
+	$data['columns'][] = array('name' => 'object_type',		'type' => 'int(8)',			'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'enabled', 		'type' => 'int(1)',  		'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
+	$data['columns'][] = array('name' => 'updated_when',	'type' => 'datetime'								, 'NULL' => false, 'default' => '0000-00-00 00:00:00');
+	$data['columns'][] = array('name' => 'updated_by', 		'type' => 'varchar(100)'							, 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'created_when', 	'type' => 'datetime'								, 'NULL' => false, 'default' => '0000-00-00 00:00:00');
+	$data['columns'][] = array('name' => 'created_by', 		'type' => 'varchar(100)'							, 'NULL' => false, 'default' => '');
+	$data['primary'] = 'id';	// deprecated
+	$data['keys'][] = array('columns' => 'id', 'primary' => true, 'type' => 'BTREE', 'constraint' => 'symbol');	// PRIMARY INDEX USING BTREE
+	$data['keys'][] = array('name' => 'constraint_index', 'columns' => 'name, object_type', 'unique' => true);	// multi-level UNIQUE index
+	$data['keys'][] = array('name' => 'name', 'columns' => 'name');												// plain INDEX
+	$data['keys'][] = array('name' => 'object_type', 'columns' => 'object_type');
+	$data['type'] = 'MyISAM';																					// ENGINE
+	$data['comment'] = 'Authorization Control';
+
+ */
+function api_plugin_upgrade_table ($plugin, $table, $data, $sql_install_cache=false, $drop_items=false) {
+	global $database_default;
+	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	
+	/* which tables are defined right now? */
+	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`') or die (mysql_error());
 	$tables = array();
 	foreach($result as $index => $arr) {
 		foreach ($arr as $t) {
 			$tables[] = $t;
 		}
 	}
+	
+	/* is the table already defined ... */
 	if (in_array($table, $tables)) {
+		/* ... then upgrade columns */
+		if (isset($data['columns']) && sizeof($data['columns'])) { 
+			api_plugin_upgrade_columns($plugin, $table, $data['columns'], $sql_install_cache, $drop_items);
+		}
+
+		/* convert old format for PRIMARY INDEX to new one */
+		if (isset($data['primary'])) {
+			/* add the primary key to the array of keys
+			 * execute the sql below together with other keys */
+			$data['keys'][] = array('columns' => $data["primary"], 'primary' => true, 'name' => 'PRIMARY');
+		}
+
+		// check indexes ---------------------------------------------------------------------------------
+		if (isset($data['keys']) && sizeof($data['keys'])) { 
+			api_plugin_upgrade_keys($plugin, $table, $data['keys'], $sql_install_cache, $drop_items);
+		}
+		
+		// Check Engine ---------------------------------------------------------------------------------
+		if (isset($data['type'])) { 
+			api_plugin_upgrade_type($plugin, $table, $data['type'], $sql_install_cache);
+		}
+		
+		// Check Comment ---------------------------------------------------------------------------------
+		if (isset($data['comment'])) { 
+			api_plugin_upgrade_comment($plugin, $table, $data['comment'], $sql_install_cache);
+		}
+		
+		
+	} else {
+		// Table does not exist, so create it
+		api_plugin_db_table_create($plugin, $table, $data, $sql_install_cache);
+	}
+}
+
+
+/**
+ * add, change, drop columns of a given table
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $table				- name of the table
+ * @param array $columns			- column array
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ * @param bool $drop_columns		- do you want to drop "superfluous" columns?
+ */
+function api_plugin_upgrade_columns($plugin, $table, $columns, $sql_install_cache=false, $drop_columns=false) {
+	global $database_default;
+	
+	/* we will create ALTER statements for the given table only */
+	$table_sql = 'ALTER TABLE `' . $table . '` ';
+
+	/* get the columns of that table */
+	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '` FROM `' . $database_default . '` ') or die (mysql_error());
+
+	/* work on new/changed columns */
+	$sql_array = plugin_db_check_columns($result, $columns, $drop_columns);
+	if (sizeof($sql_array)) {
+		foreach($sql_array as $sql) {
+			plugin_db_execute($table_sql . $sql, $plugin, $sql_install_cache);
+		}
+	}
+}
+
+
+/**
+ * add, change, drop keys of a given table
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $table				- name of the table
+ * @param array $keys				- key array
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ * @param bool $drop_keys			- do you want to drop "superfluous" keys?
+ */
+function api_plugin_upgrade_keys($plugin, $table, $keys, $sql_install_cache=false, $drop_keys=false) {
+	global $database_default;
+	
+	/* we will create ALTER statements for the given table only */
+	$table_sql = 'ALTER TABLE `' . $table . '` ';
+	
+	$result = db_fetch_assoc('SHOW INDEX FROM `' . $table . '` FROM `' . $database_default . '`') or die (mysql_error());
+	/* work on new/changed indexes */
+	if (isset($keys) && sizeof($keys)) {
+		$sql_array = plugin_db_check_keys($result, $keys, $drop_keys);
+		if (sizeof($sql_array)) {
+			/* temporarily disable KEYS to improve speed for new indexes */
+			plugin_db_execute($table_sql . ' DISABLE KEYS', $plugin, $sql_install_cache);
+			foreach($sql_array as $sql) {
+				plugin_db_execute($table_sql . $sql, $plugin, $sql_install_cache);
+			}
+			/* now enable KEYS again */
+			plugin_db_execute($table_sql . ' ENABLE KEYS', $plugin, $sql_install_cache);
+		}
+	}
+}
+
+
+/**
+ * upgrade type/engine of a given table
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $table				- name of the table
+ * @param array $type				- requested type/engine of table
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ */
+function api_plugin_upgrade_type($plugin, $table, $type, $sql_install_cache=false) {
+	global $database_default;
+	
+	/* we will create ALTER statements for the given table only */
+	$table_sql = 'ALTER TABLE `' . $table . '` ';
+	
+	/* check current TABLE STATUS to fetch existing type/engine */
+	$result = db_fetch_row('SHOW TABLE STATUS FROM `' . $database_default . '` WHERE Name LIKE "' . $table . '"') or die (mysql_error());
+	
+	/* upgrade in case of mismatch */
+	if (isset($result['Engine']) && strtolower($type) != strtolower($result['Engine'])) {
+		plugin_db_execute($table_sql . plugin_db_format_type_sql($type), $plugin, $sql_install_cache);
+	}
+
+}
+
+
+/**
+ * upgrade comment of a given table
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $table				- name of the table
+ * @param array $comment			- requested comment for table
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ */
+function api_plugin_upgrade_comment($plugin, $table, $comment, $sql_install_cache=false) {
+	global $database_default;
+	
+	/* we will create ALTER statements for the given table only */
+	$table_sql = 'ALTER TABLE `' . $table . '` ';
+	
+	/* check current TABLE STATUS to fetch existing type/engine */
+	$result = db_fetch_row('SHOW TABLE STATUS FROM `' . $database_default . '` WHERE Name LIKE "' . $table . '"') or die (mysql_error());
+	
+	/* upgrade in case of mismatch */
+	if (isset($result['Comment']) && strtolower($comment) != strtolower($result['Comment'])) {
+		plugin_db_execute($table_sql . plugin_db_format_comment_sql($comment), $plugin, $sql_install_cache);
+	}
+
+}
+
+/**
+ * rename a given table, if exists
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $old_table			- name of the old table
+ * @param string $new_table			- requested new name for table
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ */
+function api_plugin_rename_table ($plugin, $old_table, $new_table, $sql_install_cache=false) {
+	global $database_default;
+	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	
+	/* which tables are defined right now? */
+	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`') or die (mysql_error());
+	$tables = array();
+	foreach($result as $index => $arr) {
+		foreach ($arr as $t) {
+			$tables[] = $t;
+		}
+	}
+	
+	/* is the table already defined ... */
+	if (in_array($old_table, $tables)) {
+		plugin_db_execute('RENAME TABLE `' . $old_table . '` TO `' . $new_table . '`', $plugin, $sql_install_cache);
+	}
+}
+
+/**
+ * rename a given column, if exists
+ * @param string $plugin			- name of the plugin/cacti version
+ * @param string $old_column		- name of the old column
+ * @param array $new_column			- requested data for new column
+ * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
+ */
+function api_plugin_rename_column($plugin, $table, $old_column, $new_column, $sql_install_cache=false) {
+	global $database_default;
+	include_once(CACTI_BASE_PATH . '/lib/database.php');
+
+	/* get the columns of that table */
+	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '` FROM `' . $database_default . '` ') or die (mysql_error());
+	$cols = array();
+	foreach($result as $index => $t) {
+		$cols[$t['Field']] = $t;
+	}
+	
+	/* is the column already defined ... */
+	if (array_key_exists($old_column, $cols)) {
+		plugin_db_execute('ALTER TABLE `' . $table . '` CHANGE `' . $old_column . '` ' . plugin_db_format_column_sql($new_column), $plugin, $sql_install_cache);
+	}
+}
+
+/**
+ * compares existing columns to new ones and creates required SQL statements
+ * @param array $result		- result of SHOW INDEXES for given table
+ * @param array $columns	- new columns
+ * @param bool $drop_columns- do you want to drop "superfluous" columns?
+ * @return array			- resulting SQL, one statement per array index
+ */
+function plugin_db_check_columns($result, $columns, $drop_columns=false) {
+
+	$sql_array = array();
+	
+	$cols = array();
+	foreach($result as $index => $t) {
+		$cols[$t['Field']] = $t;
+	}
+
+	/* loop through all new columns/fields and check attributes */
+	foreach ($columns as $column) {
+		if (isset($column['name'])) {
+			/* is this column already present? */
+			if (isset($cols[$column['name']])) {
+				$c = $cols[$column['name']];
+				/* remember if anything has to be changed in $ok */
+				$ok = true;
+				
+				/* reformatting of certain attributes */
+				if (strstr($c['Type'], 'unsigned')) {
+					$c['unsigned'] = true;
+					$c['Type'] = trim(str_replace('unsigned', '', $c['Type']));
+				}
+				$c['Type'] = str_replace(' ', '', $c['Type']);
+				$column['type'] = str_replace(' ', '', $column['type']);
+				/* various checks for column attributes */
+				if (strtolower($column['type']) != strtolower($c['Type'])) {
+					$ok = FALSE;
+				}
+				if (isset($column['NULL']) && (($column['NULL'] == FALSE && $c['Null'] != 'NO') || ($column['NULL'] == TRUE && $c['Null'] != 'YES'))) {
+					$ok = FALSE;
+				}
+				if (isset($column['auto_increment']) && ($column['auto_increment'] == 1 && isset($c['Extra']) && $c['Extra'] != 'auto_increment')) {
+					$ok = FALSE;
+				} else if (isset($c['Extra']) && $c['Extra'] == 'auto_increment' && !isset($column['auto_increment'])) {
+					$ok = FALSE;
+				}
+				if (isset($column['unsigned']) && $column['unsigned'] != $c['unsigned']) {
+					$ok = FALSE;
+				}
+				if (isset($column['default']) && $column['default'] != $c['Default']) {
+					$ok = FALSE;
+				}
+				
+				/* any change required? */
+				if (!$ok) {
+					$sql_array[] = ' CHANGE `' . $column['name'] . '` ' . plugin_db_format_column_sql($column);
+				}
+			} else {
+				// Column does not yet exist
+				$sql_array[] = ' ADD ' . plugin_db_format_column_sql($column);
+			}
+		}
+	}
+
+	if ($drop_columns) {
+		// Find extra columns in the Database ------------------------------------------------------------
 		$cols = array();
-		$result = db_fetch_assoc("SHOW columns FROM $table") or die ('ERROR: Can not display columns!');
 		foreach($result as $index => $t) {
 			$cols[$t['Field']] = $t;
 		}
-		foreach ($data['columns'] as $column) {
-			if (isset($column['name'])) {
-				if (isset($cols[$column['name']])) {
-					$c = $cols[$column['name']];
-					$ok = true;
-					if (strstr($c['Type'], 'unsigned')) {
-						$c['unsigned'] = true;
-						$c['Type'] = trim(str_replace('unsigned', '', $c['Type']));
-					}
-					$c['Type'] = str_replace(' ', '', $c['Type']);
-					$column['type'] = str_replace(' ', '', $column['type']);
-					if (strtolower($column['type']) != strtolower($c['Type'])) {
-						$ok = FALSE;
-					}
-					if (($column['NULL'] == FALSE && $c['Null'] != 'NO') || ($column['NULL'] == TRUE && $c['Null'] != 'YES')) {
-						$ok = FALSE;
-					}
-					if (isset($column['auto_increment']) && ($column['auto_increment'] == 1 && isset($c['Extra']) && $c['Extra'] != 'auto_increment')) {
-						$ok = FALSE;
-					} else if (isset($c['Extra']) && $c['Extra'] == 'auto_increment' && !isset($column['auto_increment'])) {
-						$ok = FALSE;
-					}
-					if (isset($column['unsigned']) && $column['unsigned'] != $c['unsigned']) {
-						$ok = FALSE;
-					}
-					if (isset($column['default']) && $column['default'] != $c['Default']) {
-						$ok = FALSE;
-					}
-					if (!$ok) {
-						$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
-						if (isset($column['type']))
-							$sql .= ' ' . $column['type'];
-						if (isset($column['unsigned']))
-							$sql .= ' unsigned';
-						if (isset($column['NULL']) && $column['NULL'] == FALSE)
-							$sql .= ' NOT NULL';
-						if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
-							$sql .= ' default NULL';
-						if (isset($column['default']))
-							$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-						if (isset($column['auto_increment']))
-							$sql .= ' auto_increment';
-						if (isset($column['after']))
-							$sql .= ' AFTER ' . $column['after'];
-						db_execute($sql);
-					}
-				} else {
-					// Column does not exist
-					api_plugin_db_add_column ($plugin, $table, $column);
-				}
-			}
-		}
-		// Find extra columns in the Database
 		foreach ($cols as $c) {
 			$found = FALSE;
 			foreach ($data['columns'] as $d) {
@@ -484,50 +667,256 @@ function api_plugin_upgrade_table ($plugin, $table, $data) {
 				}
 			}
 			if ($found == FALSE) {
-				// Extra Column in the Table
-				//db_execute('ALTER TABLE `' . $table . '` DROP `' . $c['Field'] . '`');
+				// Extra Column in the Table has to be deleted
+				$sql_array[] = ' DROP `' . $c['Field'] . '`';
 			}
 		}
-		// Check for Primary
-		$result = db_fetch_assoc('SHOW INDEX FROM `' . $table . '`') or die (mysql_error());
-		if (isset($data['primary'])) {
-			foreach ($data['keys'] as $d) {
-				$found = FALSE;
-				foreach($result as $index) {
-					if ($index['Column_name'] == $d['name'] && $index['Key_name'] == 'PRIMARY') {
+	}
+	
+	return $sql_array;
+}
+
+
+/**
+ * compares existing keys to new ones and creates required SQL statements
+ * @param array $result		- result of SHOW INDEXES for given table
+ * @param array $keys		- new keys
+ * @param bool $drop_keys	- do you want to drop "superfluous" keys?
+ * @return array			- resulting SQL, one statement per array index
+ */
+function plugin_db_check_keys($result, $keys, $drop_keys=false) {
+
+	$sql_array = array();
+
+	if (isset($keys)) {
+		foreach ($keys as $key) {
+			/* always make the 'name' = 'PRIMARY' for a primary key
+			 * in case the user has chosen to provide his own name
+			 */
+			if (isset($key['primary']) && $key['primary']) {
+				$key['name'] = 'PRIMARY';
+			}
+
+			/* key column may hold more than one table column, e.g. "INDEX 'f1' ('f1', 'f2', 'f3')"
+			 * so we have to explode them to compare against "SHOW INDEX FROM table"
+			 */
+			$key_cols = explode(',', str_replace(' ', '', $key['columns']));
+
+			/* now try to find the "new index column" among the already defined indexes */
+			foreach($key_cols as $key_col) {
+				$found = false;
+				reset($result);
+				foreach($result as $idx => $value) {
+					if ($value['Key_name'] == $key['name'] &&		// name of the index matches
+						$value['Column_name'] == $key_col) {		// column of index matches
+
+						/* INDEX already exists
+						 * add all columns from the user definition
+						 */
+						$result[$idx]['name'] 		= $key['name'];
+						$result[$idx]['columns'] 	= $key['columns'];	// save ALL columns!
+						$result[$idx]['primary'] 	= (isset($key['primary']) ? $key['primary'] : false);
+						$result[$idx]['unique'] 	= (isset($key['unique']) ? $key['unique'] : false);
+						$result[$idx]['type'] 		= (isset($key['type']) ? $key['type'] : '');
+						/* if any of the supported attributes deviate from current setting, mark entry as 'update required'
+						 * this statement will have to be extended if some new attribute (collation, comment, ...)
+						 * has to be supported */
+						$result[$idx]['update']		= ($result[$idx]['Non_unique'] != $result[$idx]['unique']) &&
+														(($result[$idx]['Key_name'] == 'PRIMARY') != $result[$idx]['primary']) &&
+														(strtolower($result[$idx]['Index_type']) != strtolower($result[$idx]['type']));
 						$found = true;
+						continue;
 					}
 				}
+				/* if the requested index is not yet available, add a new record */
 				if (!$found) {
-					db_execute('ALTER TABLE `' . $table . '` ADD PRIMARY KEY ( `' . $d['name'] . '` )');
+					/* For new entries, use the name of the new index $index['name'] as the array index.
+					 * For new multi-level indexes, this will result in overwriting the
+					 * same array index for each index column.
+					 * Only 'Column_name' varies through all index columns which is quite ok
+					 * for our purpose
+					 */
+					$new 							= $key['name'];
+					$result[$new]['Key_name'] 		= $key['name'];
+					$result[$new]['Column_name']	= $key_col;
+					$result[$new]['Seq_in_index']	= 1;
+					$result[$new]['name'] 			= $key['name'];
+					$result[$new]['columns'] 		= $key['columns'];		// save ALL columns!
+					$result[$new]['primary'] 		= (isset($key['primary']) ? $key['primary'] : false);
+					$result[$new]['unique'] 		= (isset($key['unique']) ? $key['unique'] : false);
+					$result[$new]['type'] 			= (isset($key['type']) ? $key['type'] : '');
+					$result[$new]['new']			= true;
 				}
 			}
 		}
-		// Check Indexes
-		foreach ($data['keys'] as $d) {
-			$found = FALSE;
-			foreach($result as $index) {
-				if ($index['Column_name'] == $d['name'] && $d['name'] == $index['Key_name']) {
-					// INDEX exists, and its not PRIMARY
-					$found = true;
+		
+		/* now scan through the extended index array
+		 * update:  all items marked this way require an update (DROP/ADD)
+		 * new:     all those items are new
+		 * nothing: item exists already and requires no change
+		 * There's something special with multi-column indexes
+		 * As we will have to add a multi-column index using a single ADD INDEX statement,
+		 * all columns were saved to $result[]['columns'] to provide the format we require
+		 * for the sql command.
+		 * To avoid ADDing this index more than once, we will check for 'Seq_in_index === 1'
+		 * and only act in this case
+		 */
+		reset($result);
+		foreach($result as $index) {
+			if ($index['Seq_in_index'] == 1) {
+				/* act only on these items as explained above */
+				if (isset($index['update'])) {
+					if ($index['update']) {
+						/* there is no CHANGE INDEX, so we have to DROP INDEX ... */
+						$sql_array[] = ' DROP KEY `' . $index['Key_name'] . '`';
+						/* ... and ADD INDEX again */
+						$sql_array[] = ' ADD' . plugin_db_format_key_sql($index);
+					} else {
+						/* this is an index that already exists and does NOT require an update */
+					}
+				} elseif (isset($index['new']) && $index['new']) {
+					$sql_array[] = ' ADD' . plugin_db_format_key_sql($index);
+				} elseif ($drop_keys) {
+					/* neither
+					 * - an existing index without update
+					 * - an existing index with update
+					 * - a new index
+					 * so apparently this is a "superfluous" index
+					 * and we'll have to drop it
+					 */
+					$sql_array[] = ' DROP KEY `' . $index['Key_name'] . '`';
 				}
-			}
-			if (!$found) {
-				if (isset($d['unique']) && $d['unique']) {
-					db_execute('ALTER TABLE `' . $table . '` ADD UNIQUE ( `' . $d['name'] . '` )');
-				} else {
-					db_execute('ALTER TABLE `' . $table . '` ADD INDEX ( `' . $d['name'] . '` )');
-				}
+			} else {
+				/* do nothing, because this is a follow-up entry of a 
+				 * multi-level index
+				 */
 			}
 		}
-		// Check Type
-		$result = db_fetch_row('SHOW TABLE STATUS FROM `' . $database_default . '` WHERE Name LIKE \'' . $table . '\'') or die (mysql_error());
-		if (isset($result['Engine']) && strtolower($data['type']) != strtolower($result['Engine'])) {
-			// Wrong Type
-			db_execute('ALTER TABLE `' . $table . '` ENGINE = ' . $data['type']);
-		}
-	} else {
-		// Table does not exist, so create it
-		api_plugin_db_table_create ($plugin, $table, $data);
 	}
+	return $sql_array;
+}
+
+
+/**
+ * create sql for a table column
+ * @param array $column	 - column attributes for a given sql column
+ * @return string 		 - sql derived from data structure
+ */
+function plugin_db_format_column_sql($column) {
+	
+	/* we require at least a name ... */
+	if (isset($column['name'])) {
+		$sql = '`' . $column['name'] . '`';
+	} else return '';
+		
+	/* ... and some more data */
+	if (isset($column['type']))
+		$sql .= ' ' . $column['type'];
+	if (isset($column['unsigned']))
+		$sql .= ' unsigned';
+	if (isset($column['NULL']) && $column['NULL'] == false)
+		$sql .= ' NOT NULL';
+	if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+		$sql .= ' default NULL';
+	if (isset($column['default']))
+		$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+	if (isset($column['auto_increment']))
+		$sql .= ' auto_increment';
+	if (isset($column['after']))
+		$sql .= ' AFTER ' . $column['after'];
+
+	return $sql;
+}
+
+
+/**
+ * create sql for adding a [PRIMARY|UNIQUE] KEY/INDEX
+ * @param array $key		- attributes for the given key
+ * @return string			- sql
+ */
+function plugin_db_format_key_sql($key) {
+
+	/* take care of special "switches" 
+	 * a KEY may either be a 
+	 * - PRIMARY KEY (no UNIQUE allowed)
+	 * - UNIQUE KEY (no PRIMARY allowed)
+	 * - "normal" KEY */
+	if (isset($key['unique']) && $key['unique']) {
+		$sql = " UNIQUE KEY";
+	} elseif (isset($key['primary']) && $key['primary']) {
+		$sql = " PRIMARY KEY";
+	} else {
+		$sql = " KEY";
+	}
+	
+	/* key name given, not required for a PRIMARY KEY */
+	if (isset($key['name']) && !(isset($key['primary']) && $key['primary'])) {
+		$sql .= " `" . $key['name'] . '` ';
+	}			
+	
+	/* key type given */
+	if (isset($key['type']) && strlen($key['type'])) {
+		$sql .= " USING " . $key['type'];
+	}			
+	
+	/* column specification requires parenthesis */
+	$sql .= ' (';
+	
+	if (isset($key['columns'])) {
+		/* remove blanks */
+		$no_blanks = str_replace(" ", "", $key['columns']);
+		/* add tics to columns names */
+		$sql .= "`" . str_replace(",", "`, `", $no_blanks) . '`';
+	}
+	
+	$sql .= ')';
+	
+	return $sql;
+}
+
+
+/**
+ * create sql to define the table type/engine, e.g. MEMORY, MYISAM, ...
+ * @param string $type 	- the storage type of the table
+ * @return string		- sql
+ */
+function plugin_db_format_type_sql($type) {
+	
+	$sql = '';
+	if (isset($type)) {
+		$sql .= ' TYPE=' . $type;
+	}			
+	return $sql;
+}
+
+/**
+ * create sql to define the table comment
+ * @param string $comment 	- the comment for the table
+ * @return string			- sql
+ */
+function plugin_db_format_comment_sql($comment) {
+	
+	$sql = '';
+
+	if (isset($comment)) {
+		$sql .= " COMMENT='" . $comment . "'";
+	}
+		
+	return $sql;
+}
+
+/**
+ * execute the SQL; if required, cache the SQL for showing it to the user
+ * (in case of cacti upgrade)
+ * @param string $sql				- the sql to be executed
+ * @param string $plugin			- the plugin/version
+ * @param bool $sql_install_cache	- true, when caching is required
+ */
+function plugin_db_execute($sql, $plugin='', $sql_install_cache=false) {
+	
+	if ($sql_install_cache) {
+		return db_install_execute($plugin, $sql);
+	} else {
+		return db_execute($sql);
+	}	
 }
