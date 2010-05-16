@@ -2073,7 +2073,8 @@ CREATE TABLE graph_tree (
   user_id integer(10) unsigned NOT NULL default '0',
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  KEY `user_id` (`user_id`)
 ) TYPE=MyISAM;
 
 --
@@ -2204,7 +2205,8 @@ CREATE TABLE device_snmp_cache (
   KEY field_value (field_value),
   KEY snmp_query_id (snmp_query_id),
   KEY device_id_snmp_query_id (device_id,snmp_query_id),
-  KEY device_id_snmp_query_id_snmp_index (device_id,snmp_query_id,snmp_index)
+  KEY device_id_snmp_query_id_snmp_index (device_id,snmp_query_id,snmp_index),
+  KEY present USING BTREE (present)
 ) TYPE=MyISAM;
 
 --

@@ -164,6 +164,8 @@ Cacti CHANGELOG
 -feature: Modularize table display
 -feature: Allow Graphs and Data Source totals to be sorted when viewing devices
 -feature: Add snmp timeout warnings for lib/snmp.php
+-feature: upgrade procedure made repeatable
+-feature: add more table upgrade procedures and API functions: table install, column and key upgrade
 
 0.8.7e
 

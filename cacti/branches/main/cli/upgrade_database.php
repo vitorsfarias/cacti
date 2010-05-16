@@ -62,7 +62,7 @@ $includes = array(
 	'0.8.7a' => '0_8_7_to_0_8_7a.php',
 	'0.8.7b' => '0_8_7a_to_0_8_7b.php',
 	'0.8.7c' => '0_8_7b_to_0_8_7c.php',
-	'0.8.8'  => '0_8_7c_to_0_8_8.php',
+	'0.8.8'  => '0_8_7e_to_0_8_8.php',
 );
 
 $old_cacti_version = db_fetch_cell('select cacti from version');
