@@ -135,34 +135,6 @@ $fields_user_user_edit_device = array(
 		"default" => 0,
 		"array" => $auth_realms,
 		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"_policy_graphs" => array(
-		"method" => "hidden",
-		"default" => "2",
-		"value" => "|arg1:policy_graphs|"
-		),
-	"_policy_trees" => array(
-		"method" => "hidden",
-		"default" => "2",
-		"value" => "|arg1:policy_trees|"
-		),
-	"_policy_devices" => array(
-		"method" => "hidden",
-		"default" => "2",
-		"value" => "|arg1:policy_devices|"
-		),
-	"_policy_graph_templates" => array(
-		"method" => "hidden",
-		"default" => "2",
-		"value" => "|arg1:policy_graph_templates|"
-		),
-	"save_component_user" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
 	);
 
 $export_types = array(
