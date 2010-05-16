@@ -68,7 +68,9 @@ switch (get_request_var_request("action")) {
 /* --------------------------
     Actions Function
    -------------------------- */
-
+/**
+ * perform different actions
+ */
 function form_actions() {
 	global $user_actions;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
@@ -306,7 +308,9 @@ function form_actions() {
 /* --------------------------
     Save Function
    -------------------------- */
-
+/**
+ * save user attributes
+ */
 function form_save() {
 	global $settings_graphs;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
@@ -473,7 +477,10 @@ function form_save() {
 /* --------------------------
     Graph Permissions
    -------------------------- */
-
+/**
+ * remove permissions for a user id
+ * parms passed as request vars
+ */
 function perm_remove() {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
@@ -495,6 +502,40 @@ function perm_remove() {
 	header("Location: user_admin.php?action=graph_perms_edit&id=" . get_request_var("user_id"));
 	exit;
 }
+
+/**
+ * edit global user attributes
+ */
+function user_global_edit(){
+	global $fields_user_user_edit_device;
+	
+	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
+	$header_items = array(
+		array("name" => __("Field")),
+		array("name" => __("Value"))
+	);
+	print "<tr><td>";
+	html_header($header_items, 2, false, 'settings_general');
+
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => inject_form_variables($fields_user_user_edit_device, (isset($user) ? $user : array()))
+	));
+	print "</table></td></tr>";		/* end of html_header */
+	html_end_box();
+
+	form_hidden_box("id", (isset($_GET["id"]) ? get_request_var("id") : "0"), "");
+	form_hidden_box("hidden_policy_graphs", (isset($_GET["policy_graphs"]) ? get_request_var("policy_graphs") : "2"), "");
+	form_hidden_box("hidden_policy_trees", (isset($_GET["policy_trees"]) ? get_request_var("policy_trees") : "2"), "");
+	form_hidden_box("hidden_policy_devices", (isset($_GET["policy_devices"]) ? get_request_var("policy_devices") : "2"), "");
+	form_hidden_box("hidden_policy_graph_templates", (isset($_GET["policy_graph_templates"]) ? get_request_var("policy_graph_templates") : "2"), "");
+	form_hidden_box("save_component_user", "1", "");
+	
+}
+
+/**
+ * edit user permissions for graphs
+ */
 
 function graph_perms_edit() {
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
@@ -765,6 +806,10 @@ function graph_perms_edit() {
 	form_hidden_box("save_component_graph_perms","1","");
 }
 
+/**
+ * edit user realm associations
+ */
+
 function user_realms_edit() {
 	global $user_auth_realms;
 
@@ -817,6 +862,10 @@ function user_realms_edit() {
 	form_hidden_box("id", get_request_var_request("id"), "");
 	form_hidden_box("save_component_realm_perms","1","");
 }
+
+/**
+ * edit user specific graph settings
+ */
 
 function graph_settings_edit() {
 	global $settings_graphs, $tabs_graphs;
@@ -883,9 +932,10 @@ function graph_settings_edit() {
 /* --------------------------
     User Administration
    -------------------------- */
-
+/**
+ * global control function for user edit
+ */
 function user_edit() {
-	global $fields_user_user_edit_device;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -926,52 +976,28 @@ function user_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
 
-	if (get_request_var("tab") == "user_edit") {
-		html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
-		$header_items = array(
-			array("name" => __("Field")),
-			array("name" => __("Value"))
-		);
-		print "<tr><td>";
-		html_header($header_items, 2, false, 'settings_general');
+	switch ($current_tab) {
+		case "user_edit":
+			user_global_edit();
+			break;
 
-		draw_edit_form(array(
-			"config" => array("no_form_tag" => true),
-			"fields" => inject_form_variables($fields_user_user_edit_device, (isset($user) ? $user : array()))
-		));
-		print "</table></td></tr>";		/* end of html_header */
-		html_end_box();
-	
-		form_hidden_box("id", (isset($_GET["id"]) ? get_request_var("id") : "0"), "");
-		form_hidden_box("hidden_policy_graphs", (isset($_GET["policy_graphs"]) ? get_request_var("policy_graphs") : "2"), "");
-		form_hidden_box("hidden_policy_trees", (isset($_GET["policy_trees"]) ? get_request_var("policy_trees") : "2"), "");
-		form_hidden_box("hidden_policy_devices", (isset($_GET["policy_devices"]) ? get_request_var("policy_devices") : "2"), "");
-		form_hidden_box("hidden_policy_graph_templates", (isset($_GET["policy_graph_templates"]) ? get_request_var("policy_graph_templates") : "2"), "");
-		form_hidden_box("save_component_user", "1", "");
-		
-	}else{
-#		print "<span style='display:none;'>";
-#
-#		html_start_box("", "100%", "3", "center");
-#		draw_edit_form(array(
-#			"config" => array("form_name" => "chk"),
-#			"fields" => inject_form_variables($fields_user_user_edit_device, (isset($user) ? $user : array()))
-#		));
-#		html_end_box();
-#
-#		print "</span>";
-
-		if (get_request_var("tab") == "graph_settings_edit") {
+		case "graph_settings_edit":
 			graph_settings_edit();
-		}elseif (get_request_var("tab") == "user_realms_edit") {
+			break;
+			
+		case "user_realms_edit":
 			user_realms_edit();
-		}elseif (get_request_var("tab") == "graph_perms_edit") {
+			break;
+			
+		case "graph_perms_edit":
 			graph_perms_edit();
-		}else{
+			break;
+			
+		default:
 			if (!api_plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
 				user_realms_edit();
 			}
-		}
+		
 	}
 	form_save_button_alt("return!user_admin.php");
 }
