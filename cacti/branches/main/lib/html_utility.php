@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* inject_form_variables - replaces all variables contained in $form_array with
+/** inject_form_variables - replaces all variables contained in $form_array with
      their actual values
    @param $form_array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
@@ -82,7 +82,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	return $form_array;
 }
 
-/* form_alternate_row_color - starts an HTML row with an alternating color scheme
+/** form_alternate_row_color - starts an HTML row with an alternating color scheme
    @param $row_id 	- used to allow js and ajax actions on this object
    @param $hover		- use onMouse events
    @param $row_class 	- additional class attributes, e.g. "nodrag nodrop"
@@ -128,7 +128,7 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
 	}
 }
 
-/* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
+/** form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
    @param $contents - the readable portion of the
    @param $id - the id of the object that will be highlighted
    @param $width - the width of the table element
@@ -137,7 +137,7 @@ function form_selectable_cell($contents, $id, $width="", $class="", $align="") {
 	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($align) ? " align='$align'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
 }
 
-/* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
+/** form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @param $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $checked = false) {
 	print "\t<td onClick='selectLine(\"$id\",true)' style='" . get_checkbox_style() . "' width='1%' align='center'>\n";
@@ -145,18 +145,18 @@ function form_checkbox_cell($title, $id, $checked = false) {
 	print "\t</td>\n";
 }
 
-/* form_end_row - ends a table row that is started with form_alternate_row */
+/** form_end_row - ends a table row that is started with form_alternate_row */
 function form_end_row() {
 	print "</tr>\n";
 }
 
-/* form_end_table - properly ends a table and starts the next navigation */
+/** form_end_table - properly ends a table and starts the next navigation */
 function form_end_table() {
 	print "</table>\n";
 	print "<table cellspacing='0' cellpadding='0' width='100%'>\n";
 }
 
-/* html_boolean - returns the boolean equivalent of an HTML checkbox value
+/** html_boolean - returns the boolean equivalent of an HTML checkbox value
    @param $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
@@ -167,7 +167,7 @@ function html_boolean($html_boolean) {
 	}
 }
 
-/* html_boolean_friendly - returns the natural language equivalent of an HTML
+/** html_boolean_friendly - returns the natural language equivalent of an HTML
      checkbox value
    @param $html_boolean - the value of the HTML checkbox
    @returns - 'Selected' or 'Not Selected' based on the value of the HTML
@@ -180,7 +180,7 @@ function html_boolean_friendly($html_boolean) {
 	}
 }
 
-/* html_verify_request_variables - validate request, get, and post variables,
+/** html_verify_request_variables - validate request, get, and post variables,
      sets a value to be used by the caller and stores those values in session
      variables.  If the variables have changed, the page variable, if found
      will be set to 1.
@@ -291,7 +291,7 @@ function html_get_page_variable($variable) {
 	}
 }
 
-/* get_checkbox_style - finds the proper CSS padding to apply based on the
+/** get_checkbox_style - finds the proper CSS padding to apply based on the
      current client browser in use
    @returns - a CSS style string which should be used with an HTML checkbox
      control */
@@ -305,7 +305,7 @@ function get_checkbox_style() {
 	}
 }
 
-/* get_request_var - returns the current value of a PHP $_GET variable, optionally
+/** get_request_var - returns the current value of a PHP $_GET variable, optionally
      returning a default value if the request variable does not exist
    @param $name - the name of the request variable. this should be a valid key in the
      $_GET array
@@ -325,7 +325,7 @@ function get_request_var($name, $default = "") {
 	}
 }
 
-/* get_request_var_post - returns the current value of a PHP $_POST variable, optionally
+/** get_request_var_post - returns the current value of a PHP $_POST variable, optionally
      returning a default value if the request variable does not exist
    @param $name - the name of the request variable. this should be a valid key in the
      $_POST array
@@ -345,7 +345,7 @@ function get_request_var_post($name, $default = "") {
 	}
 }
 
-/* get_request_var_request - returns the current value of a PHP $_REQUEST variable, optionally
+/** get_request_var_request - returns the current value of a PHP $_REQUEST variable, optionally
      returning a default value if the request variable does not exist
    @param $name - the name of the request variable. this should be a valid key in the
      $_REQUEST array
@@ -361,7 +361,7 @@ function get_request_var_request($name, $default = "") {
 }
 
 
-/* load_current_session_value - finds the correct value of a variable that is being
+/** load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
    @param $request_var_name - the array index name for the request variable
    @param $session_var_name - the array index name for the session variable
@@ -378,7 +378,7 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 	}
 }
 
-/* get_colored_device_status - given a device's status, return the colored text in HTML
+/** get_colored_device_status - given a device's status, return the colored text in HTML
      format suitable for display
    @param $disabled (bool) - true if the device is disabled, false is it is not
    @param $status - the status type of the device as defined in global_constants.php
@@ -404,7 +404,7 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
-/* get_colored_poller_status - given a poller's status, return the colored text in HTML
+/** get_colored_poller_status - given a poller's status, return the colored text in HTML
      format suitable for display
    @param $disabled (bool) - true if the device is disabled, false is it is not
    @param $last_update - the time which this poller was last updated in timestamp format
@@ -421,7 +421,7 @@ function get_colored_poller_status($disabled, $last_update) {
 	}
 }
 
-/* get_current_graph_start - determine the correct graph start time selected using
+/** get_current_graph_start - determine the correct graph start time selected using
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
@@ -434,7 +434,7 @@ function get_current_graph_start() {
 	}
 }
 
-/* get_current_graph_end - determine the correct graph end time selected using
+/** get_current_graph_end - determine the correct graph end time selected using
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
@@ -445,7 +445,7 @@ function get_current_graph_end() {
 	}
 }
 
-/* get_page_list - generates the html necessary to present the user with a list of pages limited
+/** get_page_list - generates the html necessary to present the user with a list of pages limited
      in length and number of rows per page
    @param $current_page - the current page number
    @param $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
@@ -512,7 +512,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 }
 
 
-/* clean_html_output - Remove all known cross site script (xss) attack vectors from user input
+/** clean_html_output - Remove all known cross site script (xss) attack vectors from user input
    @param $data - User input to process
    @returns - Cleaned user input
 */
