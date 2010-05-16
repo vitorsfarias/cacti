@@ -549,6 +549,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	$pathname = html_get_php_pathname();
 	if (sizeof($header_items)) {
+		
 	foreach($header_items as $column => $item) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
 		$align = "align='left'";
@@ -574,7 +575,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
-			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark $align wp$width'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
+			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width' $align><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
