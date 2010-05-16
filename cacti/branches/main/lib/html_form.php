@@ -865,7 +865,6 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
    @param string $class - specify a css class
    @param string $on_change - specify a javascript onchange action */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = "text", $current_id = 0, $class = "", $on_change = "") {
-	global $config;
 
 	if (($form_previous_value == "") && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
@@ -901,7 +900,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 				$extra_data = "<span style='color:red'><br>[" . "ERROR: FILE NOT FOUND" . "]</span>";
 			}
 		} else {	# rrdtool 1.3+ use fontconfig
-			if ($config["cacti_server_os"] == "unix") {
+			if (CACTI_SERVER_OS == "unix") {
 				/* unix knows fc-list
 				 * so use it to verify the font provided */
 				$out_array = array();
