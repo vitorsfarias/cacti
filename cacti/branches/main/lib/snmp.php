@@ -119,10 +119,6 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}else {
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 		}
-
-		if (substr_count($snmp_value, "Timeout:")) {
-			cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
-		}
 	}
 
 	if (isset($snmp_value)) {
@@ -130,6 +126,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (is_array($snmp_value)) {
 			$snmp_value = implode(" ", $snmp_value);
 		}
+	}
+
+	if (substr_count($snmp_value, "Timeout:")) {
+		cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
 	}
 
 	/* strip out non-snmp data */
