@@ -44,7 +44,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 	}
 
 	/* graph permissions */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_devices"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "and (" . $sql_where . " OR graph_tree_items.local_graph_id=0)");
@@ -471,7 +471,7 @@ function create_dhtml_tree() {
 	$tree_list = get_graph_tree_array();
 
 	/* auth check for devices on the trees */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$current_user = db_fetch_row("select policy_devices from user_auth where id=" . $_SESSION["sess_user_id"]);
 
 		$sql_join = "left join user_auth_perms on (device.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")";
@@ -599,7 +599,7 @@ function create_dhtml_tree() {
 function tree_authorized($tree_id) {
 	global $current_user, $config;
 
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$tree_policy = db_fetch_cell("SELECT policy_trees FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 		$user_trees  = db_fetch_assoc("SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION["sess_user_id"]);
 
@@ -711,7 +711,7 @@ function get_trees($tree_id) {
 		$sql_where .= "WHERE gt.id=" . $tree_id;
 	}
 
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$tree_policy = db_fetch_cell("SELECT policy_trees FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 		$user_trees  = db_fetch_assoc("SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION["sess_user_id"]);
 
@@ -801,7 +801,7 @@ function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_pa
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 
 		if ($leaf_type == "header") {
-			if (read_config_option("auth_method") != 0) {
+			if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
 					WHERE graph_tree_id=$tree_id
@@ -1030,7 +1030,7 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 	}
 
 	/* graph permissions */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		/* get policy information for the sql where clause */
 		$sql_where = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_devices"], $current_user["policy_graph_templates"]);
 		$sql_where = (empty($sql_where) ? "" : "AND $sql_where");

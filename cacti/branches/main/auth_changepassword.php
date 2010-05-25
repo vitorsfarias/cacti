@@ -41,7 +41,7 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch (get_request_var_request("action")) {
 case 'changepassword':
 	if ((get_request_var_post("password") == get_request_var_post("confirm")) && (get_request_var_post("password") != "")) {
-		db_execute("insert into user_log (username,result,ip) values('" . $user["username"] . "',3,'" . $_SERVER["REMOTE_ADDR"] . "')");
+		user_log_insert($user["id"], $user["username"], 3);
 		db_execute("update user_auth set must_change_password='',password='" . md5($_POST["password"]) . "' where id=" . $_SESSION["sess_user_id"]);
 
 		kill_session_var("sess_change_password");
@@ -54,11 +54,11 @@ case 'changepassword':
 
 		if (sizeof(db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id = '" . $_SESSION["sess_user_id"] . "' and user_auth_realm.realm_id = '" . $realm_id . "'")) > 0) {
 			switch ($user["login_opts"]) {
-				case '1': /* referer */
+				case AUTH_LOGIN_OPT_REFER: /* referer */
 					header("Location: " . get_request_var_post("ref")); break;
-				case '2': /* default console page */
+				case AUTH_LOGIN_OPT_CONSOLE: /* default console page */
 					header("Location: index.php"); break;
-				case '3': /* default graph page */
+				case AUTH_LOGIN_OPT_GRAPH: /* default graph page */
 					header("Location: graph_view.php"); break;
 				default:
 					api_plugin_hook_function('login_options_navigate', $user['login_opts']);

@@ -80,7 +80,7 @@ function settings() {
 	global $tabs_graphs, $settings_graphs, $current_user, $current_user;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
-	if (read_config_option("auth_method") == 0) {
+	if (read_config_option("auth_method") == AUTH_METHOD_NONE) {
 		raise_message(6);
 		display_output_messages();
 		return;
@@ -93,7 +93,7 @@ function settings() {
 		exit;
 	}
 
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		if ($current_user["policy_graphs"] == "1") {
 			$sql_where = "where user_auth_tree.user_id is null";
 		}elseif ($current_user["policy_graphs"] == "2") {

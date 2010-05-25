@@ -1241,7 +1241,7 @@ function draw_menu($user_menu = "") {
 	}
 
 	/* list all realms that this user has access to */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
 		$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
 	}else{

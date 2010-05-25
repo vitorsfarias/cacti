@@ -505,9 +505,10 @@ function perm_remove() {
 
 /**
  * edit global user attributes
+ * @param array $user	- user data
  */
-function user_global_edit(){
-	global $fields_user_user_edit_device;
+function user_global_edit($user){
+	require_once(CACTI_BASE_PATH . "/lib/auth/auth_info.php");
 	
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
 	$header_items = array(
@@ -519,7 +520,7 @@ function user_global_edit(){
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
-		"fields" => inject_form_variables($fields_user_user_edit_device, (isset($user) ? $user : array()))
+		"fields" => inject_form_variables(user_auth_form_list(), (isset($user) ? $user : array()))
 	));
 	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
@@ -945,6 +946,7 @@ function user_edit() {
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE id = " . get_request_var("id"));
 		$header_label = __("[edit: ") . $user["username"] . "]";
 	}else{
+		$user = array();
 		$header_label = __("[new]");
 	}
 
@@ -978,7 +980,7 @@ function user_edit() {
 
 	switch ($current_tab) {
 		case "user_edit":
-			user_global_edit();
+			user_global_edit($user);
 			break;
 
 		case "graph_settings_edit":

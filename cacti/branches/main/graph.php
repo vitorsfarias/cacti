@@ -57,7 +57,7 @@ if (!(db_fetch_cell("select local_graph_id from graph_templates_graph where loca
 
 /* take graph permissions into account here, if the user does not have permission
 give an "access denied" message */
-if (read_config_option("auth_method") != 0) {
+if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 	$access_denied = !(is_graph_allowed($_GET["local_graph_id"]));
 
 	if ($access_denied == true) {

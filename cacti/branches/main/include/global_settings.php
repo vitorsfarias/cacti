@@ -1176,7 +1176,7 @@ $settings = array(
 							__("Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used. If PHP's LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.") .
 							"</blockquote>",
 			"method" => "drop_array",
-			"default" => 1,
+			"default" => AUTH_METHOD_BUILTIN,
 			"array" => $auth_methods
 			),
 		"special_users_header" => array(
