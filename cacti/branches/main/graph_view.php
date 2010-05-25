@@ -102,7 +102,7 @@ switch (get_request_var_request("action")) {
 case 'tree':
 	include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
 
-	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_tree"]))) {
+	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (empty($current_user["show_tree"]))) {
 		print "<strong><font size='+1' color='FF0000'>" . __("YOU DO NOT HAVE RIGHTS FOR TREE VIEW") . "</font></strong>"; exit;
 	}
 
@@ -182,7 +182,7 @@ case 'tree':
 
 	/* don't even print the table if there is not >1 tree */
 	if (isset($_SESSION["sess_view_tree_id"])) {
-		if (read_config_option("auth_method") != 0) {
+		if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 			/* take tree permissions into account here, if the user does not have permission
 			give an "access denied" message */
 			$access_denied = !(is_tree_allowed($_SESSION["sess_view_tree_id"]));

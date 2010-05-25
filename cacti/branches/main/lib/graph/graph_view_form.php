@@ -105,7 +105,7 @@ function graph_view_filter_table($mode = "mode") {
 					<td class='w1'>
 						<select name="graph_template_id" onChange="applyGraphFilter(document.form_graph_view)">
 							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option><?php
-							if (read_config_option("auth_method") != 0) {
+							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
 										"FROM (graph_templates_graph,graph_local) " .
 										"LEFT JOIN device ON (device.id=graph_local.device_id) " .
@@ -181,7 +181,7 @@ function get_graph_list_content() {
 		$_REQUEST["filter"] = sanitize_search_string(get_request_var_request("filter"));
 	}
 
-	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_list"]))) {
+	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (empty($current_user["show_list"]))) {
 		print "<strong><font size='+1' color='FF0000'>" . __("YOU DO NOT HAVE RIGHTS FOR LIST VIEW") . "</font></strong>"; exit;
 	}
 
@@ -352,7 +352,7 @@ function get_graph_list_content() {
 						<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
 							<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("device_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option>
 							<?php
-							if (read_config_option("auth_method") != 0) {
+							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
 									FROM (graph_templates_graph,graph_local)
 									LEFT JOIN device ON (device.id=graph_local.device_id)
@@ -422,7 +422,7 @@ function get_graph_list_content() {
 	$sql_filter .= (empty($_REQUEST["graph_template_id"]) ? "" : (empty($sql_filter) ? "" : " and") . " graph_local.graph_template_id=" . $_REQUEST["graph_template_id"]);
 
 	/* graph permissions */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		/* get policy information for the sql where clause */
 		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_devices"], $current_user["policy_graph_templates"]);
 		$sql_join = "left join device on (device.id=graph_local.device_id)
@@ -584,7 +584,7 @@ function get_graph_preview_content () {
 
 	$sql_or = ""; $sql_where = ""; $sql_join = "";
 
-	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_preview"]))) {
+	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (empty($current_user["show_preview"]))) {
 		print "<strong><font size='+1' color='FF0000'>" . __("YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW") . "</font></strong>"; exit;
 	}
 
@@ -631,7 +631,7 @@ function get_graph_preview_content () {
 	load_current_session_value("graph_remove", "sess_graph_view_list_graph_remove", "");
 
 	/* graph permissions */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$sql_where = "where " . get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_devices"], $current_user["policy_graph_templates"]);
 
 		$sql_join = "left join device on (device.id=graph_local.device_id)

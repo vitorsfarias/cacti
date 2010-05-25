@@ -509,7 +509,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if ((read_config_option("auth_method") != 0) && (isset($_SESSION["sess_user_id"]))) {
+	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (isset($_SESSION["sess_user_id"]))) {
 		$access_denied = !(is_graph_allowed($local_graph_id));
 
 		if ($access_denied == true) {
@@ -1525,7 +1525,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if ((read_config_option("auth_method") != 0) && (isset($_SESSION["sess_user_id"]))) {
+	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (isset($_SESSION["sess_user_id"]))) {
 		$access_denied = !(is_graph_allowed($local_graph_id));
 
 		if ($access_denied == true) {

@@ -39,6 +39,10 @@ define("AUTH_METHOD_BUILTIN", 1);
 define("AUTH_METHOD_WEB", 2);
 define("AUTH_METHOD_LDAP", 3);
 
+define("AUTH_LOGIN_OPT_REFER", '1');
+define("AUTH_LOGIN_OPT_CONSOLE", '2');
+define("AUTH_LOGIN_OPT_GRAPH", '3');
+
 define("AUTH_REALM_BUILTIN", 0);
 define("AUTH_REALM_WEB", 1);
 define("AUTH_REALM_LDAP", 2);

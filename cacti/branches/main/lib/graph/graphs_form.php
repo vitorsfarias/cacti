@@ -1253,7 +1253,7 @@ function graph() {
 							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
 							<?php
-							if (read_config_option("auth_method") != 0) {
+							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 								$templates = db_fetch_assoc("SELECT DISTINCT graph_templates.id, graph_templates.name
 									FROM (graph_templates_graph,graph_local)
 									LEFT JOIN device ON (device.id=graph_local.device_id)

@@ -732,7 +732,7 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 
 	/* auth check for devices on the trees */
-	if (read_config_option("auth_method") != 0) {
+	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
 		$sql_join = "LEFT JOIN user_auth_perms ON (device.id=user_auth_perms.item_id AND user_auth_perms.type=3 AND user_auth_perms.user_id=" . read_config_option("export_user_id") . ")";
@@ -1426,7 +1426,7 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 	if (!isset($config["config_options_array"]["tree_array"]) || ($force_refresh) ||
 		(($config["config_options_array"]["tree_update_time"] + read_graph_config_option("page_refresh")) < time())) {
 
-		if (read_config_option("auth_method") != 0) {
+		if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 			$current_user = db_fetch_row("SELECT id, policy_trees FROM user_auth WHERE id=" . read_config_option("export_user_id"));
 
 			if ($current_user["policy_trees"] == "1") {

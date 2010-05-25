@@ -33,7 +33,7 @@ $show_console_tab = true;
 input_validate_input_number(get_request_var_request("local_graph_id"));
 /* ==================================================== */
 
-if (read_config_option("auth_method") != 0) {
+if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 	/* at this point this user is good to go... so get some setting about this
 	user and put them into variables to save excess SQL in the future */
 	$current_user = db_fetch_row("select * from user_auth where id=" . $_SESSION["sess_user_id"]);
@@ -159,7 +159,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			</a>
 		</div>
 		<div style='float:right'>
-		<?php	if (read_config_option("auth_method") != 0) {
+		<?php	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 					if(read_config_option('i18n_timezone_support') != 0) {
 						?><a href="#" id="menu_timezones" rel="<?php echo CACTI_URL_PATH; ?>"><span id="date_time_format"><strong><?php echo __date("D, " . date_time_format() . " T");?></strong></span></a><?php
 					}else {

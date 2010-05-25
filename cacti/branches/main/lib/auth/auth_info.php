@@ -97,3 +97,10 @@ function auth_control_data_get($data, $category = "SYSTEM", $plugin_id = 0, $con
 	return db_fetch_assoc($sql);
 
 }
+
+
+function &user_auth_form_list() {
+	require(CACTI_BASE_PATH . "/include/auth/auth_forms.php");
+
+	return $fields_user_user_edit_device;
+}

@@ -30,7 +30,7 @@ if (isset($_REQUEST["action"])) {
 }
 
 /* Get the username */
-if (read_config_option("auth_method") == "2") {
+if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
 	/* Get the Web Basic Auth username and set action so we login right away */
 	$action = "login";
 	if (isset($_SERVER["PHP_AUTH_USER"])) {
@@ -65,12 +65,12 @@ $realm = 0;
 if ($action == 'login') {
 
 	switch (read_config_option("auth_method")) {
-	case "0":
+	case AUTH_METHOD_NONE:
 		/* No auth, no action, also shouldn't get here */
 		exit;
 		break;
 
-	case "2":
+	case AUTH_METHOD_WEB:
 		/* Web Basic Auth */
 		$copy_user = true;
 		$user_auth = true;
@@ -79,7 +79,7 @@ if ($action == 'login') {
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND realm = 2");
 		break;
 
-	case "3":
+	case AUTH_METHOD_LDAP:
 		/* LDAP Auth */
  		if ((get_request_var_post("realm") == "ldap") && (strlen(get_request_var_post("login_password")) > 0)) {
 
@@ -122,7 +122,9 @@ if ($action == 'login') {
 			}
 
 		}
+		/* TODO: no break? Fallback to AUTH_METHOD_BUILTIN??? */
 
+	case AUTH_METHOD_BUILTIN:
 	default:
 		/* Builtin Auth */
 		if ((!$user_auth) && (!$ldap_error)) {
@@ -168,7 +170,7 @@ if ($action == 'login') {
 	/* Process the user  */
 	if (sizeof($user) > 0) {
 		cacti_log("LOGIN: User '" . $user["username"] . "' Authenticated", false, "AUTH");
-		db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES ('" . $username ."'," . $user["id"] . ",1,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+		user_log_insert($user["id"], $username, 1);
 		/* is user enabled */
 		$user_enabled = $user["enabled"];
 		if ($user_enabled != CHECKED) {
@@ -181,14 +183,14 @@ if ($action == 'login') {
 		$_SESSION["sess_user_id"] = $user["id"];
 
 		/* handle "force change password" */
-		if (($user["must_change_password"] == CHECKED) && (read_config_option("auth_method") == 1)) {
+		if (($user["must_change_password"] == CHECKED) && (read_config_option("auth_method") == AUTH_METHOD_BUILTIN)) {
 			$_SESSION["sess_change_password"] = true;
 		}
 
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 		switch ($user["login_opts"]) {
-			case '1': /* referer */
+			case AUTH_LOGIN_OPT_REFER: /* referer */
 				if (sizeof(db_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = " . $_SESSION["sess_user_id"])) == 0) {
 					header("Location: graph_view.php");
 				}else{
@@ -208,9 +210,9 @@ if ($action == 'login') {
 					header("Location: " . $referer);
 				}
 				break;
-			case '2': /* default console page */
+			case AUTH_LOGIN_OPT_CONSOLE: /* default console page */
 				header("Location: index.php"); break;
-			case '3': /* default graph page */
+			case AUTH_LOGIN_OPT_GRAPH: /* default graph page */
 				header("Location: graph_view.php"); break;
 			default:
 				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
@@ -225,7 +227,7 @@ if ($action == 'login') {
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			db_execute("INSERT INTO user_log (username,user_id,result,ip,time) VALUES ('" . $username . "',0,0,'" . $_SERVER["REMOTE_ADDR"] . "',NOW())");
+			user_log_insert(0, $username, 0);
 		}
 	}
 }
@@ -308,7 +310,7 @@ function auth_display_custom_error_message($message) {
 					<td><input type="password" name="login_password" size="40" class='nw295'></td>
 				</tr>
 				<?php
-				if (read_config_option("auth_method") == "3") {?>
+				if (read_config_option("auth_method") == AUTH_METHOD_LDAP) {?>
 				<tr>
 					<td><?php print __("Realm:");?></td>
 					<td>

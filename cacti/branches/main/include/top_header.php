@@ -84,7 +84,7 @@ api_plugin_hook('page_head');
 			</a>
 		</div>
 		<div style='float:right'>
-		<?php	if (read_config_option("auth_method") != 0) {
+		<?php	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 					if(read_config_option('i18n_timezone_support') != 0) {
 						?><a href="#" id="menu_timezones" rel="<?php echo CACTI_URL_PATH; ?>"><span id="date_time_format"><strong><?php echo __date("D, " . date_time_format() . " T");?></strong></span></a><?php
 					}else {
