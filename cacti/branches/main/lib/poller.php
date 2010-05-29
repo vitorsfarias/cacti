@@ -170,7 +170,7 @@ function update_reindex_cache($device_id, $data_query_id) {
 		case DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME:
 			/* the uptime backwards method requires snmp, so make sure snmp is actually enabled
 			 * on this device first */
-			if ($device["snmp_community"] != "") {
+			if ($device["snmp_version"] > 0) {
 				if (isset($data_query_xml["oid_uptime"])) {
 					$oid_uptime = $data_query_xml["oid_uptime"];
 				}elseif (isset($data_query_xml["uptime_oid"])) {
