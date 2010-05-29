@@ -70,13 +70,13 @@ if (sizeof($poller_commands) > 0) {
 				cacti_log("Host[$device_id] WARNING: Recache Event Detected for Host", true, "PCOMMAND");
 			}
 
-			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 				cacti_log("Host[$device_id] RECACHE: Re-cache for Host, data query #$data_query_id", true, "PCOMMAND");
 			}
 
 			run_data_query($device_id, $data_query_id);
 
-			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 				cacti_log("Host[$device_id] RECACHE: Re-cache successful.", true, "PCOMMAND");
 			}
 			break;

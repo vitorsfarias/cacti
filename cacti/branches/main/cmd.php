@@ -260,7 +260,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 			$using_proc_function = true;
 		}else {
 			$using_proc_function = false;
-			if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 				cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
 			}
 		}
@@ -321,7 +321,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 					where poller_reindex.device_id=" . $item["device_id"]);
 
 				if ((sizeof($reindex) > 0) && (!$device_down)) {
-					if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 						cacti_log("Host[$device_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
 					}
 
@@ -370,7 +370,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								if (!empty($output)) {
 									$set_spike_kill = true;
 
-									if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEBUG) {
+									if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 										cacti_log("Host[$device_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
 									}
 								}
