@@ -2151,9 +2151,9 @@ function rrdtool_set_font($type, $no_legend = "") {
 				/* unix knows fc-list
 				 * so use it to verify the font provided */
 				$out_array = array();
-				exec('fc-list ' . escapeshellarg($font), $out_array);
+				exec('fc-list ' . cacti_escapeshellarg($font), $out_array);
 				if (sizeof($out_array)) {
-					$font = escapeshellarg($font);
+					$font = cacti_escapeshellarg($font);
 				} else {
 					$font = "";
 				}
@@ -2257,7 +2257,7 @@ function rrdtool_set_x_grid($xaxis_id, $start, $end) {
 	}
 
 	if (!empty($format)) {
-		$format = "--x-grid " . escapeshellarg($format) . RRD_NL;
+		$format = "--x-grid " . cacti_escapeshellarg($format) . RRD_NL;
 	}
 
 	return $format;
@@ -2448,7 +2448,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 		switch ($key) {
 			case "title_cache":
 				if (!empty($value)) {
-					$option .= "--title=" . escapeshellarg($value) . RRD_NL;
+					$option .= "--title=" . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
@@ -2458,7 +2458,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "unit_value":
 				if (!empty($value)) {
-					$option .= "--y-grid=" . escapeshellarg($value) . RRD_NL;
+					$option .= "--y-grid=" . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
@@ -2503,7 +2503,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "vertical_label":
 				if (!empty($value)) {
-					$option .= "--vertical-label=\"" . escapeshellarg($value) . "\"" . RRD_NL;
+					$option .= "--vertical-label=\"" . cacti_escapeshellarg($value) . "\"" . RRD_NL;
 				}
 				break;
 
@@ -2519,7 +2519,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "right_axis":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--right-axis " . escapeshellarg($value) . RRD_NL;
+						$option .= "--right-axis " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2527,7 +2527,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "right_axis_label":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--right-axis-label \"" . escapeshellarg($value) . "\"" . RRD_NL;
+						$option .= "--right-axis-label \"" . cacti_escapeshellarg($value) . "\"" . RRD_NL;
 					}
 				}
 				break;
@@ -2536,7 +2536,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
 						$format = db_fetch_cell('SELECT gprint_text from graph_templates_gprint WHERE id=' . $value);
-						$option .= "--right-axis-format \"" . escapeshellarg($format) . "\"" . RRD_NL;
+						$option .= "--right-axis-format \"" . cacti_escapeshellarg($format) . "\"" . RRD_NL;
 					}
 				}
 				break;
@@ -2571,14 +2571,14 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "unit_length":
 				if (!empty($value)) {
-					$option .= "--units-length " . escapeshellarg($value) . RRD_NL;
+					$option .= "--units-length " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
 			case "font_render_mode":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--font-render-mode " . escapeshellarg($value) . RRD_NL;
+						$option .= "--font-render-mode " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2586,7 +2586,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "font_smoothing_threshold":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--font-smoothing-threshold " . escapeshellarg($value) . RRD_NL;
+						$option .= "--font-smoothing-threshold " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2594,7 +2594,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "graph_render_mode":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--graph-render-mode " . escapeshellarg($value) . RRD_NL;
+						$option .= "--graph-render-mode " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2616,7 +2616,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "tab_width":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--tabwidth " . escapeshellarg($value) . RRD_NL;
+						$option .= "--tabwidth " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2624,7 +2624,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "watermark":
 				if ($version != RRD_VERSION_1_0) {
 					if (!empty($value)) {
-						$option .= "--watermark " . escapeshellarg($value) . RRD_NL;
+						$option .= "--watermark " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2638,7 +2638,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "legend_position":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--legend-position " . escapeshellarg($value) . RRD_NL;
+						$option .= "--legend-position " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2646,7 +2646,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "legend_direction":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--legend-direction " . escapeshellarg($value) . RRD_NL;
+						$option .= "--legend-direction " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2654,7 +2654,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "grid_dash":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (!empty($value)) {
-						$option .= "--grid-dash " . escapeshellarg($value) . RRD_NL;
+						$option .= "--grid-dash " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2662,7 +2662,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "border":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
 					if (preg_match("/^[0-9]+$/", $value)) { # stored as string, do not use ===; border=0 is valid but != empty border!
-						$option .= "--border " . escapeshellarg($value) . RRD_NL;
+						$option .= "--border " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
