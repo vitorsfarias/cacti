@@ -488,7 +488,12 @@ function display_general() {
 	/* Suggest values in 8M increments */
 	$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
 	if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
-		print "<br><span class='warning'>" . sprintf(__("It is highly suggested that you either alter you php.ini memory_limit to %s or higher, or set a value for \$config['memory_limit'] in include/config.php.  This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements."), memory_readable($memory_suggestion)) . "</font><br>";
+		print "<br><span class='warning'>";
+		if ((ini_get('memory_limit') == -1)) {
+			print __("You've set memory limit to 'unlimited'.") . "<br/>";
+		}
+		print __("It is highly suggested that you either alter you php.ini memory_limit to %s or higher, or set a value for \$config['memory_limit'] in include/config.php. <br/>This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.", memory_readable($memory_suggestion)); 
+		print "</span><br>";
 	}
 	print "</table></td></tr>";		/* end of html_header */
 
