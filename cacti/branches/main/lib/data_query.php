@@ -803,7 +803,8 @@ function get_script_query_path($args, $script_path, $device_id) {
 
 	/* get any extra arguments that need to be passed to the script */
 	if (!empty($args)) {
-		$extra_arguments = substitute_device_data($args, "|", "|", $device_id, true);
+		/* do NOT quote the substituted parameters */
+		$extra_arguments = substitute_device_data($args, "|", "|", $device_id, false);
 	}else{
 		$extra_arguments = "";
 	}

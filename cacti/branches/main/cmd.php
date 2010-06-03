@@ -77,10 +77,10 @@ $poller_id = 0;
 if (sizeof($parms) == 0) {
 	if (isset($polling_interval)) {
 		$polling_items = db_fetch_assoc("SELECT * FROM poller_item WHERE rrd_next_step<=0 ORDER by device_id");
-		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=2 AND rrd_next_step<=0)");
+		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=" . POLLER_ACTION_SCRIPT_PHP . " AND rrd_next_step<=0)");
 	}else{
 		$polling_items = db_fetch_assoc("SELECT * FROM poller_item ORDER by device_id");
-		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=2)");
+		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=" . POLLER_ACTION_SCRIPT_PHP . ")");
 	}
 
 	$print_data_to_stdout = true;
@@ -91,8 +91,9 @@ if (sizeof($parms) == 0) {
 	$devices = array_rekey($devices, "id", $device_struc);
 
 	$device_count = sizeof($devices);
-	$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=2");
-
+	/* TODO: this has already been calculated above, so it should not be done again
+	 * $script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=" . POLLER_ACTION_SCRIPT_PHP)
+	 */
 	/* setup next polling interval */
 	if (isset($polling_interval)) {
 		db_execute("UPDATE poller_item SET rrd_next_step=rrd_next_step-" . $polling_interval);
@@ -196,7 +197,7 @@ if (sizeof($parms) == 0) {
 
 		$script_server_calls = db_fetch_cell("SELECT count(*)
 			FROM poller_item
-			WHERE action=2
+			WHERE action=" . POLLER_ACTION_SCRIPT_PHP . "
 			AND device_id>=$first
 			AND device_id<=$last
 			AND rrd_next_step<=0" .
@@ -223,12 +224,16 @@ if (sizeof($parms) == 0) {
 				ORDER by device_id");
 
 		$script_server_calls = db_fetch_cell("SELECT count(*) FROM poller_item
-				WHERE action=2
+				WHERE action=" . POLLER_ACTION_SCRIPT_PHP . "
 				AND device_id>=$first
 				AND device_id<=$last" .
 				($poller_id == 0 ? "" : " AND poller_id=$poller_id"));
 	}
 }
+
+/* script server is required if either a script server script or a script server reindex is required */
+$script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action=" . POLLER_ACTION_SCRIPT_PHP);
+cacti_log("Script Server Calls detected: " . $script_server_calls,$print_data_to_stdout);
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHECKED)) {
 	$failure_type = "";
@@ -332,18 +337,69 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $print_data_to_stdout);
+								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $print_data_to_stdout);
 							}
 							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"],
 								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
+							
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
+								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
 							}
-							$output = exec_poll($index_item["arg1"]);
+							$output = trim(exec_poll($item["arg1"]));
+			
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+			
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
+								}
+			
+								cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+							}
+			
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+							}
+							break;
+							
+						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server " . $index_item["arg1"], $print_data_to_stdout);
+							}
+							if ($using_proc_function == true) {
+								$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $using_proc_function, $pipes, $cactiphp)));
+			
+								/* remove any quotes from string */
+								$output = strip_quotes($output);
+			
+								if (!validate_result($output)) {
+									if (strlen($output) > 20) {
+										$strout = 20;
+									} else {
+										$strout = strlen($output);
+									}
+			
+									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+								}
+			
+								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
+								}
+							}else{
+								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: *SKIPPING* SERVER: " . $index_item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
+								}
+			
+								$output = "U";
+							}
+							
 							break;
 						}
 						

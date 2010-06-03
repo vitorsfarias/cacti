@@ -193,22 +193,30 @@ function update_reindex_cache($device_id, $data_query_id) {
 					$device["snmp_timeout"],
 					SNMP_POLLER);
 
-				$recache_stack[] = "('$device_id', '$data_query_id', '0', '<', '$assert_value', '$oid_uptime', '1')";
+				$recache_stack[] = "('$device_id', '$data_query_id', " . POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', '1')";
 			}
 
 			break;
 		case DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE:
 			/* this method requires that some command/oid can be used to determine the
-			 * current number of indexes in the data query */
+			 * current number of indexes in the data query 
+			 * pay ATTENTION to quoting!
+			 * the script parameters are usually enclosed in single tics: '
+			 * so we have to enclose the whole list of parameters has to be enclosed in double tics: "
+			 * */
 			$assert_value = sizeof(db_fetch_assoc("select snmp_index from device_snmp_cache where device_id=$device_id and snmp_query_id=$data_query_id group by snmp_index"));
 
 			if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
 				if (isset($data_query_xml["oid_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
 				}
 			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 				if (isset($data_query_xml["arg_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . "', '1')";
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+				}
+			}else if ($data_query_type == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+				if (isset($data_query_xml["arg_num_indexes"])) {
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
 				}
 			}
 
@@ -219,11 +227,15 @@ function update_reindex_cache($device_id, $data_query_id) {
 
 			if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
 				if (isset($data_query_xml["oid_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
 				}
 			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 				if (isset($data_query_xml["arg_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . "', '1')";
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+				}
+			}else if ($data_query_type == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+				if (isset($data_query_xml["arg_num_indexes"])) {
+					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
 				}
 			}
 
@@ -236,9 +248,11 @@ function update_reindex_cache($device_id, $data_query_id) {
 					$assert_value = $index["field_value"];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						$recache_stack[] = "($device_id, $data_query_id, 0, '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "', '1')";
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["fields"]{$data_query["sort_field"]}["oid"] . "." . $index["snmp_index"] . "', '1')";
 					}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						$recache_stack[] = "('$device_id', '$data_query_id', '1', '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $device_id) . "', '1')";
+						$recache_stack[] = "('$device_id', '$data_query_id', " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+					}else if ($data_query_type == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+						$recache_stack[] = "('$device_id', '$data_query_id', " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_get"] . " " . $data_query_xml["fields"]{$data_query["sort_field"]}["query_name"] . " " . $index["snmp_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
 					}
 				}
 			}
