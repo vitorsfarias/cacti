@@ -72,7 +72,7 @@ if (php_sapi_name() != "cli") {
 }
 
 /* record the script start time */
-list($micro,$seconds) = split(" ", microtime());
+list($micro,$seconds) = explode(" ", microtime());
 $start = $seconds + $micro;
 
 /* some debugging */
@@ -209,12 +209,14 @@ while (1) {
 					} else {
 						$result = call_user_func_array($function, $parameter_array);
 					}
-
+					
 					fputs(STDOUT, trim($result) . "\n");
 					fflush(STDOUT);
 
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$value'", false, "PHPSVR");
+						/* this will catch "return"ed data only, e.g. fails on "index" and "query" requests
+						 * it is required, that the script server query "returns" scalar data instead of "print"ing them */
+						cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'" . trim($result) . "'", false, "PHPSVR");
 					}
 
 					$ctr++;
