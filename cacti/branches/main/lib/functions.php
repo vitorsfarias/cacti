@@ -37,7 +37,7 @@ function title_trim($text, $max_length) {
 	}
 }
 
-/** 
+/**
  * finds the default value of a graph configuration setting
  * @param $config_name 	- the name of the configuration setting as specified $settings array
  * 						  in 'include/global_settings.php'
@@ -325,10 +325,11 @@ function remove_user_config_option($config_name, $category = "SYSTEM", $user_id 
  * @param $value       - the values to be saved
  * @returns          - void */
 function set_config_option($config_name, $value) {
-	db_execute("REPLACE INTO settings SET name='$config_name', value='$value'");
+	global $database_default;
+	db_execute("REPLACE INTO `$database_default`.`settings` SET name='$config_name', value='$value'");
 }
 
-/** 
+/**
  * finds the current value of a Cacti configuration setting
  * @param $config_name 	- the name of the configuration setting as specified $settings array
  *						  in 'include/global_settings.php'
@@ -1946,7 +1947,7 @@ function move_item_up($table_name, $current_id, $group_query) {
 	db_execute("update $table_name set sequence=$sequence where id=$last_item");
 }
 
-/** 
+/**
  * executes a command and puts each line of its output into an array
  * @param $command_line - the command to execute
  * @returns - (array) an array containing the command output */
@@ -2062,7 +2063,7 @@ function get_device_array() {
 }
 
 /**
- * determines the top header navigation text for the current page and displays it to the browser 
+ * determines the top header navigation text for the current page and displays it to the browser
  * */
 function draw_navigation_text($type = "url") {
 	global $config;
@@ -2555,11 +2556,11 @@ function debug_log_return($type) {
 function user_log_insert($userid, $username, $result) {
 		db_execute('INSERT INTO user_log ' .
 					'(username,user_id,result,ip,time) VALUES (' .
-					"'" . $username . "'," . 
+					"'" . $username . "'," .
 					$userid .  "','" .
 					$result .  "','" .
 					$_SERVER["REMOTE_ADDR"] .  "'," .
-					"NOW())");	
+					"NOW())");
 }
 
 
