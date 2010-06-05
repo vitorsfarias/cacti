@@ -127,7 +127,8 @@ function read_graph_config_option($config_name, $force = FALSE) {
  *						  in 'include/global_settings.php'
  * @returns (bool) 		- true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
-	return sizeof(db_fetch_assoc("select value from settings where name='$config_name'"));
+	global $database_default;
+	return sizeof(db_fetch_assoc("select value from `$database_default`.`settings` where name='$config_name'"));
 }
 
 /**
@@ -334,7 +335,8 @@ function set_config_option($config_name, $value) {
  * @param $force		- force reading from database
  * @returns 			- the current value of the configuration option */
 function read_config_option($config_name, $force = FALSE) {
-	global $config;
+	global $config, $database_default;
+
 	if (isset($_SESSION["sess_config_array"])) {
 		$config_array = $_SESSION["sess_config_array"];
 	}else if (isset($config["config_options_array"])) {
@@ -342,7 +344,7 @@ function read_config_option($config_name, $force = FALSE) {
 	}
 
 	if ((!isset($config_array[$config_name])) || ($force)) {
-		$db_setting = db_fetch_row("select value from settings where name='$config_name'", FALSE);
+		$db_setting = db_fetch_row("select value from `$database_default`.`settings` where name='$config_name'", FALSE);
 
 		if (isset($db_setting["value"])) {
 			$config_array[$config_name] = $db_setting["value"];

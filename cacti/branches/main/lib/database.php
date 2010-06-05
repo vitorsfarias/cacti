@@ -35,13 +35,18 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type, $port = "330
 	global $cnn_id;
 
 	$i = 0;
-	$cnn_id = NewADOConnection($db_type);
+	$cnn = NewADOConnection($db_type);
+	$class = get_class($cnn);
+	
+	if (!is_a($cnn_id, $class)) {
+		$cnn_id = $cnn;
+	}
 
 	$deviceport = $device . ":" . $port;
 
 	while ($i <= $retries) {
-		if ($cnn_id->PConnect($deviceport,$user,$pass,$db_name)) {
-			$cnn_id->Execute("SET NAMES 'utf8';");
+		if ($cnn->PConnect($deviceport,$user,$pass,$db_name)) {
+			$cnn->Execute("SET NAMES 'utf8';");
 			return($cnn_id);
 		}
 
