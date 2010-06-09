@@ -141,7 +141,7 @@ function form_selectable_cell($contents, $id, $width="", $class="", $align="") {
    @param $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $checked = false) {
 	print "\t<td onClick='selectLine(\"$id\",true)' style='" . get_checkbox_style() . "' width='1%' align='center'>\n";
-	print "\t\t<input type='checkbox' title='$title' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'" . ($checked ? " checked" : "") . ">\n";
+	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'" . ($checked ? " checked" : "") . ">\n";
 	print "\t</td>\n";
 }
 
