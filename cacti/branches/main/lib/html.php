@@ -813,6 +813,11 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 					$align = "";
 				}
 
+				/* check to see if this is a link column */
+				if (isset($data["link"])) {
+					$text .= "</a>";
+				}
+				
 				form_selectable_cell($text, $row[$key_field], $width, $class, $align);
 			}
 
