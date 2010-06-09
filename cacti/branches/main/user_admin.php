@@ -557,7 +557,7 @@ function graph_perms_edit() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_device_detailed.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("./lib/ajax/get_devices_detailed.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_devices").val(data[1]);
