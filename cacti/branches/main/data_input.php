@@ -253,7 +253,7 @@ function form_actions() {
 	if (!isset($di_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		from_continue(serialize($di_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($di_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

@@ -566,7 +566,7 @@ function api_device_form_actions() {
 	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		from_continue(serialize($device_array), get_request_var_post("drp_action"));
+		form_continue(serialize($device_array), get_request_var_post("drp_action"));
 	}
 
 	html_end_box();

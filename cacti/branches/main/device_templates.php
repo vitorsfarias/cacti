@@ -211,7 +211,7 @@ function device_template_form_save_gt() {
 					</tr>\n
 					";
 
-			from_continue2(serialize($device_array), "save_gt");
+			form_continue2(serialize($device_array), "save_gt");
 			html_end_box();
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 			exit;
@@ -356,7 +356,7 @@ function device_template_form_save_dq() {
 					</tr>\n
 					";
 
-			from_continue2(serialize($device_array), "save_dq");
+			form_continue2(serialize($device_array), "save_dq");
 			html_end_box();
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 			exit;
@@ -513,7 +513,7 @@ function device_template_form_actions() {
 	if (!sizeof($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		from_continue(serialize($device_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($device_array), get_request_var_post("drp_action"), $title);
 	}
 
 	html_end_box();

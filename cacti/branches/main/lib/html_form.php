@@ -1184,32 +1184,32 @@ function form_cancel_button() {
 	<?php
 }
 
-/** from_continue - draws a Continue/Cancel button at the bottom of an html edit form
+/** form_continue - draws a Continue/Cancel button at the bottom of an html edit form
    @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected
  */
-function from_continue($item_list, $drp_action = "none", $title = "") {
+function form_continue($item_list, $drp_action = "none", $title = "") {
 	global $config;
 
 	?>
 	<tr>
 		<td align="right">
 			<div><input type='hidden' name='action' value='actions'></div>
-			<div><input type='hidden' name='selected_items' value='<?php print $items_list;?>'></div>
+			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
-			<input type='submit' value='<?php print __("Cancel");?>' name='cancel'>
-			<input type='button' value='<?php print __("Continue");?>' name='yes' onClick='window.history.back()' title='<?php print $title;?>'>
+			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
+			<input type='submit' value='<?php print __("Continue");?>' name='yes' title='<?php print $title;?>'>
 		</td>
 	</tr>
 	</form>
 	<?php
 }
 
-/** from_continue2 		- draws a Continue/Cancel button at the bottom of an html edit form
+/** form_continue2 		- draws a Continue/Cancel button at the bottom of an html edit form
    @param string $device_list 	- serialized item array
    @param string $action 		- specifies the action code, e.g. "save_gt" for the main procedure select directive
  */
-function from_continue2($item_list, $action = "none", $title = "") {
+function form_continue2($item_list, $action = "none", $title = "") {
 	global $config;
 
 	?>
