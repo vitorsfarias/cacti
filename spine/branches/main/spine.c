@@ -525,130 +525,134 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* loop through devices until done */
-	while (device_counter < num_rows && canexit == FALSE) {
-		mutex_status = thread_mutex_trylock(LOCK_THREAD);
-
-		switch (mutex_status) {
-		case 0:
-			last_active_threads = active_threads;
-
-			if (change_device) {
-				mysql_row       = mysql_fetch_row(result);
-				device_id       = atoi(mysql_row[0]);
-				device_threads  = atoi(mysql_row[1]);
-				current_thread  = 1;
-			}else{
-				current_thread++;
-			}
-
-			if (current_thread >= device_threads) {
-				change_device = TRUE;
-			}else{
-				change_device = FALSE;
-			}
-
-			/* determine how many items will be polled per thread */
-			if (device_threads > 1) {
-				if (current_thread == 1) {
-					snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE host_id=%i", device_threads, device_id);
-					tresult   = db_query(&mysql, querybuf);
-					mysql_row = mysql_fetch_row(tresult);
-					itemsPT   = atoi(mysql_row[0]);
+	while ((device_counter < num_rows) && (canexit == FALSE)) {
+		while ((active_threads < set.threads) && (device_counter < num_rows) && (canexit == FALSE)) {
+			mutex_status = thread_mutex_trylock(LOCK_THREAD);
+	
+			switch (mutex_status) {
+			case 0:
+				last_active_threads = active_threads;
+	
+				if (change_device) {
+					mysql_row       = mysql_fetch_row(result);
+					device_id       = atoi(mysql_row[0]);
+					device_threads  = atoi(mysql_row[1]);
+					current_thread  = 1;
+				}else{
+					current_thread++;
 				}
-			}else{
-				itemsPT   = 0;
-			}
-
-			/* populate the thread structure */
-			if (!(poller_details = (poller_thread_t *)malloc(sizeof(poller_thread_t)))) {
-				die("ERROR: Fatal malloc error: spine.c poller_details!");
-			}
-
-			poller_details->device_id       = device_id;
-			poller_details->device_thread   = current_thread;
-			poller_details->device_data_ids = itemsPT;
-
-			/* create child process */
-			thread_status = pthread_create(&threads[device_counter], &attr, child, poller_details);
-
-			switch (thread_status) {
-				case 0:
-					SPINE_LOG_DEBUG(("DEBUG: Valid Thread to be Created"));
-
-					if (change_device) {
-						device_counter++;
+	
+				if (current_thread >= device_threads) {
+					change_device = TRUE;
+				}else{
+					change_device = FALSE;
+				}
+	
+				/* determine how many items will be polled per thread */
+				if (device_threads > 1) {
+					if (current_thread == 1) {
+						snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE host_id=%i", device_threads, device_id);
+						tresult   = db_query(&mysql, querybuf);
+						mysql_row = mysql_fetch_row(tresult);
+						itemsPT   = atoi(mysql_row[0]);
 					}
-					active_threads++;
-
-					SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i", active_threads));
-
-					break;
-				case EAGAIN:
-					SPINE_LOG(("ERROR: The System Lacked the Resources to Create a Thread"));
-					break;
-				case EFAULT:
-					SPINE_LOG(("ERROR: The Thread or Attribute Was Invalid"));
-					break;
-				case EINVAL:
-					SPINE_LOG(("ERROR: The Thread Attribute is Not Initialized"));
-					break;
-				default:
-					SPINE_LOG(("ERROR: Unknown Thread Creation Error"));
-					break;
+				}else{
+					itemsPT   = 0;
+				}
+	
+				/* populate the thread structure */
+				if (!(poller_details = (poller_thread_t *)malloc(sizeof(poller_thread_t)))) {
+					die("ERROR: Fatal malloc error: spine.c poller_details!");
+				}
+	
+				poller_details->device_id       = device_id;
+				poller_details->device_thread   = current_thread;
+				poller_details->device_data_ids = itemsPT;
+	
+				/* create child process */
+				thread_status = pthread_create(&threads[device_counter], &attr, child, poller_details);
+	
+				switch (thread_status) {
+					case 0:
+						SPINE_LOG_DEBUG(("DEBUG: Valid Thread to be Created"));
+	
+						if (change_device) {
+							device_counter++;
+						}
+						active_threads++;
+	
+						SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i", active_threads));
+	
+						break;
+					case EAGAIN:
+						SPINE_LOG(("ERROR: The System Lacked the Resources to Create a Thread"));
+						break;
+					case EFAULT:
+						SPINE_LOG(("ERROR: The Thread or Attribute Was Invalid"));
+						break;
+					case EINVAL:
+						SPINE_LOG(("ERROR: The Thread Attribute is Not Initialized"));
+						break;
+					default:
+						SPINE_LOG(("ERROR: Unknown Thread Creation Error"));
+						break;
+				}
+	
+				/* get current time and exit program if time limit exceeded */
+				if (poller_counter >= 20) {
+					current_time = get_time_as_double();
+	
+					if ((current_time - begin_time + .2) > set.poller_interval) {
+						SPINE_LOG(("ERROR: Spine Timed Out While Processing Devices Internal"));
+						canexit = TRUE;
+						break;
+					}
+	
+					poller_counter = 0;
+				}else{
+					poller_counter++;
+				}
+	
+				thread_mutex_unlock(LOCK_THREAD);
+	
+				break;
+			case EDEADLK:
+				SPINE_LOG(("ERROR: Deadlock Occured"));
+				break;
+			case EBUSY:
+				break;
+			case EINVAL:
+				SPINE_LOG(("ERROR: Attempt to Unlock an Uninitialized Mutex"));
+				break;
+			case EFAULT:
+				SPINE_LOG(("ERROR: Attempt to Unlock an Invalid Mutex"));
+				break;
+			default:
+				SPINE_LOG(("ERROR: Unknown Mutex Lock Error Code Returned"));
+				break;
 			}
-
+	
+			usleep(internal_thread_sleep);
+	
 			/* get current time and exit program if time limit exceeded */
 			if (poller_counter >= 20) {
 				current_time = get_time_as_double();
-
+	
 				if ((current_time - begin_time + .2) > set.poller_interval) {
 					SPINE_LOG(("ERROR: Spine Timed Out While Processing Devices Internal"));
 					canexit = TRUE;
 					break;
 				}
-
+	
 				poller_counter = 0;
 			}else{
 				poller_counter++;
 			}
-
-			thread_mutex_unlock(LOCK_THREAD);
-
-			break;
-		case EDEADLK:
-			SPINE_LOG(("ERROR: Deadlock Occured"));
-			break;
-		case EBUSY:
-			break;
-		case EINVAL:
-			SPINE_LOG(("ERROR: Attempt to Unlock an Uninitialized Mutex"));
-			break;
-		case EFAULT:
-			SPINE_LOG(("ERROR: Attempt to Unlock an Invalid Mutex"));
-			break;
-		default:
-			SPINE_LOG(("ERROR: Unknown Mutex Lock Error Code Returned"));
-			break;
 		}
 
 		usleep(internal_thread_sleep);
-
-		/* get current time and exit program if time limit exceeded */
-		if (poller_counter >= 20) {
-			current_time = get_time_as_double();
-
-			if ((current_time - begin_time + .2) > set.poller_interval) {
-				SPINE_LOG(("ERROR: Spine Timed Out While Processing Devices Internal"));
-				canexit = TRUE;
-				break;
-			}
-
-			poller_counter = 0;
-		}else{
-			poller_counter++;
-		}
 	}
-
+	
 	/* wait for all threads to complete */
 	while (canexit == FALSE) {
 		if (thread_mutex_trylock(LOCK_THREAD) == 0) {
