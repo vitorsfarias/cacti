@@ -37,6 +37,8 @@ if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
 		$username = str_replace("\\", "\\\\", $_SERVER["PHP_AUTH_USER"]);
 	}elseif (isset($_SERVER["REMOTE_USER"])) {
 		$username = str_replace("\\", "\\\\", $_SERVER["REMOTE_USER"]);
+	}elseif (isset($_SERVER["REDIRECT_REMOTE_USER"])) {
+		$username = str_replace("\\", "\\\\", $_SERVER["REDIRECT_REMOTE_USER"]);
 	}else{
 		/* No user - Bad juju! */
 		$username = "";
