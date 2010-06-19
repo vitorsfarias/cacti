@@ -40,6 +40,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001506: Reindexing fails in snmp.php
 -bug#0001508: More min-height'ed divs when showing graphs
 -bug#0001511: Speed up the processing of poller through bulk deletes
+-bug#0001516: "Show the page that user pointed their browser" does not work 
 -bug#0001522: Special(?) charakters break parsing of template data.
 -bug#0001524: Export graphs and Classical Presentation 
 -bug#0001526: exec_into_array() and query_script_host() do not escape shell arguments safely 
