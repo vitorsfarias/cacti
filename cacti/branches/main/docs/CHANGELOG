@@ -17,6 +17,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001196: SNMP string with nonstandard characters breaks some Data Queries
 -bug#0001209: Content-type incorrect for the SVG graphs (Graph Management still does not display SVG, but rest does)
 -bug#0001279: php warning when installing specific plugins (if no "keys" were defined for a plugin table)
+-bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp 
 -bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu)
 -bug#0001311: Access denied for graph-only users when accessing index.php
 -bug#0001319: when adding a host using cli add_device that already exist in the database, both descriptions are updated
