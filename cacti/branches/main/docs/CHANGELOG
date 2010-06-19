@@ -59,6 +59,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001600: Default action on lists should be "None"
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
+-bug#0001620: Max OID's max value reported incorrectly in Web UI
 -bug#0001623: SQL JOIN on user_log without INDEX (performance issue)
 -bug#0001633: PA: new hook in graph.php 
 -bug#0001746: SNMP Hex-String matching 
