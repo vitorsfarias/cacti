@@ -36,6 +36,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template
 -bug#0001461: (Data Query) Export/Import fails
 -bug#0001479: cli/add_device.php will modify existing devices
+-bug#0001486: No way to login after going not allowed page
 -bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
 -bug#0001506: Reindexing fails in snmp.php
 -bug#0001508: More min-height'ed divs when showing graphs
