@@ -187,6 +187,9 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 
 	$data_local = db_fetch_row("select device_id, data_template_id, snmp_query_id, snmp_index from data_local where id=$local_data_id");
 
+	/* TODO: this fetches ALL suggested values for a data source
+	 * but we need to know about the graph template as well!
+	 */
 	$suggested_values = db_fetch_assoc("select text,field_name from snmp_query_graph_rrd_sv where data_template_id=" . $data_local["data_template_id"] . " order by sequence");
 
 	if (sizeof($suggested_values) > 0) {
