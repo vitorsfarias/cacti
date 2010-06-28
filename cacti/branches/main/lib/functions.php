@@ -2556,7 +2556,7 @@ function debug_log_return($type) {
 function user_log_insert($userid, $username, $result) {
 		db_execute('INSERT INTO user_log ' .
 					'(username,user_id,result,ip,time) VALUES (' .
-					"'" . $username . "'," .
+					"'" . $username . "','" .
 					$userid .  "','" .
 					$result .  "','" .
 					$_SERVER["REMOTE_ADDR"] .  "'," .
