@@ -1175,7 +1175,7 @@ function device_template_display_dq($device_template, $header_label) {
 	print "</form>";
 }
 
-function filter() {
+function device_templates_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Device Templates") . "</strong>", "100", "3", "center", "device_templates.php?action=edit", true);
@@ -1229,7 +1229,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_device_template_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "WHERE (device_template.name LIKE '%%" . html_get_page_variable("filter") . "%%')
@@ -1298,7 +1298,7 @@ function device_template($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "data_templates.php";
 	$table->session_prefix = "sess_data_templates";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "device_templates_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -1309,7 +1309,7 @@ function device_template($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_device_template_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

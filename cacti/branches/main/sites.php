@@ -340,7 +340,7 @@ function site_edit() {
 	form_save_button("sites.php", "return");
 }
 
-function filter() {
+function sites_filter() {
 	global $item_rows;
 
 	?>
@@ -459,7 +459,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp, $apply_limits = TRUE) {
+function get_site_records(&$total_rows, &$rowspp, $apply_limits = TRUE) {
 	/* create SQL where clause */
 	$device_type_info = db_fetch_row("SELECT * FROM device_template WHERE id='" . html_get_page_variable("device_template_id") . "'");
 
@@ -624,7 +624,7 @@ function site($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "sites.php";
 	$table->session_prefix = "sess_sites";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "sites_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -635,7 +635,7 @@ function site($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_site_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

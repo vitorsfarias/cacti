@@ -241,7 +241,7 @@ function rra_edit() {
 	form_save_button("rra.php", "return");
 }
 
-function filter() {
+function rra_filter() {
 	global $item_rows;
 	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
 	?>
@@ -294,7 +294,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_rra_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (rra.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
 
@@ -360,7 +360,7 @@ function rra($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "rra.php";
 	$table->session_prefix = "sess_rra";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "rra_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -371,7 +371,7 @@ function rra($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_rra_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

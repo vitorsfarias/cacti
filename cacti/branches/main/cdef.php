@@ -469,7 +469,7 @@ function cdef_edit() {
 
 }
 
-function filter() {
+function cdef_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("CDEF's") . "</strong>", "100", "3", "center", "cdef.php?action=edit", true);
@@ -523,7 +523,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_cdef_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "WHERE (cdef.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
@@ -574,7 +574,7 @@ function cdef($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "cdef.php";
 	$table->session_prefix = "sess_cdef";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "cdef_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -585,7 +585,7 @@ function cdef($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_cdef_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

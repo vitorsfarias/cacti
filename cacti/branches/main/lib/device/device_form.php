@@ -1446,7 +1446,7 @@ function device_display_general($device, $device_text) {
 	form_save_button("devices.php", "return");
 }
 
-function filter() {
+function device_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Devices") . "</strong>", "100", "3", "center", "devices.php?action=edit&template_id=" . html_get_page_variable("template_id") . "&status=" . html_get_page_variable("status"), true);
@@ -1589,7 +1589,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_device_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "WHERE (device.hostname like '%%" . html_get_page_variable("filter") . "%%' OR device.description like '%%" . html_get_page_variable("filter") . "%%')";
@@ -1753,7 +1753,7 @@ function device($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "devices.php";
 	$table->session_prefix = "sess_devices";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "device_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -1764,7 +1764,7 @@ function device($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_device_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();
