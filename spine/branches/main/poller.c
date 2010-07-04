@@ -56,7 +56,7 @@ void *child(void *arg) {
 
 	SPINE_LOG_DEBUG(("DEBUG: In Poller, About to Start Polling of Device"));
 
-	poll_host(device_id, device_thread, device_data_ids);
+	poll_device(device_id, device_thread, device_data_ids);
 
 	thread_mutex_lock(LOCK_THREAD);
 
