@@ -241,37 +241,6 @@ function rra_edit() {
 	form_save_button("rra.php", "return");
 }
 
-function get_table_format() {
-	return array(
-		"name" => array(
-			"name" => __("Name"),
-			"filter" => true,
-			"link" => true,
-			"order" => "ASC"
-		),
-		"x_files_factor" => array(
-			"name" => __("X Files Factor"),
-			"order" => "ASC",
-			"align" => "right"
-		),
-		"steps" => array(
-			"name" => __("Steps"),
-			"order" => "ASC",
-			"align" => "right"
-		),
-		"rows" => array(
-			"name" => __("Rows"),
-			"order" => "ASC",
-			"align" => "right"
-		),
-		"timespan" => array(
-			"name" => __("Timespan"),
-			"order" => "ASC",
-			"align" => "right"
-		)
-	);
-}
-
 function filter() {
 	global $item_rows;
 	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
@@ -325,23 +294,6 @@ function filter() {
 	html_end_box(false);
 }
 
-function process_page_variables() {
-	$page_variables = array(
-		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
-		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
-		"filter" => array("type" => "string", "method" => "request", "default" => ""),
-		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
-		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
-
-	if (isset($_REQUEST["clear"])) {
-		$clear = true;
-	}else{
-		$clear = false;
-	}
-
-	html_verify_request_variables($page_variables, "sess_rra", $clear);
-}
-
 function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	$sql_where = "WHERE (rra.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
@@ -367,15 +319,60 @@ function get_records(&$total_rows, &$rowspp) {
 function rra($refresh = true) {
 	global $rra_actions;
 
-	$total_rows = 0; $rowspp = 0;
+	$table = New html_table;
 
-	process_page_variables();
+	$table->page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
 
-	if ($refresh) filter();
+	$table->table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"x_files_factor" => array(
+			"name" => __("X Files Factor"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"steps" => array(
+			"name" => __("Steps"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"rows" => array(
+			"name" => __("Rows"),
+			"order" => "ASC",
+			"align" => "right"
+		),
+		"timespan" => array(
+			"name" => __("Timespan"),
+			"order" => "ASC",
+			"align" => "right"
+		)
+	);
 
-	$rows = get_records($total_rows, $rowspp);
+	/* initialize page behavior */
+	$table->href           = "rra.php";
+	$table->session_prefix = "sess_rra";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $rra_actions;
 
-	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "rra.php",
-		$rra_actions, html_get_page_variable("filter"), true, true, true,
-		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }

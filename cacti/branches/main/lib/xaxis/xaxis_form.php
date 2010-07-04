@@ -357,64 +357,47 @@ function xaxis_edit() {
 	form_save_button("xaxis_presets.php", "return");
 }
 
-
-
-function xaxis() {
-	global $xaxis_actions, $item_rows;
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_xaxis_current_page");
-		kill_session_var("sess_xaxis_filter");
-		kill_session_var("sess_xaxis_rows");
-		kill_session_var("sess_xaxis_sort_column");
-		kill_session_var("sess_xaxis_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-	}
-
-	/* let's see if someone changed an important setting */
-	$changed  = FALSE;
-	$changed += check_changed("filter",      "sess_xaxis_filter");
-	$changed += check_changed("rows",        "sess_xaxis_rows");
-
-	if ($changed) {
-		$_REQUEST["page"] = "1";
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_xaxis_current_page", "1");
-	load_current_session_value("filter", "sess_xaxis_filter", "");
-	load_current_session_value("rows", "sess_xaxis_rows", "-1");
-	load_current_session_value("sort_column", "sess_xaxis_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_xaxis_sort_direction", "ASC");
+function filter() {
+	global $items_row;
 
 	?>
-<script type="text/javascript">
+	<?php
+
+	html_start_box("<strong>" . __("X-Axis Presets") . "</strong>", "100", "3", "center", "xaxis_presets.php?action=edit", true);
+	?>
+	<tr class='rowAlternate2'>
+		<td>
+		<form action="xaxis_presets.php" name="form_xaxis" method="post">
+		<table cellpadding="0" cellspacing="3">
+			<tr>
+				<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
+				<td class="w1"><input type="text" name="filter" size="40"
+					value="<?php print html_get_page_variable("filter");?>"></td>
+				<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
+				<td class="w1"><select name="rows"
+					onChange="applyFilterChange(document.form_xaxis)">
+					<option value="-1"
+					<?php if (html_get_page_variable("rows") == "-1") {?> selected
+					<?php }?>>Default</option>
+					<?php
+					if (sizeof($item_rows) > 0) {
+						foreach ($item_rows as $key => $value) {
+							print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+						}
+					}
+					?>
+				</select></td>
+				<td class="nw120">&nbsp;<input type="submit"
+					Value="<?php print __("Go");?>" name="go" align="middle"> <input
+					type="submit" Value="<?php print __("Clear");?>" name="clear"
+					align="middle"></td>
+			</tr>
+		</table>
+		<div><input type='hidden' name='page' value='1'></div>
+		</form>
+		</td>
+	</tr>
+	<script type="text/javascript">
 	<!--
 
 	function applyFilterChange(objForm) {
@@ -426,71 +409,48 @@ function xaxis() {
 	-->
 	</script>
 	<?php
-
-	html_start_box("<strong>" . __("X-Axis Presets") . "</strong>", "100", "3", "center", "xaxis_presets.php?action=edit", true);
-	?>
-<tr class='rowAlternate2'>
-	<td>
-	<form action="xaxis_presets.php" name="form_xaxis" method="post">
-	<table cellpadding="0" cellspacing="3">
-		<tr>
-			<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
-			<td class="w1"><input type="text" name="filter" size="40"
-				value="<?php print $_REQUEST["filter"];?>"></td>
-			<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
-			<td class="w1"><select name="rows"
-				onChange="applyFilterChange(document.form_xaxis)">
-				<option value="-1"
-				<?php if (get_request_var_request("rows") == "-1") {?> selected
-				<?php }?>>Default</option>
-				<?php
-				if (sizeof($item_rows) > 0) {
-					foreach ($item_rows as $key => $value) {
-						print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-					}
-				}
-				?>
-			</select></td>
-			<td class="nw120">&nbsp;<input type="submit"
-				Value="<?php print __("Go");?>" name="go" align="middle"> <input
-				type="submit" Value="<?php print __("Clear");?>" name="clear_x"
-				align="middle"></td>
-		</tr>
-	</table>
-	<div><input type='hidden' name='page' value='1'></div>
-	</form>
-	</td>
-</tr>
-	<?php
 	html_end_box(false);
+}
 
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request("filter"))) {
-		$sql_where = "where (name like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen(html_get_page_variable("filter"))) {
+		$sql_where = "WHERE (cdef.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
 	}else{
 		$sql_where = "";
 	}
 
-	$total_rows = db_fetch_cell("select
-		COUNT(id)
-		from graph_templates_xaxis
-		$sql_where");
-
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
 
-	$sql_query = "SELECT * " .
-		"FROM graph_templates_xaxis " .
-		$sql_where .
-		" ORDER BY " . get_request_var_request("sort_column") . " " . get_request_var_request("sort_direction") .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp;
+	$total_rows = db_fetch_cell("SELECT COUNT(id)
+		FROM graph_templates_xaxis
+		$sql_where");
 
-	$rows = db_fetch_assoc($sql_query);
+	return db_fetch_assoc("SELECT *
+		FROM graph_templates_xaxis
+		$sql_where
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
 
-	$table_format = array(
+function xaxis($refresh = true) {
+	global $xaxis_actions;
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
 		"name" => array(
 			"name" => __("Name"),
 			"filter" => true,
@@ -499,7 +459,22 @@ function xaxis() {
 		)
 	);
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "xaxis_presets.php",
-		$xaxis_actions, get_request_var_request("filter"), true, true, true,
-		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "xaxis_presets.php";
+	$table->session_prefix = "sess_xaxis";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $xaxis_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }
