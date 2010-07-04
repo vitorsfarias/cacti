@@ -24,22 +24,18 @@
 
 include("./include/auth.php");
 require_once(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
 include_once(CACTI_BASE_PATH . "/lib/device/device_form.php");
-include_once(CACTI_BASE_PATH . "/lib/graph/graphs_new_form.php");
-include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
-include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
+include_once(CACTI_BASE_PATH . "/lib/utility.php");
 include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
+include_once(CACTI_BASE_PATH . "/lib/snmp.php");
+include_once(CACTI_BASE_PATH . "/lib/ping.php");
+include_once(CACTI_BASE_PATH . "/lib/api_device.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 include_once(CACTI_BASE_PATH . "/lib/sort.php");
 include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
 include_once(CACTI_BASE_PATH . "/lib/template.php");
-include_once(CACTI_BASE_PATH . "/lib/snmp.php");
-include_once(CACTI_BASE_PATH . "/lib/ping.php");
-include_once(CACTI_BASE_PATH . "/lib/api_device.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

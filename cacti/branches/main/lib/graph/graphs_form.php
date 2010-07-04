@@ -1088,80 +1088,8 @@ function graph_edit() {
 <?php
 }
 
-
-function graph() {
+function filter() {
 	global $item_rows;
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("device_id"));
-	input_validate_input_number(get_request_var_request("rows"));
-	input_validate_input_number(get_request_var_request("template_id"));
-	input_validate_input_number(get_request_var_request("page"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_graph_current_page");
-		kill_session_var("sess_graph_filter");
-		kill_session_var("sess_graph_sort_column");
-		kill_session_var("sess_graph_sort_direction");
-
-		if (!substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-			kill_session_var("sess_graph_device_id");
-		}
-
-		kill_session_var("sess_graph_rows");
-		kill_session_var("sess_graph_template_id");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-
-		if (!substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-			unset($_REQUEST["device_id"]);
-		}
-
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["template_id"]);
-	}
-
-	/* let's see if someone changed an important setting */
-	$changed  = FALSE;
-	$changed += check_changed("filter",      "sess_ds_filter");
-	$changed += check_changed("rows",        "sess_ds_rows");
-	$changed += check_changed("device_id",     "sess_ds_device_id");
-	$changed += check_changed("template_id", "sess_ds_template_id");
-
-	if ($changed) {
-		$_REQUEST["page"] = "1";
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_graph_current_page", "1");
-	load_current_session_value("filter", "sess_graph_filter", "");
-	load_current_session_value("sort_column", "sess_graph_sort_column", "title_cache");
-	load_current_session_value("sort_direction", "sess_graph_sort_direction", "ASC");
-	load_current_session_value("device_id", "sess_graph_device_id", "-1");
-	load_current_session_value("rows", "sess_graph_rows", "-1");
-	load_current_session_value("template_id", "sess_graph_template_id", "-1");
 
 	?>
 	<script type="text/javascript">
@@ -1184,13 +1112,13 @@ function graph() {
 		# called from outside
 		if (isset($_REQUEST["tab"])) {
 			# print the tab
-			print "strURL = strURL + '&tab=" . $_REQUEST["tab"] . "';";
+			print "strURL = strURL + '&tab=" . html_get_page_variable("tab") . "';";
 			# now look for more parameters
 			if (isset($_REQUEST["device_id"])) {
-				print "strURL = strURL + '&device_id=" . $_REQUEST["device_id"] . "&id=" . $_REQUEST["device_id"] . "';";
+				print "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';";
 			}
 			if (isset($_REQUEST["template_id"])) {
-				print "strURL = strURL + '&template_id=" . $_REQUEST["template_id"] . "&id=" . $_REQUEST["template_id"] . "';";
+				print "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';";
 			}
 		}else {
 			# clear all parms
@@ -1210,12 +1138,12 @@ function graph() {
 		if (objForm.device_id.value) {
 			strURL = '?device_id=' + objForm.device_id.value;
 		}else{
-			<?php print (isset($_REQUEST["device_id"]) ? "strURL = strURL + '&device_id=" . $_REQUEST["device_id"] . "&id=" . $_REQUEST["device_id"] . "';" : "strURL = strURL + '&device_id=-1';");?>
+			<?php print (isset($_REQUEST["device_id"]) ? "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';" : "strURL = strURL + '&device_id=-1';");?>
 		}
 		if (objForm.template_id.value) {
 			strURL = '?template_id=' + objForm.template_id.value;
 		}else{
-			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . $_REQUEST["template_id"] . "&id=" . $_REQUEST["template_id"] . "';" : "strURL = strURL + '&template_id=-1';");?>
+			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';" : "strURL = strURL + '&template_id=-1';");?>
 		}
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		document.location = strURL;
@@ -1224,7 +1152,7 @@ function graph() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Graph Management") . "</strong>", "100", "3", "center", "graphs.php?action=edit&device_id=" . $_REQUEST["device_id"], true);
+	html_start_box("<strong>" . __("Graph Management") . "</strong>", "100", "3", "center", "graphs.php?action=edit&device_id=" . html_get_page_variable("device_id"), true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1237,7 +1165,7 @@ function graph() {
 					<td width="1">
 						<?php
 						if (isset($_REQUEST["device_id"])) {
-							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
+							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=" . html_get_page_variable("device_id") . " ORDER BY description,hostname");
 						} else {
 							$hostname = "";
 						}
@@ -1250,8 +1178,8 @@ function graph() {
 					</td>
 					<td width="1">
 						<select name="template_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
-							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
-							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
+							<option value="-1"<?php if (html_get_page_variable("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
+							<option value="0"<?php if (html_get_page_variable("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
 							<?php
 							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 								$templates = db_fetch_assoc("SELECT DISTINCT graph_templates.id, graph_templates.name
@@ -1271,7 +1199,7 @@ function graph() {
 
 							if (sizeof($templates) > 0) {
 							foreach ($templates as $template) {
-								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("template_id") == $template["id"]) { print " selected"; } print ">" . title_trim($template["name"], 40) . "</option>\n";
+								print "<option value='" . $template["id"] . "'"; if (html_get_page_variable("template_id") == $template["id"]) { print " selected"; } print ">" . title_trim($template["name"], 40) . "</option>\n";
 							}
 							}
 							?>
@@ -1279,7 +1207,7 @@ function graph() {
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear_x" align="middle" onClick="clearGraphsFilterChange(document.form_graph_id)">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearGraphsFilterChange(document.form_graph_id)">
 					</td>
 				</tr>
 			</table>
@@ -1289,18 +1217,18 @@ function graph() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td>
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td width="1">
 						<select name="rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
 							}
 							}
 							?>
@@ -1314,38 +1242,47 @@ function graph() {
 	</tr>
 	<?php
 	html_end_box(false);
+}
 
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request("filter"))) {
-		$sql_where = "AND (graph_templates_graph.title_cache like '%%" . $_REQUEST["filter"] . "%%'" .
-			" OR graph_templates.name like '%%" . get_request_var_request("filter") . "%%')";
+	if (strlen(html_get_page_variable("filter"))) {
+		$sql_where = "AND (graph_templates_graph.title_cache like '%%" . html_get_page_variable("filter") . "%%'" .
+			" OR graph_templates.name like '%%" . html_get_page_variable("filter") . "%%')";
 	}else{
 		$sql_where = "";
 	}
 
 	if (get_request_var_request("device_id") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("device_id") == "0") {
+	}elseif (html_get_page_variable("device_id") == "0") {
 		$sql_where .= " AND graph_local.device_id=0";
-	}elseif (!empty($_REQUEST["device_id"])) {
-		$sql_where .= " AND graph_local.device_id=" . $_REQUEST["device_id"];
+	}elseif (html_get_page_variable("device_id") != "") {
+		$sql_where .= " AND graph_local.device_id=" . html_get_page_variable("device_id");
 	}
 
-	if (get_request_var_request("template_id") == "-1") {
+	if (html_get_page_variable("template_id") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("template_id") == "0") {
+	}elseif (html_get_page_variable("template_id") == "0") {
 		$sql_where .= " AND graph_templates_graph.graph_template_id=0";
-	}elseif (!empty($_REQUEST["template_id"])) {
-		$sql_where .= " AND graph_templates_graph.graph_template_id=" . $_REQUEST["template_id"];
+	}elseif (html_get_page_variable("template_id") != "") {
+		$sql_where .= " AND graph_templates_graph.graph_template_id=" . html_get_page_variable("template_id");
 	}
 
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_graph");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
 
-	$rows = db_fetch_assoc("SELECT
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(graph_templates_graph.id)
+		FROM (graph_local,graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
+		WHERE graph_local.id=graph_templates_graph.local_graph_id
+		$sql_where");
+
+	return db_fetch_assoc("SELECT
 		graph_templates_graph.id,
 		graph_templates_graph.local_graph_id,
 		graph_templates_graph.height,
@@ -1357,17 +1294,29 @@ function graph() {
 		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
 		WHERE graph_local.id=graph_templates_graph.local_graph_id
 		$sql_where
-		ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(graph_templates_graph.id)
-		FROM (graph_local,graph_templates_graph)
-		LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
-		WHERE graph_local.id=graph_templates_graph.local_graph_id
-		$sql_where");
+function graph($refresh = true) {
+	global $item_rows;
+	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
+	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
-	$table_format = array(
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"tab"            => array("type" => "string",  "method" => "request", "default" => ""),
+		"device_id"      => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"template_id"    => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "title_cache"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
 		"title_cache" => array(
 			"name" => __("Graph Title"),
 			"filter" => true,
@@ -1394,7 +1343,23 @@ function graph() {
 		)
 	);
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "local_graph_id", "graphs.php",
-		array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
-		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "graphs.php";
+	$table->session_prefix = "sess_graphs";
+	$table->filter_func    = "filter";
+	$table->key_field      = "local_graph_id";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array());
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }

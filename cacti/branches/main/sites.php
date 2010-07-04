@@ -302,75 +302,6 @@ function site_remove() {
 	}
 }
 
-function site_get_site_records(&$sql_where, $rows = 30, $apply_limits = TRUE) {
-	/* create SQL where clause */
-	$device_type_info = db_fetch_row("SELECT * FROM device_template WHERE id='" . html_get_page_variable("device_template_id") . "'");
-
-	$sql_where = "";
-
-	/* form the 'where' clause for our main sql query */
-	if (strlen(html_get_page_variable("filter"))) {
-		if (("detail") == "false") {
-			$sql_where = "WHERE (sites.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
-		}else{
-			$sql_where = "WHERE (device_template.name LIKE '%%" . html_get_page_variable("filter") . "%%' OR " .
-				"sites.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
-		}
-	}
-
-	if (sizeof($device_type_info)) {
-		if (!strlen($sql_where)) {
-			$sql_where = "WHERE (device.device_template_id=" . $device_type_info["id"] . ")";
-		}else{
-			$sql_where .= " AND (device.device_template_id=" . $device_type_info["id"] . ")";
-		}
-	}
-
-	if ((html_get_page_variable("site_id") != "-1") && (html_get_page_variable("detail"))){
-		if (!strlen($sql_where)) {
-			$sql_where = "WHERE (device.site_id='" . html_get_page_variable("site_id") . "')";
-		}else{
-			$sql_where .= " AND (device.site_id='" . html_get_page_variable("site_id") . "')";
-		}
-	}
-
-	if (get_request_var_request("detail") == "false") {
-		$query_string = "SELECT *
-			FROM sites
-			$sql_where
-			ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction");
-
-		if ($apply_limits) {
-			$query_string .= " LIMIT " . ($rows*(html_get_page_variable("page")-1)) . "," . $rows;
-		}
-	}else{
-		$query_string ="SELECT sites.id,
-			sites.name,
-			sites.alternate_id,
-			sites.address1,
-			sites.address2,
-			sites.city,
-			sites.state,
-			sites.country,
-			Count(device_template.id) AS total_devices,
-			device_template.name as device_template_name
-			FROM (device_template
-			RIGHT JOIN device ON (device_template.id=device.device_template_id))
-			RIGHT JOIN sites ON (device.site_id=sites.id)
-			$sql_where
-			GROUP BY sites.name, device_template.name
-			ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction");
-
-		if ($apply_limits) {
-			$query_string .= " LIMIT " . ($rows*(html_get_page_variable("page")-1)) . "," . $rows;
-		}
-	}
-
-	//echo $query_string;
-
-	return db_fetch_assoc($query_string);
-}
-
 function site_edit() {
 	require_once(CACTI_BASE_PATH . "/lib/site/site_info.php");
 
@@ -409,7 +340,7 @@ function site_edit() {
 	form_save_button("sites.php", "return");
 }
 
-function site_filter() {
+function filter() {
 	global $item_rows;
 
 	?>
@@ -528,36 +459,37 @@ function site_filter() {
 	html_end_box(false);
 }
 
-function site_process_page_variables() {
-	$page_variables = array(
-		"page" => array("type" => "numeric", "default" => "1"),
-		"rows" => array("type" => "numeric", "default" => "-1"),
-		"site_id" => array("type" => "numeric", "default" => "-1"),
-		"device_template_id" => array("type" => "numeric", "default" => "-1"),
-		"detail" => array("type" => "string", "default" => "false"),
-		"filter" => array("type" => "string", "default" => ""),
-		"sort_column" => array("type" => "string", "default" => "name"),
-		"sort_direction" => array("type" => "string", "default" => "ASC"));
-
-	if (isset($_REQUEST["clear"])) {
-		$clear = true;
-	}else{
-		$clear = false;
-	}
-
-	html_verify_request_variables($page_variables, "sess_site", $clear);
-}
-
-
-function site() {
-	global $site_actions, $config;
-
-	$total_rows = 0; $rowspp = 0;
-
-	site_process_page_variables();
-	site_filter();
+function get_records(&$total_rows, &$rowspp, $apply_limits = TRUE) {
+	/* create SQL where clause */
+	$device_type_info = db_fetch_row("SELECT * FROM device_template WHERE id='" . html_get_page_variable("device_template_id") . "'");
 
 	$sql_where = "";
+
+	/* form the 'where' clause for our main sql query */
+	if (strlen(html_get_page_variable("filter"))) {
+		if (("detail") == "false") {
+			$sql_where = "WHERE (sites.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
+		}else{
+			$sql_where = "WHERE (device_template.name LIKE '%%" . html_get_page_variable("filter") . "%%' OR " .
+				"sites.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
+		}
+	}
+
+	if (sizeof($device_type_info)) {
+		if (!strlen($sql_where)) {
+			$sql_where = "WHERE (device.device_template_id=" . $device_type_info["id"] . ")";
+		}else{
+			$sql_where .= " AND (device.device_template_id=" . $device_type_info["id"] . ")";
+		}
+	}
+
+	if ((html_get_page_variable("site_id") != "-1") && (html_get_page_variable("detail"))){
+		if (!strlen($sql_where)) {
+			$sql_where = "WHERE (device.site_id='" . html_get_page_variable("site_id") . "')";
+		}else{
+			$sql_where .= " AND (device.site_id='" . html_get_page_variable("site_id") . "')";
+		}
+	}
 
 	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
@@ -565,7 +497,37 @@ function site() {
 		$rowspp = html_get_page_variable("rows");
 	}
 
-	$rows = site_get_site_records($sql_where, $rowspp);
+	if (get_request_var_request("detail") == "false") {
+		$query_string = "SELECT *
+			FROM sites
+			$sql_where
+			ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction");
+
+		if ($apply_limits) {
+			$query_string .= " LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+		}
+	}else{
+		$query_string ="SELECT sites.id,
+			sites.name,
+			sites.alternate_id,
+			sites.address1,
+			sites.address2,
+			sites.city,
+			sites.state,
+			sites.country,
+			Count(device_template.id) AS total_devices,
+			device_template.name as device_template_name
+			FROM (device_template
+			RIGHT JOIN device ON (device_template.id=device.device_template_id))
+			RIGHT JOIN sites ON (device.site_id=sites.id)
+			$sql_where
+			GROUP BY sites.name, device_template.name
+			ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction");
+
+		if ($apply_limits) {
+			$query_string .= " LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+		}
+	}
 
 	if (html_get_page_variable("detail") == "false") {
 		$total_rows = db_fetch_cell("SELECT
@@ -582,8 +544,26 @@ function site() {
 			GROUP BY sites.name, device_template.id"));
 	}
 
+	return db_fetch_assoc($query_string);
+}
+
+function site($refresh = true) {
+	global $site_actions, $config;
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page" => array("type" => "numeric", "default" => "1"),
+		"rows" => array("type" => "numeric", "default" => "-1"),
+		"site_id" => array("type" => "numeric", "default" => "-1"),
+		"device_template_id" => array("type" => "numeric", "default" => "-1"),
+		"detail" => array("type" => "string", "default" => "false"),
+		"filter" => array("type" => "string", "default" => ""),
+		"sort_column" => array("type" => "string", "default" => "name"),
+		"sort_direction" => array("type" => "string", "default" => "ASC"));
+
 	if (html_get_page_variable("detail") == "false") {
-		$table_format = array(
+		$table->table_format = array(
 			"name" => array(
 				"name" => __("Site Name"),
 				"filter" => true,
@@ -608,7 +588,7 @@ function site() {
 			)
 		);
 	}else{
-		$table_format = array(
+		$table->table_format = array(
 			"name" => array(
 				"name" => __("Site Name"),
 				"order" => "ASC"
@@ -639,10 +619,24 @@ function site() {
 				"order" => "DESC"
 			)
 		);
-
 	}
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "sites.php",
-		$site_actions, html_get_page_variable("filter"), true, true, true,
-		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "sites.php";
+	$table->session_prefix = "sess_sites";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $site_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }
