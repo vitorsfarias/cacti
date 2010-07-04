@@ -242,7 +242,7 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 			}
 		}
 
-		if ($clear) {
+		if ($clear && (!isset($attr["clear"]) || $attr["clear"] == true)) {
 			kill_session_var($sessionvar);
 			if (!isset($attr["method"]) || $attr["method"] == "request") {
 				unset($_REQUEST[$name]);
@@ -258,15 +258,21 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 
 		/* store and/or initialize the variable in it's session */
 		if (isset($_pageVars[$name]["value"])) {
-			$_SESSION[$sessionvar] = $_pageVars[$name]["value"];
+			if (!isset($attr["nosession"]) || $attr["nosession"] == false) {
+				$_SESSION[$sessionvar] = $_pageVars[$name]["value"];
+			}
 		}elseif (isset($_SESSION[$sessionvar])) {
 			$_pageVars[$name]["value"] = $_SESSION[$sessionvar];
 		}else if (isset($attr["default"])) {
 			$_pageVars[$name]["value"]  = $attr["default"];
-			$_SESSION[$sessionvar] = $attr["default"];
+			if (!isset($attr["nosession"]) || $attr["nosession"] == false) {
+				$_SESSION[$sessionvar] = $attr["default"];
+			}
 		}else{
 			$_pageVars[$name]["value"]  = "";
-			$_SESSION[$sessionvar] = "";
+			if (!isset($attr["nosession"]) || $attr["nosession"] == false) {
+				$_SESSION[$sessionvar] = "";
+			}
 		}
 	}
 	}

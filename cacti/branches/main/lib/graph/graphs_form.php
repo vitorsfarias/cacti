@@ -1091,67 +1091,6 @@ function graph_edit() {
 function graphs_filter() {
 	global $item_rows;
 
-	?>
-	<script type="text/javascript">
-	<!--
-	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#device").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#device_id").val(data[1]);
-				applyGraphsFilterChange(document.form_graph_id);
-			}else{
-				$(this).parent().find("#device_id").val(0);
-			}
-		});
-	});
-
-	function clearGraphsFilterChange(objForm) {
-		strURL = '?filter=';
-		<?php
-		# called from outside
-		if (isset($_REQUEST["tab"])) {
-			# print the tab
-			print "strURL = strURL + '&tab=" . html_get_page_variable("tab") . "';";
-			# now look for more parameters
-			if (isset($_REQUEST["device_id"])) {
-				print "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';";
-			}
-			if (isset($_REQUEST["template_id"])) {
-				print "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';";
-			}
-		}else {
-			# clear all parms
-			print "strURL = strURL + '&device_id=-1';";
-			print "strURL = strURL + '&template_id=-1';";
-		}
-		?>
-		strURL = strURL + '&rows=-1';
-		document.location = strURL;
-	}
-
-	function applyGraphsFilterChange(objForm) {
-		strURL = '?filter=' + objForm.filter.value;
-		// take care of parms provided via autocomplete
-		// those are passed as objForm.<parm>.value
-		// instead of $_REQUEST["<parm>"] when called from outside
-		if (objForm.device_id.value) {
-			strURL = '?device_id=' + objForm.device_id.value;
-		}else{
-			<?php print (isset($_REQUEST["device_id"]) ? "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';" : "strURL = strURL + '&device_id=-1';");?>
-		}
-		if (objForm.template_id.value) {
-			strURL = '?template_id=' + objForm.template_id.value;
-		}else{
-			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';" : "strURL = strURL + '&template_id=-1';");?>
-		}
-		strURL = strURL + '&rows=' + objForm.rows.value;
-		document.location = strURL;
-	}
-	-->
-	</script>
-	<?php
-
 	html_start_box("<strong>" . __("Graph Management") . "</strong>", "100", "3", "center", "graphs.php?action=edit&device_id=" . html_get_page_variable("device_id"), true);
 	?>
 	<tr class='rowAlternate2'>
@@ -1206,8 +1145,8 @@ function graphs_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearGraphsFilterChange(document.form_graph_id)">
+						&nbsp;<input type="button" Value="<?php print __("Go");?>" name="go" onClick="applyGraphsFilterChange(document.form_graph_id)">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" onClick="clearGraphsFilterChange(document.form_graph_id)">
 					</td>
 				</tr>
 			</table>
@@ -1217,7 +1156,7 @@ function graphs_filter() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td>
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>" onChange="applyGraphsFilterChange(document.form_graph_id)">
 					</td>
 					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
@@ -1237,9 +1176,66 @@ function graphs_filter() {
 				</tr>
 			</table>
 			<input type='hidden' name='page' value='1'>
+			<?php if (html_get_page_variable("tab") != "") {?>
+			<input type='hidden' id='tab' name='tab' value='<?php print html_get_page_variable("tab");?>'>
+			<?php }?>
 			</form>
 		</td>
 	</tr>
+	<script type="text/javascript">
+	<!--
+	$().ready(function() {
+		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").result(function(event, data, formatted) {
+			if (data) {
+				$(this).parent().find("#device_id").val(data[1]);
+				applyGraphsFilterChange(document.form_graph_id);
+			}else{
+				$(this).parent().find("#device_id").val(0);
+			}
+		});
+	});
+
+	function clearGraphsFilterChange(objForm) {
+		strURL = '?filter=';
+		if (objForm.tab) {
+			strURL = strURL + '&tab=' + objForm.tab.value;
+			<?php
+			# now look for more parameters
+			if (isset($_REQUEST["device_id"])) {
+				print "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "';";
+			}
+			print "strURL = strURL + '&template_id=-1';";
+			?>
+		}else {
+			strURL = strURL + '&device_id=-1';
+			strURL = strURL + '&template_id=-1';
+		}
+
+		strURL = strURL + '&rows=-1';
+		document.location = strURL;
+	}
+
+	function applyGraphsFilterChange(objForm) {
+		strURL = '?filter=' + objForm.filter.value;
+		if (objForm.tab) {
+			strURL = strURL + '&tab=' + objForm.tab.value;
+		}
+		if (objForm.device_id.value) {
+			strURL = strURL + '&device_id=' + objForm.device_id.value;
+		}else{
+			<?php print (isset($_REQUEST["device_id"]) ? "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';" : "strURL = strURL + '&device_id=-1';");?>
+		}
+		if (objForm.template_id.value) {
+			strURL = strURL + '&template_id=' + objForm.template_id.value;
+		}else{
+			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';" : "strURL = strURL + '&template_id=-1';");?>
+		}
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
 	<?php
 	html_end_box(false);
 }
@@ -1309,7 +1305,7 @@ function graph($refresh = true) {
 		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
 		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
-		"tab"            => array("type" => "string",  "method" => "request", "default" => ""),
+		"tab"            => array("type" => "string",  "method" => "request", "default" => "", "nosession" => true),
 		"device_id"      => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"template_id"    => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "title_cache"),

@@ -1674,7 +1674,7 @@ function device($refresh = true) {
 		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
 		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
-		"tab"            => array("type" => "string",  "method" => "request", "default" => ""),
+		"tab"            => array("type" => "string",  "method" => "request", "default" => "", "nosession" => true),
 		"poller"         => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"status"         => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"site"           => array("type" => "numeric", "method" => "request", "default" => "-1"),

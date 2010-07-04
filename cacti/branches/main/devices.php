@@ -87,10 +87,18 @@ switch (get_request_var_request("action")) {
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		if (!isset($_REQUEST["tab"])) {
+			include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-		device();
+			device();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		}else{
+			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+
+			device_edit();
+
+			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		}
 		break;
 }
