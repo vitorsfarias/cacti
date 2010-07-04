@@ -1088,7 +1088,7 @@ function graph_edit() {
 <?php
 }
 
-function filter() {
+function graphs_filter() {
 	global $item_rows;
 
 	?>
@@ -1244,7 +1244,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_graph_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "AND (graph_templates_graph.title_cache like '%%" . html_get_page_variable("filter") . "%%'" .
@@ -1346,7 +1346,7 @@ function graph($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "graphs.php";
 	$table->session_prefix = "sess_graphs";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "graphs_filter";
 	$table->key_field      = "local_graph_id";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
@@ -1358,7 +1358,7 @@ function graph($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_graph_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

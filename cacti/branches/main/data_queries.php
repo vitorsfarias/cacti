@@ -739,7 +739,7 @@ function data_query_edit() {
 	form_save_button("data_queries.php", "return");
 }
 
-function filter() {
+function data_queries_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Data Queries") . "</strong>", "100", "3", "center", "data_queries.php?action=edit", true);
@@ -793,7 +793,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_data_query_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "WHERE (snmp_query.name LIKE '%%" . html_get_page_variable("filter") . "%%'
@@ -870,7 +870,7 @@ function data_query($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "data_queries.php";
 	$table->session_prefix = "sess_data_queries";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "data_queries_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -881,7 +881,7 @@ function data_query($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_data_query_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

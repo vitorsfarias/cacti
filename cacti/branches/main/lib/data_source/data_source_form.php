@@ -866,7 +866,7 @@ function get_poller_interval($seconds) {
 	}
 }
 
-function filter() {
+function data_source_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "data_sources.php?action=edit&device_id=" . html_get_page_variable("device_id"), true);
@@ -1039,7 +1039,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_data_source_records(&$total_rows, &$rowspp) {
 	if (strlen(html_get_page_variable("filter"))) {
 		$sql_where = "AND (data_template_data.name_cache like '%%" . html_get_page_variable("filter") . "%%'" .
 			" OR data_template_data.local_data_id like '%%" . html_get_page_variable("filter") . "%%'" .
@@ -1169,7 +1169,7 @@ function data_source($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "data_sources.php";
 	$table->session_prefix = "sess_data_sources";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "data_source_filter";
 	$table->key_field      = "local_data_id";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
@@ -1181,7 +1181,7 @@ function data_source($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_data_source_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

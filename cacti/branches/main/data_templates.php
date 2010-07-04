@@ -587,7 +587,7 @@ function data_template_display_items() {
 	form_save_button_alt("url!data_templates.php");
 }
 
-function filter() {
+function data_templates_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>Data Source Templates</strong>", "100", "3", "center", "data_templates.php?action=edit", true);
@@ -641,7 +641,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_data_template_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (html_get_page_variable("filter") != "") {
 		$sql_where = "WHERE ((data_template.name like '%%" . html_get_page_variable("filter") . "%%')
@@ -722,7 +722,7 @@ function data_source_template($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "data_templates.php";
 	$table->session_prefix = "sess_data_templates";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "data_templates_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -733,7 +733,7 @@ function data_source_template($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_data_template_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();

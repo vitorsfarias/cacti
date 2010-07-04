@@ -637,7 +637,7 @@ function process_page_variables() {
 	html_verify_request_variables($page_variables, "sess_graph_template", $clear);
 }
 
-function filter() {
+function graph_templates_filter() {
 	global $item_rows;
 
 	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", "3", "center", "graph_templates.php?action=edit", true);
@@ -688,7 +688,7 @@ function filter() {
 	html_end_box(false);
 }
 
-function get_records(&$total_rows, &$rowspp) {
+function get_graph_template_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (html_get_page_variable("filter") != "") {
 		$sql_where = "WHERE (graph_templates.name LIKE '%%" . html_get_page_variable("filter") . "%%')
@@ -750,7 +750,7 @@ function template($refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "graph_templates.php";
 	$table->session_prefix = "sess_graph_templates";
-	$table->filter_func    = "filter";
+	$table->filter_func    = "graph_templates_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->checkbox       = true;
@@ -761,7 +761,7 @@ function template($refresh = true) {
 	$table->process_page_variables();
 
 	/* get the records */
-	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+	$table->rows = get_graph_template_records($table->total_rows, $table->rows_per_page);
 
 	/* display the table */
 	$table->draw_table();
