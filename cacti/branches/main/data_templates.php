@@ -587,65 +587,8 @@ function data_template_display_items() {
 	form_save_button_alt("url!data_templates.php");
 }
 
-/**
- * data_source_template	- show all data templates
- */
-function data_source_template() {
-	global $ds_template_actions, $item_rows;
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("rows"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
-	/* clean up sort_column string */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
-
-	/* clean up sort_direction string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_data_template_current_page");
-		kill_session_var("sess_data_template_rows");
-		kill_session_var("sess_data_template_filter");
-		kill_session_var("sess_data_template_sort_column");
-		kill_session_var("sess_data_template_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["filter"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-	}
-
-	?>
-	<script type="text/javascript">
-	<!--
-	function applyFilterChange(objForm) {
-		strURL = '?rows=' + objForm.rows.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;
-		document.location = strURL;
-	}
-	-->
-	</script>
-	<?php
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_data_template_current_page", "1");
-	load_current_session_value("rows", "sess_data_template_rows", "-1");
-	load_current_session_value("filter", "sess_data_template_filter", "");
-	load_current_session_value("sort_column", "sess_data_template_sort_column", "name");
-	load_current_session_value("sort_direction", "sess_data_template_sort_direction", "ASC");
+function filter() {
+	global $item_rows;
 
 	html_start_box("<strong>Data Source Templates</strong>", "100", "3", "center", "data_templates.php?action=edit", true);
 	?>
@@ -658,18 +601,18 @@ function data_source_template() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td width="1">
 						<select name="rows" onChange="applyFilterChange(document.form_data_template)">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
 							}
 							}
 							?>
@@ -677,7 +620,7 @@ function data_source_template() {
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="submit" Value="<?php print __("Clear");?>" name="clear_x" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
 					</td>
 				</tr>
 			</table>
@@ -685,25 +628,42 @@ function data_source_template() {
 			</form>
 		</td>
 	</tr>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
 	<?php
 	html_end_box(false);
+}
 
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	if ($_REQUEST["filter"] != "") {
-		$sql_where = "WHERE ((data_template.name like '%%" . $_REQUEST["filter"] . "%%')
-			OR (data_template.description LIKE '%%" . get_request_var_request("filter") . "%%'))
+	if (html_get_page_variable("filter") != "") {
+		$sql_where = "WHERE ((data_template.name like '%%" . html_get_page_variable("filter") . "%%')
+			OR (data_template.description LIKE '%%" . html_get_page_variable("filter") . "%%'))
 			AND data_template_data.local_data_id = 0";
 	}else{
 		$sql_where = "WHERE data_template_data.local_data_id = 0";
 	}
 
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
 
-	$rows = db_fetch_assoc("SELECT " .
+	$total_rows = db_fetch_cell("SELECT " .
+		"COUNT(data_template.id) " .
+		"FROM data_template " .
+		"LEFT JOIN data_template_data ON (data_template.id = data_template_data.data_template_id) " .
+		$sql_where);
+
+	return db_fetch_assoc("SELECT " .
 		"data_template.id, " .
 		"data_template.name, " .
 		"data_template.description, " .
@@ -713,16 +673,27 @@ function data_source_template() {
 		"LEFT JOIN data_template_data ON (data_template.id = data_template_data.data_template_id) " .
 		"LEFT JOIN data_input ON (data_template_data.data_input_id = data_input.id) " .
 		$sql_where .
-		" ORDER BY " . get_request_var_request('sort_column') . " " . get_request_var_request('sort_direction') .
-		" LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp);
+		" ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
 
-	$total_rows = db_fetch_cell("SELECT " .
-		"COUNT(data_template.id) " .
-		"FROM data_template " .
-		"LEFT JOIN data_template_data ON (data_template.id = data_template_data.data_template_id) " .
-		$sql_where);
+/**
+ * data_source_template	- show all data templates
+ */
+function data_source_template($refresh = true) {
+	global $ds_template_actions;
 
-	$table_format = array(
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
 		"name" => array(
 			"name" => __("Template Name"),
 			"filter" => true,
@@ -748,7 +719,22 @@ function data_source_template() {
 		)
 	);
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "data_templates.php",
-		$ds_template_actions, get_request_var_request("filter"), true, true, true,
-		get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "data_templates.php";
+	$table->session_prefix = "sess_data_templates";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $ds_template_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }

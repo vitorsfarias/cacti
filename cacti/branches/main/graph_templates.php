@@ -715,8 +715,20 @@ function get_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
-function get_table_format() {
-	return array(
+function template($refresh = true) {
+	global $graph_template_actions;
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
 		"name" => array(
 			"name" => __("Template Title"),
 			"link" => true,
@@ -734,20 +746,23 @@ function get_table_format() {
 			"sort" => false,
 			"align" => "center")
 	);
-}
 
-function template($refresh = true) {
-	global $graph_template_actions;
+	/* initialize page behavior */
+	$table->href           = "graph_templates.php";
+	$table->session_prefix = "sess_graph_templates";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $graph_template_actions;
 
-	$total_rows = 0; $rowspp = 0;
+	/* we must validate table variables */
+	$table->process_page_variables();
 
-	process_page_variables();
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
 
-	if ($refresh) filter();
-
-	$rows = get_records($total_rows, $rowspp);
-
-	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "graph_templates.php",
-		$graph_template_actions, html_get_page_variable("filter"), true, true, true,
-		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+	/* display the table */
+	$table->draw_table();
 }
