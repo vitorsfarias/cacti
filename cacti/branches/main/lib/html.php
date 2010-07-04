@@ -1186,18 +1186,19 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 
 	$header_items = array(
-		array("name" => __("Graph Item")),
-		array("name" => __("Data Source")),
-		array("name" => __("Graph Item Type")),
-		array("name" => __("CF Type")),
-		array("name" => __("CDEF")),
-		array("name" => __("GPRINT Type")),
-		array("name" => __("Item Color"))
+		array("name" => __("Graph Item"), "align" => "left"),
+		array("name" => __("Data Source"), "align" => "left"),
+		array("name" => __("Graph Item Type"), "align" => "left"),
+		array("name" => __("CF Type"), "align" => "left"),
+		array("name" => __("CDEF"), "align" => "left"),
+		array("name" => __("GPRINT Type"), "align" => "left"),
+		array("name" => __("Item Color"), "align" => "center"),
+		array("name" => __("Action"), "align" => "center")
 	);
 	$last_item_colspan = 3;
 
 	print "<tr><td>";
-	html_header($header_items, $last_item_colspan, true, 'graph_item');
+	html_header($header_items, $last_item_colspan, false, 'graph_item');
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
 	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
@@ -1285,11 +1286,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<td style='$this_row_style'>" . ((!empty($item["consolidation_function_id"])) ? $consolidation_functions{$item["consolidation_function_id"]} : __("None")) . "</td>\n";
 		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["cdef_name"],0,30) : __("None")) . "</td>\n";
 		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["gprint_name"],0,30) : __("None")) . "</td>\n";
-		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+		print "<td style='$this_row_style'"  . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . ">&nbsp;</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' title='Delete this Item' alt='Delete' align='middle'></a></td>\n";
+			print "<td align='center'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' title='Delete this Item' alt='Delete' align='middle'></a></td>\n";
 		}
 
 		print "</tr>";
@@ -1313,12 +1313,13 @@ function draw_data_template_items_list($item_list, $filename, $url_data, $disabl
 		array("name" => __("Data Source Item Type")),
 		array("name" => __("Minimum"), "align" => "right"),
 		array("name" => __("Maximum"), "align" => "right"),
-		array("name" => __("Heartbeat"), "align" => "right")
+		array("name" => __("Heartbeat"), "align" => "right"),
+		array("name" => __("Action"), "align" => "center")
 	);
 	$last_item_colspan = 3;
 
 	print "<tr><td>";
-	html_header($header_items, $last_item_colspan, true, 'data_source_item','left wp100');
+	html_header($header_items, $last_item_colspan, false, 'data_source_item','wp100');
 
 	$i = 0;
 
@@ -1334,11 +1335,11 @@ function draw_data_template_items_list($item_list, $filename, $url_data, $disabl
 			form_selectable_cell($href_item, $item["id"]);
 			form_selectable_cell((isset($item["data_source_name"]) ? $item["data_source_name"] : ''), $item["id"]);
 			form_selectable_cell((isset($data_source_types[$item["data_source_type_id"]]) ? $data_source_types[$item["data_source_type_id"]] : __("None")), $item["id"]);
-			form_selectable_cell((isset($item["rrd_minimum"]) ? $item["rrd_minimum"] : 0), $item["id"]);
-			form_selectable_cell((isset($item["rrd_maximum"]) ? $item["rrd_maximum"] : 0), $item["id"]);
-			form_selectable_cell((isset($item["rrd_heartbeat"]) ? $item["rrd_heartbeat"] : 0), $item["id"]);
+			form_selectable_cell((isset($item["rrd_minimum"]) ? $item["rrd_minimum"] : 0), $item["id"], "", "", "right");
+			form_selectable_cell((isset($item["rrd_maximum"]) ? $item["rrd_maximum"] : 0), $item["id"], "", "", "right");
+			form_selectable_cell((isset($item["rrd_heartbeat"]) ? $item["rrd_heartbeat"] : 0), $item["id"], "", "", "right");
 			if ($disable_controls == false) {
-				print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'>" .
+				print "<td align='center'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'>" .
 						"<img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' " .
 						"title='" . __("Delete this Item") . "' alt='" . __("Delete") . "' align='middle'></a></td>\n";
 			}

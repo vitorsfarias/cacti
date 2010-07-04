@@ -383,9 +383,13 @@ function template_edit() {
 	if (!empty($_REQUEST["id"])) {
 		$graph_template = db_fetch_row("select * from graph_templates where id=" . $_REQUEST["id"]);
 		$header_label = __("[edit: ") . $graph_template["name"] . "]";
+		if (!db_fetch_cell("SELECT COUNT(*) FROM graph_local WHERE graph_template_id=" . $_REQUEST["id"])) {
+			unset($graph_template_tabs["graphs"]);
+		}
 	}else{
 		$graph_template = array();
 		$header_label = __("[new]");
+		unset($graph_template_tabs["graphs"]);
 	}
 
 	/* set the default settings category */
@@ -417,20 +421,11 @@ function template_edit() {
 	switch (get_request_var_request("tab")) {
 		case "graphs":
 			include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
-//			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-//			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
-//			include_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
-//			include_once(CACTI_BASE_PATH . "/lib/template.php");
-//			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-//			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-//			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-//			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 			graph();
 
 			break;
-
 		case "items":
 			/* graph item list goes here */
 			if (!empty($_REQUEST["id"])) {
@@ -610,7 +605,6 @@ function graph_template_display_items() {
 		//drag and drop for graph items
 		$('#graph_item').tableDnD({
 			onDrop: function(table, row) {
-//					alert($.tableDnD.serialize());
 				$('#AjaxResult').load("lib/ajax/jquery.tablednd/graph_templates_item.ajax.php?id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
 			}
 		});

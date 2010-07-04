@@ -559,10 +559,14 @@ function device_template_edit() {
 	if (!empty($_REQUEST["id"])) {
 		$device_template = db_fetch_row("select * from device_template where id=" . $_REQUEST["id"]);
 		$header_label = __("[edit: ") . $device_template["name"] . "]";
+		if (!db_fetch_cell("SELECT COUNT(*) FROM device WHERE device_template_id=" . $_REQUEST["id"])) {
+			unset($device_template_tabs["devices"]);
+		}
 	}else{
 		$device_template = array();
 		$header_label = __("[new]");
 		$_REQUEST["id"] = 0;
+		unset($device_template_tabs["devices"]);
 	}
 
 	/* set the default settings category */
@@ -1053,11 +1057,11 @@ function device_template_display_gt($device_template, $header_label) {
 			?>
 				<td style="padding: 4px;"><strong><?php print $i;?>)</strong> <?php print $item["name"];?>
 				</td>
-				<td align='right' nowrap><a
-					href='<?php print htmlspecialchars("device_templates.php?action=item_remove_gt&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>'><img
-					class="buttonSmall" src='images/delete_icon_large.gif'
-					title='<?php print __("Delete Graph Template Association");?>'
-					alt='<?php print __("Delete");?>' align='middle'></a>
+				<td align='right' nowrap><input
+					type='button'
+					value='<?php print __("Remove");?>'
+					onClick='document.location="<?php print htmlspecialchars("device_templates.php?action=item_remove_gt&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>"'
+					title='<?php print __("Delete Graph Template Association");?>'>
 				</td>
 			<?php
 			form_end_row();
@@ -1068,18 +1072,12 @@ function device_template_display_gt($device_template, $header_label) {
 
 	form_alternate_row_color("add_template" . get_request_var("id"), false);
 	?>
-		<td colspan="2">
-		<table cellspacing="0" cellpadding="1" width="100%">
-			<tr>
-				<td nowrap><?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
-				</td>
-				<td align="right">&nbsp;<input type="submit"
-					Value="<?php print __("Add Graph Template");?>" name="add_gt_y" align="middle">
-				</td>
-			</tr>
-		</table>
-		<input type='hidden' name='action' value='save_gt'>
-		</td>
+	<td nowrap><?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
+	</td>
+	<td align="right">&nbsp;<input type="submit"
+		value="<?php print __("Add Template");?>" name="add_gt_y">
+	</td>
+	<input type='hidden' name='action' value='save_gt'>
 	<?php
 	form_end_row();
 	print "</table></td></tr>";		/* end of html_header */
@@ -1122,7 +1120,6 @@ function device_template_display_dq($device_template, $header_label) {
 			") " .
 			"ORDER BY snmp_query.name");
 
-
 	$i = 0;
 	if (sizeof($selected_data_queries) > 0) {
 		foreach ($selected_data_queries as $item) {
@@ -1134,10 +1131,11 @@ function device_template_display_dq($device_template, $header_label) {
 				</td>
 				<td><?php form_dropdown("reindex_method_device_template_".get_request_var("id")."_query_".$item["id"]."_method_".$item["reindex_method"],$reindex_types,"","",$item["reindex_method"],"","","","");?>
 				</td>
-				<td align='right'><a
-					href='<?php print htmlspecialchars("device_templates.php?action=item_remove_dq&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>'><img
-					class='buttonSmall' src='images/delete_icon_large.gif'
-					title='Delete Data Query Association' alt='Delete' align='middle'></a>
+				<td align='right' nowrap><input
+					type='button'
+					value='<?php print __("Remove");?>'
+					onClick='document.location="<?php print htmlspecialchars("device_templates.php?action=item_remove_dq&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>'
+					title='<?php print __("Delete Graph Template Association");?>'>
 				</td>
 			<?php
 			form_end_row();
@@ -1149,22 +1147,22 @@ function device_template_display_dq($device_template, $header_label) {
 	/* add new data queries */
 	form_alternate_row_color("add_data_query", false);
 	?>
-		<td nowrap><?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
-		</td>
-		<td nowrap><?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
-		</td>
-		<td align="right">&nbsp;<input type="submit"
-			value="<?php print __("Add Data Query");?>" name="add_dq_y" align="middle">
-		</td>
+	<td nowrap><?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
+	</td>
+	<td nowrap><?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
+	</td>
+	<td align="right">&nbsp;<input type="submit"
+		value="<?php print __("Add Data Query");?>" name="add_dq_y" align="middle">
+	</td>
 	<?php
 	form_end_row();
 
 	/* update the reindex methods */
 	form_alternate_row_color("reindex", false);
 	?>
-		<td nowrap colspan="3" align="right">&nbsp;<input type="submit"
-			value="<?php print __("Update Re-Index Method");?>" name="reindex" align="middle">
-		</td>
+	<td nowrap colspan="3" align="right">&nbsp;<input type="submit"
+		value="<?php print __("Update Re-Index Methods");?>" name="reindex">
+	</td>
 	<?php
 	form_end_row();
 
