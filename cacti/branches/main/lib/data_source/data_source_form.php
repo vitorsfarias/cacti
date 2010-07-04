@@ -915,7 +915,7 @@ function data_source_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="submit" value="<?php print __("Go");?>" name="go" align="middle">
+						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" align="middle" onClick="applyDSFilterChange(document.form_data_sources)">
 						<input type="button" value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearDSFilterChange(document.form_data_sources)">
 					</td>
 				</tr>
@@ -967,11 +967,14 @@ function data_source_filter() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>" onChange="applyDSFilterChange(document.form_data_sources)">
 					</td>
 				</tr>
 			</table>
 			<input type='hidden' name='page' value='1'>
+			<?php if (html_get_page_variable("tab") != "") {?>
+			<input type='hidden' id='tab' name='tab' value='<?php print html_get_page_variable("tab");?>'>
+			<?php }?>
 			</form>
 		</td>
 	</tr>
@@ -991,24 +994,20 @@ function data_source_filter() {
 
 	function clearDSFilterChange(objForm) {
 		strURL = '?filter=';
-		<?php
-		# called from outside
-		if (isset($_REQUEST["tab"])) {
-			# print the tab
-			print "strURL = strURL + '&tab=" . html_get_page_variable("tab") . "';";
+		if (objForm.tab) {
+			strURL = strURL + '&tab=' + objForm.tab.value;
+			<?php
 			# now look for more parameters
 			if (isset($_REQUEST["device_id"])) {
-				print "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';";
+				print "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "';";
 			}
-			if (isset($_REQUEST["template_id"])) {
-				print "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';";
-			}
-		}else {
-			# clear all parms
-			print "strURL = strURL + '&device_id=-1';";
 			print "strURL = strURL + '&template_id=-1';";
+			?>
+		}else {
+			strURL = strURL + '&device_id=-1';
+			strURL = strURL + '&template_id=-1';
 		}
-		?>
+
 		strURL = strURL + '&rows=-1';
 		strURL = strURL + '&method_id=-1';
 		document.location = strURL;
@@ -1016,16 +1015,16 @@ function data_source_filter() {
 
 	function applyDSFilterChange(objForm) {
 		strURL = '?filter=' + objForm.filter.value;
-		// take care of parms provided via autocomplete
-		// those are passed as objForm.<parm>.value
-		// instead of $_REQUEST["<parm>"] when called from outside
+		if (objForm.tab) {
+			strURL = strURL + '&tab=' + objForm.tab.value;
+		}
 		if (objForm.device_id.value) {
-			strURL = '?device_id=' + objForm.device_id.value;
+			strURL = strURL + '&device_id=' + objForm.device_id.value;
 		}else{
 			<?php print (isset($_REQUEST["device_id"]) ? "strURL = strURL + '&device_id=" . html_get_page_variable("device_id") . "&id=" . html_get_page_variable("device_id") . "';" : "strURL = strURL + '&device_id=-1';");?>
 		}
 		if (objForm.template_id.value) {
-			strURL = '?template_id=' + objForm.template_id.value;
+			strURL = strURL + '&template_id=' + objForm.template_id.value;
 		}else{
 			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';" : "strURL = strURL + '&template_id=-1';");?>
 		}
@@ -1120,7 +1119,7 @@ function data_source($refresh = true) {
 		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
 		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
-		"tab"            => array("type" => "string",  "method" => "request", "default" => ""),
+		"tab"            => array("type" => "string",  "method" => "request", "default" => "", "nosession" => true),
 		"device_id"      => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"method_id"      => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"template_id"    => array("type" => "numeric", "method" => "request", "default" => "-1"),

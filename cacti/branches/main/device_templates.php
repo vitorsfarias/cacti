@@ -1296,8 +1296,8 @@ function device_template($refresh = true) {
 	);
 
 	/* initialize page behavior */
-	$table->href           = "data_templates.php";
-	$table->session_prefix = "sess_data_templates";
+	$table->href           = "device_templates.php";
+	$table->session_prefix = "sess_device_templates";
 	$table->filter_func    = "device_templates_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
