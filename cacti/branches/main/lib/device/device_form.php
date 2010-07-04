@@ -1446,92 +1446,124 @@ function device_display_general($device, $device_text) {
 	form_save_button("devices.php", "return");
 }
 
-function device() {
+function filter() {
 	global $item_rows;
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request("template_id"));
-	input_validate_input_number(get_request_var_request("page"));
-	input_validate_input_number(get_request_var_request("status"));
-	input_validate_input_number(get_request_var_request("rows"));
-	input_validate_input_number(get_request_var_request("poller"));
-	input_validate_input_number(get_request_var_request("site"));
-	/* ==================================================== */
-
-	/* clean up search string */
-	if (isset($_REQUEST["filter"])) {
-		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
-	}
-
-	/* clean up sort_column */
-	if (isset($_REQUEST["sort_column"])) {
-		$_REQUEST["sort_column"] = sanitize_search_string(get_request_var("sort_column"));
-	}
-
-	/* clean up search string */
-	if (isset($_REQUEST["sort_direction"])) {
-		$_REQUEST["sort_direction"] = sanitize_search_string(get_request_var("sort_direction"));
-	}
-
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
-		kill_session_var("sess_device_current_page");
-		kill_session_var("sess_device_filter");
-		if (!substr_count($_SERVER["REQUEST_URI"], "/device_templates.php")) {
-			kill_session_var("sess_device_template_id");
-		}
-		kill_session_var("sess_device_status");
-		kill_session_var("sess_device_rows");
-		kill_session_var("sess_device_poller");
-		kill_session_var("sess_device_site");
-		kill_session_var("sess_device_sort_column");
-		kill_session_var("sess_device_sort_direction");
-
-		unset($_REQUEST["page"]);
-		unset($_REQUEST["filter"]);
-		if (!substr_count($_SERVER["REQUEST_URI"], "/device_templates.php")) {
-			unset($_REQUEST["template_id"]);
-		}
-		unset($_REQUEST["status"]);
-		unset($_REQUEST["poller"]);
-		unset($_REQUEST["site"]);
-		unset($_REQUEST["rows"]);
-		unset($_REQUEST["sort_column"]);
-		unset($_REQUEST["sort_direction"]);
-	}
-
-	/* let's see if someone changed an important setting */
-	$changed  = FALSE;
-	$changed += check_changed("filter",      "sess_device_filter");
-	$changed += check_changed("template_id", "sess_device_template_id");
-	$changed += check_changed("status",      "sess_device_status");
-	$changed += check_changed("rows",        "sess_device_rows");
-	$changed += check_changed("poller",      "sess_device_poller");
-	$changed += check_changed("site",        "sess_device_site");
-	$changed += check_changed("device_id",	 "sess_ds_device_id");
-
-	if ($changed) {
-		$_REQUEST["page"] = "1";
-	}
-
-	/* remember these search fields in session vars so we don't have to keep passing them around */
-	load_current_session_value("page", "sess_device_current_page", "1");
-	load_current_session_value("filter", "sess_device_filter", "");
-	load_current_session_value("template_id", "sess_device_template_id", "-1");
-	load_current_session_value("status", "sess_device_status", "-1");
-	load_current_session_value("rows", "sess_device_rows", "-1");
-	load_current_session_value("poller", "sess_device_poller", "-1");
-	load_current_session_value("site", "sess_device_site", "-1");
-	load_current_session_value("sort_column", "sess_device_sort_column", "description");
-	load_current_session_value("sort_direction", "sess_device_sort_direction", "ASC");
-
+	html_start_box("<strong>" . __("Devices") . "</strong>", "100", "3", "center", "devices.php?action=edit&template_id=" . html_get_page_variable("template_id") . "&status=" . html_get_page_variable("status"), true);
 	?>
+	<tr class='rowAlternate2'>
+		<td>
+			<form action="devices.php" name="form_devices" method="post">
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Type:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="template_id" onChange="applyDeviceFilterChange(document.form_devices)">
+							<option value="-1"<?php if (html_get_page_variable("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
+							<option value="0"<?php if (html_get_page_variable("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
+							<?php
+							$device_templates = db_fetch_assoc("select id,name from device_template order by name");
+
+							if (sizeof($device_templates) > 0) {
+							foreach ($device_templates as $device_template) {
+								print "<option value='" . $device_template["id"] . "'"; if (html_get_page_variable("template_id") == $device_template["id"]) { print " selected"; } print ">" . $device_template["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Status:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="status" onChange="applyDeviceFilterChange(document.form_devices)">
+							<option value="-1"<?php if (html_get_page_variable("status") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
+							<option value="-3"<?php if (html_get_page_variable("status") == "-3") {?> selected<?php }?>><?php print __("Enabled");?></option>
+							<option value="-2"<?php if (html_get_page_variable("status") == "-2") {?> selected<?php }?>><?php print __("Disabled");?></option>
+							<option value="-4"<?php if (html_get_page_variable("status") == "-4") {?> selected<?php }?>><?php print __("Not Up");?></option>
+							<option value="3"<?php  if (html_get_page_variable("status") == "3") {?> selected<?php }?>><?php print __("Up");?></option>
+							<option value="1"<?php  if (html_get_page_variable("status") == "1") {?> selected<?php }?>><?php print __("Down");?></option>
+							<option value="2"<?php  if (html_get_page_variable("status") == "2") {?> selected<?php }?>><?php print __("Recovering");?></option>
+							<option value="0"<?php  if (html_get_page_variable("status") == "0") {?> selected<?php }?>><?php print __("Unknown");?></option>
+						</select>
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyDeviceFilterChange(document.form_devices)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Site:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="site" onChange="applyDeviceFilterChange(document.form_devices)">
+							<option value="-1"<?php if (html_get_page_variable("site") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
+							<option value="0"<?php if (html_get_page_variable("site") == "0") {?> selected<?php }?>><?php print __("Not Defined");?></option>
+							<?php
+							$sites = db_fetch_assoc("select id,name from sites order by name");
+
+							if (sizeof($sites)) {
+							foreach ($sites as $site) {
+								print "<option value='" . $site["id"] . "'"; if (html_get_page_variable("site") == $site["id"]) { print " selected"; } print ">" . $site["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Poller:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="poller" onChange="applyDeviceFilterChange(document.form_devices)">
+							<option value="-1"<?php if (html_get_page_variable("poller") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
+							<option value="0"<?php if (html_get_page_variable("poller") == "0") {?> selected<?php }?>><?php print __("System Default");?></option>
+							<?php
+							$pollers = db_fetch_assoc("select id,description AS name from poller order by description");
+
+							if (sizeof($pollers)) {
+							foreach ($pollers as $poller) {
+								print "<option value='" . $poller["id"] . "'"; if (html_get_page_variable("poller") == $poller["id"]) { print " selected"; } print ">" . $poller["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="20" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw120">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearDeviceFilterChange(document.form_devices)">
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			</form>
+		</td>
+	</tr>
 	<script type="text/javascript">
 	<!--
-
 	function clearDeviceFilterChange(objForm) {
-		<?php print (isset($_REQUEST["tab"]) ? "strURL = '?template_id=" . $_REQUEST["template_id"] . "&id=" . $_REQUEST["template_id"] . "&action=edit&tab=" . $_REQUEST["tab"] . "';\n" : "strURL = '?template_id=-1';");?>
+		<?php print (isset($_REQUEST["tab"]) ? "strURL = '?template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "&action=edit&tab=" . html_get_page_variable("tab") . "';\n" : "strURL = '?template_id=-1';");?>
 		strURL = strURL + '&filter=';
 		strURL = strURL + '&rows=-1';
 		document.location = strURL;
@@ -1548,184 +1580,74 @@ function device() {
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		strURL = strURL + '&poller=' + objForm.poller.value;
 		strURL = strURL + '&site=' + objForm.site.value;
-		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&action=edit&tab=" . $_REQUEST["tab"] . "';\n" : "");?>
+		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&action=edit&tab=" . html_get_page_variable("tab") . "';\n" : "");?>
 		document.location = strURL;
 	}
-
 	-->
 	</script>
 	<?php
-
-	html_start_box("<strong>" . __("Devices") . "</strong>", "100", "3", "center", "devices.php?action=edit&template_id=" . $_REQUEST["template_id"] . "&status=" . $_REQUEST["status"], true);
-	?>
-	<tr class='rowAlternate2'>
-		<td>
-			<form action="devices.php" name="form_devices" method="post">
-			<table cellpadding="0" cellspacing="3">
-				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Type:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="template_id" onChange="applyDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if (get_request_var_request("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
-							<option value="0"<?php if (get_request_var_request("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
-							<?php
-							$device_templates = db_fetch_assoc("select id,name from device_template order by name");
-
-							if (sizeof($device_templates) > 0) {
-							foreach ($device_templates as $device_template) {
-								print "<option value='" . $device_template["id"] . "'"; if (get_request_var_request("template_id") == $device_template["id"]) { print " selected"; } print ">" . $device_template["name"] . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Status:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="status" onChange="applyDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if (get_request_var_request("status") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
-							<option value="-3"<?php if (get_request_var_request("status") == "-3") {?> selected<?php }?>><?php print __("Enabled");?></option>
-							<option value="-2"<?php if (get_request_var_request("status") == "-2") {?> selected<?php }?>><?php print __("Disabled");?></option>
-							<option value="-4"<?php if (get_request_var_request("status") == "-4") {?> selected<?php }?>><?php print __("Not Up");?></option>
-							<option value="3"<?php if (get_request_var_request("status") == "3") {?> selected<?php }?>><?php print __("Up");?></option>
-							<option value="1"<?php if (get_request_var_request("status") == "1") {?> selected<?php }?>><?php print __("Down");?></option>
-							<option value="2"<?php if (get_request_var_request("status") == "2") {?> selected<?php }?>><?php print __("Recovering");?></option>
-							<option value="0"<?php if (get_request_var_request("status") == "0") {?> selected<?php }?>><?php print __("Unknown");?></option>
-						</select>
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="rows" onChange="applyDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
-							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-			</table>
-			<table cellpadding="0" cellspacing="3">
-				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Site:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="site" onChange="applyDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if (get_request_var_request("site") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
-							<option value="0"<?php if (get_request_var_request("site") == "0") {?> selected<?php }?>><?php print __("Not Defined");?></option>
-							<?php
-							$sites = db_fetch_assoc("select id,name from sites order by name");
-
-							if (sizeof($sites)) {
-							foreach ($sites as $site) {
-								print "<option value='" . $site["id"] . "'"; if (get_request_var_request("site") == $site["id"]) { print " selected"; } print ">" . $site["name"] . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Poller:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="poller" onChange="applyDeviceFilterChange(document.form_devices)">
-							<option value="-1"<?php if (get_request_var_request("poller") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
-							<option value="0"<?php if (get_request_var_request("poller") == "0") {?> selected<?php }?>><?php print __("System Default");?></option>
-							<?php
-							$pollers = db_fetch_assoc("select id,description AS name from poller order by description");
-
-							if (sizeof($pollers)) {
-							foreach ($pollers as $poller) {
-								print "<option value='" . $poller["id"] . "'"; if (get_request_var_request("poller") == $poller["id"]) { print " selected"; } print ">" . $poller["name"] . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
-					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear_x" align="middle" onClick="clearDeviceFilterChange(document.form_devices)">
-					</td>
-				</tr>
-			</table>
-			<div><input type='hidden' name='page' value='1'></div>
-			</form>
-		</td>
-	</tr>
-	<?php
 	html_end_box(false);
+}
 
+function get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var_request("filter"))) {
-		$sql_where = "where (device.hostname like '%%" . $_REQUEST["filter"] . "%%' OR device.description like '%%" . $_REQUEST["filter"] . "%%')";
+	if (strlen(html_get_page_variable("filter"))) {
+		$sql_where = "WHERE (device.hostname like '%%" . html_get_page_variable("filter") . "%%' OR device.description like '%%" . html_get_page_variable("filter") . "%%')";
 	}else{
 		$sql_where = "";
 	}
 
-	if (get_request_var_request("status") == "-1") {
+	if (html_get_page_variable("status") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("status") == "-2") {
-		$sql_where .= (strlen($sql_where) ? " and device.disabled='on'" : "where device.disabled='on'");
-	}elseif (get_request_var_request("status") == "-3") {
-		$sql_where .= (strlen($sql_where) ? " and device.disabled=''" : "where device.disabled=''");
-	}elseif (get_request_var_request("status") == "-4") {
-		$sql_where .= (strlen($sql_where) ? " and (device.status!='3' or device.disabled='on')" : "where (device.status!='3' or device.disabled='on')");
+	}elseif (html_get_page_variable("status") == "-2") {
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.disabled='on'";
+	}elseif (html_get_page_variable("status") == "-3") {
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.disabled=''";
+	}elseif (html_get_page_variable("status") == "-4") {
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " (device.status!='3' or device.disabled='on')";
 	}else {
-		$sql_where .= (strlen($sql_where) ? " and (device.status=" . $_REQUEST["status"] . " AND device.disabled = '')" : "where (device.status=" . $_REQUEST["status"] . " AND device.disabled = '')");
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " (device.status=" . html_get_page_variable("status") . " AND device.disabled = '')";
 	}
 
 	if (get_request_var_request("template_id") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("template_id") == "0") {
-		$sql_where .= (strlen($sql_where) ? " and device.device_template_id=0" : "where device.device_template_id=0");
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.device_template_id=0";
 	}elseif (!empty($_REQUEST["template_id"])) {
-		$sql_where .= (strlen($sql_where) ? " and device.device_template_id=" . $_REQUEST["template_id"] : "where device.device_template_id=" . $_REQUEST["template_id"]);
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.device_template_id=" . html_get_page_variable("template_id");
 	}
 
 	if (get_request_var_request("poller") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("poller") == "0") {
-		$sql_where .= (strlen($sql_where) ? " and device.poller_id=0" : "where device.poller_id=0");
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.poller_id=0";
 	}elseif (!empty($_REQUEST["poller"])) {
-		$sql_where .= (strlen($sql_where) ? " and device.poller_id=" . $_REQUEST["poller"] : "where device.poller_id=" . $_REQUEST["poller"]);
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.poller_id=" . html_get_page_variable("poller");
 	}
 
 	if (get_request_var_request("site") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("site") == "0") {
-		$sql_where .= (strlen($sql_where) ? " and device.site_id=0" : "where device.site_id=0");
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.site_id=0";
 	}elseif (!empty($_REQUEST["site"])) {
-		$sql_where .= (strlen($sql_where) ? " and device.site_id=" . $_REQUEST["site"] : "where device.site_id=" . $_REQUEST["site"]);
+		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.site_id=" . html_get_page_variable("site");
 	}
 
-	if (get_request_var_request("rows") == "-1") {
+	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
-		$rowspp = get_request_var_request("rows");
+		$rowspp = html_get_page_variable("rows");
 	}
 
-	$sortby = $_REQUEST["sort_column"];
+	$sortby = html_get_page_variable("sort_column");
 	if ($sortby=="hostname") {
 		$sortby = "INET_ATON(hostname)";
 	}
 
-	$device_graphs       = array_rekey(db_fetch_assoc("SELECT device_id, count(*) as graphs FROM graph_local GROUP BY device_id"), "device_id", "graphs");
-	$device_data_sources = array_rekey(db_fetch_assoc("SELECT device_id, count(*) as data_sources FROM data_local GROUP BY device_id"), "device_id", "data_sources");
+	$total_rows = db_fetch_cell("select
+		COUNT(device.id)
+		from device
+		$sql_where");
 
 	$sql_query = "SELECT device.*, poller.description AS poller, sites.name AS site,
 		(SELECT count(*) FROM graph_local WHERE device.id=graph_local.device_id) AS total_graphs,
@@ -1736,19 +1658,32 @@ function device() {
 		LEFT JOIN sites
 		ON device.site_id=sites.id
 		$sql_where
-		ORDER BY " . $sortby . " " . get_request_var_request("sort_direction") . "
-		LIMIT " . ($rowspp*(get_request_var_request("page")-1)) . "," . $rowspp;
+		ORDER BY " . $sortby . " " . html_get_page_variable("sort_direction") . "
+		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
 
-	//print $sql_query;
+	return db_fetch_assoc($sql_query);
+}
 
-	$rows = db_fetch_assoc($sql_query);
+function device($refresh = true) {
+	global $item_rows;
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 
-	$total_rows = db_fetch_cell("select
-		COUNT(device.id)
-		from device
-		$sql_where");
+	$table = New html_table;
 
-	$table_format = array(
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"tab"            => array("type" => "string",  "method" => "request", "default" => ""),
+		"poller"         => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"status"         => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"site"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"template_id"    => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "description"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
 		"description" => array(
 			"name" => __("Description"),
 			"link" => true,
@@ -1815,8 +1750,23 @@ function device() {
 		)
 	);
 
-	html_draw_table($table_format, $rows, $total_rows, $rowspp, get_request_var_request("page"), "id", "devices.php",
-		array_merge($device_actions, api_tree_add_tree_names_to_actions_array()), get_request_var_request("filter"),
-		true, true, true, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "devices.php";
+	$table->session_prefix = "sess_devices";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }
 
