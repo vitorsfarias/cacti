@@ -459,10 +459,14 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_rows == 0) return "";
 
-	$total_pages = ceil($total_rows / $rows_per_page);
+	if (!empty($rows_per_page)) {
+		$total_pages = $total_rows / $rows_per_page;
+	}else{
+		$total_pages = 1;
+	}
 
-	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
-	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
+	$start_page = intval(max(1, ($current_page - floor(($pages_per_screen - 1) / 2))));
+	$end_page   = intval(min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2))));
 
 	/* adjust if we are close to the beginning of the page list */
 	if ($current_page <= ceil(($pages_per_screen) / 2)) {
@@ -477,10 +481,8 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	/* stay within limits */
-	$start_page = max(1, $start_page);
-	$end_page = min($total_pages, $end_page);
-
-	//print "start: $start_page, end: $end_page, total: $total_pages<br>";
+	$start_page = intval(max(1, $start_page));
+	$end_page   = intval(min($total_pages, $end_page));
 
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		if ($page_number < $pages_per_screen) {
