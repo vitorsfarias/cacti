@@ -401,7 +401,6 @@ function vdef_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
-#print "<pre>GET: "; print_r($_GET); print "Request: "; print_r($_REQUEST); print get_request_var("id"); print "<pre>";
 
 	if (!empty($_GET["id"])) {
 		$vdef = db_fetch_row("select * from vdef where id=" . get_request_var("id"));
