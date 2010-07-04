@@ -549,7 +549,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	$pathname = html_get_php_pathname();
 	if (sizeof($header_items)) {
-		
+
 	foreach($header_items as $column => $item) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
 		$align = "align='left'";
@@ -678,6 +678,193 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
 	print "\t\t</tr>\n";
+}
+
+class html_table {
+	function html_table () {
+		$this->resizable      = true;
+		$this->checkbox       = false;
+		$this->sortable       = true;
+		$this->refresh        = true;
+		$this->rows           = array();
+		$this->table_format   = array();
+		$this->total_rows     = 0;
+		$this->rows_per_page  = -1;
+		$this->key_field      = "id";
+		$this->href           = "";
+		$this->actions        = array();
+		$this->page_vars      = array();
+		$this->filter_func    = "";
+		$this->filter_html    = "";
+		$this->session_prefix = "";
+	}
+
+	function process_page_variables() {
+		if ((sizeof($this->page_variables)) && (strlen($this->session_prefix))) {
+			if (isset($_REQUEST["clear"])) {
+				$clear = true;
+			}else{
+				$clear = false;
+			}
+
+			html_verify_request_variables($this->page_variables, $this->session_prefix, $clear);
+		}else{
+			echo "ERROR: You must initialize both the page_variables and session_prefix variables\n";
+			return false;
+		}
+
+		return true;
+	}
+
+	function draw_table() {
+		/* process page variables first */
+		if (!$this->process_page_variables()) return;
+
+		/* draw the filter */
+		if ($this->refresh) {
+			if (function_exists($this->filter_func)) {
+				call_user_func($this->filter_func);
+			}else if (strlen($this->filter_html)) {
+				echo $this->filter_html;
+			}
+		}
+
+		/* generate page list navigation */
+		if ($this->checkbox) {
+			$columns = sizeof($this->table_format)+1;
+		}else{
+			$columns = sizeof($this->table_format);
+		}
+
+		html_start_box("", "100", "0", "center", "");
+
+		/* calculate the navagation bar */
+		$nav = html_create_nav(html_get_page_variable("page"), MAX_DISPLAY_PAGES, $this->rows_per_page, $this->total_rows, $columns, $this->href . (strlen(html_get_page_variable("filter")) ? "?filter=" . html_get_page_variable("filter"):""));
+
+		/* display the navigation bar */
+		print $nav;
+
+		html_end_box(false);
+
+		/* draw the header */
+		if ($this->checkbox) {
+			if ($this->sortable) {
+				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_order"));
+			}else{
+				html_header_checkbox($this->table_format);
+			}
+		}elseif ($sortable) {
+			html_header_sort($this->table_foramt, html_get_page_variable("sort_column"), html_get_page_variable("sort_order"));
+		}else{
+			html_header($this->table_format);
+		}
+
+		/* drow the rows */
+		if (sizeof($this->rows)) {
+			foreach ($this->rows as $row) {
+				$row = api_plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);
+
+				form_alternate_row_color('line' . $row[$this->key_field], true);
+
+				$checkbox_title = "";
+				foreach($this->table_format as $column => $data) {
+					$text  = "";
+					$class = "";
+					$width = "";
+
+					/* remove any '.' from the column name, they are not permitted */
+					if (substr_count($column, ".")) {
+						$nc = explode(".", $column);
+						$column = $nc[sizeof($nc)-1];
+					}
+
+					/* check to see if this is a link column */
+					if (isset($data["link"])) {
+						if (!strlen($checkbox_title)) {
+							$checkbox_title = $row[$column];
+						}
+						if ( isset( $data["href"] ) ) {
+							$text = "<a class='linkEditMain' href='" . htmlspecialchars($data["href"] . "&id=" . $row[$this->key_field]) . "'>";
+						}else{
+							$text = "<a class='linkEditMain' href='" . htmlspecialchars($this->href . "?action=edit&id=" . $row[$this->key_field]) . "'>";
+						}
+					}
+
+					/* check to see if this is a filterable column */
+					if (!isset($data["function"])) {
+						$value = $row[$column];
+					}elseif (!isset($data["params"])) {
+						$value = call_user_func($data["function"], $row[$this->key_field]);
+					}else{
+						$passarray = array();
+						if (sizeof($data["params"])) {
+						foreach($data["params"] as $param) {
+							if (isset($row[$param])) {
+								$passarray[] = $row[$param];
+							}
+						}
+						}
+
+						$value = call_user_func_array($data["function"], $passarray);
+					}
+
+					if (isset($data["format"])) {
+						$format_array = explode(",", $data["format"]);
+						switch($format_array[0]) {
+							case "round":
+								$value = round($value, $format_array[1]);
+								break;
+							default:
+								break;
+						}
+					}
+
+					if (isset($data["filter"]) && strlen(html_get_page_variable("filter"))) {
+						$text .= preg_replace("/(" . preg_quote(html_get_page_variable("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $value);
+					}else{
+						$text .= $value;
+					}
+
+					if (!strlen($text) && isset($data["noneval"])) {
+						$text = $data["noneval"];
+					}
+
+					/* does the column have alignment */
+					if (isset($data["align"])) {
+						$align = $data["align"];
+					}else{
+						$align = "";
+					}
+
+					/* check to see if this is a link column */
+					if (isset($data["link"])) {
+						$text .= "</a>";
+					}
+
+					form_selectable_cell($text, $row[$this->key_field], $width, $class, $align);
+				}
+
+				if ($this->checkbox) {
+					form_checkbox_cell($checkbox_title, $row[$this->key_field]);
+				}
+				form_end_row();
+			}
+			form_end_table();
+
+			print $nav;
+		}else{
+			print "<tr><td><em>" . __("No Rows Found") . "</em></td></tr>\n";
+		}
+
+		print "</table>\n";	# end table of html_header_sort_checkbox
+
+		/* draw the dropdown containing a list of available actions for this form */
+		if (is_array($this->actions) && sizeof($this->actions)) {
+			draw_actions_dropdown($this->actions);
+		}
+
+		print "</form>\n";	# end form of html_header_sort_checkbox
+	}
 }
 
 /** html_draw_table - draws a full html table based upon specification
@@ -817,7 +1004,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 				if (isset($data["link"])) {
 					$text .= "</a>";
 				}
-				
+
 				form_selectable_cell($text, $row[$key_field], $width, $class, $align);
 			}
 
@@ -953,7 +1140,7 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
 								$nav .= "
 							</td>\n
 							<td class='textHeaderDark wp70 center'>
-								" . __("Showing Rows") . " " . (($rows_per_page*($current_page-1))+1) . " " . __("to") . " " . ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page)) . " " . __("of") . " $total_rows [$url_page_select]
+								" . __("Showing Rows") . " " . (($rows_per_page*($current_page-1))+1) . " " . __("to") . " " . ((($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page))) ? $total_rows : ($rows_per_page*$current_page)) . " " . __("of") . " $total_rows " . (strlen($url_page_select) ? "[$url_page_select]":"") . "
 							</td>\n
 							<td class='textHeaderDark wp15 right'>";
 								if (($current_page * $rows_per_page) < $total_rows) {
