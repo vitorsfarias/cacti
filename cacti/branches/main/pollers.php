@@ -291,23 +291,6 @@ function poller_edit() {
 	form_save_button_alt();
 }
 
-function process_page_variables() {
-	$page_variables = array(
-		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
-		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
-		"filter" => array("type" => "string", "method" => "request", "default" => ""),
-		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
-		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
-
-	if (isset($_REQUEST["clear"])) {
-		$clear = true;
-	}else{
-		$clear = false;
-	}
-
-	html_verify_request_variables($page_variables, "sess_poller", $clear);
-}
-
 function filter() {
 	global $item_rows;
 
@@ -391,8 +374,19 @@ function get_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
-function get_table_format() {
-	return array(
+function poller($refresh = true) {
+	global $poller_actions;
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "description"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
+
+	$table->table_format = array(
 		"description" => array(
 			"name" => __("Description"),
 			"link" => true,
@@ -430,22 +424,25 @@ function get_table_format() {
 			"align" => "right"
 		)
 	);
-}
 
-function poller($refresh = true) {
-	global $poller_actions, $item_rows;
+	/* initialize page behavior */
+	$table->href           = "pollers.php";
+	$table->session_prefix = "sess_pollers";
+	$table->filter_func    = "filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $poller_actions;
 
-	$total_rows = 0; $rowspp = 0;
+	/* we must validate table variables */
+	$table->process_page_variables();
 
-	process_page_variables();
+	/* get the records */
+	$table->rows = get_records($table->total_rows, $table->rows_per_page);
 
-	if ($refresh) filter();
-
-	$rows = get_records($total_rows, $rowspp);
-
-	html_draw_table(get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "pollers.php",
-		$poller_actions, html_get_page_variable("filter"), true, true, true,
-		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+	/* display the table */
+	$table->draw_table();
 }
 
 function display_poller_poller_items($id) {
