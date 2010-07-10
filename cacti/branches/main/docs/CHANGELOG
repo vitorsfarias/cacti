@@ -70,6 +70,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001746: SNMP Hex-String matching 
 -bug#0001772: Script Server is not honouring reindex method "Index Count Changed" and "Verify All Fields" 
 -bug#0001776: Cacti Support for Multiple Simultaneous Databases Broken 
+-bug#0001632: script server treats quoted arguments with spaces as multiple separate arguments 
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
 -bug: add_tree.php did not allow nodes with propagating sort options
