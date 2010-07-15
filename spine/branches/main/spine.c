@@ -1,7 +1,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2002-2008 The Cacti Group                                 |
+ | Copyright (C) 2002-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU Lesser General Public              |
@@ -137,7 +137,8 @@ int main(int argc, char *argv[]) {
 	long int EXTERNAL_THREAD_SLEEP = 5000;
 	long int internal_thread_sleep;
 	char querybuf[BIG_BUFSIZE], *qp = querybuf;
-	int itemsPT;
+	char *device_time = NULL;
+	int itemsPT = 0;
 	int device_threads;
 
 	pthread_t* threads = NULL;
@@ -150,7 +151,7 @@ int main(int argc, char *argv[]) {
 	MYSQL_RES *tresult = NULL;
 	MYSQL_ROW mysql_row;
 	int canexit = FALSE;
-	int device_id;
+	int device_id = 0;
 	int i;
 	int mutex_status  = 0;
 	int thread_status = 0;
@@ -459,7 +460,6 @@ int main(int argc, char *argv[]) {
 		set.device_threads_exists = TRUE;
 	}else{
 		set.device_threads_exists = FALSE;
-
 	}
 
 	if (set.device_threads_exists) {
@@ -501,6 +501,9 @@ int main(int argc, char *argv[]) {
 		die("ERROR: Fatal malloc error: spine.c device id's!");
 	}
 
+	/* mark the spine process as started */
+	snprintf(querybuf, BIG_BUFSIZE, "INSERT INTO poller_time (poller_id, pid, start_time, end_time) VALUES (%i, %i, NOW(), '0000-00-00 00:00:00')", set.poller_id, getpid());
+	db_insert(&mysql, querybuf);
 	/* initialize threads and mutexes */
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -551,13 +554,17 @@ int main(int argc, char *argv[]) {
 				/* determine how many items will be polled per thread */
 				if (device_threads > 1) {
 					if (current_thread == 1) {
-						snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE host_id=%i", device_threads, device_id);
+						snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE device_id=%i", device_threads, device_id);
 						tresult   = db_query(&mysql, querybuf);
 						mysql_row = mysql_fetch_row(tresult);
 						itemsPT   = atoi(mysql_row[0]);
+						if (device_time) free(device_time);
+						device_time = get_device_poll_time();
 					}
 				}else{
 					itemsPT   = 0;
+					if (device_time) free(device_time);
+					device_time = get_device_poll_time();
 				}
 	
 				/* populate the thread structure */
@@ -565,9 +572,11 @@ int main(int argc, char *argv[]) {
 					die("ERROR: Fatal malloc error: spine.c poller_details!");
 				}
 	
-				poller_details->device_id       = device_id;
-				poller_details->device_thread   = current_thread;
-				poller_details->device_data_ids = itemsPT;
+				poller_details->device_id          = device_id;
+				poller_details->device_thread      = current_thread;
+				poller_details->last_device_thread = device_threads;
+				poller_details->device_data_ids    = itemsPT;
+				poller_details->device_time        = device_time;
 	
 				/* create child process */
 				thread_status = pthread_create(&threads[device_counter], &attr, child, poller_details);
@@ -581,6 +590,8 @@ int main(int argc, char *argv[]) {
 						}
 						active_threads++;
 	
+						thread_mutex_unlock(LOCK_THREAD);
+
 						SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i", active_threads));
 	
 						break;
@@ -588,7 +599,7 @@ int main(int argc, char *argv[]) {
 						SPINE_LOG(("ERROR: The System Lacked the Resources to Create a Thread"));
 						break;
 					case EFAULT:
-						SPINE_LOG(("ERROR: The Thread or Attribute Was Invalid"));
+						SPINE_LOG(("ERROR: The Thread or Attribute were Invalid"));
 						break;
 					case EINVAL:
 						SPINE_LOG(("ERROR: The Thread Attribute is Not Initialized"));
@@ -613,8 +624,6 @@ int main(int argc, char *argv[]) {
 					poller_counter++;
 				}
 	
-				thread_mutex_unlock(LOCK_THREAD);
-	
 				break;
 			case EDEADLK:
 				SPINE_LOG(("ERROR: Deadlock Occured"));
@@ -631,8 +640,6 @@ int main(int argc, char *argv[]) {
 				SPINE_LOG(("ERROR: Unknown Mutex Lock Error Code Returned"));
 				break;
 			}
-	
-			usleep(internal_thread_sleep);
 	
 			/* get current time and exit program if time limit exceeded */
 			if (poller_counter >= 20) {
@@ -691,7 +698,10 @@ int main(int argc, char *argv[]) {
 
 	/* update the db for |data_time| on graphs */
 	db_insert(&mysql, "replace into settings (name,value) values ('date',NOW())");
-	db_insert(&mysql, "insert into poller_time (poller_id, start_time, end_time) values (0, NOW(), NOW())");
+
+	/* setup poller_time depending on Cacti version */
+	snprintf(querybuf, BIG_BUFSIZE, "UPDATE poller_time SET end_time=NOW() WHERE poller_id=%i AND pid=%i", set.poller_id, getpid());
+	db_insert(&mysql, querybuf);
 
 	/* cleanup and exit program */
 	pthread_attr_destroy(&attr);
