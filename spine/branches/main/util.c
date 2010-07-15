@@ -1,7 +1,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2002-2008 The Cacti Group                                 |
+ | Copyright (C) 2002-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU Lesser General Public              |
@@ -1247,7 +1247,7 @@ void checkAsRoot() {
 	seteuid(0);
 
 	if (geteuid() != 0) {
-		SPINE_LOG_DEBUG(("WARNING: Spine NOT running asroot.  This is required for ICMP ping.  Please run \"chmod +s;chown root:root spine\" to resolve."));
+		SPINE_LOG_DEBUG(("WARNING: Spine NOT running asroot.  This is required if using ICMP.  Please run \"chmod +s;chown root:root spine\" to resolve."));
 		set.icmp_avail = FALSE;
 	}else{
 		SPINE_LOG_DEBUG(("DEBUG: Spine is running asroot."));

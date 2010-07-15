@@ -1,7 +1,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2002-2008 The Cacti Group                                 |
+ | Copyright (C) 2002-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU Lesser General Public              |
@@ -499,12 +499,8 @@ void snmp_snprint_value(char *obuf, size_t buf_len, const oid *objid, size_t obj
 	size_t out_len = 0;
 
 	if ((buf = (u_char *) calloc(buf_len, 1)) != 0) {
-		if (sprint_realloc_value(&buf, &buf_len, &out_len, 1,
-				objid, objidlen, variable)) {
+		sprint_realloc_by_type(&buf, &buf_len, &out_len, 1, variable, NULL, NULL, NULL);
 			snprintf(obuf, buf_len, "%s", buf);
-		}else{
-			snprintf(obuf, buf_len, "%s [TRUNCATED]", buf);
-		}
 	}else{
 		SET_UNDEFINED(obuf);
 	}

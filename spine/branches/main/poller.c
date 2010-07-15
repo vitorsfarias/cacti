@@ -1,7 +1,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2002-2008 The Cacti Group                                 |
+ | Copyright (C) 2002-2010 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU Lesser General Public              |
@@ -46,25 +46,27 @@
 void *child(void *arg) {
 	int device_id;
 	int device_thread;
+	int last_device_thread;
 	int device_data_ids;
+	char device_time[SMALL_BUFSIZE];
 
 	poller_thread_t poller_details = *(poller_thread_t*) arg;
-	device_id        = poller_details.device_id;
-	device_thread    = poller_details.device_thread;
-	device_data_ids  = poller_details.device_data_ids;
+	device_id          = poller_details.device_id;
+	device_thread      = poller_details.device_thread;
+	last_device_thread = poller_details.last_device_thread;
+	device_data_ids    = poller_details.device_data_ids;
+	snprintf(device_time, SMALL_BUFSIZE, "%s", poller_details.device_time);
 	free(arg);
 
 	SPINE_LOG_DEBUG(("DEBUG: In Poller, About to Start Polling of Device"));
 
-	poll_device(device_id, device_thread, device_data_ids);
+	poll_device(device_id, device_thread, last_device_thread, device_data_ids, device_time);
 
 	thread_mutex_lock(LOCK_THREAD);
-
 	active_threads--;
+	thread_mutex_unlock(LOCK_THREAD);
 
 	SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i" ,active_threads));
-
-	thread_mutex_unlock(LOCK_THREAD);
 
 	/* end the thread */
 	pthread_exit(0);
@@ -94,7 +96,7 @@ void *child(void *arg) {
  *  as the device poller_items table dictates.
  *
  */
-void poll_device(int device_id, int device_thread, int device_data_ids) {
+void poll_device(int device_id, int device_thread, int last_device_thread, int device_data_ids, char *device_time) {
 	char query1[BUFSIZE];
 	char query2[BUFSIZE];
 	char *query3 = NULL;
@@ -117,15 +119,14 @@ void poll_device(int device_id, int device_thread, int device_data_ids) {
 	int    reindex_err = FALSE;
 	int    spike_kill = FALSE;
 	int    rows_processed = 0;
-	int    i;
-	int    j;
+	int    i = 0;
+	int    j = 0;
 	int    num_oids = 0;
 	int    snmp_poller_items = 0;
 	size_t out_buffer;
 	int    php_process;
 
 	char *poll_result = NULL;
-	char *device_time   = NULL;
 	char update_sql[BUFSIZE];
 	char limits[SMALL_BUFSIZE];
 
@@ -340,9 +341,6 @@ void poll_device(int device_id, int device_thread, int device_data_ids) {
 	snprintf(query11, BUFSIZE,
 		"INSERT INTO poller_output_boost"
 		" (local_data_id, rrd_name, time, output) VALUES");
-
-	/* get the device polling time */
-	device_time = get_device_poll_time();
 
 	/* initialize the ping structure variables */
 	snprintf(ping->ping_status,   50,            "down");
@@ -723,10 +721,6 @@ void poll_device(int device_id, int device_thread, int device_data_ids) {
 			/* get the poller items */
 			if ((result = db_query(&mysql, query5)) != 0) {
 				num_rows = mysql_num_rows(result);
-
-				/* update poller_items table for next polling interval */
-				db_query(&mysql, query6);
-				db_query(&mysql, query7);
 			}else{
 				SPINE_LOG(("Device[%i] TH[%i] ERROR: Unable to Retrieve Rows due to Null Result!", device->id, device_thread));
 			}
@@ -1170,9 +1164,14 @@ void poll_device(int device_id, int device_thread, int device_data_ids) {
 	}
 
 	free(device);
-	free(device_time);
 	free(reindex);
 	free(ping);
+
+	/* update poller_items table for next polling interval */
+	if (device_thread == last_device_thread) {
+		db_query(&mysql, query6);
+		db_query(&mysql, query7);
+	}
 
 	/* record the polling time for the device */
 	poll_time = get_time_as_double() - poll_time;
