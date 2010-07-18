@@ -85,7 +85,7 @@ function graph_view_filter_table($mode = "mode") {
 			<form name="form_graph_view" method="post" action="graph_view.php">
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tr class="rowGraphFilter noprint">
-					<td class="nw50">
+					<td class="w1">
 						&nbsp;<?php print __("Device:");?>&nbsp;
 					</td>
 					<td class='w1'>
@@ -136,7 +136,7 @@ function graph_view_filter_table($mode = "mode") {
 					</td>
 				</tr>
 				<tr>
-					<td class="nw50">
+					<td class="w1">
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class='w1'>
@@ -333,7 +333,7 @@ function get_graph_list_content() {
 			<input type='hidden' name='graph_remove' value=''>
 			<table cellpadding="0" cellspacing="0">
 				<tr>
-					<td class='nw50'>
+					<td class='w1'>
 						&nbsp;<?php print __("Device:");?>&nbsp;
 					</td>
 					<td class="w1">
@@ -347,7 +347,7 @@ function get_graph_list_content() {
 						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
-					<td class='nw50'>
+					<td class='w1'>
 						&nbsp;<?php print __("Template:");?>&nbsp;
 					</td>
 					<td class='w1'>
@@ -383,7 +383,7 @@ function get_graph_list_content() {
 							?>
 						</select>
 					</td>
-					<td class="nw50">
+					<td class="w1">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td class="w1">
@@ -399,13 +399,13 @@ function get_graph_list_content() {
 					</td>
 				</tr>
 				<tr>
-					<td class='nw50'>
+					<td class='w1'>
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class="w1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
-					<td class="nw120">
+					<td class="w1">
 						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
 						&nbsp;<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
 					</td>
