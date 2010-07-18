@@ -36,12 +36,12 @@ img {
 	border: 0px;
 }
 
-img_info {
+.img_info {
 	border: 0px;
 	padding: 3px;
 }
 
-img_filter {
+.img_filter {
 	border-width: 0px;
 	vertical-align: middle;
 	text-align: center;
