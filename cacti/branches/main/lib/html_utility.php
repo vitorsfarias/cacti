@@ -466,7 +466,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	if ($total_rows == 0) return "";
 
 	if (!empty($rows_per_page)) {
-		$total_pages = $total_rows / $rows_per_page;
+		$total_pages = ceil($total_rows / $rows_per_page);
 	}else{
 		$total_pages = 1;
 	}
