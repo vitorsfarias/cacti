@@ -143,6 +143,7 @@ function input_remove() {
 
 function input_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
+	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
 
@@ -160,7 +161,7 @@ function input_edit() {
 	}
 
 	/* get a list of all graph item field names and populate an array for user display */
-	$struct_graph_item = graph_item_form_list;
+	$struct_graph_item = graph_item_form_list();
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		if ($field_array["method"] != "view") {
 			$graph_template_items[$field_name] = $field_array["friendly_name"];
