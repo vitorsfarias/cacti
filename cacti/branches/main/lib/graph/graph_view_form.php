@@ -107,14 +107,14 @@ function graph_view_filter_table($mode = "mode") {
 							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option><?php
 							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
-										"FROM (graph_templates_graph,graph_local) " .
-										"LEFT JOIN device ON (device.id=graph_local.device_id) " .
+										"FROM device " .
+										"LEFT JOIN graph_local ON ( device.id = graph_local.device_id ) " .
+										"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
 										"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
 										"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
-										"WHERE graph_templates_graph.local_graph_id=graph_local.id " .
-										"AND graph_templates_graph.graph_template_id > 0 " .
-										(($_REQUEST["device_id"] > 0) ? " and graph_local.device_id=" . $_REQUEST["device_id"] :" and graph_local.device_id > 0 ") .
-										(empty($sql_where) ? "" : "and $sql_where") .
+										"WHERE graph_templates_graph.graph_template_id > 0 " .
+										(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
+										(empty($sql_where) ? "" : "and $sql_where") . 
 										" ORDER BY name");
 							}else{
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
@@ -134,6 +134,8 @@ function graph_view_filter_table($mode = "mode") {
 							?>
 						</select>
 					</td>
+				</tr>
+				<tr>
 					<td class="nw50">
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
@@ -142,7 +144,7 @@ function graph_view_filter_table($mode = "mode") {
 					</td>
 					<td class='w1'>
 						&nbsp;<input type='button' Value='<?php print __("Go");?>' name='go' onClick='applyGraphFilter(document.form_graph_view)'>
-						<input type='button' Value='<?php print __("Clear");?>' name='clear_x' onClick='clearGraphFilter(document.form_graph_view)'>
+						&nbsp;<input type='button' Value='<?php print __("Clear");?>' name='clear_x' onClick='clearGraphFilter(document.form_graph_view)'>
 					</td>
 				</tr>
 			</table>
@@ -329,14 +331,14 @@ function get_graph_list_content() {
 			<form name="form_graph_list" action="graph_view.php" method="post">
 			<input type='hidden' name='graph_add' value=''>
 			<input type='hidden' name='graph_remove' value=''>
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="0" cellspacing="0">
 				<tr>
-					<td class='w1'>
+					<td class='nw50'>
 						&nbsp;<?php print __("Device:");?>&nbsp;
 					</td>
 					<td class="w1">
 						<?php
-						if (isset($_REQUEST["device_id"])) {
+						if (isset($_REQUEST["device_id"]) && $_REQUEST["device_id"] > 0) {
 							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
 						} else {
 							$hostname = "";
@@ -345,7 +347,7 @@ function get_graph_list_content() {
 						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
-					<td class='w1'>
+					<td class='nw50'>
 						&nbsp;<?php print __("Template:");?>&nbsp;
 					</td>
 					<td class='w1'>
@@ -353,16 +355,16 @@ function get_graph_list_content() {
 							<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("device_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option>
 							<?php
 							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
-								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.*
-									FROM (graph_templates_graph,graph_local)
-									LEFT JOIN device ON (device.id=graph_local.device_id)
-									LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-									LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=" . PERM_GRAPHS . " and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device.id=user_auth_perms.item_id and user_auth_perms.type=" . PERM_DEVICES . " and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=" . PERM_GRAPH_TEMPLATES . " and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
-									WHERE graph_templates_graph.local_graph_id=graph_local.id " .
-									"AND graph_templates_graph.graph_template_id > 0 " .
-									(($_REQUEST["device_id"] > 0) ? " and graph_local.device_id=" . $_REQUEST["device_id"] :" and graph_local.device_id > 0 ") . "
-									" . (empty($sql_where) ? "" : "and $sql_where") . "
-									ORDER BY name");
+								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
+									"FROM device " .
+									"LEFT JOIN graph_local ON ( device_id = graph_local.device_id ) " .
+									"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
+									"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
+									"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device_id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
+									"WHERE graph_templates_graph.graph_template_id > 0 " .
+									(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
+									(empty($sql_where) ? "" : "and $sql_where") . 
+									" ORDER BY name");
 							}else{
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
 										"FROM graph_templates " .
@@ -381,7 +383,7 @@ function get_graph_list_content() {
 							?>
 						</select>
 					</td>
-					<td class="w1">
+					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
 					</td>
 					<td class="w1">
@@ -395,17 +397,17 @@ function get_graph_list_content() {
 							?>
 						</select>
 					</td>
-					<td class='w1'>
+				</tr>
+				<tr>
+					<td class='nw50'>
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class="w1">
 						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
 					</td>
-					<td class="w1">
-						<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
-					</td>
-					<td class="w1">
-						<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
+					<td class="nw120">
+						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
+						&nbsp;<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
 					</td>
 				</tr>
 			</table>
