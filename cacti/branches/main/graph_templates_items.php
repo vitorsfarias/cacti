@@ -174,6 +174,26 @@ function form_save() {
 						$save["line_width"] = 0;
 				}
 			}
+			# color must be filled for graphable content
+			switch ($save["graph_type_id"]) {
+				case GRAPH_ITEM_TYPE_HRULE:
+				case GRAPH_ITEM_TYPE_VRULE:
+				case GRAPH_ITEM_TYPE_LINE1:
+				case GRAPH_ITEM_TYPE_LINE2:
+				case GRAPH_ITEM_TYPE_LINE3:
+				case GRAPH_ITEM_TYPE_AREA:
+				case GRAPH_ITEM_TYPE_AREASTACK:
+				case GRAPH_ITEM_TYPE_LINESTACK:
+				case GRAPH_ITEM_TYPE_TICK:
+					if ($save["color_id"] == 0) {
+						# no color set, but required
+						# so force a validation issue on this field
+						form_input_validate("", "color_id", "^[0-9]+$", false, 3);
+					}
+					break;
+				default:
+					# everything is fine
+			}
 			$save["dashes"] 			= form_input_validate((isset($_POST["dashes"]) ? $_POST["dashes"] : ""), "dashes", "^[0-9]+[,0-9]*$", true, 3);
 			$save["dash_offset"] 		= form_input_validate((isset($_POST["dash_offset"]) ? $_POST["dash_offset"] : ""), "dash_offset", "^[0-9]+$", true, 3);
 			$save["cdef_id"] 			= form_input_validate(((isset($item["cdef_id"]) ? $item["cdef_id"] : (isset($_POST["cdef_id"]) ? $_POST["cdef_id"] : 0))), "cdef_id", "^[0-9]+$", true, 3);
@@ -182,7 +202,7 @@ function form_save() {
 			$save["consolidation_function_id"] = form_input_validate(((isset($item["consolidation_function_id"]) ? $item["consolidation_function_id"] : (isset($_POST["consolidation_function_id"]) ? $_POST["consolidation_function_id"] : 0))), "consolidation_function_id", "^[0-9]+$", true, 3);
 			$save["textalign"] 			= form_input_validate((isset($_POST["textalign"]) ? $_POST["textalign"] : ""), "textalign", "^[a-z]+$", true, 3);
 			$save["text_format"] 		= form_input_validate(((isset($item["text_format"]) ? $item["text_format"] : (isset($_POST["text_format"]) ? $_POST["text_format"] : ""))), "text_format", "", true, 3);
-			$save["value"] 				= form_input_validate((isset($_POST["value"]) ? $_POST["value"] : ""), "value", "", true, 3);
+			$save["value"] 				= form_input_validate((isset($_POST["value"]) ? $_POST["value"] : ""), "value", "^[0-9]+$", true, 3);
 			$save["hard_return"] 		= form_input_validate(((isset($item["hard_return"]) ? $item["hard_return"] : (isset($_POST["hard_return"]) ? $_POST["hard_return"] : ""))), "hard_return", "", true, 3);
 			$save["gprint_id"] 			= form_input_validate(((isset($item["gprint_id"]) ? $item["gprint_id"] : (isset($_POST["gprint_id"]) ? $_POST["gprint_id"] : 0))), "gprint_id", "^[0-9]+$", true, 3);
 			/* generate a new sequence if needed */
