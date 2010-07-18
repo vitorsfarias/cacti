@@ -2133,9 +2133,9 @@ function rrdtool_set_font($type, $no_legend = "") {
 		$font = read_config_option($type . "_font");
 	}
 	if (strlen(read_graph_config_option($type . "_size"))) {
-		$font = read_graph_config_option($type . "_size");
+		$size = read_graph_config_option($type . "_size");
 	}else{
-		$font = read_config_option($type . "_size");
+		$size = read_config_option($type . "_size");
 	}
 
 	/* global font may be empty */
