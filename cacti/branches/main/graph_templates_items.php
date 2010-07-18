@@ -238,7 +238,7 @@ function form_save() {
 										get_hash_graph_template(0, "graph_template_input") . "'," .
 										$save["graph_template_id"] . "," .
 										"'Data Source [" . $ds_name . "]'," .
-										'task_item_id' .
+										"'task_item_id'" .
 										")");
 
 							$graph_template_input_id = db_fetch_insert_id();

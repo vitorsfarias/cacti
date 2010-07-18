@@ -130,7 +130,7 @@ function input_remove() {
 
 	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
 		include(CACTI_BASE_PATH . "/include/top_header.php");
-		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the input item") . " <strong>'" . db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"]) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", "graph_templates.php?action=edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
+		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the input item <strong>%s</strong>?<br><strong>NOTE:</strong> Deleting this item will NOT affect graphs that use this template.", db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"])), "graph_templates.php?action=edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
 		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		exit;
 	}
