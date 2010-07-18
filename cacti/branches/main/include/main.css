@@ -578,7 +578,7 @@ th a {
 }
 
 .rowGraphFilter {
-	background: #ffffff url('../images/rowGraphFilter.png') repeat-x scroll top left;
+	background: #ffffff url('../images/rowGraphFilter.png') repeat scroll top left;
 	color: #000000;
 	font-weight: normal;
 	font-size: 8px;
