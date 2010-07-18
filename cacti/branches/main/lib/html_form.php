@@ -519,17 +519,17 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		}
 	}
 
-	if (strlen($class)) {
-		$class = " class='$class' ";
-	}
-
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
-			$class .= " class='txtErrorTextBox'";
+			$class .= " txtErrorTextBox";
 			unset($_SESSION["sess_error_fields"][$form_name]);
 		}
 	}
 
+	if (strlen($class)) {
+		$class = " class='$class' ";
+	}
+	
 	if (strlen($on_change)) {
 		$on_change = " onChange='$on_change' ";
 	}
@@ -815,10 +815,17 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$form_previous_value = $form_default_value;
 	}
 
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= " txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
 	if (strlen($class)) {
 		$class = " class='$class' ";
 	}
-
+	
 	$current_color = db_fetch_cell("SELECT hex FROM colors WHERE id=$form_previous_value");
 
 	if (strlen($on_change)) {
