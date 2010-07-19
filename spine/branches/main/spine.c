@@ -94,6 +94,7 @@ int entries = 0;
 int num_devices = 0;
 int active_threads = 0;
 int active_scripts = 0;
+int thread_ready   = FALSE;
 
 config_t set;
 php_t	*php_processes = 0;
@@ -577,6 +578,11 @@ int main(int argc, char *argv[]) {
 				poller_details->last_device_thread = device_threads;
 				poller_details->device_data_ids    = itemsPT;
 				poller_details->device_time        = device_time;
+
+				/* this variable tells us that the child had loaded the poller
+				 * poller_details structure and we can move on to the next thread
+				 */
+				thread_ready = FALSE;
 	
 				/* create child process */
 				thread_status = pthread_create(&threads[device_counter], &attr, child, poller_details);
@@ -590,6 +596,11 @@ int main(int argc, char *argv[]) {
 						}
 						active_threads++;
 	
+						/* wait for the child to read and process the structure */
+						while (!thread_ready) { 
+							usleep(100000);
+						}
+
 						thread_mutex_unlock(LOCK_THREAD);
 
 						SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i", active_threads));
