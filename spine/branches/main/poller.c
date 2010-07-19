@@ -58,6 +58,8 @@ void *child(void *arg) {
 	snprintf(device_time, SMALL_BUFSIZE, "%s", poller_details.device_time);
 	free(arg);
 
+	thread_ready = TRUE;
+
 	SPINE_LOG_DEBUG(("DEBUG: In Poller, About to Start Polling of Device"));
 
 	poll_device(device_id, device_thread, last_device_thread, device_data_ids, device_time);
