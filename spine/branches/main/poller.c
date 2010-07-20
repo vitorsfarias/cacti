@@ -1294,7 +1294,7 @@ char *exec_poll(device_t *current_device, char *command) {
 
 	/* compensate for back slashes in arguments */
 	#if defined(__CYGWIN__)
-	proc_command = add_slashes(command, 2);
+	proc_command = add_slashes(command);
 	#else
 	proc_command = command;
 	#endif
