@@ -618,6 +618,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		graph_templates_graph.interlaced,
 		graph_templates_graph.tab_width,
 		graph_templates_graph.watermark,
+		graph_templates_graph.dynamic_labels,
 		graph_templates_graph.force_rules_legend,
 		graph_templates_graph.legend_position,
 		graph_templates_graph.legend_direction,
@@ -2619,6 +2620,12 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 				}
 				break;
 
+			case "dynamic_labels":
+				if ($value == CHECKED) {
+					$option .= "--dynamic-labels" . RRD_NL;
+				}
+				break;
+				
 			case "force_rules_legend":
 				if ($value == CHECKED) {
 					$option .= "--force-rules-legend" . RRD_NL;

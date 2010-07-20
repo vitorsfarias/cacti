@@ -427,6 +427,8 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'tab_width', 'type' => 'mediumint(4)', 'default' => NULL);
 	$columns[] = array('name' => 't_watermark', 'type' => 'char(2)', 'default' => '0');
 	$columns[] = array('name' => 'watermark', 'type' => 'varchar(255)', 'default' => NULL);
+	$columns[] = array('name' => 't_dynamic_labels', 'type' => 'char(2)', 'default' => '0');
+	$columns[] = array('name' => 'dynamic_labels', 'type' => 'char(2)', 'default' => NULL);
 	$columns[] = array('name' => 't_force_rules_legend', 'type' => 'char(2)', 'default' => '0');
 	$columns[] = array('name' => 'force_rules_legend', 'type' => 'char(2)', 'default' => NULL);
 	$columns[] = array('name' => 't_legend_position', 'type' => 'char(2)', 'default' => '0');
