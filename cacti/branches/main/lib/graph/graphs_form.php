@@ -127,6 +127,8 @@ function graph_form_save() {
 		$save2["tab_width"] = form_input_validate((isset($_POST["tab_width"]) ? $_POST["tab_width"] : ""), "tab_width", "^[0-9]*$", true, 3);
 		$save2["t_watermark"] = form_input_validate((isset($_POST["t_watermark"]) ? $_POST["t_watermark"] : ""), "t_watermark", "", true, 3);
 		$save2["watermark"] = form_input_validate((isset($_POST["watermark"]) ? $_POST["watermark"] : ""), "watermark", "", true, 3);
+		$save2["t_dynamic_labels"] = form_input_validate((isset($_POST["t_dynamic_labels"]) ? $_POST["t_dynamic_labels"] : ""), "t_dynamic_labels", "", true, 3);
+		$save2["dynamic_labels"] = form_input_validate((isset($_POST["dynamic_labels"]) ? $_POST["dynamic_labels"] : ""), "dynamic_labels", "", true, 3);
 		$save2["t_force_rules_legend"] = form_input_validate((isset($_POST["t_force_rules_legend"]) ? $_POST["t_force_rules_legend"] : ""), "t_force_rules_legend", "", true, 3);
 		$save2["force_rules_legend"] = form_input_validate((isset($_POST["force_rules_legend"]) ? $_POST["force_rules_legend"] : ""), "force_rules_legend", "", true, 3);
 		$save2["t_legend_position"] = form_input_validate((isset($_POST["t_legend_position"]) ? $_POST["t_legend_position"] : ""), "t_legend_position", "", true, 3);

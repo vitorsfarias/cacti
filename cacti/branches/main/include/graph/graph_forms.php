@@ -354,6 +354,12 @@ $struct_graph_color = array(
 	);
 
 $struct_graph_legend = array(
+	"dynamic_labels" => array(
+		"friendly_name" => __("Dynamic Labels") . " (--dynamic-labels)",
+		"method" => "checkbox",
+		"default" => "",
+		"description" => __("Draw line markers as a line."),
+		),
 	"force_rules_legend" => array(
 		"friendly_name" => __("Force Rules Legend") . " (--force-rules-legend)",
 		"method" => "checkbox",
