@@ -40,7 +40,7 @@ api_plugin_hook('console_before');
 			</ul>
 			<strong>
 			<?php print __('Find help for each page when clicking the %s icon on the upper right.',
-			'<a href=' . cacti_wiki_url() . ' target="_blank">' .
+			'<a href="' . cacti_wiki_url() . '" target="_blank">' .
 			'<img src="images/help.gif" title="' . __("Help") . '" alt="' . __("Help") . '" align="top"></a>');?>
 			</strong>
 		</td>
