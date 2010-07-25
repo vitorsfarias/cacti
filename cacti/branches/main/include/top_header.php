@@ -96,7 +96,7 @@ api_plugin_hook('page_head');
 		</div>
 		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
-			<a href="#" id="menu_languages" rel="<?php echo CACTI_URL_PATH; ?>"><img src="<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></a>
+			<a href="#" id="menu_languages" rel="<?php echo CACTI_URL_PATH; ?>"><img src="<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif" alt="<?php print CACTI_COUNTRY;?>" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></a>
 		</div>
 		<div id="loading" style="display:none; float:right"><img src="<?php echo CACTI_URL_PATH; ?>images/load_small.gif" align="top" alt="<?php print __("loading");?>">LOADING</div>
 		<?php }?>
