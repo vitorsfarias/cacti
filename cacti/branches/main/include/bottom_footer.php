@@ -27,6 +27,7 @@
 <div id='footer'><br>
 	<p id='debug'></p>
 </div>
+</body>
 </html>
 
 <?php
