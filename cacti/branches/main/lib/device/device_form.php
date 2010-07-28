@@ -734,7 +734,10 @@ function device_display_general($device, $device_text) {
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 
 	if (isset($device["id"])) {
-		html_start_box($device_text, "100", "3", "center", "", true);
+
+		$dd_menu_options = 'cacti_dd_menu=device_options&device_id=' . $device["id"];
+	
+		html_start_box($device_text, "100", "3", "center", (isset($_GET["id"]) ? "menu::" . __("Device Options") . ":device_options:html_start_box:" . $dd_menu_options : ""), true);
 		?>
 			<tr class="rowAlternate2">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
