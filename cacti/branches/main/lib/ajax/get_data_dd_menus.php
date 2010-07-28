@@ -59,6 +59,16 @@ switch (get_request_var('cacti_dd_menu')) {
 		}
 		break;
 
+	case 'device_options':
+
+		if (!empty($_GET["device_id"])) {
+			$output =  "<h6><a href='" . htmlspecialchars('graphs.php?device_id=' . $_GET["device_id"] . '&template_id=-1&rows=-1&filter=') . "'>" . __("Graph Management") . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?device_id=' . $_GET["device_id"] . '&template_id=-1&rows=-1&method_id=-1&filter=') . "'>" . __("Data Source Management") . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('graph_view.php?action=preview&device_id=' . $_GET["device_id"] . '&graph_template_id=0&filter=') . "'>" . __("Graph Preview") . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('graph_view.php?action=list&device_id=' . $_GET["device_id"] . '&graph_template_id=0&filter=') . "'>" . __("Graph List View") . "</a></h6>";
+		}
+		break;
+		
 	default:
 		$output = "";
 		break;
