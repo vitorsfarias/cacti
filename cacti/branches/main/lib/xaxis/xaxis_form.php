@@ -358,7 +358,7 @@ function xaxis_edit() {
 }
 
 function xaxis_filter() {
-	global $items_row;
+	global $item_rows;
 
 	?>
 	<?php
@@ -397,6 +397,9 @@ function xaxis_filter() {
 		</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(false);
+	?>
 	<script type="text/javascript">
 	<!--
 
@@ -409,7 +412,6 @@ function xaxis_filter() {
 	-->
 	</script>
 	<?php
-	html_end_box(false);
 }
 
 function get_xaxis_records(&$total_rows, &$rowspp) {

@@ -268,6 +268,9 @@ function gprint_presets_filter() {
 			</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(false);
+	?>
 	<script type="text/javascript">
 	<!--
 	function applyFilterChange(objForm) {
@@ -277,8 +280,7 @@ function gprint_presets_filter() {
 	}
 	-->
 	</script>
-	<?php
-	html_end_box(false);
+	<?php 
 }
 
 function get_gprint_records(&$total_rows, &$rowspp) {
