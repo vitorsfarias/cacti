@@ -2156,6 +2156,7 @@ function draw_navigation_text($type = "url") {
 		"templates_import.php:create" => array("title" => __("Import Templates"), "mapping" => "index.php:,templates_import.php", "url" => "templates_import.php", "level" => "1"),
 		"tree.php:" => array("title" => __("Graph Trees"), "mapping" => "index.php:", "url" => "tree.php", "level" => "1"),
 		"tree.php:edit" => array("title" => __("(Edit)"), "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
+		"tree.php:actions" => array("title" => __("Actions"), "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
 		"tree.php:item_edit" => array("title" => __("Graph Tree Items"), "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
 		"tree.php:item_remove" => array("title" => "(Remove Item)", "mapping" => "index.php:,tree.php:,tree.php:edit", "url" => "", "level" => "3"),
 		"tree.php:remove" => array("title" => __("(Remove)"), "mapping" => "index.php:,tree.php:", "url" => "", "level" => "2"),
