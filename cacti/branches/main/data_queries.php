@@ -855,6 +855,10 @@ function data_query($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,

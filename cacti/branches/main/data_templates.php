@@ -710,6 +710,10 @@ function data_source_template($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
 		"data_input_method" => array(
 			"name" => __("Data Input Method"),
 			"emptyval" => "<em>None</em>",
