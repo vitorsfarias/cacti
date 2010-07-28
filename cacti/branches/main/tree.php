@@ -27,6 +27,13 @@ include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/tree.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 
+$tree_actions = array(
+	ACTION_NONE => __("None"),
+	"1" => __("Delete")
+	);
+
+define("MAX_DISPLAY_PAGES", 21);
+
 input_validate_input_number(get_request_var('tree_id'));
 input_validate_input_number(get_request_var('leaf_id'));
 input_validate_input_number(get_request_var_post('graph_tree_id'));
@@ -38,6 +45,10 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch (get_request_var_request("action")) {
 	case 'save':
 		form_save();
+
+		break;
+	case 'actions':
+		form_actions();
 
 		break;
 	case 'item_movedown':
@@ -61,11 +72,6 @@ switch (get_request_var_request("action")) {
 		item_remove();
 
 		header("Location: tree.php?action=edit&id=" . $_GET["tree_id"]);
-		break;
-	case 'remove':
-		tree_remove();
-
-		header("Location: tree.php");
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -361,6 +367,86 @@ function item_remove() {
     Tree Functions
    --------------------- */
 
+/* ------------------------
+    The "actions" function
+   ------------------------ */
+
+function form_actions() {
+	global $tree_actions, $messages;
+
+	/* if we are to save this form, instead of display it */
+	if (isset($_POST["selected_items"])) {
+		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+
+		if (get_request_var_post("drp_action") === "1") { /* delete */
+			/* do a referential integrity check */
+			if (sizeof($selected_items)) {
+				foreach($selected_items as $tree_id) {
+					/* ================= input validation ================= */
+					input_validate_input_number($tree_id);
+					/* ==================================================== */
+					db_execute("delete from graph_tree where id=" . $tree_id);
+					db_execute("delete from graph_tree_items where graph_tree_id=" . $tree_id);
+				}
+			}
+		}
+		header("Location: tree.php");
+		exit;
+	}
+
+	/* setup some variables */
+	$tree_list = "";
+
+	/* loop through each of the graphs selected on the previous page and get more info about them */
+	while (list($var,$val) = each($_POST)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($matches[1]);
+			/* ==================================================== */
+
+			$tree_list .= "<li>" . db_fetch_cell("select name from graph_tree where id=" . $matches[1]) . "</li>";
+			$tree_array[] = $matches[1];
+		}
+	}
+
+	include_once("./include/top_header.php");
+
+	html_start_box("<strong>" . $tree_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+
+	print "<form action='tree.php' method='post'>\n";
+
+	if (isset($tree_array)) {
+		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
+			print "	<tr>
+						<td class='textArea'>
+							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
+						</td>
+					</tr>\n";
+		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
+			print "	<tr>
+					<td class='topBoxAlt'>
+						<p>" . __("When you click 'Continue', the following Tree(s) will be deleted.") . "</p>
+						<p><ul>$tree_list</ul></p>
+					</td>
+				</tr>\n";
+
+			$title = __("Delete Tree(s)");
+		}
+	}else{
+		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one Tree.") . "</span></td></tr>\n";
+	}
+
+	if (!isset($tree_array) || get_request_var_post("drp_action") === ACTION_NONE) {
+		form_return_button();
+	}else{
+		form_continue(serialize($tree_array), get_request_var_post("drp_action"), $title);
+	}
+
+	html_end_box();
+
+	include_once("./include/bottom_footer.php");
+}
+
 function tree_remove() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -450,30 +536,124 @@ function tree_edit() {
 	form_save_button_alt("path!tree.php");
 }
 
-function tree() {
-	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", "3", "center", "tree.php?action=edit");
-
-	print "<tr><td>";
-	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');
-	print "</td></tr>";
-
-	$trees = db_fetch_assoc("SELECT * FROM graph_tree ORDER BY name");
-
-	if (sizeof($trees) > 0) {
-	foreach ($trees as $tree) {
-		form_alternate_row_color($tree["id"], true);
-			?>
-			<td>
-				<a class="linkEditMain" href="<?php print htmlspecialchars("tree.php?action=edit&id=" . $tree["id"]);?>"><?php print $tree["name"];?></a>
-			</td>
-			<td align="right">
-				<a href="<?php print htmlspecialchars("tree.php?action=remove&id=" . $tree["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='right'></a>
-			</td>
-			<?php
-		form_end_row();
+function tree_filter() {
+	global $item_rows;
+	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", "3", "center", "tree.php?action=edit", true);
+	?>
+	<tr class='rowAlternate2'>
+		<td>
+			<form name='form_tree' action="<?php print basename($_SERVER['PHP_SELF']);?>" method="post">
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyFilterChange(document.form_rra)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
+					</td>
+				</tr>
+			</table>
+			<input type='hidden' name='page' value='1'>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+	?>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
 	}
+	-->
+	</script>
+	<?php 
+}
+
+function get_tree_records(&$total_rows, &$rowspp) {
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "WHERE (graph_tree.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
 	}else{
-		print "<tr><td><em>" . __("No Graphs Trees") . "</em></td></tr>\n";
+		$rowspp = html_get_page_variable("rows");
 	}
-	html_end_box();
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(graph_tree.id)
+		FROM graph_tree
+		$sql_where");
+
+	return db_fetch_assoc("SELECT *
+		FROM graph_tree
+		$sql_where
+		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
+}
+
+function tree($refresh = true) {
+	global $tree_actions;
+	
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter" => array("type" => "string", "method" => "request", "default" => ""),
+		"sort_column" => array("type" => "string", "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
+
+	$table->table_format = array(
+		"name" => array(
+			"name" => __("Name"),
+			"filter" => true,
+			"link" => true,
+			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		)
+	);
+
+	/* initialize page behavior */
+	$table->href           = "tree.php";
+	$table->session_prefix = "sess_tree";
+	$table->filter_func    = "tree_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $tree_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = get_tree_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }
