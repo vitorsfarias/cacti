@@ -1280,6 +1280,10 @@ function device_template($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
 		"nosort" => array(
 			"name" => __("Availbility/SNMP Settings"),
 			"function" => "display_device_template_control",

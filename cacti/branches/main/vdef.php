@@ -579,6 +579,10 @@ function vdef($refresh = true) {
 			"link" => true,
 			"filter" => true,
 			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
 		)
 	);
 

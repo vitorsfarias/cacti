@@ -624,6 +624,10 @@ function data($refresh = true) {
 			"function" => "display_data_input_type",
 			"params" => array("type_id"),
 			"filter" => true
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
 		)
 	);
 

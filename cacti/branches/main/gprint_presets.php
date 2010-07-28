@@ -328,6 +328,10 @@ function gprint_presets($refresh = true) {
 			"filter" => true,
 			"link" => true,
 			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
 		)
 	);
 

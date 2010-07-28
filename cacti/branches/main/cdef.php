@@ -568,7 +568,12 @@ function cdef($refresh = true) {
 			"name" => __("CDEF Title"),
 			"order" => "ASC",
 			"filter" => true,
-			"link" => true)
+			"link" => true
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		)
 	);
 
 	/* initialize page behavior */

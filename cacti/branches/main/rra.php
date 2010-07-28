@@ -335,6 +335,10 @@ function rra($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
+		"id" => array(
+			"name" => __("ID"),
+			"order" => "ASC"
+		),
 		"x_files_factor" => array(
 			"name" => __("X Files Factor"),
 			"order" => "ASC",
