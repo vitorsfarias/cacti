@@ -67,7 +67,7 @@ plugins_draw_tabs($ptabs, $current_tab);
 
 html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
 
-print "<tr><td><table width='100%'>";
+print "<tr><td>";
 
 switch ($current_tab) {
 	case 'all':
@@ -77,6 +77,7 @@ switch ($current_tab) {
 		api_plugin_hook_function('plugin_management_tab_content', $current_tab);
 }
 
+print "</td></tr>";
 html_end_box();
 
 include(CACTI_BASE_PATH . "/include/bottom_footer.php");
@@ -106,8 +107,6 @@ function plugins_draw_tabs ($tabs, $current_tab) {
 
 function plugins_show($status = 'all') {
 	global $plugins, $config, $status_names;
-
-	print "<table width='100%' cellspacing=0 cellpadding=3>";
 
 	$display_text = array(
 		"name" => array(
@@ -158,7 +157,6 @@ function plugins_show($status = 'all') {
 				form_selectable_cell((isset($plugin['webpage']) ? $plugin['webpage'] : ''), $plugin['directory']);
 				form_end_row();
 		}
-		form_end_table();
 	} else {
 		form_alternate_row_color('line0', true);
 		print '<td colspan=6><center>' . __("There are no installed Plugins") . '</center></td>';
@@ -166,6 +164,5 @@ function plugins_show($status = 'all') {
 	}
 
 	print '</table>';
-	html_end_box(FALSE);
 }
 

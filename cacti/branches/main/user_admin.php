@@ -1061,6 +1061,9 @@ function user_filter() {
 			</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(false);
+	?>
 	<script type="text/javascript">
 	<!--
 	function applyFilterChange(objForm) {
@@ -1071,7 +1074,6 @@ function user_filter() {
 	-->
 	</script>
 	<?php
-	html_end_box(false);
 }
 
 function user_get_records(&$total_rows, &$rowspp) {
