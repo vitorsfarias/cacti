@@ -780,6 +780,9 @@ function data_queries_filter() {
 			</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(false);
+	?>
 	<script type="text/javascript">
 	<!--
 	function applyFilterChange(objForm) {
@@ -790,7 +793,6 @@ function data_queries_filter() {
 	-->
 	</script>
 	<?php
-	html_end_box(false);
 }
 
 function get_data_query_records(&$total_rows, &$rowspp) {

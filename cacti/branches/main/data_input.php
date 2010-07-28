@@ -555,6 +555,9 @@ function data_input_filter() {
 			</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(FALSE);
+	?>
 	<script type="text/javascript">
 	<!--
 	function applyFilterChange(objForm) {
@@ -565,7 +568,6 @@ function data_input_filter() {
 	-->
 	</script>
 	<?php
-	html_end_box(FALSE);
 }
 
 function get_data_input_records(&$total_rows, &$rowspp) {
