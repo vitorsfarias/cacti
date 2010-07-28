@@ -562,6 +562,20 @@ function site($refresh = true) {
 		"sort_column" => array("type" => "string", "default" => "name"),
 		"sort_direction" => array("type" => "string", "default" => "ASC"));
 
+	/* initialize page behavior */
+	$table->href           = "sites.php";
+	$table->session_prefix = "sess_sites";
+	$table->filter_func    = "sites_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $site_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* need "process_page_variables" first before calling html_get_page_variable to access global $_pageVars */
 	if (html_get_page_variable("detail") == "false") {
 		$table->table_format = array(
 			"name" => array(
@@ -591,6 +605,8 @@ function site($refresh = true) {
 		$table->table_format = array(
 			"name" => array(
 				"name" => __("Site Name"),
+				"filter" => true,
+				"link" => true,
 				"order" => "ASC"
 			),
 			"device_template_name" => array(
@@ -620,20 +636,7 @@ function site($refresh = true) {
 			)
 		);
 	}
-
-	/* initialize page behavior */
-	$table->href           = "sites.php";
-	$table->session_prefix = "sess_sites";
-	$table->filter_func    = "sites_filter";
-	$table->refresh        = $refresh;
-	$table->resizable      = true;
-	$table->checkbox       = true;
-	$table->sortable       = true;
-	$table->actions        = $site_actions;
-
-	/* we must validate table variables */
-	$table->process_page_variables();
-
+	
 	/* get the records */
 	$table->rows = get_site_records($table->total_rows, $table->rows_per_page);
 
