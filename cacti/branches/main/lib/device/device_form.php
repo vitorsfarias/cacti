@@ -1563,6 +1563,9 @@ function device_filter() {
 			</form>
 		</td>
 	</tr>
+	<?php
+	html_end_box(false);
+	?>
 	<script type="text/javascript">
 	<!--
 	function clearDeviceFilterChange(objForm) {
@@ -1589,7 +1592,6 @@ function device_filter() {
 	-->
 	</script>
 	<?php
-	html_end_box(false);
 }
 
 function get_device_records(&$total_rows, &$rowspp) {
