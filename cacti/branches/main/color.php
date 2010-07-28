@@ -217,7 +217,7 @@ function import_processor($import_data) {
 						db_execute("REPLACE INTO colors SET id=" . $parts[$col_id] . ", hex='" . $parts[$hex_id] . "'");
 
 						/* add the old record to a new color id */
-						db_execute("INSERT INTO colorss (hex) VALUES ('" . $old_hex . "')");
+						db_execute("INSERT INTO colors (hex) VALUES ('" . $old_hex . "')");
 
 						/* get the new id */
 						$new_id = db_fetch_cell("SELECT id FROM colors WHERE hex='" . $old_hex . "'");
@@ -535,11 +535,11 @@ function color() {
 
 		if (action == 'check') {
 			newselectedColors[i] = colorHex
-			$("#" + colorHex +"_hex").css("background-color", "yellow");
-			$("#" + colorHex +"_check").css("background-color", "yellow");
+			$("#_hex" + colorHex).css("background-color", "yellow");
+			$("#_check" + colorHex).css("background-color", "yellow");
 		}else{
-			$("#" + colorHex +"_hex").css("background-color", "white");
-			$("#" + colorHex +"_check").css("background-color", "white");
+			$("#_hex" + colorHex).css("background-color", "white");
+			$("#_check" + colorHex).css("background-color", "white");
 		}
 
 		selectedColors = newselectedColors;
@@ -559,7 +559,7 @@ function color() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Color Actions") . "</strong>", "100", "3", "center", "", true);
+	html_start_box("<strong>" . __("Colors") . "</strong>", "100", "3", "center", "color.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -631,15 +631,15 @@ function color() {
 	<?php
 	html_end_box(false);
 
-	html_start_box("<strong>" . __("Colors") . "</strong>", "100", "3", "center", "color.php?action=edit");
+	html_start_box("&nbsp;", "100", "3", "center", "");
 
 	print "<tr class='rowSubHeader'>";
 	$i = 0;
 
 	while ($i < get_request_var_request("columns")) {
-		print "<th id='Hex' class='textSubHeaderDark'>" . __("Hex") . "</th>"
-		. "<th id='Class' class='textSubHeaderDark'>" . __("Color") . "</th>"
-		. "<th id='spacer' class='textSubHeaderDark'>&nbsp;</th>";
+		print "<th id='Hex$i' class='textSubHeaderDark'>" . __("Hex") . "</th>"
+		. "<th id='Class$i' class='textSubHeaderDark'>" . __("Color") . "</th>"
+		. "<th id='spacer$i' class='textSubHeaderDark'>&nbsp;</th>";
 		$i++;
 	}
 
@@ -679,30 +679,30 @@ function color() {
 			if ($j % get_request_var_request("columns") == 1) {
 				form_alternate_row_color();
 					?>
-					<td id="<?php print $color['hex'] . '_hex';?>" width='1'>
+					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
-					<td id="<?php print $color['hex'] . '_check';?>" align="center">
+					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=1;
 			}elseif ($j != $_REQUEST["columns"]) {
 					?>
-					<td id="<?php print $color['hex'] . '_hex';?>" width='1'>
+					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
-					<td id="<?php print $color['hex'] . '_check';?>" align="center">
+					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
-					<td id="<?php print $color['hex'] . '_hex';?>" width='1'>
+					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
 					</td>
 					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
-					<td id="<?php print $color['hex'] . '_check';?>" align="center">
+					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php
