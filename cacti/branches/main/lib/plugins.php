@@ -105,8 +105,11 @@ function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=
 		# close parenthesis for column and index specification
 		$sql .= ') ';
 		
-		if (isset($data['type'])) {
-			$sql .= plugin_db_format_type_sql($data['type']);
+		if (isset($data['engine'])) { # accept "engine"
+			$sql .= plugin_db_format_engine_sql($data['engine']);
+		}
+		if (isset($data['type'])) { # ... and deprecated "type"
+			$sql .= plugin_db_format_engine_sql($data['type']);
 		}
 		
 		if (isset($data['comment'])) {
@@ -382,7 +385,7 @@ function plugin_draw_navigation_text ($nav) {
 	$data['keys'][] = array('name' => 'constraint_index', 'columns' => 'name, object_type', 'unique' => true);	// multi-level UNIQUE index
 	$data['keys'][] = array('name' => 'name', 'columns' => 'name');												// plain INDEX
 	$data['keys'][] = array('name' => 'object_type', 'columns' => 'object_type');
-	$data['type'] = 'MyISAM';																					// ENGINE
+	$data['engine'] = 'MyISAM';																					// ENGINE
 	$data['comment'] = 'Authorization Control';
 
  */
@@ -419,8 +422,11 @@ function api_plugin_upgrade_table ($plugin, $table, $data, $sql_install_cache=fa
 		}
 		
 		// Check Engine ---------------------------------------------------------------------------------
-		if (isset($data['type'])) { 
-			api_plugin_upgrade_type($plugin, $table, $data['type'], $sql_install_cache);
+		if (isset($data['engine'])) { # accept "engine"
+			api_plugin_upgrade_engine($plugin, $table, $data['engine'], $sql_install_cache);
+		}
+		if (isset($data['type'])) { # ... as well as "type" (deprecated)
+			api_plugin_upgrade_engine($plugin, $table, $data['type'], $sql_install_cache);
 		}
 		
 		// Check Comment ---------------------------------------------------------------------------------
@@ -498,10 +504,10 @@ function api_plugin_upgrade_keys($plugin, $table, $keys, $sql_install_cache=fals
  * upgrade type/engine of a given table
  * @param string $plugin			- name of the plugin/cacti version
  * @param string $table				- name of the table
- * @param array $type				- requested type/engine of table
+ * @param array $engine				- requested type/engine of table
  * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
  */
-function api_plugin_upgrade_type($plugin, $table, $type, $sql_install_cache=false) {
+function api_plugin_upgrade_engine($plugin, $table, $engine, $sql_install_cache=false) {
 	global $database_default;
 	
 	/* we will create ALTER statements for the given table only */
@@ -511,8 +517,8 @@ function api_plugin_upgrade_type($plugin, $table, $type, $sql_install_cache=fals
 	$result = db_fetch_row('SHOW TABLE STATUS FROM `' . $database_default . '` WHERE Name LIKE "' . $table . '"') or die (mysql_error());
 	
 	/* upgrade in case of mismatch */
-	if (isset($result['Engine']) && strtolower($type) != strtolower($result['Engine'])) {
-		plugin_db_execute($table_sql . plugin_db_format_type_sql($type), $plugin, $sql_install_cache);
+	if (isset($result['Engine']) && strtolower($engine) != strtolower($result['Engine'])) {
+		plugin_db_execute($table_sql . plugin_db_format_engine_sql($engine), $plugin, $sql_install_cache);
 	}
 
 }
@@ -877,14 +883,15 @@ function plugin_db_format_key_sql($key) {
 
 /**
  * create sql to define the table type/engine, e.g. MEMORY, MYISAM, ...
- * @param string $type 	- the storage type of the table
+ * @param string $engine 	- the storage type of the table
  * @return string		- sql
  */
-function plugin_db_format_type_sql($type) {
+function plugin_db_format_engine_sql($engine) {
 	
 	$sql = '';
-	if (isset($type)) {
-		$sql .= ' TYPE=' . $type;
+	/* use ENGINE instead of TYPE as the latter is deprecated since MySQL 5.1 */
+	if (isset($engine)) {
+		$sql .= ' ENGINE=' . $engine;
 	}			
 	return $sql;
 }
