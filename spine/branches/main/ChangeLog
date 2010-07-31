@@ -4,6 +4,7 @@ SVN
 -feature: Clean up directory, update bootstrap
 -feature#0001550: Record the polling time for each host to optimize polling times
 -feature: Implement new file based datetime format in the spine log function
+-bug#0001669: Problems with getting data from script using SPINE on Windows Server 2003 x32 
 -bug: Net-snmp API issues cause spine crashes with some SNMP agents
 -bug: Host list not properly initialized
 -bug: Mutex locking issues cause deadlocks in Windows
