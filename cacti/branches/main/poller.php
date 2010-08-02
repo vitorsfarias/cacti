@@ -456,7 +456,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($method == "spine") {
 			chdir(read_config_option("path_webroot"));
 		}
-	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("NOTE: There are no items in your poller for this polling cycle!", TRUE, "POLLER");
 	}
 
@@ -471,7 +471,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_runs_completed == 1) {
 			$sleep_time = $poller_interval - $loop_time - $overhead_time;
 		}else{
-			$sleep_time = $poller_interval -  $loop_time - $loop_start;
+			$sleep_time = $poller_interval -  $loop_time;
 		}
 
 		/* log some nice debug information */
@@ -485,9 +485,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_id == 0) {
 			if ($poller_runs_completed < $poller_runs) {
 				api_plugin_hook('poller_bottom');
-				db_close();
 				usleep($sleep_time * 1000000);
-				db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
 				api_plugin_hook('poller_top');
 			}
 		}
