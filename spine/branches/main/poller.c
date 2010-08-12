@@ -64,9 +64,16 @@ void *child(void *arg) {
 
 	poll_device(device_id, device_thread, last_device_thread, device_data_ids, device_time);
 
-	thread_mutex_lock(LOCK_THREAD);
-	active_threads--;
-	thread_mutex_unlock(LOCK_THREAD);
+	while (TRUE) {
+		if (thread_mutex_trylock(LOCK_THREAD) == 0) {
+			active_threads--;
+			thread_mutex_unlock(LOCK_THREAD);
+
+			break;
+		}
+		
+		usleep(100);
+	}
 
 	SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i" ,active_threads));
 
@@ -1385,11 +1392,12 @@ char *exec_poll(device_t *current_device, char *command) {
 				break;
 			}
 		case 0:
+			#ifdef USING_TPOPEN
 			SPINE_LOG(("Device[%i] ERROR: The POPEN timed out", current_device->id));
 
-			#ifdef USING_TPOPEN
 			close_fd = FALSE;
 			#else
+			SPINE_LOG(("Device[%i] ERROR: The NIFTY POPEN timed out", current_device->id));
 			pid = nft_pchild(cmd_fd);
 			kill(pid, SIGKILL);
 			#endif
