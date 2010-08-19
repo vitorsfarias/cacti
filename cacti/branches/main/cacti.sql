@@ -1776,7 +1776,8 @@ CREATE TABLE graph_templates_item (
   KEY local_graph_id (local_graph_id),
   KEY task_item_id (task_item_id),
   KEY `graph_template_id_local_graph_id` (`graph_template_id`,`local_graph_id`),
-  KEY `local_graph_template_item_id` (`local_graph_template_item_id`)
+  KEY `local_graph_template_item_id` (`local_graph_template_item_id`),
+  KEY `local_graph_id_sequence` (`local_graph_id`,`sequence`)
 ) ENGINE=MyISAM COMMENT='Stores the actual graph item data.';
 
 --
