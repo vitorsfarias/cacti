@@ -584,6 +584,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'task_item_id', 'columns' => 'task_item_id');
 	$key[] = array('name' => 'graph_template_id_local_graph_id', 'columns' => 'graph_template_id,local_graph_id');
 	$key[] = array('name' => 'local_graph_template_item_id', 'columns' => 'local_graph_template_item_id');
+	$key[] = array('name' => 'local_graph_id_sequence', 'columns' => 'local_graph_id,sequence');
 	api_plugin_upgrade_keys('0.8.8', 'graph_templates_item', $key, $show_output, $drop_items);
 	
 	unset($key);
