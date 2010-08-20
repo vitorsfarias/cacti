@@ -524,6 +524,7 @@ void snmp_get_multi(device_t *current_device, snmp_oids_t *snmp_oids, int num_oi
 	int i;
 	int array_count;
 	int index_count;
+	char   temp_result[RESULTS_BUFFER];
 
 	struct nameStruct {
 	    oid             name[MAX_OID_LEN];
@@ -573,11 +574,13 @@ void snmp_get_multi(device_t *current_device, snmp_oids_t *snmp_oids, int num_oi
 						/* check to see if the response and the calling OID's are identical */
 						if (snmp_oid_compare(namep->name, namep->name_len, vars->name, vars->name_length) == 0) {
 							#ifdef USE_NET_SNMP
-							snmp_snprint_value(snmp_oids[i].result, RESULTS_BUFFER, vars->name, vars->name_length, vars);
+							snmp_snprint_value(temp_result, RESULTS_BUFFER, anOID, anOID_len, vars);
 							#else
-							snprint_value(snmp_oids[i].result, vars->name, vars->name_length, vars);
+							sprint_value(temp_result, anOID, anOID_len, vars);
 							#endif
-
+	
+							snprintf(snmp_oids[i].result, RESULTS_BUFFER, "%s", trim(temp_result));
+	
 							/* set the name length to 0 to mark as complete */
 							namep->name_len = 0;
 
