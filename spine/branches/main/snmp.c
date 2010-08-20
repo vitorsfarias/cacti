@@ -574,9 +574,9 @@ void snmp_get_multi(device_t *current_device, snmp_oids_t *snmp_oids, int num_oi
 						/* check to see if the response and the calling OID's are identical */
 						if (snmp_oid_compare(namep->name, namep->name_len, vars->name, vars->name_length) == 0) {
 							#ifdef USE_NET_SNMP
-							snmp_snprint_value(temp_result, RESULTS_BUFFER, anOID, anOID_len, vars);
+							snmp_snprint_value(temp_result, RESULTS_BUFFER, vars->name, vars->name_length, vars);
 							#else
-							sprint_value(temp_result, anOID, anOID_len, vars);
+							sprint_value(temp_result, vars->name, vars->name_length, vars);
 							#endif
 	
 							snprintf(snmp_oids[i].result, RESULTS_BUFFER, "%s", trim(temp_result));
