@@ -2169,7 +2169,6 @@
 			</hash_09002149c4b4800f3e638a6f6bb681919aea80>
 		</inputs>
 	</hash_0000218ad6790c22b693680e041f21d62537ac>
-	Invalid graph template.
 	<hash_0100216632e1e0b58a565c135d7ff90440c335>
 		<name>Interface - Traffic</name>
 		<ds>
@@ -2700,14 +2699,14 @@
 				<graph_template_id>hash_00002106621cd4a9289417cadcb8f9b5cfba80</graph_template_id>
 				<rrd>
 					<item_000>
-						<snmp_field_name>ifInErrors</snmp_field_name>
-						<data_template_id>hash_01002136335cd98633963a575b70639cd2fdad</data_template_id>
-						<data_template_rrd_id>hash_080021c802e2fd77f5b0a4c4298951bf65957c</data_template_rrd_id>
-					</item_000>
-					<item_001>
 						<snmp_field_name>ifInDiscards</snmp_field_name>
 						<data_template_id>hash_01002136335cd98633963a575b70639cd2fdad</data_template_id>
 						<data_template_rrd_id>hash_0800214e2a72240955380dc8ffacfcc8c09874</data_template_rrd_id>
+					</item_000>
+					<item_001>
+						<snmp_field_name>ifOutErrors</snmp_field_name>
+						<data_template_id>hash_01002136335cd98633963a575b70639cd2fdad</data_template_id>
+						<data_template_rrd_id>hash_08002131399c3725bee7e09ec04049e3d5cd17</data_template_rrd_id>
 					</item_001>
 					<item_002>
 						<snmp_field_name>ifOutDiscards</snmp_field_name>
@@ -2715,9 +2714,9 @@
 						<data_template_rrd_id>hash_08002113ebb33f9cbccfcba828db1075a8167c</data_template_rrd_id>
 					</item_002>
 					<item_003>
-						<snmp_field_name>ifOutErrors</snmp_field_name>
+						<snmp_field_name>ifInErrors</snmp_field_name>
 						<data_template_id>hash_01002136335cd98633963a575b70639cd2fdad</data_template_id>
-						<data_template_rrd_id>hash_08002131399c3725bee7e09ec04049e3d5cd17</data_template_rrd_id>
+						<data_template_rrd_id>hash_080021c802e2fd77f5b0a4c4298951bf65957c</data_template_rrd_id>
 					</item_003>
 				</rrd>
 				<sv_graph>
@@ -3342,26 +3341,6 @@
 					</hash_130021bd70bf71108d32f0bf91b24c85b87ff0>
 				</sv_data_source>
 			</hash_1100217d309bf200b6e3cdb59a33493c2e58e0>
-			<hash_110021fb3992f228e2435459cf385cfc511fca>
-				<name>Interface Traffic (long term)</name>
-				<graph_template_id>hash_00002122f41c5b671d49b4923378c7b5dbba32</graph_template_id>
-				<rrd>
-					<item_000>
-						<snmp_field_name>ifInOctets</snmp_field_name>
-						<data_template_id>hash_010021541e17a8649261870166fbd781d0079f</data_template_id>
-						<data_template_rrd_id>hash_080021c2f9cc8190454ae6081de5e58a7e8af6</data_template_rrd_id>
-					</item_000>
-					<item_001>
-						<snmp_field_name>ifOutOctets</snmp_field_name>
-						<data_template_id>hash_010021541e17a8649261870166fbd781d0079f</data_template_id>
-						<data_template_rrd_id>hash_080021670ac6a34b39fe187083589f8aa1bacc</data_template_rrd_id>
-					</item_001>
-				</rrd>
-				<sv_graph>
-				</sv_graph>
-				<sv_data_source>
-				</sv_data_source>
-			</hash_110021fb3992f228e2435459cf385cfc511fca>
 		</graphs>
 	</hash_040021d75e406fdeca4fcef45b8be3a9a63cbc>
 </cacti>
