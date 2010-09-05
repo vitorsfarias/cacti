@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>Traffic (default, LINE1, PrintAll, TotalAll, Reorder)</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Traffic (default, LINE1, PrintAll, TotalAll, Reorder)</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/workspace/cacti087g/host.php</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Graph Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>template_id</td>
+	<td>label=Interface - Traffic (bits/sec) ( de...</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>filter</td>
+	<td>traffic</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Go']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>drp_action</td>
+	<td>label=Create Aggregate Graph</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='main']/form/table[2]/tbody/tr/td[3]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>aggregate_graph_type</td>
+	<td>label=Convert to LINE1 Graph</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>aggregate_total</td>
+	<td>label=Print all Legend Items</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>aggregate_total_type</td>
+	<td>label=Total All Data Sources</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>aggregate_total_prefix</td>
+	<td>All ItemS</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>aggregate_order_type</td>
+	<td>label=Data Source, Graph</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>title_format</td>
+	<td>Aggregate - Traffic (default, LINE1, TotalAll, Reorder)</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>title_format</td>
+	<td>Aggregate - Traffic (default, LINE1, PrintAll, TotalAll, Reorder)</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>agg_color_1</td>
+	<td>label=Green: dark-light, 16</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>agg_color_5</td>
+	<td>label=Yellow: light-dark, 4</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Continue']</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
