@@ -1,4 +1,16 @@
 <?php
+# ----------------------------------------------------------------------------------
+# before running this script, you will have to start the
+# selenium server by executing
+#    /usr/bin/selenium-server &
+#
+# this script does not authenticate against cacti
+# so it requires to deactivate Settings -> Authenticaction -> Login
+# 
+# without specifiying the /path/to/firefox-bin, selenium will call a shell script only.
+# this will result in browser sessions not being terminated
+# remember to check your /path/to/firefox-bin in case test fails
+# ----------------------------------------------------------------------------------
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 
 # unless a hook for 'global_constants' is available, all DEFINEs go here
@@ -55,7 +67,7 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	protected function setUp()
 	{
-		$this->setBrowser('*firefox');
+		$this->setBrowser('*firefox /usr/lib64/firefox-3.5/firefox');
 		$this->setBrowserUrl('http://localhost/');
 	}
 
@@ -73,16 +85,37 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 		$this->type("aggregate_total_prefix", "$att");
 		$this->select("aggregate_order_type", "label=$aot");
 		$this->type("title_format", "Aggregate - Traffic ($title, $agt, $at, $att, $aot)");
-		$this->select("agg_color_1", "label=Green: dark-light, 16");
-		$this->select("agg_color_5", "label=Yellow: light-dark, 4");
-		$this->click("agg_total_1");
-		$this->click("agg_total_2");
-		$this->click("agg_total_3");
-		$this->click("agg_total_4");
-		$this->click("agg_total_5");
-		$this->click("agg_total_6");
-		$this->click("agg_total_7");
-		$this->click("agg_total_8");
+		if ($this->isElementPresent("agg_color_1") &&
+			$this->isElementPresent("agg_color_5") &&
+			$this->isElementPresent("agg_color_6") &&
+			$this->isElementPresent("agg_color_10")) 
+		{
+			$this->select("agg_color_1", "label=Green: dark-light, 16");
+			$this->select("agg_color_5", "label=Red: light yellow-dark red, 8");
+			$this->select("agg_color_6", "label=Yellow: light-dark, 4");
+			$this->select("agg_color_10", "label=Red: light-dark, 16");
+			$this->click("agg_total_1");
+			$this->click("agg_total_2");
+			$this->click("agg_total_3");
+			$this->click("agg_total_4");
+			$this->click("agg_total_5");
+			$this->click("agg_total_6");
+			$this->click("agg_total_7");
+			$this->click("agg_total_8");
+			$this->click("agg_total_9");
+			$this->click("agg_total_10");
+		} else {
+			$this->select("agg_color_1", "label=Green: dark-light, 16");
+			$this->select("agg_color_5", "label=Yellow: light-dark, 4");
+			$this->click("agg_total_1");
+			$this->click("agg_total_2");
+			$this->click("agg_total_3");
+			$this->click("agg_total_4");
+			$this->click("agg_total_5");
+			$this->click("agg_total_6");
+			$this->click("agg_total_7");
+			$this->click("agg_total_8");
+		}
 		$this->click("//input[@value='Continue']");
 		$this->waitForPageToLoad("30000");
 	}
@@ -148,6 +181,42 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 		$this->type("filter", "traffic");
 
 		$this->_iterate_tests("Area/Stack");
+	}
+
+	public function testGTpeak()
+	{
+		$this->open("/workspace/cacti087g/host.php");
+		$this->click("link=Graph Management");
+		$this->waitForPageToLoad("30000");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pea...");
+		$this->waitForPageToLoad("30000");
+		$this->type("filter", "traffic");
+
+		$this->_iterate_tests("Peak");
+	}
+
+	public function testGTposneg()
+	{
+		$this->open("/workspace/cacti087g/host.php");
+		$this->click("link=Graph Management");
+		$this->waitForPageToLoad("30000");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pos...");
+		$this->waitForPageToLoad("30000");
+		$this->type("filter", "traffic");
+
+		$this->_iterate_tests("Pos/Neg");
+	}
+
+	public function testGTline()
+	{
+		$this->open("/workspace/cacti087g/host.php");
+		$this->click("link=Graph Management");
+		$this->waitForPageToLoad("30000");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pur...");
+		$this->waitForPageToLoad("30000");
+		$this->type("filter", "traffic");
+
+		$this->_iterate_tests("Line");
 	}
 }
 ?>
