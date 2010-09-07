@@ -112,7 +112,6 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	char query4[BUFSIZE];
 	char query5[BUFSIZE];
 	char query6[BUFSIZE];
-	char query7[BUFSIZE];
 	char query8[BUFSIZE];
 	char query9[BUFSIZE];
 	char query10[BUFSIZE];
@@ -240,15 +239,8 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 		/* query to setup the next polling interval in cacti */
 		snprintf(query6, BUFSIZE,
 			"UPDATE poller_item"
-			" SET rrd_next_step=rrd_next_step-%i"
-			" WHERE device_id=%i", set.poller_interval, device_id);
-
-		/* query to setup the next polling interval in cacti */
-		snprintf(query7, BUFSIZE,
-			"UPDATE poller_item"
-			" SET rrd_next_step=rrd_step-%i"
-			" WHERE rrd_next_step < 0 and device_id=%i",
-				set.poller_interval, device_id);
+			" SET rrd_next_step=IF((rrd_next_step-%i)>=0, (rrd_next_step-%i), (rrd_step-%i))"
+			" WHERE device_id=%i", set.poller_interval, set.poller_interval, set.poller_interval, device_id);
 
 		/* query to add output records to the poller output table */
 		snprintf(query8, BUFSIZE,
@@ -313,15 +305,8 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 		/* query to setup the next polling interval in cacti */
 		snprintf(query6, BUFSIZE,
 			"UPDATE poller_item"
-			" SET rrd_next_step=rrd_next_step-%i"
-			" WHERE device_id=%i AND poller_id=%i", set.poller_interval, device_id, set.poller_id);
-
-		/* query to setup the next polling interval in cacti */
-		snprintf(query7, BUFSIZE,
-			"UPDATE poller_item"
-			" SET rrd_next_step=rrd_step-%i"
-			" WHERE rrd_next_step < 0 and device_id=%i and poller_id=%i",
-				set.poller_interval, device_id, set.poller_id);
+			" SET rrd_next_step=IF((rrd_next_step-%i)>=0, (rrd_next_step-%i), (rrd_step-%i))"
+			" WHERE device_id=%i AND poller_id=%i", set.poller_interval, set.poller_interval, set.poller_interval, device_id, set.poller_id);
 
 		/* query to add output records to the poller output table */
 		snprintf(query8, BUFSIZE,
