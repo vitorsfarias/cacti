@@ -118,6 +118,8 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 		}
 		$this->click("//input[@value='Continue']");
 		$this->waitForPageToLoad("30000");
+		# find given graph title in the new graph element
+		$this->assertTextPresent($title);
 	}
 
 	private function _iterate_tests($title)
