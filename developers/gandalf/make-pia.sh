@@ -65,22 +65,27 @@ then
 fi
 echo "FILES   $files"
 
+
+#--- cd to working directory
+echo cd $basePath
+cd $basePath
+
 #--- create new directory, where plugin arch shall reside
-echo mkdir "$basePath/$newdir"
-mkdir "$basePath/$newdir"
+echo mkdir "$newdir"
+mkdir "$newdir"
 
 #--- create the diff, ignoring files available in base only and excluding some stuff
-echo diff -burP "$basePath/$basedir/" "$basePath/$piadir/" --exclude-from="$basePath/diff-exclude" | grep -v "Nur in" > "$basePath/$newdir/$diff"
-diff -burP "$basePath/$basedir/" "$basePath/$piadir/" --exclude-from="$basePath/diff-exclude" | grep -v "Nur in" > "$basePath/$newdir/$diff"
+echo diff -burP "$basedir/" "$piadir/" --exclude-from="diff-exclude" | grep -v "Nur in" > "$newdir/$diff"
+diff -burP "$basedir/" "$piadir/" --exclude-from="diff-exclude" | grep -v "Nur in" > "$newdir/$diff"
 
 #--- create files directory
-echo mkdir "$basePath/$newdir/$files"
-mkdir "$basePath/$newdir/$files"
+echo mkdir "$newdir/$files"
+mkdir "$newdir/$files"
 
 #--- copy full files, except for piadoc
-echo rsync -a "$basePath/$piadir/" "$basePath/$newdir/$files" --exclude=.svn --exclude=piadoc
-rsync -a "$basePath/$piadir/" "$basePath/$newdir/$files" --exclude=.svn --exclude=piadoc
+echo rsync -a "$piadir/" "$newdir/$files" --exclude=.svn --exclude=piadoc
+rsync -a "$piadir/" "$newdir/$files" --exclude=.svn --exclude=piadoc
 
 #--- put piadoc into main dir
-echo rsync -a "$basePath/$piadir/piadoc/" "$basePath/$newdir/$files" --exclude=.svn
-rsync -a "$basePath/$piadir/piadoc/" "$basePath/$newdir" --exclude=.svn
+echo rsync -a "$piadir/piadoc/" "$newdir/$files" --exclude=.svn
+rsync -a "$piadir/piadoc/" "$newdir" --exclude=.svn
