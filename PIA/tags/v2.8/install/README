@@ -1,0 +1,30 @@
+/*******************************************************************************
+
+    Author ......... Jimmy Conner
+    Contact ........ jimmy@sqmail.org
+    Home Site ...... http://cactiusers.org
+    Program ........ Plugin Architecture
+    Version ........ 2.8
+    Purpose ........ Provides users with the ability to write or use plugins with Cacti
+
+*******************************************************************************/
+
+
+----[ Installation
+
+    Apply this patch to a freshly installed cacti installation, before configuring Cacti
+    If you use this patch with a RPM distribution, instead of from source, then you may
+    encounter errors with the patching (most likely in global.php).  If so, then please use
+    the already patched files that are included with this.
+
+    Drop the patch into your cacti directory, and then use this command on unix
+    to patch your cacti files.
+
+    patch -p1 -N < cacti-plugin-0.8.7g-PA-v2.8.diff
+
+    Edit your includes/global.php and add a plugin to the $plugins list
+
+    Then you will need to import the pa.sql file into your mysql database.
+
+    More detailed documentation on installation can be found at
+    http://cactiusers.org/wiki/PluginArchitectureInstall
