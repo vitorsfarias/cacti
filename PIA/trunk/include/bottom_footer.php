@@ -32,7 +32,7 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 	</tr>
 
 </table>
-<?php print api_plugin_hook('page_bottom');?>
+<?php api_plugin_hook('page_bottom');?>
 </body>
 </html>
 
