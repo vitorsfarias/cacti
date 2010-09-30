@@ -30,8 +30,9 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 			<br>
 		</td>
 	</tr>
-	
+
 </table>
+<?php print api_plugin_hook('page_bottom');?>
 </body>
 </html>
 
