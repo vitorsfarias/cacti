@@ -262,7 +262,8 @@ function plugins_load_temp_table() {
 	while (true) {
 		if (!plugins_temp_table_exists($table)) {
 			$_SESSION["plugin_temp_table"] = $table;
-			db_execute("CREATE TEMPORARY TABLE $table LIKE plugin_config");
+			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
+			db_execute("TRUNCATE $table");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
 			break;
 		}else{
