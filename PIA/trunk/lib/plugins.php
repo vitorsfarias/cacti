@@ -171,7 +171,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
 		}
 
-		if (sizeof($data['keys'])) {
+		if (isset($data['keys']) && sizeof($data['keys'])) {
 		foreach ($data['keys'] as $key) {
 			if (isset($key['name'])) {
 				$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
