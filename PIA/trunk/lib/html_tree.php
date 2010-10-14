@@ -1199,18 +1199,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		html_graph_area($new_graph_list, "", "view_type=tree&graph_start=" . get_current_graph_start() . "&graph_end=" . get_current_graph_end());
 	}
 
-
-	/* nmid start */
 	if (!empty($leaf_id)) {
 		do_hook_function('tree_after',$host_name.','.get_request_var("leaf_id"));
 	}
 
-        //print '</div>';
-        //print "</td></tr>";
-
 	do_hook_function('tree_view_page_end');
-
-	/* nmid end */
 
 	print $nav;
 
