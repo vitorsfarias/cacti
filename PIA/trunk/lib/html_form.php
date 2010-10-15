@@ -1,4 +1,5 @@
 <?php
+// $Id: html_form.php 2993 2010-10-14 14:30:36Z ladams $
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2010 The Cacti Group                                 |
@@ -528,6 +529,13 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value, $class = "", $on_change = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
+	}
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
 	}
 
 	if (isset($_SESSION["sess_field_values"])) {
