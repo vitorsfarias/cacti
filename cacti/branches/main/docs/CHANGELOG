@@ -92,6 +92,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug: Warning in lib/snmp.php by misspelled variable
 -bug: fix SQL error on api_reapply_suggested_graph_title for non-data-query graphs
 -bug: accept "Connection refused" on TCP ping tests
+-bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
 -documentation: Remove sgml documentation.  See http://docs.cacti.net for Documentation
 -documentation: Explaining Cacti Special Data Sources used on CDEFs, lots of CDEF examples using Special data Sources
 -documentation: Documentation of specific rrdtool feature
