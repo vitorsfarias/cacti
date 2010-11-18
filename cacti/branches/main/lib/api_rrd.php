@@ -244,6 +244,75 @@ function append_CDP_Prep_DS($dom, $version) {
 	}
 }
 
+
+
+/**
+ * append a <RRA> subtree to the <RRD> XML structure
+ * @param object $dom		- the DOM object, where the RRD XML is stored
+ * @param string $version	- rrd file version
+ * @param string $new_cf	- name of new consolidation function
+ * return object			- the modified DOM object
+ */
+function append_RRA($dom, $version, $new_cf) {
+
+	/* get XPATH notation required for positioning */
+	$xpath = new DOMXPath($dom);
+
+	/* get XPATH for source <rra> entry */
+	$src_rra = $xpath->query('/rrd/rra')->item(0);
+
+	/* get all <rra> entries */
+	$itemList = $xpath->query('/rrd/rra'); # TODO: Verify!
+	/* iterate all entries found */
+	if($itemList->length){
+		foreach ($itemList as $item) {
+			/* $item now points to the next <rra> XML Element */
+
+			/* clone the source ds entry to preserve RRDTool notation */
+			$new_rra = $src_rra->cloneNode(true);
+
+
+			/* rrdtool version dependencies */
+			if ($version === RRD_FILE_VERSION3) {
+#				$new_ds->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
+#				$new_ds->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
+			}
+
+			/* the new node always has default entries */
+#			$new_ds->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
+#			$new_ds->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
+
+			/* get all <cdp_prep><ds> entries */
+			$cdpList = $new_rra->query('/rra/cdp_prep'); # TODO: Verify!
+			/* iterate all entries found */
+			if($cdpList->length){
+				foreach ($cdpList as $cdp) {
+					/* $item now points to the next <cdp_prep> XML Element */
+
+					/* rrdtool version dependencies */
+					if ($version === RRD_FILE_VERSION3) {
+						$new_rra->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
+						$new_rra->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
+					}
+
+					/* the new node always has default entries */
+					$new_rra->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
+					$new_rra->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
+				}
+			}
+
+			$new_rra->getElementsByTagName("cf")->item(0)->nodeValue = " $new_cf ";
+			# at this point, we should consider wiping out all values
+			# TODO: Verify!
+
+			/* append new ds entry at end of <rra> child list */
+			$item->appendChild($new_rra);
+		}
+	}
+}
+
+
+
 /**
  * append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
  * @param object $dom	- the DOM object, where the RRD XML is stored
