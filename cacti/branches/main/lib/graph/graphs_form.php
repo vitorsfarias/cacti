@@ -252,39 +252,32 @@ function graph_form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-
-				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
-
-				switch (get_request_var_post("delete_type")) {
-					case '2': /* delete all data sources referenced by this graph */
-						$data_sources = db_fetch_assoc("SELECT " .
-								"data_template_data.local_data_id " .
-							"FROM " .
-								"(data_template_rrd, " .
-								"data_template_data, " .
-								"graph_templates_item) " .
-							"WHERE " .
-								"graph_templates_item.task_item_id=data_template_rrd.id " .
-								"AND data_template_rrd.local_data_id=data_template_data.local_data_id " .
-								"AND graph_templates_item.local_graph_id=" . $selected_items[$i] . " " .
-								"AND data_template_data.local_data_id > 0");
-
-						if (sizeof($data_sources) > 0) {
-							foreach ($data_sources as $data_source) {
-								api_data_source_remove($data_source["local_data_id"]);
-							}
-						}
-
-						break;
-				}
-
-				api_graph_remove($selected_items[$i]);
 			}
+
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
+
+			switch (get_request_var_post("delete_type")) {
+				case '2': /* delete all data sources referenced by this graph */
+					$data_sources = array_rekey(db_fetch_assoc("SELECT data_template_data.local_data_id
+						FROM (data_template_rrd, data_template_data, graph_templates_item)
+						WHERE graph_templates_item.task_item_id=data_template_rrd.id
+						AND data_template_rrd.local_data_id=data_template_data.local_data_id
+						AND graph_templates_item.local_graph_id=" . $selected_items[$i] . "
+						AND data_template_data.local_data_id > 0"), "local_data_id", "local_data_id");
+
+					if (sizeof($data_sources)) {
+						api_data_source_remove_multi($data_sources);
+					}
+
+					break;
+			}
+
+			api_graph_remove_multi($selected_items);
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_TEMPLATE) { /* change graph template */
+			input_validate_input_number(get_request_var_post("graph_template_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var_post("graph_template_id"));
 				/* ==================================================== */
 
 				change_graph_template($selected_items[$i], get_request_var_post("graph_template_id"), true);
@@ -306,20 +299,20 @@ function graph_form_actions() {
 				graph_to_graph_template($selected_items[$i], get_request_var_post("title_format"));
 			}
 		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
+			input_validate_input_number(get_request_var_post("tree_id"));
+			input_validate_input_number(get_request_var_post("tree_item_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var_post("tree_id"));
-				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
 				api_tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_GRAPH, get_request_var_post("tree_item_id"), "", $selected_items[$i], read_graph_config_option("default_rra_id"), 0, 0, 0, false);
 			}
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_HOST) { /* change device */
+			input_validate_input_number(get_request_var_post("device_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
-				input_validate_input_number(get_request_var_post("device_id"));
 				/* ==================================================== */
 
 				db_execute("update graph_local set device_id=" . $_POST["device_id"] . " where id=" . $selected_items[$i]);
@@ -335,6 +328,8 @@ function graph_form_actions() {
 				update_graph_title_cache($selected_items[$i]);
 			}
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_RESIZE) { /* resize graphs */
+			input_validate_input_number(get_request_var_post("graph_height"));
+			input_validate_input_number(get_request_var_post("graph_width"));
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
