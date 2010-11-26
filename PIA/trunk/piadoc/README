@@ -30,6 +30,11 @@
     http://cactiusers.org/wiki/PluginArchitectureInstall
     
  ----[ ChangeLog ]
+    --- SVN ---
+	bug: Prevent searching on Data Sources page from showing odd characters
+	bug: Reduce default font sizes
+	bug: Escape some commands
+
     --- 2.9 ---
     bug#0001802: Plugins That Do Not Contain Keys Generate Errors
     bug#0001822: Always forward to invalid URL, Browser display "The webpage cannot be found" 
