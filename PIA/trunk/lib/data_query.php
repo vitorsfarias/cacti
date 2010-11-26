@@ -92,7 +92,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	debug_log_insert("data_query", "XML file parsed ok.");
 
 	if (isset($script_queries["script_server"])) {
-		$script_queries["script_path"] = "|path_php_binary| -q " . $script_queries["script_path"];
+		$script_queries["script_path"] = "\"|path_php_binary|\" -q " . $script_queries["script_path"];
 	}
 
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $host_id);
