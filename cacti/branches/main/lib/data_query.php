@@ -246,6 +246,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 
 		if ((!isset($field_array["oid"])) && ($field_array["source"] == "index")) {
 			for ($i=0; $i<sizeof($snmp_indexes); $i++) {
+				$oid = $snmp_queries["oid_index"] . "." . $snmp_indexes[$i]["value"];
 				debug_log_insert("data_query", __("Inserting index data for field '%s' [value='%s']", $field_name, $snmp_indexes[$i]["value"]));
 				$values[] = array( "value" => $snmp_indexes[$i]["value"], "index" => $snmp_indexes[$i]["value"], "oid" => $oid);
 			}
@@ -254,6 +255,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 
 			$rewritten_indexes = array();
 			if (isset($field_array["rewrite_index"])) {
+				$errmsg = array();
 				$rewritten_indexes = data_query_rewrite_indexes($errmsg, $device_id, $snmp_query_id, $field_array["rewrite_index"], $snmp_indexes, $fields_processed);
 				if(sizeof($errmsg)){
 					foreach($errmsg as $message){
