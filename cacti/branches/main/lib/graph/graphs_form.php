@@ -1248,7 +1248,7 @@ function get_graph_records(&$total_rows, &$rowspp) {
 		$sql_where = "";
 	}
 
-	if (get_request_var_request("device_id") == "-1") {
+	if (html_get_page_variable("device_id") == "-1") {
 		/* Show all items */
 	}elseif (html_get_page_variable("device_id") == "0") {
 		$sql_where .= " AND graph_local.device_id=0";
