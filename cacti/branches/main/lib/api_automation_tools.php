@@ -1753,11 +1753,12 @@ function verifyDQGraph(&$dqGraph, $ri_check=false) {
 }
 
 /** verifyGraphInputFields	- verifies Graph Input Fields
- * @param $cgInputFields		- input fields as given by user
+ * @param $templateId		- graph template id 
+ * @param $cgInputFields	- input fields as given by user
  * @param $input_fields		- input fields related to the specific graph template
  * returns					- value array as needed by graph creation function
  */
-function verifyGraphInputFields($cgInputFields, $input_fields) {
+function verifyGraphInputFields($templateId, $cgInputFields, $input_fields) {
 
 	$values = array();
 
