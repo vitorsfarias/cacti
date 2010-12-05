@@ -28,6 +28,7 @@
  */
 function api_tree_add_tree_names_to_actions_array() {
 	/* add a list of tree names to the actions dropdown */
+	$actions = array();
 	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
 
 	if (sizeof($trees) > 0) {
