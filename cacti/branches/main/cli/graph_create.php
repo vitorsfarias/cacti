@@ -174,7 +174,7 @@ if (sizeof($parms)) {
 		if ($graph_template["id"] > 0) {
 			$input_fields = getInputFields($graph_template["id"], $quietMode);
 		}
-		$values = verifyGraphInputFields($cgInputFields, $input_fields);
+		$values = verifyGraphInputFields($graph_template["id"], $cgInputFields, $input_fields);
 
 		/* get devices matching criteria */
 		$devices = getDevices($device);
