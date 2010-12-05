@@ -60,7 +60,8 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
 
-	if ($collapsing) { ?>
+	/* we need the addObject function definition in case we have an "$add_text" */
+	if ($collapsing || (strlen($add_text))) { ?>
 		<script type="text/javascript">
 		<!--
 		function <?php print $function_name;?> {
