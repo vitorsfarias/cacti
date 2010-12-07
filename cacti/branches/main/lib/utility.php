@@ -202,6 +202,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				if (isset($snmp_queries["fields"]{$output["snmp_field_name"]}["oid"])) {
 					$oid_suffix = $data_source["snmp_index"];
 					if(isset($snmp_queries["fields"]{$output["snmp_field_name"]}["rewrite_index"])){
+						$errmsg = array();
 						$oid_suffix = data_query_rewrite_indexes($errmsg, $data_source["device_id"], $data_source["snmp_query_id"], $snmp_queries["fields"]{$output["snmp_field_name"]}["rewrite_index"], $oid_suffix);
 						if($oid_suffix == NULL){ // rewriting index failed for some reason
 							if(sizeof($errmsg)){
