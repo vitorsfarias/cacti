@@ -346,6 +346,7 @@ function createDQGraph($snmp_query_array, $graphTitle, $force) {
 			echo __("Graph Added - graph-id: (%d) - data-source-ids: (%d)", $returnArray["local_graph_id"], $dataSourceId) . "\n";
 		}
 	}else{
+		$devices = getDevices(array("id" => $snmp_query_array["device_id"]));
 		echo __("ERROR: Could not find snmp-field %s (%d) for device-id %d (%s)", $snmp_query_array["snmp_field"], $snmp_query_array["snmp_value"], $snmp_query_array["device_id"], $devices[$snmp_query_array["device_id"]]["hostname"]) . "\n";
 		echo __("Try php -q graph_list.php --device-id=%s --list-snmp-fields", $snmp_query_array["device_id"]) . "\n";
 		exit(1);
