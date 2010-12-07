@@ -599,7 +599,7 @@ function api_plugin_rename_column($plugin, $table, $old_column, $new_column, $sq
 
 /**
  * compares existing columns to new ones and creates required SQL statements
- * @param array $result		- result of SHOW INDEXES for given table
+ * @param array $result		- result of SHOW COLUMNS FROM for given table
  * @param array $columns	- new columns
  * @param bool $drop_columns- do you want to drop "superfluous" columns?
  * @return array			- resulting SQL, one statement per array index
@@ -667,7 +667,7 @@ function plugin_db_check_columns($result, $columns, $drop_columns=false) {
 		}
 		foreach ($cols as $c) {
 			$found = FALSE;
-			foreach ($data['columns'] as $d) {
+			foreach ($columns as $d) {
 				if ($c['Field'] == $d['name']) {
 					$found = true;
 				}
