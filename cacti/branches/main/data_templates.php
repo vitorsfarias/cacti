@@ -220,7 +220,7 @@ function data_source_template_save() {
 
 	}
 
-	header("Location: data_templates.php?action=edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id) . (empty($_POST["current_rrd"]) ? "" : "&view_rrd=" . ($_POST["current_rrd"] ? $_POST["current_rrd"] : $data_template_rrd_id)));
+	header("Location: data_templates.php?action=edit&id=" . (empty($data_template_id) ? $_POST["data_template_id"] : $data_template_id));
 }
 
 /* ------------------------

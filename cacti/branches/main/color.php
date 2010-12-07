@@ -214,7 +214,7 @@ function import_processor($import_data) {
 						$new_cnt++;
 
 						/* insert the new record */
-						db_execute("REPLACE INTO colors SET id=" . $parts[$col_id] . ", hex='" . $parts[$hex_id] . "'");
+						db_execute("REPLACE INTO colors SET id=" . $parts[$id_col] . ", hex='" . $parts[$hex_col] . "'");
 
 						/* add the old record to a new color id */
 						db_execute("INSERT INTO colors (hex) VALUES ('" . $old_hex . "')");
@@ -241,7 +241,7 @@ function import_processor($import_data) {
 						$new_cnt++;
 
 						/* insert the new record */
-						db_execute("REPLACE INTO colors SET id=" . $parts[$col_id] . ", hex='" . $parts[$hex_id] . "'");
+						db_execute("REPLACE INTO colors SET id=" . $parts[$id_col] . ", hex='" . $parts[$hex_col] . "'");
 
 						/* add the old record to a new color id */
 						db_execute("INSERT INTO colors (hex) VALUES ('" . $old_hex . "')");
@@ -274,7 +274,7 @@ function import_processor($import_data) {
 							$new_cnt  += 2;
 
 							/* insert the new record */
-							db_execute("REPLACE INTO colors SET id=" . $parts[$col_id] . ", hex='" . $parts[$hex_id] . "'");
+							db_execute("REPLACE INTO colors SET id=" . $parts[$id_col] . ", hex='" . $parts[$hex_col] . "'");
 
 							/* add the old record to a new color id */
 							db_execute("INSERT INTO colors (hex) VALUES ('" . $old_color_hex . "')");
