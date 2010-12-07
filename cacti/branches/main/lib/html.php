@@ -754,7 +754,7 @@ class html_table {
 			}else{
 				html_header_checkbox($this->table_format);
 			}
-		}elseif ($sortable) {
+		}elseif ($this->sortable) {
 			html_header_sort($this->table_foramt, html_get_page_variable("sort_column"), html_get_page_variable("sort_order"));
 		}else{
 			html_header($this->table_format);
@@ -896,7 +896,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	if ($checkbox) {
 		$columns = sizeof($table_format)+1;
 	}else{
-		$columns = sizeof($table_forma);
+		$columns = sizeof($table_format);
 	}
 
 	html_start_box("", "100", "0", "center", "");
@@ -918,7 +918,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 		}
 	}else{
 		if ($sortable) {
-			html_header_sort($table_foramt, $sort_columns, $sort_orders);
+			html_header_sort($table_format, $sort_columns, $sort_orders);
 		}else{
 			html_header($table_format);
 		}
