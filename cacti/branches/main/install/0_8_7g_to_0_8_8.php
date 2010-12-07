@@ -34,7 +34,7 @@ function upgrade_to_0_8_8() {
 	 */
 
 	/* Authenication System upgrade */
-	unset($data);
+	$data = array();
 	$data['columns'][] = array('name' => 'id', 				'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'name',		 	'type' => 'varchar(100)'							, 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'description',		'type' => 'varchar(255)'							, 'NULL' => true, 'default' => 'NULL');
@@ -311,7 +311,7 @@ function upgrade_to_0_8_8() {
 	 */
 	
 	/* add image storage to graph templates, data queries, and device templates */
-	unset($columns);
+	$columns = array();
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
 	api_plugin_upgrade_columns('0.8.8', 'data_template', $columns, $show_output, $no_drop_items);
 
@@ -508,7 +508,7 @@ function upgrade_to_0_8_8() {
 	 * - keys to be removed
 	 * This way, we avoid a difference between cacti.sql and upgraded keys 
 	 */
-	unset($key);
+	$key = array();
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'data_input_field_id,data_template_data_id', 'primary' => true);
 	$key[] = array('name' => 't_value', 'columns' => 't_value');
 	$key[] = array('name' => 'data_template_data_id', 'columns' => 'data_template_data_id');
