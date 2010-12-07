@@ -111,6 +111,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 
+		$snmp_value = array();
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
@@ -221,6 +222,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) { return; }
 
+		$snmp_value = array();
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
