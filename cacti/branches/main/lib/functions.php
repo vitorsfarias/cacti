@@ -1952,6 +1952,8 @@ function move_item_up($table_name, $current_id, $group_query) {
  * @param $command_line - the command to execute
  * @returns - (array) an array containing the command output */
 function exec_into_array($command_line) {
+	$out = array();
+	$err = 0;
 	exec($command_line,$out,$err);
 
 	$command_array = array();
