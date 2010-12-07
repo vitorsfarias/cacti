@@ -619,7 +619,7 @@ function form_dropdown_cb($form_name, $form_sql, $form_sql_id, $form_previous_va
 	}else{
 		if ($where_pos = strpos(strtoupper($form_sql), "WHERE")) {
 			$new_form_sql = substr($form_sql, 0, $where_pos+5) . " $form_sql_id=" . $form_previous_value . " AND " . substr($form_sql, $where_pos+5);
-		}elseif ($orderby_pos = strpos(strtoupper($form_data), "ORDER BY")) {
+		}elseif ($orderby_pos = strpos(strtoupper($form_sql), "ORDER BY")) {
 			$new_form_sql = substr($form_sql, 0, $orderby_pos) . " AND $form_sql_id=" . $form_previous_value . " " . substr($form_sql, $orderby_pos);
 		}else{
 			$new_form_sql = $form_sql . " AND $form_sql_id=" . $form_previous_value;
