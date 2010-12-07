@@ -135,6 +135,7 @@ function exec_background($filename, $args = "") {
    @param $filename - the name of the file to be tested. */
 function file_exists_2gb($filename) {
 	global $config;
+	$rval = 0;
 
 	if (CACTI_SERVER_OS != "win32") {
 		system("test -f $filename", $rval);
