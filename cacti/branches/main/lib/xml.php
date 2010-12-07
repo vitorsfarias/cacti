@@ -29,6 +29,7 @@ function xml2array($data) {
 	$p = xml_parser_create();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+	$vals = array(); $index = array();
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 
@@ -107,6 +108,7 @@ function rrdxport2array($data) {
 	$p = xml_parser_create();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+	$vals = array(); $index = array();
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 
