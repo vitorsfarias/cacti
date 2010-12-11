@@ -31,7 +31,6 @@
  * @return 1 on success, 0 on error
  */
 function auth_control_data_save($data, $category = "SYSTEM", $enable_user_edit = 0, $plugin_id = 0, $control_id = 0) {
-
 	/* Validate input */
 	if (!is_array($data)) {
 		return 0;
@@ -62,5 +61,4 @@ function auth_control_data_save($data, $category = "SYSTEM", $enable_user_edit =
 
 	/* Execute query and return */
 	return db_execute($sql);
-
 }
