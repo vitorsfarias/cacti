@@ -454,7 +454,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
      the sort the column and display the altered results.
    @param $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (id => column_id, name => display_text, order => default_sort_order, align => alignment)
+        dimensions associated with each element (id => column_id, name => display_text, order => default_sort_direction, align => alignment)
    @param $sort_column - the value of current sort column.
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -496,7 +496,6 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			}
 			$sort_class   = "";
 		}
-
 
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
@@ -750,12 +749,12 @@ class html_table {
 		/* draw the header */
 		if ($this->checkbox) {
 			if ($this->sortable) {
-				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_order"));
+				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 			}else{
 				html_header_checkbox($this->table_format);
 			}
 		}elseif ($this->sortable) {
-			html_header_sort($this->table_foramt, html_get_page_variable("sort_column"), html_get_page_variable("sort_order"));
+			html_header_sort($this->table_foramt, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 		}else{
 			html_header($this->table_format);
 		}
@@ -888,9 +887,9 @@ class html_table {
    @param $checkbox - Either true or false if this is to be a checkbox table
    @param $sortable - Is the table sortable
    @param $sort_columns - The current sort column array
-   @param $sort_orders - The current sort order array */
+   @param $sort_directions - The current sort order array */
 function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $page, $key_field = "id", $href = "",
-	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_orders = "") {
+	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_directions = "") {
 
 	/* generate page list navigation */
 	if ($checkbox) {
@@ -912,13 +911,13 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	/* draw the header */
 	if ($checkbox) {
 		if ($sortable) {
-			html_header_sort_checkbox($table_format, $sort_columns, $sort_orders);
+			html_header_sort_checkbox($table_format, $sort_columns, $sort_directions);
 		}else{
 			html_header_checkbox($table_format);
 		}
 	}else{
 		if ($sortable) {
-			html_header_sort($table_format, $sort_columns, $sort_orders);
+			html_header_sort($table_format, $sort_columns, $sort_directions);
 		}else{
 			html_header($table_format);
 		}
