@@ -33,9 +33,9 @@ $repopulate = false;
 /* verify all required php extensions */
 if (!verify_php_extensions()) {exit;}
 
-$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a", 
-"0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k", 
-"0.8.7", "0.8.7a", "0.8.7b", "0.8.7c", "0.8.7d", "0.8.7e", "0.8.7f", "0.8.7g", 
+$cacti_versions = array("0.8", "0.8.1", "0.8.2", "0.8.2a", "0.8.3", "0.8.3a", "0.8.4", "0.8.5", "0.8.5a",
+"0.8.6", "0.8.6a", "0.8.6b", "0.8.6c", "0.8.6d", "0.8.6e", "0.8.6f", "0.8.6g", "0.8.6h", "0.8.6i", "0.8.6j", "0.8.6k",
+"0.8.7", "0.8.7a", "0.8.7b", "0.8.7c", "0.8.7d", "0.8.7e", "0.8.7f", "0.8.7g",
 "0.8.8");
 
 if(!$database_empty) {
@@ -122,25 +122,12 @@ function find_best_path($binary_name) {
 		$search_paths[] = "d:/usr/bin";
 		$search_paths[] = "d:/usr/net-snmp/bin";
 		$search_paths[] = "d:/rrdtool";
-
-		//$search_paths = array("c:/usr/bin", "c:/cacti", "c:/rrdtool", "c:/spine", "c:/php",
-		//	"c:/progra~1/php", "c:/progra~2/php", "c:/net-snmp/bin", "c:/progra~1/net-snmp/bin",
-		//	"c:/progra~2/net-snmp/bin", "d:/usr/bin", "d:/net-snmp/bin",
-		//	"d:/progra~1/net-snmp/bin", "d:/cacti", "d:/rrdtool",
-		//	"d:/spine", "d:/php", "d:/progra~1/php");
 	}else{
 		$search_paths = array("/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/local/bin", "/usr/local/sbin");
 	}
 
-	for ($i=0; $i<count($search_paths); $i++) {
-		if (CACTI_SERVER_OS == "win32") {
-			$path = dosPath($search_paths[$i]);
-		}else{
-			$path = $search_paths[$i];
-		}
-
+	foreach ($search_paths as $path) {
 		if ((file_exists($path . "/" . $binary_name)) && (is_readable($path . "/" . $binary_name))) {
-
 			return $path . "/" . $binary_name;
 		}
 	}
@@ -347,8 +334,7 @@ if ((file_exists($input["path_rrdtool"]["default"])) && ((CACTI_SERVER_OS == "wi
 	$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
 
 	$out_array = array();
-
-	exec($input["path_rrdtool"]["default"], $out_array);
+	exec('"' . $input["path_rrdtool"]["default"] . '"', $out_array);
 
 	if (sizeof($out_array) > 0) {
 		if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
