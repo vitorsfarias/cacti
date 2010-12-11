@@ -54,8 +54,8 @@
 	// remove all open menus from DOM if they should not stay in front at the same time
 	var oldMenus = $(".cacti_dd_menu");
 	if(options.simultaneous == false) {
-	    oldMenus.css({'overflow-y':'hidden'}).slideUp('200');
-	    oldMenus.queue(function () {
+		oldMenus.css({'overflow-y':'hidden'}).slideUp('200');
+		oldMenus.queue(function () {
 			oldMenus.remove();
 			oldMenus.dequeue();
 		});
@@ -67,9 +67,7 @@
 		_open_menu(newMenu);
 	});
 
-
 	function _init_menu(initiator){
-
 		// integrate a base frame
 		$("<div id='" + options.name + "' style='display: none;' class='cacti_dd_menu'>"
 			+ "<div id='" + options.name + "_title' class='title'><h6>" + options.title + "</h6></div>"
@@ -87,8 +85,6 @@
 		menu_subhead 	= $('#' + options.name + '_subtitle');
 		menu_html 		= $('#' + options.name + '_html');
 
-
-
 		// "_html" holds the raw data
 		menu_html.append(options.html);
 		i=1;
@@ -99,7 +95,7 @@
 			subMenu.attr('id', subMenuID);
 			subMenu.click( function() {
 				 _toggle_subMenu( subMenuID);
-			} );
+			});
 			subMenu.children("div").hide();
 			subMenu.find('a:first').html(subMenuTitle + '&nbsp;<img src="' + options.rel + '/images/tw_close.gif" class="icon">');
 			i++;
@@ -165,16 +161,15 @@
 		return menu;
 	}
 
-
 	function _toggle_subMenu(subMenuID){
 
 		if(subMenuID == null) {
-		    var content = menu_html;
-		    menu_back.empty().hide();
-		    menu_content.height(contentHeight);
+			var content = menu_html;
+			menu_back.empty().hide();
+			menu_content.height(contentHeight);
 		}else {
-		    var content = menu_html.find('#' + subMenuID).find("div").eq(0);
-		    menu_back.show();
+			var content = menu_html.find('#' + subMenuID).find("div").eq(0);
+			menu_back.show();
 		}
 
 		menu_back.empty().append(menu_html.find('#' + subMenuID).find('a:first').html());
@@ -197,13 +192,12 @@
 
 		//re-calculate content height if back-button is hidden
 		if(subMenuID != null) {
-		    menu_content.height(menu.height() - menu_head.height() - menu_back.height() - menu_subhead.height() - 16);
+			menu_content.height(menu.height() - menu_head.height() - menu_back.height() - menu_subhead.height() - 16);
 		}
 
 		//return false to suppress unwanted click events
 		return false;
 	}
-
 
 	function _set_timer(timer){
 			timer = ( typeof(timer) != 'number' ) ? options.timeout : timer;
@@ -221,15 +215,15 @@
 		menu = $('#' + options.name);
 		menu.slideUp(menuHeight*3);
 		menu.queue(function () {
-			    menu.remove();
-			    menu.dequeue();
-			});
+			menu.remove();
+			menu.dequeue();
+		});
 	}
 
 	function _open_menu(obj){
 		//wait until oldMenu is completey closed before opening a new one
 		var wait = setInterval(function() {
-		    if( !oldMenus.is(":animated") ) {
+			if( !oldMenus.is(":animated") ) {
 				clearInterval(wait);
 				obj.animate({height: menuHeight}, menuHeight*3);
 
@@ -242,7 +236,7 @@
 				if(options.auto_close !== false) {
 					_set_timer(options.auto_close);
 				}
-		    }
+			}
 		}, 200);
 	}
 

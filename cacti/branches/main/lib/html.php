@@ -1465,19 +1465,8 @@ function draw_menu($user_menu = "") {
 			}
 
 			$id = clean_up_name(strtolower($header_id));
-			$ani  = "onClick='changeMenuState(\"" . $id . "\")'";
-			?>
-			<script type="text/javascript">
-			<!--
-			$().ready(function() {
-				changeMenuState('<?php print $id;?>', true);
-			});
-			-->
-			</script>
-			<?php
-			print "<div id='mm_$id' onMouseDown='return false' class='menuMain nw' $ani>" . $header_array["description"] . "</div>
-				<div>
-				<ul id='ul_$id' class='menuSubMain'>";
+			print "<div id='$id' class='menuMain'>" . $header_array["description"] . "</div><div>
+				<ul id='$id' class='menuSubMain'>";
 		}
 
 		/* pass 2: loop through each top level item and render it */
@@ -1548,8 +1537,25 @@ function draw_menu($user_menu = "") {
 			}
 		}
 	}
-
 	print "</ul></div>";
+	?>
+	<script type="text/javascript">
+	<!--
+	$('.menuMain').each(function(index) {
+		changeMenuState($(this),true);
+		$(this).click(function() {
+			changeMenuState($(this));
+//			if ($(this).next().is(":hidden")) {
+//				$(this).next().show("fast");
+//			} else {
+//				$(this).next().slideUp("fast");
+//			}
+		});
+		$(this).disableSelection();
+	});
+	-->
+	</script>
+	<?php
 }
 
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
