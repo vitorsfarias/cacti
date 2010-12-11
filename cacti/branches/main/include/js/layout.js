@@ -190,51 +190,53 @@ function htmlStartBoxFilterChange(id, initialize) {
 		}
 	}
 
-	if (filter == "c") {
-		document.getElementById(id).style.display  = "none";
-		document.getElementById(id+'_twisty').src = "images/tw_close.gif";
-	}else{
-		document.getElementById(id).style.display  = "";
-		document.getElementById(id+'_twisty').src = "images/tw_open.gif";
+	if (document.getElementById(id+'_twisty')) {
+		if (filter == "c") {
+			document.getElementById(id).style.display  = "none";
+			document.getElementById(id+'_twisty').src  = "images/tw_close.gif";
+		}else{
+			document.getElementById(id).style.display  = "";
+			document.getElementById(id+'_twisty').src  = "images/tw_open.gif";
+		}
 	}
 }
 
-function changeMenuState(id, initialize) {
+function changeMenuState(object, initialize) {
+	id=$(object).attr('id');
 	var filter = readCookieElement("menu", id);
-	var object = document.getElementById("ul_"+id);
 
 	if (filter == "o") {
 		if (initialize != null) {
 			createCookieElement("menu", id, "o");
 		}else{
 			createCookieElement("menu", id, "c");
-			closeMenu(id);
+			$(object).next().slideUp("fast");
 		}
 	}else{
 		if (initialize != null) {
 			if (filter == "c") {
 				createCookieElement("menu", id, "c");
-				hideMenu(id);
+				$(object).next().hide();
 			}else{
 				createCookieElement("menu", id, "o");
 			}
 		}else{
 			createCookieElement("menu", id, "o");
-			openMenu(id);
+			$(object).next().slideDown("fast");
 		}
 	}
 }
 
-function closeMenu(id) {
-	$("#ul_"+id).slideUp("fast");
+function closeMenu(object) {
+	$(object).next().slideUp("fast");
 }
 
-function hideMenu(id) {
-	$("#ul_"+id).hide();
+function hideMenu(object) {
+	$(object).next().hide();
 }
 
-function openMenu(id) {
-	$("#ul_"+id).slideDown("fast");
+function openMenu(object) {
+	$(object).next().slideDown("fast");
 }
 
 var objTh           = null;
