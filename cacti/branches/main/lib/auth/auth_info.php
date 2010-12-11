@@ -65,7 +65,6 @@ function auth_control_get($control_type, $control_id, $data_field = "") {
  * @return array of data rows, false on error
  */
 function auth_control_data_get($data, $category = "SYSTEM", $plugin_id = 0, $control_id = 0) {
-
 	/* Validate input */
 	if (!is_array($data)) {
 		return 0;
@@ -89,13 +88,12 @@ function auth_control_data_get($data, $category = "SYSTEM", $plugin_id = 0, $con
 		}
 		$sql = substr($sql,0,strlen($sql) - 1) . ") AND ";
 	}
-	$sql .= "category = '" . $category . "' AND ";
-	$sql .= "plugin_id = " . $plugin_id . " AND ";
-	$sql .= "control_id = " . $control_id;
+	$sql .= "category='" . $category . "' AND ";
+	$sql .= "plugin_id=" . $plugin_id . " AND ";
+	$sql .= "control_id=" . $control_id;
 
 	/* Execute query and return */
 	return db_fetch_assoc($sql);
-
 }
 
 
