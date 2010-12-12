@@ -1164,7 +1164,6 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	/* update poller_items table for next polling interval */
 	if (device_thread == last_device_thread) {
 		db_query(&mysql, query6);
-		db_query(&mysql, query7);
 	}
 
 	/* record the polling time for the device */
