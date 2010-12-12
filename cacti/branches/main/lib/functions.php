@@ -2197,53 +2197,55 @@ function draw_navigation_text($type = "url") {
 	$current_action = (isset($_REQUEST["action"]) ? $_REQUEST["action"] : "");
 
 	/* find the current page in the big array */
-	$current_array = $nav{$current_page . ":" . $current_action};
-	$current_mappings = explode(",", $current_array["mapping"]);
-	$current_nav = "";
-	$title       = "";
+	if (isset($nav[$current_page . ":" . $current_action])) {
+		$current_array = $nav{$current_page . ":" . $current_action};
+		$current_mappings = explode(",", $current_array["mapping"]);
+		$current_nav = "";
+		$title       = "";
 
-	/* resolve all mappings to build the navigation string */
-	for ($i=0; ($i<count($current_mappings)); $i++) {
-		if (empty($current_mappings[$i])) { continue; }
+		/* resolve all mappings to build the navigation string */
+		for ($i=0; ($i<count($current_mappings)); $i++) {
+			if (empty($current_mappings[$i])) { continue; }
 
-		if  ($i == 0) {
-			/* always use the default for level == 0 */
-			$url = $nav{$current_mappings[$i]}["url"];
-		}elseif (!empty($nav_level_cache{$i}["url"])) {
-			/* found a match in the url cache for this level */
-			$url = $nav_level_cache{$i}["url"];
-		}elseif (!empty($current_array["url"])) {
-			/* found a default url in the above array */
-			$url = $current_array["url"];
-		}else{
-			/* default to no url */
-			$url = "";
-		}
-
-		if ($current_mappings[$i] == "?") {
-			/* '?' tells us to pull title from the cache at this level */
-			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -&gt; ";
-				$title       .= resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . " -> ";
+			if  ($i == 0) {
+				/* always use the default for level == 0 */
+				$url = $nav{$current_mappings[$i]}["url"];
+			}elseif (!empty($nav_level_cache{$i}["url"])) {
+				/* found a match in the url cache for this level */
+				$url = $nav_level_cache{$i}["url"];
+			}elseif (!empty($current_array["url"])) {
+				/* found a default url in the above array */
+				$url = $current_array["url"];
+			}else{
+				/* default to no url */
+				$url = "";
 			}
-		}else{
-			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -&gt; ";
-			$title       .= resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . " -> ";
+
+			if ($current_mappings[$i] == "?") {
+				/* '?' tells us to pull title from the cache at this level */
+				if (isset($nav_level_cache{$i})) {
+					$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . (empty($url) ? "" : "</a>") . " -&gt; ";
+					$title       .= resolve_navigation_variables($nav{$nav_level_cache{$i}["id"]}["title"]) . " -> ";
+				}
+			}else{
+				/* there is no '?' - pull from the above array */
+				$current_nav .= (empty($url) ? "" : "<a href='" . htmlspecialchars($url) . "'>") . resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . (empty($url) ? "" : "</a>") . " -&gt; ";
+				$title       .= resolve_navigation_variables($nav{$current_mappings[$i]}["title"]) . " -> ";
+			}
 		}
-	}
 
-	$current_nav .= resolve_navigation_variables($current_array["title"]);
-	$title       .= resolve_navigation_variables($current_array["title"]);
+		$current_nav .= resolve_navigation_variables($current_array["title"]);
+		$title       .= resolve_navigation_variables($current_array["title"]);
 
-	/* keep a cache for each level we encounter */
-	$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());
-	$_SESSION["sess_nav_level_cache"] = $nav_level_cache;
+		/* keep a cache for each level we encounter */
+		$nav_level_cache{$current_array["level"]} = array("id" => $current_page . ":" . $current_action, "url" => get_browser_query_string());
+		$_SESSION["sess_nav_level_cache"] = $nav_level_cache;
 
-	if ($type == "url") {
-		return $current_nav;
-	}else{
-		return $title;
+		if ($type == "url") {
+			return $current_nav;
+		}else{
+			return $title;
+		}
 	}
 }
 
