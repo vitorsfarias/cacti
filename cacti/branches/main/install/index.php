@@ -334,7 +334,7 @@ if ((file_exists($input["path_rrdtool"]["default"])) && ((CACTI_SERVER_OS == "wi
 	$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
 
 	$out_array = array();
-	exec('"' . $input["path_rrdtool"]["default"] . '"', $out_array);
+	exec(cacti_escapeshellcmd($input["path_rrdtool"]["default"]), $out_array);
 
 	if (sizeof($out_array) > 0) {
 		if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {

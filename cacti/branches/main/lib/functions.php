@@ -1342,8 +1342,8 @@ function get_full_script_path($local_data_id) {
 	}
 
 	$full_path = str_replace("<path_cacti>", CACTI_BASE_PATH, $full_path);
-	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
-	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
+	$full_path = str_replace("<path_snmpget>", cacti_escapeshellcmd(read_config_option("path_snmpget")), $full_path);
+	$full_path = str_replace("<path_php_binary>", cacti_escapeshellcmd(read_config_option("path_php_binary")), $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
@@ -2629,7 +2629,7 @@ function cacti_escapeshellcmd($string) {
 		for ($i=0; $i < strlen($replacements); $i++) {
 			$string = str_replace($replacements[$i], " ", $string);
 		}
-		return $string;
+		return '"' . $string . '"';
 	}
 }
 
