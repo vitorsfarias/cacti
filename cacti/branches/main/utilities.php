@@ -377,7 +377,7 @@ function display_general() {
 
 	$spine_version = "";
 	if ($poller_options[read_config_option("poller_type")] == "spine") {
-		$spine_output = shell_exec(read_config_option("path_spine") . " -v");
+		$spine_output = shell_exec(cacti_escapeshellcmd(read_config_option("path_spine")) . " -v");
 		$spine_version = substr($spine_output, 6, 6);
 	}
 

@@ -54,54 +54,26 @@ function exec_poll($command) {
 /* exec_poll_php - sends a command to the php script server and returns the
      output
    @param $command - the command to send to the php script server
-   @param $using_proc_function - whether or not this version of php is making use
-     of the proc_open() and proc_close() functions (php 4.3+)
    @param $pipes - the array of r/w pipes returned from proc_open()
    @param $proc_fd - the file descriptor returned from proc_open()
    @returns - the output of $command after execution against the php script
      server */
-function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
+function exec_poll_php($command, $pipes, $proc_fd) {
 	global $config;
 	/* execute using php process */
-	if ($using_proc_function == 1) {
-		if (is_resource($proc_fd)) {
-			/* $pipes now looks like this:
-			 * 0 => writeable handle connected to child stdin
-			 * 1 => readable handle connected to child stdout
-			 * 2 => any error output will be sent to child stderr */
+	if (is_resource($proc_fd)) {
+		/* $pipes now looks like this:
+		 * 0 => writeable handle connected to child stdin
+		 * 1 => readable handle connected to child stdout
+		 * 2 => any error output will be sent to child stderr */
 
-			/* send command to the php server */
-			fwrite($pipes[0], $command . "\r\n");
+		/* send command to the php server */
+		fwrite($pipes[0], $command . "\r\n");
 
-			$output = fgets($pipes[1], 4096);
+		$output = fgets($pipes[1], 4096);
 
-			if (substr_count($output, "ERROR") > 0) {
-				$output = "U";
-			}
-		}
-	/* execute the old fashion way */
-	}else{
-		/* formulate command */
-		$command = read_config_option("path_php_binary") . " " . $command;
-
-		if (function_exists("popen")) {
-			if (CACTI_SERVER_OS == "unix")  {
-				$fp = popen($command, "r");
-			}else{
-				$fp = popen($command, "rb");
-			}
-
-			/* return if the popen command was not successfull */
-			if ($fp == 0) {
-				cacti_log("WARNING; Problem with POPEN command.");
-				return "U";
-			}
-
-			$output = fgets($fp, 4096);
-
-			pclose($fp);
-		}else{
-			$output = `$command`;
+		if (substr_count($output, "ERROR") > 0) {
+			$output = "U";
 		}
 	}
 
@@ -200,7 +172,7 @@ function update_reindex_cache($device_id, $data_query_id) {
 			break;
 		case DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE:
 			/* this method requires that some command/oid can be used to determine the
-			 * current number of indexes in the data query 
+			 * current number of indexes in the data query
 			 * pay ATTENTION to quoting!
 			 * the script parameters are usually enclosed in single tics: '
 			 * so we have to enclose the whole list of parameters has to be enclosed in double tics: "

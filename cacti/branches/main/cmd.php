@@ -254,23 +254,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 			2 => array("pipe", "w")  // stderr is a pipe to write to
 			);
 
-		if (function_exists("proc_open")) {
-			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . CACTI_BASE_PATH . "/script_server.php cmd", $cactides, $pipes);
-			$output = fgets($pipes[1], 1024);
-			if (substr_count($output, "Started") != 0) {
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-					cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
-				}
-			}
-			$using_proc_function = true;
-		}else {
-			$using_proc_function = false;
-			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("WARNING: PHP version 4.3 or above is recommended for performance considerations.",$print_data_to_stdout);
+		$cactiphp = proc_open(cacti_escapeshellcmd(read_config_option("path_php_binary")) . " -q " . CACTI_BASE_PATH . "/script_server.php cmd", $cactides, $pipes);
+		$output = fgets($pipes[1], 1024);
+		if (substr_count($output, "Started") != 0) {
+			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
+				cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
 			}
 		}
-	}else{
-		$using_proc_function = FALSE;
 	}
 
 	foreach ($polling_items as $item) {
@@ -344,65 +334,58 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							break;
-							
+
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
 							}
 							$output = trim(exec_poll($item["arg1"]));
-			
+
 							/* remove any quotes from string */
 							$output = strip_quotes($output);
-			
+
 							if (!validate_result($output)) {
 								if (strlen($output) > 20) {
 									$strout = 20;
 								} else {
 									$strout = strlen($output);
 								}
-			
+
 								cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 							}
-			
+
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
 								cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
 							}
 							break;
-							
+
 						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server " . $index_item["arg1"], $print_data_to_stdout);
 							}
-							if ($using_proc_function == true) {
-								$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $using_proc_function, $pipes, $cactiphp)));
-			
-								/* remove any quotes from string */
-								$output = strip_quotes($output);
-			
-								if (!validate_result($output)) {
-									if (strlen($output) > 20) {
-										$strout = 20;
-									} else {
-										$strout = strlen($output);
-									}
-			
-									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+
+							$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
+
+							/* remove any quotes from string */
+							$output = strip_quotes($output);
+
+							if (!validate_result($output)) {
+								if (strlen($output) > 20) {
+									$strout = 20;
+								} else {
+									$strout = strlen($output);
 								}
-			
-								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
-								}
-							}else{
-								if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-									cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: *SKIPPING* SERVER: " . $index_item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
-								}
-			
-								$output = "U";
+
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
 							}
-							
+
+							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
+							}
+
 							break;
 						}
-						
+
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
@@ -501,31 +484,23 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
-				if ($using_proc_function == true) {
-					$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $using_proc_function, $pipes, $cactiphp)));
+				$output = trim(str_replace("\n", "", exec_poll_php($item["arg1"], $pipes, $cactiphp)));
 
-					/* remove any quotes from string */
-					$output = strip_quotes($output);
+				/* remove any quotes from string */
+				$output = strip_quotes($output);
 
-					if (!validate_result($output)) {
-						if (strlen($output) > 20) {
-							$strout = 20;
-						} else {
-							$strout = strlen($output);
-						}
-
-						cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+				if (!validate_result($output)) {
+					if (strlen($output) > 20) {
+						$strout = 20;
+					} else {
+						$strout = strlen($output);
 					}
 
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("Host[$device_id] DS[$data_source] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
-					}
-				}else{
-					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("Host[$device_id] DS[$data_source] *SKIPPING* SERVER: " . $item["arg1"] . " (PHP < 4.3)", $print_data_to_stdout);
-					}
+					cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+				}
 
-					$output = "U";
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
+					cacti_log("Host[$device_id] DS[$data_source] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
 				}
 
 				break;
@@ -550,7 +525,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 		db_execute("UPDATE device SET polling_time='$poll_time' WHERE id='$last_device'");
 	}
 
-	if (($using_proc_function == true) && ($script_server_calls > 0)) {
+	if ($script_server_calls > 0) {
 		// close php server process
 		fwrite($pipes[0], "quit\r\n");
 		fclose($pipes[0]);

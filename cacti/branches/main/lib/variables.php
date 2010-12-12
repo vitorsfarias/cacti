@@ -149,7 +149,7 @@ function substitute_script_query_path($path) {
 	global $config;
 
 	$path = clean_up_path(str_replace("|path_cacti|", CACTI_BASE_PATH, $path));
-	$path = clean_up_path(str_replace("|path_php_binary|", read_config_option("path_php_binary"), $path));
+	$path = clean_up_path(str_replace("|path_php_binary|", cacti_escapeshellcmd(read_config_option("path_php_binary")), $path));
 
 	return $path;
 }

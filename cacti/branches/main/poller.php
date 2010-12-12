@@ -305,18 +305,18 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* Determine Command Name */
 		if ($poller == "2") {
-			$command_string = read_config_option("path_spine");
+			$command_string = cacti_escapeshellcmd(read_config_option("path_spine"));
 			$extra_args     = "";
 			$method         = "spine";
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option("path_spine")));
 		}else if (CACTI_SERVER_OS == "unix") {
-			$command_string = read_config_option("path_php_binary");
+			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
 			$extra_args     = "-q \"" . CACTI_BASE_PATH . "/cmd.php\"";
 			$method         = "cmd.php";
 			$total_procs    = $concurrent_processes;
 		}else{
-			$command_string = read_config_option("path_php_binary");
+			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
 			$extra_args     = "-q \"" . strtolower(CACTI_BASE_PATH . "/cmd.php\"");
 			$method         = "cmd.php";
 			$total_procs    = $concurrent_processes;
