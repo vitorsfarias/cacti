@@ -112,12 +112,14 @@ if (sizeof($parms) == 0) {
 			input_validate_input_number($poller_id);
 
 			break;
+		case "-f":
 		case "--first":
 			$first = $value;
 
 			input_validate_input_number($first);
 
 			break;
+		case "-l":
 		case "--last":
 			$last = $value;
 
@@ -572,9 +574,9 @@ function record_cmdphp_done($poller_id) {
 function display_help() {
 	echo "Cacti cmd.php Data Collector, Copyright 2007-2010 - The Cacti Group\n\n";
 	echo "The slower, yet easier to use Data Collector for Cacti\n\n";
-	echo "usage: cmd.php [--poller=n] [--first=n] [--last=n]\n\n";
+	echo "usage: cmd.php [--poller=n] [-f n | --first=n] [-l n | --last=n]\n\n";
 	echo "Optional:\n";
-	echo "    --poller=n     0, Defines which Cacti poller will be handles the polling of this device.\n";
-	echo "    --first=n      0, Defines the first device for this Data Collector to be polled.\n";
-	echo "    --last=n       0, Defines the last device for this Data Collector to be polled.\n";
+	echo "    --poller=n       Defines which Cacti poller will be handles the polling of this device.\n";
+	echo "    -f n | --first=n Defines the first device for this Data Collector to be polled.\n";
+	echo "    -l n | --last=n  Defines the last device for this Data Collector to be polled.\n";
 }
