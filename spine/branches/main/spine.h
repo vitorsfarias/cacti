@@ -151,6 +151,7 @@
 #define DEFAULT_DB_PORT 3306
 #define DEFAULT_LOGFILE "/var/www/html/cacti/log/cacti.log"
 #define DEFAULT_TIMEOUT 294000000
+#define DEFAULT_DATETIME "\%m/\%d/\%Y \%I:\%M:\%S \%p"
 
 /* threads constants */
 #define LOCK_SNMP 0

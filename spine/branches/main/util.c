@@ -199,6 +199,13 @@ void read_config_options() {
 
 	db_connect(set.dbdb, &mysql);
 
+	/* get the log file data format */
+	if ((res = getsetting(&mysql, "datetime_setting")) != 0 ) {
+		snprintf(set.datetime_setting, SMALL_BUFSIZE, "%s", res);
+	}else{
+		snprintf(set.datetime_setting, SMALL_BUFSIZE, "%s", DEFAULT_DATETIME);
+	}
+
 	/* get the mysql server version */
 	set.dbversion = 0;
 	if ((res = getglobalvariable(&mysql, "version")) != 0 ) {
@@ -225,7 +232,7 @@ void read_config_options() {
 			if (strlen(web_root) != 0) {
 				snprintf(set.path_logfile, SMALL_BUFSIZE, "%s/log/cacti.log", web_root);
 			}else{
-				set.path_logfile[0] ='\0';
+				set.path_logfile[0] = '0';
 			}
 		}
 	}else{
@@ -473,16 +480,6 @@ void read_config_options() {
 	/* log the snmp_max_get_size variable */
 	SPINE_LOG_DEBUG(("DEBUG: The Maximum SNMP OID Get Size is %i", set.snmp_max_get_size));
 
-	/* get the log file data format */
-	if ((res = getsetting(&mysql, "datetime_setting")) != 0 ) {
-		snprintf(set.datetime_setting, SMALL_BUFSIZE, "%s", res);
-	}else{
-		snprintf(set.datetime_setting, SMALL_BUFSIZE, "\%m/\%d/\%Y \%I:\%M:\%S \%p");
-	}
-
-	/* log the script timeout value */
-	SPINE_LOG_DEBUG(("DEBUG: The datatime settings is is %s", set.datetime_setting));
-
 	mysql_free_result(result);
 	db_disconnect(&mysql);
 }
@@ -619,8 +616,8 @@ int spine_log(const char *format, ...) {
 
 	char dateformat[SMALL_BUFSIZE]; /* Formatted Date for Log */
 	char logprefix[SMALL_BUFSIZE]; /* Formatted Log Prefix */
-	char ulogmessage[LOGSIZE];     /* Un-Formatted Log Message */
-	char flogmessage[LOGSIZE];     /* Formatted Log Message */
+	char ulogmessage[LOGSIZE] = "\0";     /* Un-Formatted Log Message */
+	char flogmessage[LOGSIZE] = "\0";     /* Formatted Log Message */
 
 	va_start(args, format);
 	vsprintf(ulogmessage, format, args);
@@ -650,8 +647,6 @@ int spine_log(const char *format, ...) {
 
 	/* log message prefix */
 	snprintf(logprefix, SMALL_BUFSIZE, ", SPINE: Poller[%i] ", set.poller_id);
-
-
 
 	strncat(flogmessage, dateformat,  sizeof(dateformat)-1);
 	strncat(flogmessage, logprefix,   sizeof(flogmessage)-1);
