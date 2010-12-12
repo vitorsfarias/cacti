@@ -984,7 +984,7 @@ function data_source_filter() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);

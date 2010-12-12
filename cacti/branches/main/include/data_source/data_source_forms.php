@@ -146,13 +146,13 @@ $struct_data_source_item = array(
 $fields_data_source = array(
 		"data_template_id" => array(
 			"method" => "autocomplete",
-			"callback_function" => "./lib/ajax/get_data_templates.php",
+			"callback_function" => "layout.php?action=ajax_get_data_templates",
 			"friendly_name" => __("Selected Data Source Template"),
 			"description" => __("The name given to this data template."),
 			),
 		"device_id" => array(
 			"method" => "autocomplete",
-			"callback_function" => "./lib/ajax/get_device_detailed.php",
+			"callback_function" => "layout.php?action=ajax_get_device_detailed",
 			"friendly_name" => __("Host"),
 			"description" => __("Choose the device that this graph belongs to."),
 			),
