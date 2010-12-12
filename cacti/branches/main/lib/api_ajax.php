@@ -489,6 +489,8 @@ function ajax_get_graphs_brief() {
 }
 
 function ajax_get_languages() {
+	global $lang2locale, $cacti_locale, $supported_languages;
+
 	/* rebuild $lang2locale array to find country and language codes easier */
 	$locations = array();
 	foreach($lang2locale as $locale => $properties) {
@@ -500,7 +502,7 @@ function ajax_get_languages() {
 	$supported_languages["cacti"][] = "english_usa.mo";
 	while (false !== ($filename = readdir($dhandle))) {
 		/* language file for the DHTML calendar has to be available too */
-		$path2calendar = "../../include/js/jscalendar/lang/" . str_replace(".mo", ".js", $filename);
+		$path2calendar = "./include/js/jscalendar/lang/" . str_replace(".mo", ".js", $filename);
 		if(isset($locations[$filename]) & file_exists($path2calendar)) {
 			$supported_languages["cacti"][] = $filename;
 		}
@@ -542,11 +544,11 @@ function ajax_get_languages() {
 	$location = $_SERVER['HTTP_REFERER'];
 
 	/* clean up from an existing language parameter */
-	$search = "language=" . $cacti_locale;
-	$location = str_replace(array( "?" . $search . "&", "?" . $search, "&" . $search), array( "?", "", ""), $location);
+	$search    = "language=" . $cacti_locale;
+	$location  = str_replace(array( "?" . $search . "&", "?" . $search, "&" . $search), array( "?", "", ""), $location);
 	$location .= (strpos($location, '?')) ? '&' : '?';
 
-	if(sizeof($supported_languages["cacti"])>0) {
+	if(sizeof($supported_languages["cacti"])) {
 		/* sort list translated names alphabetically */
 		sort($supported_languages["cacti"]);
 		foreach($supported_languages["cacti"] as $lang) {

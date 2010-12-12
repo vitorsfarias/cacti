@@ -329,6 +329,7 @@ $user_auth_realm_filenames = array(
 	"utilities.php" => 15,
 	"vdef.php" => 14,
 	"xaxis_presets.php" => 5,
+	"layout.php" => 7
 );
 
 $hash_type_codes = array(

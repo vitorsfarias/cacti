@@ -31,7 +31,7 @@ $(document).ready(function(){
 	$('#menu_languages').click(
 	function () {
 		$.ajax({
-			method: "get",url: "<?php print CACTI_URL_PATH;?>lib/ajax/get_languages.php",
+			method: "get",url: "<?php print CACTI_URL_PATH;?>layout.php?action=ajax_get_languages",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000); },
 			success: function(html){$('#menu_languages').DropDownMenu({
@@ -49,7 +49,7 @@ $(document).ready(function(){
 	$('#menu_timezones').click(
 	function () {
 		$.ajax({
-			method: "get",url: "<?php print CACTI_URL_PATH;?>lib/ajax/get_timezones.php",
+			method: "get",url: "<?php print CACTI_URL_PATH;?>layout.php?action=ajax_get_timezones",
 			beforeSend: function(){$("#loading").fadeIn(0);},
 			complete: function(){$("#loading").fadeOut(1000);},
 			success: function(html){$('#menu_timezones').DropDownMenu({
@@ -71,7 +71,7 @@ $(document).ready(function(){
 			var menu_id = '#' + this.id;
 			var menu_title = this.name;
 			$.ajax({
-					method: "get",url: "<?php print CACTI_URL_PATH; ?>lib/ajax/get_data_dd_menus.php?" + this.rel,
+					method: "get",url: "<?php print CACTI_URL_PATH; ?>layout.php?action=ajax_get_data_dd_menus&" + this.rel,
 					success: function(html){
 						$(menu_id).DropDownMenu({
 						timeout: 500,

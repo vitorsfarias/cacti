@@ -30,7 +30,7 @@ function graph_view_filter_table($mode = "mode") {
 	<!--
 
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);
@@ -114,7 +114,7 @@ function graph_view_filter_table($mode = "mode") {
 										"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
 										"WHERE graph_templates_graph.graph_template_id > 0 " .
 										(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
-										(empty($sql_where) ? "" : "and $sql_where") . 
+										(empty($sql_where) ? "" : "and $sql_where") .
 										" ORDER BY name");
 							}else{
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
@@ -253,7 +253,7 @@ function get_graph_list_content() {
 			<script type="text/javascript">
 			<!--
 			$().ready(function() {
-				$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 12, highlight: false, scroll: true, scrollHeight: 300 });
+				$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { max: 12, highlight: false, scroll: true, scrollHeight: 300 });
 				$("#device").result(function(event, data, formatted) {
 					if (data) {
 						$(this).parent().find("#device_id").val(data[1]);
@@ -363,7 +363,7 @@ function get_graph_list_content() {
 									"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device_id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
 									"WHERE graph_templates_graph.graph_template_id > 0 " .
 									(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
-									(empty($sql_where) ? "" : "and $sql_where") . 
+									(empty($sql_where) ? "" : "and $sql_where") .
 									" ORDER BY name");
 							}else{
 								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
