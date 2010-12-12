@@ -83,6 +83,7 @@ foreach($parms as $parameter) {
 	case "-d":
 	case "--debug":
 		$debug = TRUE;
+		set_config_option('log_verbosity', 5, true);
 
 		break;
 	case "--force":
