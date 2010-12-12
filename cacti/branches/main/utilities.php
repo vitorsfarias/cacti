@@ -121,6 +121,9 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
+	case 'ajax_get_devices_brief':
+		ajax_get_devices_brief();
+		break;
 	default:
 
 		if (!api_plugin_hook_function('utilities_action', get_request_var_request('action'))) {
@@ -492,7 +495,7 @@ function display_general() {
 		if ((ini_get('memory_limit') == -1)) {
 			print __("You've set memory limit to 'unlimited'.") . "<br/>";
 		}
-		print __("It is highly suggested that you either alter you php.ini memory_limit to %s or higher, or set a value for \$config['memory_limit'] in include/config.php. <br/>This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.", memory_readable($memory_suggestion)); 
+		print __("It is highly suggested that you either alter you php.ini memory_limit to %s or higher, or set a value for \$config['memory_limit'] in include/config.php. <br/>This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.", memory_readable($memory_suggestion));
 		print "</span><br>";
 	}
 	print "</table></td></tr>";		/* end of html_header */
@@ -1326,7 +1329,7 @@ function utilities_view_snmp_cache() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("utilities.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);
@@ -1608,7 +1611,7 @@ function utilities_view_poller_cache() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("utilities.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);

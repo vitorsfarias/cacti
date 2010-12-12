@@ -72,6 +72,10 @@ switch (get_request_var_request("action")) {
 
 		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
+	case 'ajax_item_dnd':
+		graph_template_item_save();
+
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -442,6 +446,48 @@ function template_edit() {
 	}
 }
 
+function graph_template_item_save() {
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+
+	if(!isset($_REQUEST['graph_item']) || !is_array($_REQUEST['graph_item'])) exit;
+	/* graph_item table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['graph_item'][0]);
+
+	/* delivered graph_item ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['graph_item'];
+
+	$sql = "SELECT id, sequence FROM graph_templates_item WHERE graph_template_id = " . $_GET['id'] . " and local_graph_id=0";
+	$graph_templates_items = db_fetch_assoc($sql);
+
+	if(sizeof($graph_templates_items)>0) {
+		foreach($graph_templates_items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
+
+	#if(sizeof(array_diff($new_order, $old_order)) > 0) exit;
+
+	# compute difference of arrays
+	$diff = array_diff_assoc($new_order, $old_order);
+	# nothing to do?
+
+	if(sizeof($diff) == 0) exit;
+	/* ==================================================== */
+
+	foreach($diff as $sequence => $graph_templates_item_id) {
+		# update the template item itself
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE id = $graph_templates_item_id";
+		db_execute($sql);
+		# update all items referring the template item
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE local_graph_template_item_id = $graph_templates_item_id";
+		db_execute($sql);
+	}
+}
+
 function graph_template_display_general($graph_template, $header_label) {
 	include_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 	include_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
@@ -607,7 +653,7 @@ function graph_template_display_items() {
 		//drag and drop for graph items
 		$('#graph_item').tableDnD({
 			onDrop: function(table, row) {
-				$('#AjaxResult').load("lib/ajax/jquery.tablednd/graph_templates_item.ajax.php?id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
+				$('#AjaxResult').load("graph_templates.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
 			}
 		});
 	});
