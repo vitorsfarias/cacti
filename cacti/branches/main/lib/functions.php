@@ -324,9 +324,17 @@ function remove_user_config_option($config_name, $category = "SYSTEM", $user_id 
  * @param $config_name - the name of the configuration setting as specified $settings array
  * @param $value       - the values to be saved
  * @returns          - void */
-function set_config_option($config_name, $value) {
-	global $database_default;
-	db_execute("REPLACE INTO `$database_default`.`settings` SET name='$config_name', value='$value'");
+function set_config_option($config_name, $value, $this_session = false) {
+	global $database_default, $config;
+	if (!$this_session) {
+		db_execute("REPLACE INTO `$database_default`.`settings` SET name='$config_name', value='$value'");
+	}
+
+	if (isset($_SESSION)) {
+		$_SESSION["sess_config_array"][$config_name]  = $value;
+	}else{
+		$config["config_options_array"][$config_name] = $value;
+	}
 }
 
 /**

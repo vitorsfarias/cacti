@@ -71,171 +71,119 @@ $polling_interval = read_config_option("poller_interval");
 $parms = $_SERVER["argv"];
 array_shift($parms);
 
-/* initialize the poller id to 0 without a poller specified */
+/* initialize some variables */
 $poller_id = 0;
+$first     = 0;
+$last      = 0;
+$debug     = false;
+$verbofity = "";
+$stdout    = false;
 
-if (sizeof($parms) == 0) {
-	if (isset($polling_interval)) {
-		$polling_items = db_fetch_assoc("SELECT * FROM poller_item WHERE rrd_next_step<=0 ORDER by device_id");
-		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=" . POLLER_ACTION_SCRIPT_PHP . " AND rrd_next_step<=0)");
-	}else{
-		$polling_items = db_fetch_assoc("SELECT * FROM poller_item ORDER by device_id");
-		$script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE (action=" . POLLER_ACTION_SCRIPT_PHP . ")");
+foreach($parms as $parameter) {
+	@list($arg, $value) = @explode("=", $parameter);
+
+	switch ($arg) {
+	case "--poller":
+		$poller_id = $value;
+		input_validate_input_number($poller_id);
+		break;
+	case "-f":
+	case "--first":
+		$first = $value;
+		input_validate_input_number($first);
+		break;
+	case "-l":
+	case "--last":
+		$last = $value;
+		input_validate_input_number($last);
+		break;
+	case "--debug":
+		$debug  = true;
+		$stdout = true;
+		set_config_option('log_verbosity', 5, true);
+		break;
+	case "--verbosity":
+		$verbosity = $value;
+		input_validate_input_number($verbosity);
+		set_config_option('log_verbosity', $verbosity, true);
+		break;
+	case "--stdout":
+		$stdout = true;
+		break;
+	case "--version":
+	case "-V":
+	case "-H":
+	case "--help":
+		display_help();
+		exit(0);
+	default:
+		echo "ERROR: Invalid Argument: ($arg)\n\n";
+		display_help();
+		exit(1);
 	}
+}
 
-	$print_data_to_stdout = true;
-	/* get the number of polling items from the database */
-	$devices = db_fetch_assoc("select * from device where disabled = '' order by id");
+/* check additional boundary conditions */
+if ($first > $last) {
+	cacti_log("ERROR: The first device id must be less than the second device id.", $stdout);
 
-	/* rework the devices array to be searchable */
-	$devices = array_rekey($devices, "id", $device_struc);
+	/* record the process as having completed */
+	record_cmdphp_done($poller_id);
+	exit("-1");
+}
 
-	$device_count = sizeof($devices);
-	/* TODO: this has already been calculated above, so it should not be done again
-	 * $script_server_calls = db_fetch_cell("SELECT count(*) from poller_item WHERE action=" . POLLER_ACTION_SCRIPT_PHP)
-	 */
-	/* setup next polling interval */
-	if (isset($polling_interval)) {
-		db_execute("UPDATE poller_item SET rrd_next_step=rrd_next_step-" . $polling_interval);
-		db_execute("UPDATE poller_item SET rrd_next_step=rrd_step-" . $polling_interval . " WHERE rrd_next_step < 0");
-	}
+if ($first == 0 && $last == 0) {
+	$sql_where  = "WHERE poller_id=$poller_id";
+	$sqld_where = "WHERE poller_id=$poller_id";
 }else{
-	$print_data_to_stdout = false;
+	$sql_where  = "WHERE poller_id=$poller_id AND id>=$first AND id<=$last";
+	$sqld_where = "WHERE poller_id=$poller_id AND device_id>=$first AND device_id<=$last";
+}
 
-	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+$devices = db_fetch_assoc("SELECT *
+	FROM device
+	$sql_where
+	AND disabled = ''
+	ORDER by id");
 
-		switch ($arg) {
-		case "--poller":
-			$poller_id = $value;
+$devices      = array_rekey($devices, "id", $device_struc);
+$device_count = sizeof($devices);
 
-			input_validate_input_number($poller_id);
+if (isset($polling_interval)) {
+	$polling_items = db_fetch_assoc("SELECT *
+		FROM poller_item
+		$sqld_where 
+		AND rrd_next_step<=0
+		ORDER by device_id");
 
-			break;
-		case "-f":
-		case "--first":
-			$first = $value;
+	$script_server_calls = db_fetch_cell("SELECT count(*)
+		FROM poller_item
+		$sqld_where
+		AND action=" . POLLER_ACTION_SCRIPT_PHP . "
+		AND rrd_next_step<=0");
 
-			input_validate_input_number($first);
+	/* setup next polling interval */
+	db_execute("UPDATE poller_item
+		SET rrd_next_step=rrd_next_step-$polling_interval
+		$sqld_where");
 
-			break;
-		case "-l":
-		case "--last":
-			$last = $value;
+	db_execute("UPDATE poller_item
+		SET rrd_next_step=rrd_step-" . $polling_interval . "
+		$sqld_where
+		AND rrd_next_step<0");
+}else{
+	$polling_items = db_fetch_assoc("SELECT * FROM poller_item
+		$sqld_where
+		ORDER by device_id");
 
-			input_validate_input_number($last);
-
-			break;
-		case "--stdout":
-			$print_data_to_stdout = TRUE;
-
-			break;
-		case "--version":
-		case "-V":
-		case "-H":
-		case "--help":
-			display_help();
-			exit(0);
-		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
-		}
-	}
-
-	/* if the user did not specify devices, assumed ordered arguments */
-	if (!isset($first) || !isset($last)) {
-		if ($_SERVER["argc"] != 3) {
-			cacti_log("ERROR: Invalid Number of Arguments.  You must specify 0 or 2 arguments.",$print_data_to_stdout);
-
-			/* record the process as having completed */
-			record_cmdphp_done($poller_id);
-			exit("-1");
-		}else{
-			$first = $_SERVER["argv"][1];
-			$last  = $_SERVER["argv"][2];
-
-			input_validate_input_number($first);
-			input_validate_input_number($last);
-		}
-	}
-
-	/* if both are not specified by this time, it's an error */
-	if (!isset($first) && !isset($last)) {
-		cacti_log("ERROR: You must specific both the first and last device ids.", $print_data_to_stdout);
-
-		/* record the process as having completed */
-		record_cmdphp_done($poller_id);
-		exit("-1");
-	}
-
-	/* check additional boundary conditions */
-	if ($first > $last) {
-		cacti_log("ERROR: The first device id must be less than the second device id.", $print_data_to_stdout);
-
-		/* record the process as having completed */
-		record_cmdphp_done($poller_id);
-		exit("-1");
-	}
-
-	$devices = db_fetch_assoc("SELECT *
-		FROM device
-		WHERE disabled = '' " .
-		($poller_id == 0 ? "" : "AND poller_id=$poller_id") . "
-		AND id>=$first
-		AND id<=$last
-		ORDER by id");
-	$devices      = array_rekey($devices, "id", $device_struc);
-	$device_count = sizeof($devices);
-
-	if (isset($polling_interval)) {
-		$polling_items = db_fetch_assoc("SELECT *
-			FROM poller_item
-			WHERE device_id>=$first
-			AND device_id<=$last" .
-			($poller_id == 0 ? "" : " AND poller_id=$poller_id") . "
-			AND rrd_next_step<=0
-			ORDER by device_id");
-
-		$script_server_calls = db_fetch_cell("SELECT count(*)
-			FROM poller_item
-			WHERE action=" . POLLER_ACTION_SCRIPT_PHP . "
-			AND device_id>=$first
-			AND device_id<=$last
-			AND rrd_next_step<=0" .
-			($poller_id == 0 ? "" : " AND poller_id=$poller_id"));
-
-		/* setup next polling interval */
-		db_execute("UPDATE poller_item
-			SET rrd_next_step=rrd_next_step-" . $polling_interval . "
-			WHERE device_id>=$first
-			AND device_id<=$last" .
-			($poller_id == 0 ? "" : " AND poller_id=$poller_id"));
-
-		db_execute("UPDATE poller_item
-			SET rrd_next_step=rrd_step-" . $polling_interval . "
-			WHERE rrd_next_step<0
-			AND device_id>=$first
-			AND device_id<=$last" .
-			($poller_id == 0 ? "" : " AND poller_id=$poller_id"));
-	}else{
-		$polling_items = db_fetch_assoc("SELECT * FROM poller_item
-				WHERE device_id>=$first
-				AND device_id<=$last" .
-				($poller_id == 0 ? "" : " AND poller_id=$poller_id") . "
-				ORDER by device_id");
-
-		$script_server_calls = db_fetch_cell("SELECT count(*) FROM poller_item
-				WHERE action=" . POLLER_ACTION_SCRIPT_PHP . "
-				AND device_id>=$first
-				AND device_id<=$last" .
-				($poller_id == 0 ? "" : " AND poller_id=$poller_id"));
-	}
+	$script_server_calls = db_fetch_cell("SELECT count(*) FROM poller_item
+		$sqld_where
+		AND action=" . POLLER_ACTION_SCRIPT_PHP);
 }
 
 /* script server is required if either a script server script or a script server reindex is required */
 $script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action=" . POLLER_ACTION_SCRIPT_PHP);
-cacti_log("Script Server Calls detected: " . $script_server_calls,$print_data_to_stdout);
+cacti_log("Script Server Calls detected: " . $script_server_calls,$stdout);
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHECKED)) {
 	$failure_type = "";
@@ -260,7 +208,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 		$output = fgets($pipes[1], 1024);
 		if (substr_count($output, "Started") != 0) {
 			if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {
-				cacti_log("PHP Script Server Started Properly",$print_data_to_stdout);
+				cacti_log("PHP Script Server Started Properly",$stdout);
 			}
 		}
 	}
@@ -300,10 +248,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 			if ($ping->ping($devices[$device_id]["availability_method"], $devices[$device_id]["ping_method"],
 				$devices[$device_id]["ping_timeout"], $devices[$device_id]["ping_retries"])) {
 				$device_down = false;
-				update_device_status(DEVICE_UP, $device_id, $devices, $ping, $devices[$device_id]["availability_method"], $print_data_to_stdout);
+				update_device_status(DEVICE_UP, $device_id, $devices, $ping, $devices[$device_id]["availability_method"], $stdout);
 			}else{
 				$device_down = true;
-				update_device_status(DEVICE_DOWN, $device_id, $devices, $ping, $devices[$device_id]["availability_method"], $print_data_to_stdout);
+				update_device_status(DEVICE_DOWN, $device_id, $devices, $ping, $devices[$device_id]["availability_method"], $stdout);
 			}
 
 			if (!$device_down) {
@@ -319,7 +267,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 
 				if ((sizeof($reindex) > 0) && (!$device_down)) {
 					if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("Host[$device_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$print_data_to_stdout);
+						cacti_log("Host[$device_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item["hostname"] . "'.",$stdout);
 					}
 
 					foreach ($reindex as $index_item) {
@@ -329,7 +277,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						switch ($index_item["action"]) {
 						case POLLER_ACTION_SNMP: /* snmp */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $print_data_to_stdout);
+								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: OID " . $index_item["arg1"], $stdout);
 							}
 							$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $index_item["arg1"],
 								$item["snmp_version"], $item["snmp_username"], $item["snmp_password"],
@@ -339,7 +287,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $print_data_to_stdout);
+								cacti_log("Host[$host_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script " . $index_item["arg1"], $stdout);
 							}
 							$output = trim(exec_poll($item["arg1"]));
 
@@ -353,17 +301,17 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 									$strout = strlen($output);
 								}
 
-								cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+								cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
 							}
 
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+								cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$stdout);
 							}
 							break;
 
 						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server " . $index_item["arg1"], $print_data_to_stdout);
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: Script Server " . $index_item["arg1"], $stdout);
 							}
 
 							$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
@@ -378,11 +326,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 									$strout = strlen($output);
 								}
 
-								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
 							}
 
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $print_data_to_stdout);
+								cacti_log("Host[$device_id] DS[$data_source]: RECACHE DQ[" . $index_item["data_query_id"] . "]: SERVER: " . $index_item["arg1"] . ", output: $output", $stdout);
 							}
 
 							break;
@@ -391,15 +339,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item["op"] == "=") && ($index_item["assert_value"] != trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "=" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $stdout);
 							db_execute("replace into poller_command (poller_id, time, action, command) values ($poller_id, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["device_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == ">") && ($index_item["assert_value"] < trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . ">" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $stdout);
 							db_execute("replace into poller_command (poller_id, time, action, command) values ($poller_id, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["device_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}else if (($index_item["op"] == "<") && ($index_item["assert_value"] > trim($output))) {
-							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $print_data_to_stdout);
+							cacti_log("ASSERT: '" . $index_item["assert_value"] . "<" . trim($output) . "' failed. Recaching device '" . $item["hostname"] . "', data query #" . $index_item["data_query_id"], $stdout);
 							db_execute("replace into poller_command (poller_id, time, action, command) values ($poller_id, NOW(), " . POLLER_COMMAND_REINDEX . ", '" . $item["device_id"] . ":" . $index_item["data_query_id"] . "')");
 							$assert_fail = true;
 						}
@@ -419,7 +367,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 									$set_spike_kill = true;
 
 									if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
-										cacti_log("Host[$device_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $print_data_to_stdout);
+										cacti_log("Host[$device_id] NOTICE: Spike Kill in Effect for '" . $item["hostname"] . "'.", $stdout);
 									}
 								}
 							}
@@ -436,7 +384,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 			switch ($item["action"]) {
 			case POLLER_ACTION_SNMP: /* snmp */
 				if (($item["snmp_version"] == 0) || (($item["snmp_community"] == "") && ($item["snmp_version"] != 3))) {
-					cacti_log("Host[$device_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $stdout);
 					$output = "U";
 				}else {
 					$output = cacti_snmp_get($item["hostname"], $item["snmp_community"], $item["arg1"],
@@ -454,13 +402,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 							$strout = strlen($output);
 						}
 
-						cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+						cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
 						$output = "U";
 					}
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$device_id] DS[$data_source] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] SNMP: v" . $item["snmp_version"] . ": " . $item["hostname"] . ", dsname: " . $item["rrd_name"] . ", oid: " . $item["arg1"] . ", output: $output",$stdout);
 				}
 
 				break;
@@ -477,11 +425,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						$strout = strlen($output);
 					}
 
-					cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] CMD: " . $item["arg1"] . ", output: $output",$stdout);
 				}
 
 				break;
@@ -498,11 +446,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						$strout = strlen($output);
 					}
 
-					cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $stdout);
 				}
 
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("Host[$device_id] DS[$data_source] SERVER: " . $item["arg1"] . ", output: $output", $print_data_to_stdout);
+					cacti_log("Host[$device_id] DS[$data_source] SERVER: " . $item["arg1"] . ", output: $output", $stdout);
 				}
 
 				break;
@@ -537,7 +485,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 		$return_value = proc_close($cactiphp);
 	}
 
-	if (($print_data_to_stdout) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM)) {
+	if (($stdout) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM)) {
 		/* take time and log performance data */
 		list($micro,$seconds) = explode(" ", microtime());
 		$end = $seconds + $micro;
@@ -548,17 +496,17 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 				"Hosts: %s",
 				$poller_id,
 				round($end-$start,4),
-				$device_count),$print_data_to_stdout);
+				$device_count),$stdout);
 		}else{
 			cacti_log(sprintf("Time: %01.4f s, " .
 				"Theads: N/A, " .
 				"Hosts: %s",
 				round($end-$start,4),
-				$device_count),$print_data_to_stdout);
+				$device_count),$stdout);
 		}
 	}
 }else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
-	cacti_log("NOTE: There are no items in your poller for this polling cycle!", TRUE, "POLLER");
+	cacti_log("NOTE: There are no items in your poller for this polling cycle!", true, "POLLER");
 }
 
 /* record the process as having completed */
@@ -574,9 +522,11 @@ function record_cmdphp_done($poller_id) {
 function display_help() {
 	echo "Cacti cmd.php Data Collector, Copyright 2007-2010 - The Cacti Group\n\n";
 	echo "The slower, yet easier to use Data Collector for Cacti\n\n";
-	echo "usage: cmd.php [--poller=n] [-f n | --first=n] [-l n | --last=n]\n\n";
+	echo "usage: cmd.php [--poller=n] [-f n | --first=n] [-l n | --last=n] [--verbosity=n] [--debug]\n\n";
 	echo "Optional:\n";
-	echo "    --poller=n       Defines which Cacti poller will be handles the polling of this device.\n";
+	echo "   --poller=n        Defines which Cacti poller will be handles the polling of this device.\n";
+	echo "   --verbosity=[1-5] Overrides the Database Value for verbosity allowing easy review of log details.\n";
+	echo "   --debug           Prints debug to standard output only.\n";
 	echo "    -f n | --first=n Defines the first device for this Data Collector to be polled.\n";
 	echo "    -l n | --last=n  Defines the last device for this Data Collector to be polled.\n";
 }
