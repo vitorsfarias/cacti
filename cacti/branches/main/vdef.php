@@ -69,6 +69,10 @@ switch ($_REQUEST["action"]) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
+	case 'ajax_item_dnd':
+		vdef_item_dnd();
+
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -394,6 +398,41 @@ function vdef_remove() {
 	}
 }
 
+function vdef_item_dnd() {
+	/* ================= Input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+	/* ================= Input validation ================= */
+
+	if(!isset($_REQUEST['vdef_item']) || !is_array($_REQUEST['vdef_item'])) exit;
+	/* vdef table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['vdef_item'][0]);
+
+	/* delivered vdef ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['vdef_item'];
+
+	$sql = "SELECT id, sequence FROM vdef_items WHERE vdef_id = " . $_GET['id'];
+	$vdef_items = db_fetch_assoc($sql);
+
+	if(sizeof($vdef_items)>0) {
+		foreach($vdef_items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
+	if(sizeof(array_diff($new_order, $old_order))>0) exit;
+
+	/* the set of sequence numbers has to be the same too */
+	if(sizeof(array_diff_key($new_order, $old_order))>0) exit;
+	/* ==================================================== */
+
+	foreach($new_order as $sequence => $vdef_id) {
+		$sql = "UPDATE vdef_items SET sequence = $sequence WHERE id = $vdef_id";
+		db_execute($sql);
+	}
+}
+
 function vdef_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
@@ -471,7 +510,7 @@ function vdef_edit() {
 <script type="text/javascript">
 	$('#vdef_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("lib/ajax/jquery.tablednd/vdef.ajax.php?id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&"+$.tableDnD.serialize());
+			$('#AjaxResult').load("vdef.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&"+$.tableDnD.serialize());
 		}
 	});
 </script>

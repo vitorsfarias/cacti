@@ -35,7 +35,7 @@ $cdef_actions = array(
 	);
 
 /* set default action */
-if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
+if (!isset($_REQUEST["action"])) $_REQUEST["action"] = "";
 
 switch (get_request_var_request("action")) {
 	case 'save':
@@ -69,6 +69,10 @@ switch (get_request_var_request("action")) {
 		cdef_edit();
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		break;
+	case 'ajaxdnd':
+		cdef_dnd();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -277,6 +281,42 @@ function item_remove() {
 	db_execute("delete from cdef_items where id=" . $_GET["id"]);
 }
 
+function cdef_dnd(){
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ================= Input validation ================= */
+
+	if(!isset($_REQUEST['cdef_item']) || !is_array($_REQUEST['cdef_item'])) exit;
+	/* cdef table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['cdef_item'][0]);
+
+	/* delivered cdef ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['cdef_item'];
+
+	$sql = "SELECT id, sequence FROM cdef_items WHERE cdef_id = " . $_GET['id'];
+	$cdef_items = db_fetch_assoc($sql);
+
+	if(sizeof($cdef_items)>0) {
+		foreach($cdef_items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
+
+	# compute difference of arrays
+	$diff = array_diff_assoc($new_order, $old_order);
+	# nothing to do?
+	if(sizeof($diff) == 0) exit;
+	/* ==================================================== */
+
+	foreach($diff as $sequence => $cdef_id) {
+		$sql = "UPDATE cdef_items SET sequence = $sequence WHERE id = $cdef_id";
+		db_execute($sql);
+	}
+}
+
 function item_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 
@@ -461,7 +501,7 @@ function cdef_edit() {
 <script type="text/javascript">
 	$('#cdef_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("lib/ajax/jquery.tablednd/cdef.ajax.php?id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&"+$.tableDnD.serialize());
+			$('#AjaxResult').load("cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&"+$.tableDnD.serialize());
 		}
 	});
 </script>

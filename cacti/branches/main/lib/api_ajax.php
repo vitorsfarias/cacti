@@ -22,7 +22,7 @@
    +-------------------------------------------------------------------------+
 */
 
-function get_data_dd_menus () {
+function ajax_get_data_dd_menus () {
 	if (!isset($_GET['cacti_dd_menu'])) {
 		$_GET['cacti_dd_menu'] = '';
 	}
@@ -34,10 +34,10 @@ function get_data_dd_menus () {
 			$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=edit&id=' . $_GET["graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
 
 			if (!empty($_GET["graph_template_id"])) {
-			    $output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
+				$output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
 			}
 			if (!empty($_GET["device_id"])) {
-			    $output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
+				$output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
 			}
 			break;
 
@@ -75,7 +75,7 @@ function get_data_dd_menus () {
 	api_plugin_hook_function('start_box_menu', $_GET['cacti_dd_menu']);
 }
 
-function get_data_templates() {
+function ajax_get_data_templates() {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = strtolower(sanitize_search_string(get_request_var("q")));
@@ -99,7 +99,7 @@ function get_data_templates() {
 	}
 }
 
-function get_devices_brief() {
+function ajax_get_devices_brief() {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = strtolower(sanitize_search_string(get_request_var("q")));
@@ -133,7 +133,7 @@ function get_devices_brief() {
 	}
 }
 
-function get_devices_detailed() {
+function ajax_get_devices_detailed() {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = strtolower(sanitize_search_string(get_request_var("q")));
@@ -166,7 +166,7 @@ function get_devices_detailed() {
 	}
 }
 
-function get_form_dropdown() {
+function ajax_get_form_dropdown() {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = sanitize_search_string(get_request_var("q"));
@@ -200,7 +200,7 @@ function get_form_dropdown() {
 	}
 }
 
-function get_graph_templates()  {
+function ajax_get_graph_templates()  {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = strtolower(sanitize_search_string(get_request_var("q")));
@@ -237,7 +237,7 @@ function get_graph_templates()  {
 	}
 }
 
-function get_graph_tree_content() {
+function ajax_get_graph_tree_content() {
 	include(dirname(__FILE__) . "/../../include/global.php");
 	include_once(CACTI_BASE_PATH . "/lib/functions.php");
 	include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
@@ -304,7 +304,7 @@ function get_graph_tree_content() {
 	exit();
 }
 
-function get_graph_tree_items() {
+function ajax_get_graph_tree_items() {
 	include(dirname(__FILE__) . "/../../include/global.php");
 	include_once(dirname(__FILE__) . "/../../lib/functions.php");
 	include_once(dirname(__FILE__) . "/../../lib/html_tree.php");
@@ -451,7 +451,7 @@ function get_graph_tree_items() {
 	exit();
 }
 
-function get_graphs_brief() {
+function ajax_get_graphs_brief() {
 	/* input validation */
 	if (isset($_REQUEST["q"])) {
 		$q = strtolower(sanitize_search_string(get_request_var("q")));
@@ -488,7 +488,7 @@ function get_graphs_brief() {
 	}
 }
 
-function get_languages() {
+function ajax_get_languages() {
 	/* rebuild $lang2locale array to find country and language codes easier */
 	$locations = array();
 	foreach($lang2locale as $locale => $properties) {
@@ -555,7 +555,7 @@ function get_languages() {
 	}
 }
 
-function get_timezones() {
+function ajax_get_timezones() {
 	$location = $_SERVER['HTTP_REFERER'];
 
 	/* define the full array of timezones */

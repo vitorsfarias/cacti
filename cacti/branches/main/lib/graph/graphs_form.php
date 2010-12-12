@@ -606,6 +606,45 @@ function graph_item() {
     graph - Graphs
    ------------------------------------ */
 
+function graph_item_dnd() {
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+
+	if(!isset($_REQUEST['graph_item']) || !is_array($_REQUEST['graph_item'])) exit;
+	/* graph_item table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['graph_item'][0]);
+
+	/* delivered graph_item ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['graph_item'];
+
+	$sql = "SELECT id, sequence FROM graph_templates_item WHERE local_graph_id = " . $_GET['id'] . " and graph_template_id=0";
+	$graph_templates_items = db_fetch_assoc($sql);
+
+	if(sizeof($graph_templates_items)>0) {
+		foreach($graph_templates_items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
+
+	# compute difference of arrays
+	$diff = array_diff_assoc($new_order, $old_order);
+	# nothing to do?
+	if(sizeof($diff) == 0) exit;
+	/* ==================================================== */
+
+	foreach($diff as $sequence => $graph_templates_item_id) {
+		# update the template item itself
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE id = $graph_templates_item_id";
+		db_execute($sql);
+		# update all items referring the template item
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE local_graph_template_item_id = $graph_templates_item_id";
+		db_execute($sql);
+	}
+}
+
 function graph_diff() {
 	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
@@ -932,7 +971,7 @@ function graph_edit() {
 	$form_array = array(
 		"graph_template_id" => array(
 			"method" => "autocomplete",
-			"callback_function" => "./lib/ajax/get_graph_templates.php",
+			"callback_function" => "graphs.php?action=ajax_get_graph_templates",
 			"friendly_name" => __("Selected Graph Template"),
 			"description" => __("Choose a graph template to apply to this graph.  Please note that graph data may be lost if you change the graph template after one is already applied."),
 			"id" => (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"),
@@ -940,7 +979,7 @@ function graph_edit() {
 			),
 		"device_id" => array(
 			"method" => "autocomplete",
-			"callback_function" => "./lib/ajax/get_device_detailed.php",
+			"callback_function" => "graphs.php?action=ajax_get_devices_detailed",
 			"friendly_name" => __("Host"),
 			"description" => __("Choose the device that this graph belongs to."),
 			"id" => (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id),
@@ -1078,7 +1117,7 @@ function graph_edit() {
 <script type="text/javascript">
 	$('#graph_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("lib/ajax/jquery.tablednd/graphs_item.ajax.php?id=<?php isset($_GET["id"]) ? print get_request_var("id") : print "";?>&"+$.tableDnD.serialize());
+			$('#AjaxResult').load("graphs.php?action=ajax_graph_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print "";?>&"+$.tableDnD.serialize());
 //			location.reload();
 		}
 	});
@@ -1186,7 +1225,7 @@ function graphs_filter() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_brief.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("graphs.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);

@@ -56,6 +56,14 @@ switch (get_request_var_request("action")) {
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
+	case 'ajax_get_devices_detailed':
+		ajax_get_devices_detailed();
+
+		break;
+	case 'ajax_get_graphs_brief':
+		ajax_get_graphs_brief();
+
+		break;
 	default:
 		if (!api_plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -509,7 +517,7 @@ function perm_remove() {
  */
 function user_global_edit($user){
 	require_once(CACTI_BASE_PATH . "/lib/auth/auth_info.php");
-	
+
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
 	$header_items = array(
 		array("name" => __("Field")),
@@ -531,7 +539,7 @@ function user_global_edit($user){
 	form_hidden_box("hidden_policy_devices", (isset($_GET["policy_devices"]) ? get_request_var("policy_devices") : "2"), "");
 	form_hidden_box("hidden_policy_graph_templates", (isset($_GET["policy_graph_templates"]) ? get_request_var("policy_graph_templates") : "2"), "");
 	form_hidden_box("save_component_user", "1", "");
-	
+
 }
 
 /**
@@ -557,7 +565,7 @@ function graph_perms_edit() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("./lib/ajax/get_devices_detailed.php", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("user_admin.php?action=ajax_get_devices_detailed", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_devices").val(data[1]);
@@ -565,7 +573,7 @@ function graph_perms_edit() {
 				$(this).parent().find("#perm_devices").val(0);
 			}
 		});
-		$("#graph").autocomplete("./lib/ajax/get_graphs_brief.php?id=<?php print get_request_var("id", 0);?>", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#graph").autocomplete("user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#graph").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_graphs").val(data[1]);
@@ -986,20 +994,20 @@ function user_edit() {
 		case "graph_settings_edit":
 			graph_settings_edit();
 			break;
-			
+
 		case "user_realms_edit":
 			user_realms_edit();
 			break;
-			
+
 		case "graph_perms_edit":
 			graph_perms_edit();
 			break;
-			
+
 		default:
 			if (!api_plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
 				user_realms_edit();
 			}
-		
+
 	}
 	form_save_button_alt("return!user_admin.php");
 }

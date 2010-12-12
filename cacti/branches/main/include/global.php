@@ -171,6 +171,7 @@ include_once(CACTI_BASE_PATH . "/lib/html_utility.php");
 include_once(CACTI_BASE_PATH . "/lib/html_validate.php");
 include_once(CACTI_BASE_PATH . "/lib/variables.php");
 include_once(CACTI_BASE_PATH . "/lib/auth.php");
+include_once(CACTI_BASE_PATH . "/lib/api_ajax.php");
 
 api_plugin_hook('config_arrays');
 api_plugin_hook('config_settings');

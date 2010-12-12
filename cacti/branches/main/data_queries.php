@@ -98,6 +98,14 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
+	case 'ajax_dt_save':
+		data_query_dt_dnd();
+
+		break;
+	case 'ajax_gt_save':
+		data_query_gt_dnd();
+
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -549,7 +557,7 @@ function data_query_item_edit() {
 				print("	<script type='text/javascript'>
 						$('#data_template_suggested_values_" . $data_template["id"] . "').tableDnD({
 								onDrop: function(table, row) {
-								$('#AjaxResult').load(\"lib/ajax/jquery.tablednd/data_query_dt_sv.ajax.php?dt_id=" . $data_template["id"] . "&gt_id=" . $_GET["id"] . "&\"+$.tableDnD.serialize());
+								$('#AjaxResult').load(\"data_queries?action=ajax_dt_save&dt_id=" . $data_template["id"] . "&gt_id=" . $_GET["id"] . "&\"+$.tableDnD.serialize());
 								}
 							});
 						</script>\n");
@@ -613,8 +621,8 @@ function data_query_item_edit() {
 <script type="text/javascript">
 	$('#graph_template_suggested_values_<?php print get_request_var("id");?>').tableDnD({
 		onDrop: function(table, row) {
-			alert("lib/ajax/jquery.tablednd/data_query_gt_sv.ajax.php?gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
-			$('#AjaxResult').load("lib/ajax/jquery.tablednd/data_query_gt_sv.ajax.php?gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
+			alert("data_queries.php?action=ajax_gt_save&gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
+			$('#AjaxResult').load("data_queries.php?action=ajax_gt_save&gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
 		}
 	});
 </script>
@@ -626,6 +634,140 @@ function data_query_item_edit() {
 /* ---------------------
     Data Query Functions
    --------------------- */
+
+function data_query_dt_dnd() {
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("dt_id"));
+	input_validate_input_number(get_request_var("gt_id"));
+	/* ================= Input validation ================= */
+
+	/* $_REQUEST variable depends on data template id */
+	$_request_var = 'data_template_suggested_values_' . $_GET['dt_id'];
+
+	if(!isset($_REQUEST[$_request_var]) || !is_array($_REQUEST[$_request_var])) exit;
+	/* remove all rows not related to a suggested value */
+	foreach ($_REQUEST[$_request_var] as $key => $value) {
+		if (!is_numeric($value)) unset($_REQUEST[$_request_var][$key]);
+	}
+	$new_data = $_REQUEST[$_request_var]; /* array(seq => id) */
+
+	$old_order = array();
+	$new_order = array();
+
+
+	/*
+	 * get old sequence information
+	 */
+	$sql = "SELECT " .
+				"id, " .
+				"sequence, " .
+				"field_name " .
+				"FROM snmp_query_graph_rrd_sv " .
+				"WHERE data_template_id=" . $_GET['dt_id'] . " " .
+				"AND snmp_query_graph_id=" . $_GET['gt_id'] . " " .
+				"ORDER BY field_name, sequence";
+	$old_data = db_fetch_assoc($sql);
+
+	/* rekey old data to get old_order*/
+	if (sizeof($old_data)) {
+		foreach($old_data as $item) {
+			$old_order[$item["id"]]["field_name"] = $item["field_name"];
+			$old_order[$item["id"]]["sequence"] = $item["sequence"];
+		}
+	} /* array(id => array(field_name, sequence)) */
+
+	/*
+	 * build new_order but take field_name into account!
+	 */
+	$sequence = array();							/* remember sequence for each field_name seperately 	*/
+	foreach($new_data as $key => $id) {
+		$fname = $old_order[$id]["field_name"];		/* this is the field we're working on 					*/
+		if (!isset($sequence[$fname])) {
+			$sequence[$fname] = 1; 					/* restart sequence_no each time a new field is found 	*/
+		}
+
+		if ($sequence[$fname] != $old_order[$id]["sequence"]) { 	/* sequence has been changed 			*/
+			$new_order[$id] = $sequence[$fname];					/* remember this record for update		*/
+		}
+		$sequence[$fname]++;						/* increment sequence for current field					*/
+	}
+
+
+	/* ==================================================== */
+	if(sizeof($new_order) == 0) exit;
+	foreach($new_order as $id => $sequence) {
+		# update the template item itself
+		$sql = "UPDATE snmp_query_graph_rrd_sv SET sequence = $sequence WHERE id = $id";
+		db_execute($sql);
+	}
+}
+
+function data_query_gt_dnd() {
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("gt_id"));
+	/* ================= Input validation ================= */
+
+	/* $_REQUEST variable depends on data template id */
+	$_request_var = 'graph_template_suggested_values_' . $_GET['gt_id'];
+
+	if(!isset($_REQUEST[$_request_var]) || !is_array($_REQUEST[$_request_var])) exit;
+	/* remove all rows not related to a suggested value */
+	foreach ($_REQUEST[$_request_var] as $key => $value) {
+		if (!is_numeric($value)) unset($_REQUEST[$_request_var][$key]);
+	}
+	$new_data = $_REQUEST[$_request_var]; /* array(seq => id) */
+
+	$old_order = array();
+	$new_order = array();
+
+
+	/*
+	 * get old sequence information
+	 */
+	$sql = "SELECT " .
+				"id, " .
+				"sequence, " .
+				"field_name " .
+				"FROM snmp_query_graph_sv " .
+				"WHERE snmp_query_graph_id=" . $_GET['gt_id'] . " " .
+				"ORDER BY field_name, sequence";
+	$old_data = db_fetch_assoc($sql);
+
+	/* rekey old data to get old_order*/
+	if (sizeof($old_data)) {
+		foreach($old_data as $item) {
+			$old_order[$item["id"]]["field_name"] = $item["field_name"];
+			$old_order[$item["id"]]["sequence"] = $item["sequence"];
+		}
+	} /* array(id => array(field_name, sequence)) */
+
+
+
+	/*
+	 * build new_order but take field_name into account!
+	 */
+	$sequence = array();							/* remember sequence for each field_name seperately 	*/
+	foreach($new_data as $key => $id) {
+		$fname = $old_order[$id]["field_name"];		/* this is the field we're working on 					*/
+		if (!isset($sequence[$fname])) {
+			$sequence[$fname] = 1; 					/* restart sequence_no each time a new field is found 	*/
+		}
+
+		if ($sequence[$fname] != $old_order[$id]["sequence"]) { 	/* sequence has been changed 			*/
+			$new_order[$id] = $sequence[$fname];					/* remember this record for update		*/
+		}
+		$sequence[$fname]++;						/* increment sequence for current field					*/
+	}
+
+
+	/* ==================================================== */
+	if(sizeof($new_order) == 0) exit;
+	foreach($new_order as $id => $sequence) {
+		# update the template item itself
+		$sql = "UPDATE snmp_query_graph_sv SET sequence = $sequence WHERE id = $id";
+		db_execute($sql);
+	}
+}
 
 function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc("select id from snmp_query_graph where snmp_query_id=" . $id);

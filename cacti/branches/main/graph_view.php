@@ -51,6 +51,10 @@ switch(get_request_var_request("action")){
 		exit;
 
 		break;
+	case "ajax_get_tree_content":
+		ajax_get_graph_tree_content();
+
+		break;
 	default:
 }
 }
@@ -95,6 +99,10 @@ if (!isset($_REQUEST["action"])) {
 		$_REQUEST["action"] = "preview";
 
 		break;
+	case 'ajax_get_tree_items':
+		ajax_get_graph_tree_items();
+
+		break;
 	}
 }
 
@@ -121,7 +129,7 @@ case 'tree':
 			data : { type : "json", async : true,
 				opts : {
 					method : "GET",
-					url : "lib/ajax/get_graph_tree_items.php?type=list&tree_id=<?php print $_REQUEST["tree_id"];?>" }
+					url : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>" }
 				},
 			languages : [ "en" ],
 			callback : {
@@ -150,7 +158,7 @@ case 'tree':
 
 		// Functions
 		Panel.loadContent = function(id) {
-			$.get("lib/ajax/get_graph_tree_content.php?id=" + id, function (data) {
+			$.get("graph_view.php?action=ajax_get_tree_content&id=" + id, function (data) {
 				$("#graphs").html(data);
 			});
 		}
@@ -164,7 +172,7 @@ case 'tree':
 		}
 		$tree_id = "tree_" . $tree_id . "_leaf_0";
 		?>
-		$.get("lib/ajax/get_graph_tree_content.php?id=<?php print $tree_id;?>", function (data) {
+		$.get("graph_view.php?action=ajax_get_tree_content&id=<?php print $tree_id;?>", function (data) {
 			$("#graphs").html(data);
 		});
 	});
