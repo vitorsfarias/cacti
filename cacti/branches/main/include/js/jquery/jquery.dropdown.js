@@ -225,7 +225,7 @@
 		var wait = setInterval(function() {
 			if( !oldMenus.is(":animated") ) {
 				clearInterval(wait);
-				obj.animate({height: menuHeight}, menuHeight*3);
+				obj.show().animate({height: menuHeight}, menuHeight*3);
 
 				//setup contentHeight;
 				menu_content.height(menuHeight - menu_head.height() - menu_back.height() - menu_subhead.height()-4);
