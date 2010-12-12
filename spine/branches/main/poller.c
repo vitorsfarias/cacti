@@ -83,7 +83,7 @@ void *child(void *arg) {
 	exit(0);
 }
 
-/*! \fn void poll_device(int device_id, int device_thread, int device_data_ids)
+/*! \fn void poll_device(int device_id, int device_thread, int device_data_ids, int device_data_ids, char *device_time)
  *  \brief core Spine function that polls a device
  *  \param device_id integer value for the device_id from the devices table in Cacti
  *

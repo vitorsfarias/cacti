@@ -32,7 +32,7 @@
 */
 
 extern void *child(void *arg);
-extern void poll_device(int device_id, int device_thread, int device_data_ids);
+extern void poll_device(int device_id, int device_thread, int device_data_ids, int device_data_ids, char* device_time);
 extern char *exec_poll(device_t *current_device, char *command);
 extern int is_multipart_output(char *result);
 extern int validate_result(char *result);
