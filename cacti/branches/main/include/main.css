@@ -743,11 +743,13 @@ table.resizable th {
 /* tabs */
 .tabs a.tabSelected {
 	border:0px;
+	border-radius:5px 5px 0px 0px;
+	-moz-border-radius:5px 5px 0px 0px;
 	border-bottom:0px;
 	color:#ffffff;
 	display:block;
 	float:left;
-	margin-right:4px;
+	margin-right:1px;
 	font-size:13px;
 	font-weight:bold;
 	height:14px;
@@ -759,11 +761,13 @@ table.resizable th {
 
 .tabs a.tabDefault {
 	border:0px;
+	border-radius:5px 5px 0px 0px;
+	-moz-border-radius:5px 5px 0px 0px;
 	border-bottom:0px;
 	color:#ffffff;
 	display:block;
 	float:left;
-	margin-right: 4px;
+	margin-right:1px;
 	font-size:13px;
 	font-weight:bold;
 	height:14px;
