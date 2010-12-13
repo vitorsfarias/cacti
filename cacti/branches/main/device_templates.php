@@ -648,20 +648,12 @@ function device_template_display_general($device_template, $header_label) {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_edit'>\n";
 	html_start_box("<strong>" . __("Device Templates") . "</strong> $header_label", "100", "0", "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'device_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(device_template_form_list(), (isset($device_template) ? $device_template : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 	form_hidden_box("id", (isset($device_template["id"]) ? $device_template["id"] : "0"), "");
 	form_hidden_box("save_component_template", "1", "");

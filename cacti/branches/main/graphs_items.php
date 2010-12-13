@@ -409,13 +409,7 @@ function item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_item_edit'>\n";
 	html_start_box("<strong>" . __("Graph Items") . "</strong> $header_label", "100", 0, "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
 
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_graph_item_edit');
 	draw_edit_form(
 		array(
 			"config" => array("no_form_tag" => true),
@@ -433,7 +427,6 @@ function item_edit() {
 	form_hidden_box("save_component_item", "1", "");
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	form_save_button_alt("path!graphs.php|action!edit|id!" . get_request_var_request("local_graph_id"));

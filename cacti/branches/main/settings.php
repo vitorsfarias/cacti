@@ -81,13 +81,6 @@ default:
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='settings'>\n";
 	html_start_box("<strong>" . __("Cacti Settings") . " (" . $tabs[$current_tab] . ")</strong>", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'settings','left wp100');
 
 	$form_array = array();
 
@@ -116,7 +109,6 @@ default:
 			"fields" => $form_array
 	));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");

@@ -304,13 +304,6 @@ function item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='form_vdef'>\n";
 	html_start_box("<strong>" . __("VDEF Items") . "</strong> $header_label", "100", 0, "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_vdef_edit');
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
@@ -365,7 +358,6 @@ function item_edit() {
 	<?php
 	form_end_row();
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	form_hidden_box("id", (isset($_GET["id"]) ? get_request_var("id") : "0"), "");
@@ -450,20 +442,12 @@ function vdef_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='vdef_edit'>\n";
 	html_start_box("<strong>". __("VDEF's") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_vdef_edit','left wp100');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(preset_vdef_form_list(), (isset($vdef) ? $vdef : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 	form_hidden_box("id", (isset($vdef["id"]) ? $vdef["id"] : "0"), "");
 	form_hidden_box("save_component_vdef", "1", "");

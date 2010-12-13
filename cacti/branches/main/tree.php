@@ -486,20 +486,12 @@ function tree_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='tree_edit'>\n";
 	html_start_box("<strong>" . __("Graph Trees") . "</strong> $header_label", "100", "3", "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'template');
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(graph_tree_form_list(), (isset($tree) ? $tree : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box(FALSE);
 
 	if (!empty($_GET["id"])) {

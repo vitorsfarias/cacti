@@ -272,20 +272,12 @@ function poller_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='poller_edit'>\n";
 	html_start_box("<strong>" . __("Pollers") . "</strong> $header_label", "100", 0, "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'poller_edit');
 
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables(poller_form_list(), (isset($poller) ? $poller : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	form_save_button_alt();

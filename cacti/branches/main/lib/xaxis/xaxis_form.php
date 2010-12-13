@@ -243,12 +243,6 @@ function item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_item_edit'>\n";
 	html_start_box("<strong>" . __("X-Axis Items") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'template');
 
 	draw_edit_form(
 		array(
@@ -257,7 +251,6 @@ function item_edit() {
 			)
 		);
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 
@@ -284,19 +277,12 @@ function xaxis_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_edit'>\n";
 	html_start_box("<strong>". __("X-Axis Presets") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_xaxis_edit','left wp100');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(preset_xaxis_form_list(), (isset($xaxis) ? $xaxis : array()))
 	));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	if (!empty($_GET["id"])) {

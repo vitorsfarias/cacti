@@ -413,20 +413,12 @@ function data_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_input_edit'>\n";
 	html_start_box("<strong>" . __("Data Input Methods") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'data_input','left wp100');
 
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables(data_input_form_list(), (isset($data_input) ? $data_input : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	if (!empty($_GET["id"])) {

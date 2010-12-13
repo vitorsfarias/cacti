@@ -1218,13 +1218,6 @@ function html_simple_decode($string) {
  */
 function draw_template_edit_form ($table_id, $edit_struct, $edit_data, $use_template=false) {
 
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 1, false, $table_id);
-
 	$form_array = array();
 
 	while (list($field_name, $field_array) = each($edit_struct)) {
@@ -1255,7 +1248,5 @@ function draw_template_edit_form ($table_id, $edit_struct, $edit_data, $use_temp
 			"fields" => inject_form_variables($form_array, $edit_data)
 			)
 		);
-
-	print "</table></td></tr>";		/* end of html_header */
 
 }

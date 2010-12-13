@@ -318,20 +318,12 @@ function site_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='site_edit'>\n";
 	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'site_edit');
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk", "no_form_tag" => true),
 		"fields" => inject_form_variables(site_form_list(), (isset($site) ? $site : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 	form_hidden_box("id", (isset($site["id"]) ? $site["id"] : "0"), "");
 	form_hidden_box("hidden_id", (isset($site["hidden_id"]) ? $site["hidden_id"] : "0"), "");

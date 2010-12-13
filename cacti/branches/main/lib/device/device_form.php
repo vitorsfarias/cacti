@@ -844,12 +844,6 @@ function device_display_general($device, $device_text) {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'device');
 
 	/* preserve the device template id if passed in via a GET variable */
 	$fields_device_edit = device_form_list();
@@ -914,7 +908,6 @@ function device_display_general($device, $device_text) {
 		"fields" => inject_form_variables(device_availability_form_list(), (isset($template_settings) ? $template_settings : $device))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box(!isset($device["id"]));
 	form_hidden_box("id", (isset($device["id"]) ? $device["id"] : "0"), "");
 	form_hidden_box("hidden_device_template_id", (isset($device["device_template_id"]) ? $device["device_template_id"] : "0"), "");

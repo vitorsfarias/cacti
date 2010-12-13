@@ -396,20 +396,12 @@ function data_query_item_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_item_edit'>\n";
 	html_start_box("<strong>" . __("Associated Graph/Data Source Templates") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'assoc_templates', 'left wp100');
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(data_query_item_form_list(), (isset($snmp_query_item) ? $snmp_query_item : array()), $_GET)
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box(true);
 
 	if (!empty($snmp_query_item["id"])) {
@@ -802,16 +794,9 @@ function data_query_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_query_edit'>\n";
 	html_start_box("<strong>" . __("Data Queries") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'data_query', 'left wp100');
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(data_query_form_list(), (isset($snmp_query) ? $snmp_query : array()))
 		));
 
