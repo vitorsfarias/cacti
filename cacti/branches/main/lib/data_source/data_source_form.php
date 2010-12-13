@@ -737,12 +737,6 @@ function data_source_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_source_edit'>\n";
 	html_start_box("<strong>" . __("Data Source Template Selection") . "</strong> $header_label", "100", 0, "center", (isset($_GET["id"]) ? "menu::" . __("Data Source Options") . ":data_source_options:html_start_box:" . $dd_menu_options : ""),"");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'template');
 
 	$form_array = fields_data_source_form_list();
 	$form_array["data_template_id"]["id"] = (isset($data_template["id"]) ? $data_template["id"] : "0");
@@ -752,12 +746,11 @@ function data_source_edit() {
 
 	draw_edit_form(
 		array(
-			"config" => array(),
+			"config" => array("no_form_tag" => true),
 			"fields" => $form_array
 			)
 		);
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 	form_hidden_box("hidden_data_template_id", (isset($data_template["id"]) ? $data_template["id"] : "0"), "");
 	form_hidden_box("hidden_device_id", (empty($data_local["device_id"]) ? (isset($_GET["device_id"]) ? $_GET["device_id"] : "0") : $data_local["device_id"]), "");

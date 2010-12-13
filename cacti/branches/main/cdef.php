@@ -441,20 +441,12 @@ function cdef_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='cdef_edit'>\n";
 	html_start_box("<strong>". __("CDEF's") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_cdef_edit','left wp100');
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(preset_cdef_form_list(), (isset($cdef) ? $cdef : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	if (!empty($_GET["id"])) {

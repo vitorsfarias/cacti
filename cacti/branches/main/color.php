@@ -455,20 +455,12 @@ function color_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='color_edit'>\n";
 	html_start_box("<strong>" . __("Colors") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_color_edit','left wp60');
 
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables(preset_color_form_list(), (isset($color) ? $color : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");

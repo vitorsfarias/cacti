@@ -519,18 +519,12 @@ function user_global_edit($user){
 	require_once(CACTI_BASE_PATH . "/lib/auth/auth_info.php");
 
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'settings_general');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(user_auth_form_list(), (isset($user) ? $user : array()))
 	));
-	print "</table></td></tr>";		/* end of html_header */
+
 	html_end_box();
 
 	form_hidden_box("id", (isset($_GET["id"]) ? get_request_var("id") : "0"), "");

@@ -208,20 +208,12 @@ function gprint_presets_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='gprint_edit'>\n";
 	html_start_box("<strong>" . __("GPRINT Presets") . "</strong> $header_label", "100", 0, "center", "");
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_gprint_preset');
 
 	draw_edit_form(array(
-		"config" => array(),
+		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(preset_gprint_form_list(), (isset($gprint_preset) ? $gprint_preset : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box();
 
 	form_save_button_alt();

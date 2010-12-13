@@ -493,19 +493,12 @@ function data_source_template_display_general($data_template, $header_label) {
 
 	# the template header
 	html_start_box("<strong>" . __("Data Source Template") . "</strong> $header_label", "100", 0, "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value")));
-
-	print "<tr><td>";
-	html_header($header_items, 2, false, 'header_data_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(data_template_form_list(), (isset($data_template) ? $data_template : array()), (isset($template_data) ? $template_data : array()))
 		));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box(false);
 	form_hidden_box("data_template_id", $template_data["data_template_id"], "0");
 	form_hidden_box("data_template_data_id", $template_data["id"], "0");
@@ -524,13 +517,6 @@ function data_source_template_display_general($data_template, $header_label) {
 		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
 
 		html_start_box("<strong>" . __("Custom Data") . "</strong> [data input: " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", 0, "center", "", true);
-		$header_items = array(
-			array("name" => __("Field")),
-			array("name" => __("Value"))
-		);
-
-		print "<tr><td>";
-		html_header($header_items, 2, false, 'data_source_custom_data');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -559,7 +545,6 @@ function data_source_template_display_general($data_template, $header_label) {
 			print "<tr><td><em>" . __("No Input Fields for the Selected Data Input Source") . "</em></td></tr>";
 		}
 
-		print "</table></td></tr>";		/* end of html_header */
 		html_end_box(false);
 	}
 

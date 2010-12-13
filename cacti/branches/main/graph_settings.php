@@ -119,13 +119,6 @@ function settings() {
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tab_short_name) . "'>\n";
 		html_start_box("<strong>" . __("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")</strong>", "100", 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
-		$header_items = array(
-			array("name" => __("Field")),
-			array("name" => __("Value"))
-		);
-
-		print "<tr><td>";
-		html_header($header_items, 2, false, "Header_Settings_" . clean_up_name($tab_short_name),'left wp100');
 
 		$form_array = array();
 
@@ -156,7 +149,6 @@ function settings() {
 				)
 		);
 
-		print "</table></td></tr>";		/* end of html_header */
 		html_end_box();
 		print "</div></td></tr></table>\n";
 	}

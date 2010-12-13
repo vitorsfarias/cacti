@@ -503,20 +503,12 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	# the template header
 	html_start_box("<strong>" . __("Graph Template") . "</strong> $header_label", "100", "0", "center", "", true);
-	$header_items = array(
-		array("name" => __("Field")),
-		array("name" => __("Value"))
-	);
-
-	print "<tr><td>";
-	html_header($header_items, 1, false, 'header_template');
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(graph_template_form_list(), (isset($graph_template) ? $graph_template : array()), (isset($template_graph) ? $template_graph : array()))
 	));
 
-	print "</table></td></tr>";		/* end of html_header */
 	html_end_box(false);
 	form_hidden_box("graph_template_id", (isset($template_graph["graph_template_id"]) ? $template_graph["graph_template_id"] : "0"), "");
 	form_hidden_box("graph_template_graph_id", (isset($template_graph["id"]) ? $template_graph["id"] : "0"), "");
