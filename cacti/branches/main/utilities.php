@@ -334,7 +334,7 @@ function display_general() {
 	html_header(array(array("name" => __("General Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Date") . "</td>\n";
-	print "		<td class='textAreaNotes v'>\n";
+	print "		<td class='textAreaNotes v'>" . __date("D, " . date_time_format() . " T") . "</td>\n";
 	print "</tr>\n";
 	print "<tr class='rowAlternate2'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Cacti Version") . "</td>\n";
