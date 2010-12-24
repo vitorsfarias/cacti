@@ -104,6 +104,18 @@ $settings = array(
 			"method" => "filepath",
 			"max_length" => "255"
 			),
+		"path_perl_binary" => array(
+			"friendly_name" => __("Perl Binary Path"),
+			"description" => __("The path to your Perl binary file."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
+		"path_sh_binary" => array(
+			"friendly_name" => __("Shell Binary Path"),
+			"description" => __("The path to your Shell binary file."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
 		"logging_header" => array(
 			"friendly_name" => __("Logging"),
 			"method" => "spacer",

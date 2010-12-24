@@ -189,6 +189,56 @@ if (CACTI_SERVER_OS == "unix") {
 	}
 }
 
+/* Perl Binary Path */
+$input["path_perl_binary"] = $settings["path"]["path_perl_binary"];
+
+if (CACTI_SERVER_OS == "unix") {
+	$which_perl = find_best_path("perl");
+
+	if (config_value_exists("path_perl_binary")) {
+		$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
+	}else if (!empty($which_perl)) {
+		$input["path_perl_binary"]["default"] = $which_perl;
+	}else{
+		$input["path_perl_binary"]["default"] = "/usr/bin/perl";
+	}
+}elseif (CACTI_SERVER_OS == "win32") {
+	$which_perl = find_best_path("perl.exe");
+
+	if (config_value_exists("path_perl_binary")) {
+		$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
+	}else if (!empty($which_perl)) {
+		$input["path_perl_binary"]["default"] = $which_perl;
+	}else{
+		$input["path_perl_binary"]["default"] = "c:/perl/perl.exe";
+	}
+}
+
+/* Shell Binary Path */
+$input["path_shell_binary"] = $settings["path"]["path_shell_binary"];
+
+if (CACTI_SERVER_OS == "unix") {
+	$which_sh = find_best_path("sh");
+
+	if (config_value_exists("path_sh_binary")) {
+		$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
+	}else if (!empty($which_sh)) {
+		$input["path_sh_binary"]["default"] = $which_sh;
+	}else{
+		$input["path_sh_binary"]["default"] = "/bin/sh";
+	}
+}elseif (CACTI_SERVER_OS == "win32") {
+	$which_sh = find_best_path("sh.exe");
+
+	if (config_value_exists("path_sh_binary")) {
+		$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
+	}else if (!empty($which_sh)) {
+		$input["path_sh_binary"]["default"] = $which_sh;
+	}else{
+		$input["path_sh_binary"]["default"] = "c:/sh/sh.exe";
+	}
+}
+
 /* snmpwalk Binary Path */
 $input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
 
