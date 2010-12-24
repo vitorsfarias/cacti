@@ -187,6 +187,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature: Add snmp timeout warnings for lib/snmp.php
 -feature: upgrade procedure made repeatable
 -feature: add more table upgrade procedures and API functions: table install, column and key upgrade
+-feature: path for perl/shell like path for php to be used in Data Input Methods
 
 0.8.7f
 -security: SQL injection and shell escaping issues reported by Bonsai Information Security (http://www.bonsai-sec.com)
