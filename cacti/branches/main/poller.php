@@ -430,7 +430,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* process poller commands */
 		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ")) > 0) {
-			$command_string = read_config_option("path_php_binary");
+			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
 			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php\"" . ($poller_id == 0 ? "" : " --poller=$poller_id ");
 			exec_background($command_string, "$extra_args");
 		} else {
@@ -448,7 +448,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_id == 0) {
 			if ((read_config_option("export_type") != "disabled") &&
 				(read_config_option("export_timing") != "disabled")) {
-				$command_string = read_config_option("path_php_binary");
+				$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
 				$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_export.php\"";
 				exec_background($command_string, "$extra_args");
 			}
