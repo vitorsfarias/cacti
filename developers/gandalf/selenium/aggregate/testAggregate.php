@@ -6,6 +6,10 @@
 #
 # this script does not authenticate against cacti
 # so it requires to deactivate Settings -> Authenticaction -> Login
+#
+# start test by running phpunit testAggregate.php
+#
+# pay attention to LABELs being used (depending on the width of the dropdown field)
 # 
 # without specifiying the /path/to/firefox-bin, selenium will call a shell script only.
 # this will result in browser sessions not being terminated
@@ -67,7 +71,7 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	protected function setUp()
 	{
-		$this->setBrowser('*firefox /usr/lib64/firefox-3.5/firefox');
+		$this->setBrowser('*firefox /usr/bin/firefox');
 		$this->setBrowserUrl('http://localhost/');
 	}
 
@@ -90,10 +94,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 			$this->isElementPresent("agg_color_6") &&
 			$this->isElementPresent("agg_color_10")) 
 		{
-			$this->select("agg_color_1", "label=Green: dark-light, 16");
-			$this->select("agg_color_5", "label=Red: light yellow-dark red, 8");
-			$this->select("agg_color_6", "label=Yellow: light-dark, 4");
-			$this->select("agg_color_10", "label=Red: light-dark, 16");
+			$this->select("agg_color_1", "label=Green: dark-light, 16 colors");
+			$this->select("agg_color_5", "label=Red: light yellow-dark red, 8 colors");
+			$this->select("agg_color_6", "label=Yellow: light-dark, 4 colors");
+			$this->select("agg_color_10", "label=Red: light-dark, 16 colors");
 			$this->click("agg_total_1");
 			$this->click("agg_total_2");
 			$this->click("agg_total_3");
@@ -105,8 +109,8 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 			$this->click("agg_total_9");
 			$this->click("agg_total_10");
 		} else {
-			$this->select("agg_color_1", "label=Green: dark-light, 16");
-			$this->select("agg_color_5", "label=Yellow: light-dark, 4");
+			$this->select("agg_color_1", "label=Green: dark-light, 16 colors");
+			$this->select("agg_color_5", "label=Yellow: light-dark, 4 colors");
 			$this->click("agg_total_1");
 			$this->click("agg_total_2");
 			$this->click("agg_total_3");
@@ -163,10 +167,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	public function testGTdefault()
 	{
-		$this->open("/workspace/cacti087g/host.php");
+		$this->open("/workspace/plugin087g/host.php");
 		$this->click("link=Graph Management");
 		$this->waitForPageToLoad("30000");
-		$this->select("template_id", "label=Interface - Traffic (bits/sec) ( de...");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) ( default...");
 		$this->waitForPageToLoad("30000");
 		$this->type("filter", "traffic");
 
@@ -175,10 +179,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	public function testGTareastack()
 	{
-		$this->open("/workspace/cacti087g/host.php");
+		$this->open("/workspace/plugin087g/host.php");
 		$this->click("link=Graph Management");
 		$this->waitForPageToLoad("30000");
-		$this->select("template_id", "label=Interface - Traffic (bits/sec) (ARE...");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (AREA/STA...");
 		$this->waitForPageToLoad("30000");
 		$this->type("filter", "traffic");
 
@@ -187,10 +191,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	public function testGTpeak()
 	{
-		$this->open("/workspace/cacti087g/host.php");
+		$this->open("/workspace/plugin087g/host.php");
 		$this->click("link=Graph Management");
 		$this->waitForPageToLoad("30000");
-		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pea...");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (peak)");
 		$this->waitForPageToLoad("30000");
 		$this->type("filter", "traffic");
 
@@ -199,10 +203,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	public function testGTposneg()
 	{
-		$this->open("/workspace/cacti087g/host.php");
+		$this->open("/workspace/plugin087g/host.php");
 		$this->click("link=Graph Management");
 		$this->waitForPageToLoad("30000");
-		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pos...");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pos/neg)");
 		$this->waitForPageToLoad("30000");
 		$this->type("filter", "traffic");
 
@@ -211,10 +215,10 @@ class testAggregate extends PHPUnit_Extensions_SeleniumTestCase
 
 	public function testGTline()
 	{
-		$this->open("/workspace/cacti087g/host.php");
+		$this->open("/workspace/plugin087g/host.php");
 		$this->click("link=Graph Management");
 		$this->waitForPageToLoad("30000");
-		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pur...");
+		$this->select("template_id", "label=Interface - Traffic (bits/sec) (pure LIN...");
 		$this->waitForPageToLoad("30000");
 		$this->type("filter", "traffic");
 
