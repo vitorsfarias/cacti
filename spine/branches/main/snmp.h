@@ -37,3 +37,4 @@ extern void snmp_host_cleanup(void *snmp_session);
 extern char *snmp_get(device_t *current_device, char *snmp_oid);
 extern char *snmp_getnext(device_t *current_device, char *snmp_oid);
 extern void snmp_get_multi(device_t *current_device, snmp_oids_t *snmp_oids, int num_oids);
+extern void snmp_snprint_value(char *obuf, size_t buf_len, const oid *objid, size_t objidlen, struct variable_list *variable);
