@@ -1261,6 +1261,9 @@ function graph() {
 		$sql_where .= " AND graph_templates_graph.graph_template_id=" . get_request_var_request("template_id");
 	}
 
+	/* allow plugins to modify sql_where */
+	$sql_where .= api_plugin_hook_function('graphs_sql_where', $sql_where);
+
 	/* print checkbox form for validation */
 	print "<form name='chk' method='post' action='graphs.php'>\n";
 
