@@ -818,7 +818,7 @@ function data_source_edit() {
 			<tr>
 				<td>
 					<span class="textInfo"><?php print __("Data Source Debug");?></span><br>
-					<pre><?php print rrdtool_function_create(get_request_var("id"), true, array());?></pre>
+					<pre><?php print rrdtool_function_create(get_request_var("id"), true);?></pre>
 				</td>
 			</tr>
 		</table>
