@@ -29,21 +29,19 @@
 function run_data_query($device_id, $snmp_query_id) {
 	global $config;
 
-	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
+	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 	include_once(CACTI_BASE_PATH . "/lib/poller.php");
 	include_once(CACTI_BASE_PATH . "/lib/utility.php");
 
 	debug_log_insert("data_query", __("Running data query") . " [$snmp_query_id].");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	debug_log_insert("data_query", __("Found type") . " = '" . $type_id . "' [" . $input_types[$type_id]. "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
-		debug_log_insert("data_query", __("Found type") . " = '3' [snmp query].");
 		$result = query_snmp_device($device_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-		debug_log_insert("data_query", __("Found type") . " = '4 '[script query].");
 		$result = query_script_device($device_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
-		debug_log_insert("data_query", __("Found type") . " = '6 '[script query].");
 		$result = query_script_device($device_id, $snmp_query_id);
 	}else{
 		debug_log_insert("data_query", __("Unknown type") . " = '$type_id'");
@@ -114,16 +112,34 @@ function query_script_device($device_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", __("XML file parsed ok."));
 
+	/* are we talking to script server? */
 	if (isset($script_queries["script_server"])) {
 		$script_queries["script_path"] = "|path_php_binary| -q " . $script_queries["script_path"];
 	}
 
+	/* provide data for arg_num_indexes, if given */
+	if (isset($script_queries["arg_num_indexes"])) {
+		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $device_id);
+
+		/* fetch specified index at specified OID */
+		$script_num_index_array = exec_into_array($script_path);
+	
+		debug_log_insert("data_query", __("Executing script for num of indexes") . " '$script_path'");
+		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
+			debug_log_insert("data_query", __("Found number of indexes: %s", $script_num_index_array[$i]));
+		}
+	}
+
+	/* provide data for index, mandatory */
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $device_id);
 
 	/* fetch specified index at specified OID */
 	$script_index_array = exec_into_array($script_path);
 
-	debug_log_insert("data_query", __("Executing script for list of indexes") . " '$script_path'");
+	debug_log_insert("data_query", __("Executing script for list of indexes") . " '$script_path' " . __("Index Count: %s", sizeof($script_index_array)));
+	for ($i=0;($i<sizeof($script_index_array));$i++) {
+		debug_log_insert("data_query", __("Found index: %s", $script_index_array[$i]));
+	}
 
 	/* prepare an output array */
 	$output_array = array();
@@ -157,7 +173,7 @@ function query_script_device($device_id, $snmp_query_id) {
 }
 
 /**
- * execute an SNMP query for a given device
+ * execute an SNMP query for a given device fetching <oid_index> and <fields>
  * @param int $device_id
  * @param int $snmp_query_id
  */
@@ -182,6 +198,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 		FROM device
 		WHERE id='$device_id'");
 
+	/* read XML into array */
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
 	if ($device["hostname"] == "") {
@@ -197,6 +214,18 @@ function query_snmp_device($device_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", __("XML file parsed ok."));
 
+	/* provide data for oid_num_indexes, if given */
+	if (isset($snmp_queries["oid_num_indexes"])) {
+		$snmp_num_indexes = cacti_snmp_get($device["hostname"], $device["snmp_community"], $snmp_queries["oid_num_indexes"],
+										$device["snmp_version"], $device["snmp_username"], $device["snmp_password"],
+										$device["snmp_auth_protocol"], $device["snmp_priv_passphrase"], $device["snmp_priv_protocol"],
+										$device["snmp_context"], $device["snmp_port"], $device["snmp_timeout"],
+										$device["ping_retries"], $device["max_oids"], SNMP_WEBUI);
+	
+		debug_log_insert("data_query", __("Executing SNMP get for num of indexes @ '%s'", $snmp_queries["oid_num_indexes"]));
+		debug_log_insert("data_query", __("Found number of indexes: %s", $snmp_num_indexes));
+	}
+
 	/* fetch specified index at specified OID */
 	$snmp_indexes = cacti_snmp_walk($device["hostname"], $device["snmp_community"], $snmp_queries["oid_index"],
 									$device["snmp_version"], $device["snmp_username"], $device["snmp_password"],
@@ -204,7 +233,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 									$device["snmp_context"], $device["snmp_port"], $device["snmp_timeout"],
 									$device["ping_retries"], $device["max_oids"], SNMP_WEBUI);
 
-	debug_log_insert("data_query", __("Executing SNMP walk for list of indexes @ '%s'", $snmp_queries["oid_index"]));
+	debug_log_insert("data_query", __("Executing SNMP walk for list of indexes @ '%s' ", $snmp_queries["oid_index"]) . __("Index Count: %s", sizeof($snmp_indexes)));
 
 	/* no data found; get out */
 	if (!$snmp_indexes) {
@@ -396,7 +425,7 @@ function data_query_format_record($device_id, $snmp_query_id, $field_name, $valu
 }
 
 /**
- *
+ * update the device_snmp_cache with data provided by output_array
  * @param int $device_id
  * @param int $snmp_query_id
  * @param array $output_array
