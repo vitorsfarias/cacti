@@ -946,5 +946,13 @@ function upgrade_to_0_8_8() {
 	}
 	
 	
+	/* update the reindex cache, as we now introduced more options for "index count changed" */
+	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
+	if (sizeof($host_snmp_query) > 0) {
+		foreach ($host_snmp_query as $item) {
+			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
+		}
+	}
+	
 	/* TODO: Upgrade current users and permissions */
 }

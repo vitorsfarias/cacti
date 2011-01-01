@@ -135,6 +135,9 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature#0001542: Rewriting SNMP values of data queries
 -feature#0001550: Record the polling time for each host to optimize polling times
 -feature#0001588: Add pango-markup options to simple html markup in graphed text (title, legend etc)
+-feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
+-feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
+-feature#0001924: Allow for reindex method "Index Count Changed" to apply to script (server) queries as well
 -feature: jQuery "TableDnd" used for cdef item sort (courtesy Browniebraun)
 -feature: jQuery "TableDnd" for Graph Template Item
 -feature: jQuery "TableDnd" for Data Queries Suggested Values

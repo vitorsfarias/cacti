@@ -132,7 +132,7 @@ function update_reindex_cache($device_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$device            = db_fetch_row("select hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout from device where id=$device_id");
+	$device          = db_fetch_row("select hostname, snmp_community, snmp_version, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_port, snmp_timeout from device where id=$device_id");
 	$data_query      = db_fetch_row("select reindex_method, sort_field from device_snmp_query where device_id=$device_id and snmp_query_id=$data_query_id");
 	$data_query_type = db_fetch_cell("select data_input.type_id from (data_input,snmp_query) where data_input.id=snmp_query.data_input_id and snmp_query.id=$data_query_id");
 	$data_query_xml  = get_data_query_array($data_query_id);
@@ -175,22 +175,41 @@ function update_reindex_cache($device_id, $data_query_id) {
 			 * current number of indexes in the data query
 			 * pay ATTENTION to quoting!
 			 * the script parameters are usually enclosed in single tics: '
-			 * so we have to enclose the whole list of parameters has to be enclosed in double tics: "
+			 * so we have to enclose the whole list of parameters in double tics: "
 			 * */
+			 
+			/* the assert_value counts the number of distinct indexes currently available device_snmp_cache
+			 * we do NOT make use of <oid_num_indexes> or the like!
+			 * this works, even if no <oid_num_indexes> was given
+			 */ 
 			$assert_value = sizeof(db_fetch_assoc("select snmp_index from device_snmp_cache where device_id=$device_id and snmp_query_id=$data_query_id group by snmp_index"));
 
-			if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-				if (isset($data_query_xml["oid_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
-				}
-			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-				if (isset($data_query_xml["arg_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
-				}
-			}else if ($data_query_type == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
-				if (isset($data_query_xml["arg_num_indexes"])) {
-					$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
-				}
+			/* now, we have to build the (list of) commands that are later used on a recache event
+			 * the result of those commands will be compared to the assert_value we have just computed
+			 * on a comparison failure, a reindex event will be generated
+			 */
+			switch ($data_query_type) {
+				case DATA_INPUT_TYPE_SNMP_QUERY:
+					if (isset($data_query_xml["oid_num_indexes"])) { /* we have a specific OID for counting indexes */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml["oid_num_indexes"] . "', '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', '$assert_value', '" . $data_query_xml["oid_index"] . "', '1')";
+					}
+					break;
+				case DATA_INPUT_TYPE_SCRIPT_QUERY:
+					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+					}
+					break;
+				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
+					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+					} else { /* count all indexes found */
+						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+					}
+					break;
 			}
 
 			break;
