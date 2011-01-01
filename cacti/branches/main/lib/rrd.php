@@ -2869,6 +2869,9 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			 * Match is assumed, if CF and STEPS/PDP_PER_ROW match; so go for it */
 			foreach ($info['rra'] as $file_rra_id => $file_rra) {
 
+				/* in case of mismatch, $file_rra["pdp_per_row"] might not be defined */
+				if (!isset($file_rra["pdp_per_row"])) $file_rra["pdp_per_row"] = 0;
+				
 				if ($consolidation_functions{$cacti_rra["cf"]} == trim($file_rra["cf"], '"') &&
 					$cacti_rra["steps"] == $file_rra["pdp_per_row"]) {
 
