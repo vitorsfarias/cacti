@@ -198,7 +198,7 @@ if ((!in_array(basename($_SERVER["PHP_SELF"]), $no_http_header_files, true)) && 
 	header("Cache-Control: post-check=0, pre-check=0", false);
 
 	/* IE has a problem with caching and https */
-	if (!substr_count($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+	if (isset($_SERVER['HTTP_USER_AGENT']) && !substr_count($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
 		header("Pragma: no-cache");
 	}
 
