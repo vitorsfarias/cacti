@@ -3096,13 +3096,13 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		foreach ($info_array["ds"] as $key => $value) {
 			form_alternate_row_color('line' . $key, true);
 			form_selectable_cell($key, 																			'name', 				"", (isset($diff["ds"][$key]["error"]) 				? "textError" : ""));
-			form_selectable_cell((isset($value['type']) 				? $value['type'] : ''), 				'type', 				"", (isset($diff["ds"][$key]['type']) 				? "textError" : ""));
-			form_selectable_cell((isset($value['minimal_heartbeat']) 	? $value['minimal_heartbeat'] : ''), 	'minimal_heartbeat', 	"", (isset($diff["ds"][$key]['minimal_heartbeat'])	? "textError" : ""));
-			form_selectable_cell((isset($value['min']) 					? floatval($value['min']) : ''), 		'min', 					"", (isset($diff["ds"][$key]['min']) 				? "textError" : ""));
-			form_selectable_cell((isset($value['max']) 					? floatval($value['max']) : ''), 		'max', 					"", (isset($diff["ds"][$key]['max']) 				? "textError" : ""));
-			form_selectable_cell((isset($value['last_ds']) 				? $value['last_ds'] : ''), 				'last_ds');
-			form_selectable_cell((isset($value['value']) 				? floatval($value['value']) : ''), 		'value');
-			form_selectable_cell((isset($value['unknown_sec']) 			? $value['unknown_sec'] : ''), 			'unknown_sec');
+			form_selectable_cell((isset($value['type']) 				? $value['type'] : ''), 				'type', 				"", (isset($diff["ds"][$key]['type']) 				? "textError, right" : "right"));
+			form_selectable_cell((isset($value['minimal_heartbeat']) 	? $value['minimal_heartbeat'] : ''), 	'minimal_heartbeat', 	"", (isset($diff["ds"][$key]['minimal_heartbeat'])	? "textError, right" : "right"));
+			form_selectable_cell((isset($value['min']) 					? floatval($value['min']) : ''), 		'min', 					"", (isset($diff["ds"][$key]['min']) 				? "textError, right" : "right"));
+			form_selectable_cell((isset($value['max']) 					? floatval($value['max']) : ''), 		'max', 					"", (isset($diff["ds"][$key]['max']) 				? "textError, right" : "right"));
+			form_selectable_cell((isset($value['last_ds']) 				? $value['last_ds'] : ''), 				'last_ds', '', 'right');
+			form_selectable_cell((isset($value['value']) 				? floatval($value['value']) : ''), 		'value', '', 'right');
+			form_selectable_cell((isset($value['unknown_sec']) 			? $value['unknown_sec'] : ''), 			'unknown_sec', '', 'right');
 			form_end_row();
 		}
 		form_end_table();
@@ -3126,13 +3126,13 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		foreach ($info_array['rra'] as $key => $value) {
 			form_alternate_row_color('line_' . $key, true);
 			form_selectable_cell($key, 																										'name', 			"", (isset($diff['rra'][$key]["error"]) ? "textError" : ""));
-			form_selectable_cell((isset($value['cf']) 								? $value['cf'] : ''), 									'cf');
-			form_selectable_cell((isset($value['rows']) 							? $value['rows'] : ''), 								'rows', 			"", (isset($diff['rra'][$key]['rows']) 	? "textError" : ""));
-			form_selectable_cell((isset($value['cur_row']) 							? $value['cur_row'] : ''), 								'cur_row');
-			form_selectable_cell((isset($value['pdp_per_row']) 						? $value['pdp_per_row'] : ''), 							'pdp_per_row');
-			form_selectable_cell((isset($value['xff']) 								? floatval($value['xff']) : ''), 						'xff', 				"", (isset($diff['rra'][$key]['xff']) 	? "textError" : ""));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) 			? (strtolower($value['cdp_prep'][0]['value']) == "nan") ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value']) : ''), 'value');
-			form_selectable_cell((isset($value['cdp_prep'][0]['unknown_datapoints'])? $value['cdp_prep'][0]['unknown_datapoints'] : ''), 	'unknown_datapoints');
+			form_selectable_cell((isset($value['cf']) 								? $value['cf'] : ''), 									'cf', '', 'right');
+			form_selectable_cell((isset($value['rows']) 							? $value['rows'] : ''), 								'rows', 			"", (isset($diff['rra'][$key]['rows']) 	? "textError, right" : "right"));
+			form_selectable_cell((isset($value['cur_row']) 							? $value['cur_row'] : ''), 								'cur_row', '', 'right');
+			form_selectable_cell((isset($value['pdp_per_row']) 						? $value['pdp_per_row'] : ''), 							'pdp_per_row', '', 'right');
+			form_selectable_cell((isset($value['xff']) 								? floatval($value['xff']) : ''), 						'xff', 				"", (isset($diff['rra'][$key]['xff']) 	? "textError, right" : "right"));
+			form_selectable_cell((isset($value['cdp_prep'][0]['value']) 			? (strtolower($value['cdp_prep'][0]['value']) == "nan") ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value']) : ''), 'value', '', 'right');
+			form_selectable_cell((isset($value['cdp_prep'][0]['unknown_datapoints'])? $value['cdp_prep'][0]['unknown_datapoints'] : ''), 	'unknown_datapoints', '', 'right');
 			form_end_row();
 		}
 		form_end_table();
