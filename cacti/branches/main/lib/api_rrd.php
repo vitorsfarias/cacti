@@ -35,7 +35,7 @@ define("RRD_FILE_VERSION3", "0003");
 function api_rrd_datasource_add($file_array, $ds_array, $debug) {
 	require_once (CACTI_BASE_PATH . "/lib/rrd.php");
 	require (CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
-	#print_r($ds_array);
+
 	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
@@ -157,6 +157,64 @@ function api_rrd_rra_delete($file_array, $rra_array, $debug) {
 }
 
 /**
+ * clone a (list of) rra(s) from an (array of) rrd file(s)
+ * @param array $file_array	- array of rrd files
+ * @param string $cf		- new consolidation function
+ * @param array $rra_array	- array of rra parameters
+ * @param bool $debug		- debug mode
+ * returns mixed			- success (bool) or error message (array)
+ */
+function api_rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
+	require_once (CACTI_BASE_PATH . "/lib/rrd.php");
+	$rrdtool_pipe = '';
+
+	/* iterate all given rrd files */
+	foreach ($file_array as $file) {
+		/* create a DOM document from an rrdtool dump */
+		$dom = new domDocument;
+		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+		if (!$dom) {
+			$check["err_msg"] = __('Error while parsing the XML of rrdtool dump');
+			return $check;
+		}
+
+		/* now start XML processing */
+		foreach ($rra_array as $rra) {
+			copy_RRA($dom, $cf, $rra, $debug);
+		}
+
+		if ($debug) {
+			echo $dom->saveXML();
+		} else {
+			/* for rrdtool restore, we need a file, so write the XML to disk */
+			$xml_file = $file . '.xml';
+			$rc = $dom->save($xml_file);
+			/* verify, if write was successful */
+			if ($rc === false) {
+				$check["err_msg"] = __('ERROR while writing XML file: %s', $xml_file);
+				return $check;
+			} else {
+				/* are we allowed to write the rrd file? */
+				if (is_writable($file)) {
+					/* restore the modified XML to rrd */
+					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
+					/* scratch that XML file to avoid filling up the disk */
+					unlink($xml_file);
+					cacti_log(__("Deleted rra(s) from rrd file: %s", $file), false, 'UTIL');
+				} else {
+					$check["err_msg"] = __('ERROR: RRD file %s not writeable', $file);
+					return $check;
+				}
+			}
+		}
+	}
+
+	rrd_close($rrdtool_pipe);
+
+	return true;
+}
+
+/**
  * appends a <DS> subtree to an RRD XML structure
  * @param object $dom	- the DOM object, where the RRD XML is stored
  * @param string $version- rrd file version
@@ -200,10 +258,11 @@ function append_DS($dom, $version, $name, $type, $min_hb, $min, $max) {
 	#echo $new_dom->saveXML();	# print new node
 
 	/* get XPATH notation required for positioning */
-	$xpath = new DOMXPath($dom);
+	#$xpath = new DOMXPath($dom);
 	/* get XPATH for entry where new node will be inserted
 	 * which is the <rra> entry */
-	$insert = $xpath->query('/rrd/rra')->item(0);
+	#$insert = $xpath->query('/rrd/rra')->item(0);
+	$insert = $dom->getElementsByTagName("rra")->item(0);
 
 	/* import the new node */
 	$new_node = $dom->importNode($new_node, true);
@@ -248,19 +307,18 @@ function append_COMPUTE_DS($dom, $version, $name, $type, $cdef) {
 			</ds>");
 	/* create a node element from new document */
 	$new_node = $new_dom->getElementsByTagName("ds")->item(0);
-	#echo $new_dom->saveXML();	# print new node
 
 	/* get XPATH notation required for positioning */
-	$xpath = new DOMXPath($dom);
+	#$xpath = new DOMXPath($dom);
 	/* get XPATH for entry where new node will be inserted
 	 * which is the <rra> entry */
-	$insert = $xpath->query('/rrd/rra')->item(0);
+	#$insert = $xpath->query('/rrd/rra')->item(0);
+	$insert = $dom->getElementsByTagName("rra")->item(0);
 
 	/* import the new node */
 	$new_node = $dom->importNode($new_node, true);
 	/* and insert it at the correct place */
 	$insert->parentNode->insertBefore($new_node, $insert);
-	#echo $dom->saveXML();	# print modified document
 }
 
 /**
@@ -271,98 +329,36 @@ function append_COMPUTE_DS($dom, $version, $name, $type, $cdef) {
  */
 function append_CDP_Prep_DS($dom, $version) {
 
+	/* get all <cdp_prep><ds> entries */
+	#$cdp_prep_list = $xpath->query('/rrd/rra/cdp_prep');
+	$cdp_prep_list = $dom->getElementsByTagName("rra")->item(0)->getElementsByTagName("cdp_prep");
+
 	/* get XPATH notation required for positioning */
-	$xpath = new DOMXPath($dom);
+	#$xpath = new DOMXPath($dom);
 
 	/* get XPATH for source <ds> entry */
-	$src_ds = $xpath->query('/rrd/rra/cdp_prep/ds')->item(0);
+	#$src_ds = $xpath->query('/rrd/rra/cdp_prep/ds')->item(0);
+	$src_ds = $dom->getElementsByTagName("rra")->item(0)->getElementsByTagName("cdp_prep")->item(0)->getElementsByTagName("ds")->item(0);
+	/* clone the source ds entry to preserve RRDTool notation */
+	$new_ds = $src_ds->cloneNode(true);
 
-	/* get all <cdp_prep><ds> entries */
-	$itemList = $xpath->query('/rrd/rra/cdp_prep');
-	/* iterate all entries found, equals "number of <rra>" times "number of <ds>" */
-	if ($itemList->length) {
-		foreach ($itemList as $item) {
-			/* $item now points to the next <cdp_prep> XML Element */
-
-			/* clone the source ds entry to preserve RRDTool notation */
-			$new_ds = $src_ds->cloneNode(true);
-
-			/* rrdtool version dependencies */
-			if ($version === RRD_FILE_VERSION3) {
-				$new_ds->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
-				$new_ds->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
-			}
-
-			/* the new node always has default entries */
-			$new_ds->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
-			$new_ds->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
-
-			/* append new ds entry at end of <cdp_prep> child list */
-			$item->appendChild($new_ds);
-		}
+	/* rrdtool version dependencies */
+	if ($version === RRD_FILE_VERSION3) {
+		$new_ds->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
+		$new_ds->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
 	}
-}
 
-/**
- * append a <RRA> subtree to the <RRD> XML structure
- * @param object $dom		- the DOM object, where the RRD XML is stored
- * @param string $version	- rrd file version
- * @param string $new_cf	- name of new consolidation function
- * return object			- the modified DOM object
- */
-function append_RRA($dom, $version, $new_cf) {
+	/* the new node always has default entries */
+	$new_ds->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
+	$new_ds->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
 
-	/* get XPATH notation required for positioning */
-	$xpath = new DOMXPath($dom);
 
-	/* get XPATH for source <rra> entry */
-	$src_rra = $xpath->query('/rrd/rra')->item(0);
-
-	/* get all <rra> entries */
-	$itemList = $xpath->query('/rrd/rra'); # TODO: Verify!
-	/* iterate all entries found */
-	if ($itemList->length) {
-		foreach ($itemList as $item) {
-			/* $item now points to the next <rra> XML Element */
-
-			/* clone the source ds entry to preserve RRDTool notation */
-			$new_rra = $src_rra->cloneNode(true);
-
-			/* rrdtool version dependencies */
-			if ($version === RRD_FILE_VERSION3) {
-				#				$new_ds->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
-				#				$new_ds->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
-			}
-
-			/* the new node always has default entries */
-			#			$new_ds->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
-			#			$new_ds->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
-
-			/* get all <cdp_prep><ds> entries */
-			$cdpList = $new_rra->query('/rra/cdp_prep'); # TODO: Verify!
-			/* iterate all entries found */
-			if ($cdpList->length) {
-				foreach ($cdpList as $cdp) {
-					/* $item now points to the next <cdp_prep> XML Element */
-
-					/* rrdtool version dependencies */
-					if ($version === RRD_FILE_VERSION3) {
-						$new_rra->getElementsByTagName("primary_value")->item(0)->nodeValue = " NaN ";
-						$new_rra->getElementsByTagName("secondary_value")->item(0)->nodeValue = " NaN ";
-					}
-
-					/* the new node always has default entries */
-					$new_rra->getElementsByTagName("value")->item(0)->nodeValue = " NaN ";
-					$new_rra->getElementsByTagName("unknown_datapoints")->item(0)->nodeValue = " 0 ";
-				}
-			}
-
-			$new_rra->getElementsByTagName("cf")->item(0)->nodeValue = " $new_cf ";
-			# at this point, we should consider wiping out all values
-			# TODO: Verify!
-
-			/* append new ds entry at end of <rra> child list */
-			$item->appendChild($new_rra);
+	/* iterate all entries found, equals "number of <rra>" times "number of <ds>" */
+	if ($cdp_prep_list->length) {
+		foreach ($cdp_prep_list as $cdp_prep) {
+			/* $cdp_prep now points to the next <cdp_prep> XML Element
+			 * and append new ds entry at end of <cdp_prep> child list */
+			$cdp_prep->appendChild($new_ds);
 		}
 	}
 }
@@ -375,19 +371,20 @@ function append_RRA($dom, $version, $new_cf) {
 function append_Value($dom) {
 
 	/* get XPATH notation required for positioning */
-	$xpath = new DOMXPath($dom);
+	#$xpath = new DOMXPath($dom);
 
 	/* get all <cdp_prep><ds> entries */
-	$itemList = $xpath->query('/rrd/rra/database/row');
+	#$itemList = $xpath->query('/rrd/rra/database/row');
+	$itemList = $dom->getElementsByTagName("row");
+
+	/* create <V> entry to preserve RRDTool notation */
+	$new_v = $dom->createElement("v", " NaN ");
+
 	/* iterate all entries found, equals "number of <rra>" times "number of <ds>" */
 	if ($itemList->length) {
 		foreach ($itemList as $item) {
-			/* $item now points to the next <cdp_prep> XML Element */
-
-			/* create <V> entry to preserve RRDTool notation */
-			$new_v = $dom->createElement("v", " NaN ");
-
-			/* append new ds entry at end of <cdp_prep> child list */
+			/* $item now points to the next <cdp_prep> XML Element 
+			 * and append new ds entry at end of <cdp_prep> child list */
 			$item->appendChild($new_v);
 		}
 	}
@@ -432,19 +429,16 @@ function get_data_source_rrd($data_source_id) {
  * delete an <RRA> subtree from the <RRD> XML structure
  * @param object $dom		- the DOM document, where the RRD XML is stored
  * @param array $rra_parm	- a single rra parameter set, given by the user
- * @param bool $debug       - debugging flag
  * return object			- the modified DOM object
  */
-function delete_RRA($dom, $rra_parm, $debug) {
+function delete_RRA($dom, $rra_parm) {
 
 	/* find all RRA DOMNodes */
 	$rras = $dom->getElementsByTagName('rra');
 
 	/* iterate all entries found */
 	$nb = $rras->length;
-	/* loop back to forth
-	 * cause removing elements will interfere with our loop! */
-	for ($pos = $nb-1; $pos >= 0; $pos--) {
+	for ($pos = 0; $pos < $nb; $pos++) {
 		/* retrieve all RRA DOMNodes one by one */
 		$rra = $rras->item($pos);
 		$cf = $rra->getElementsByTagName('cf')->item(0)->nodeValue;
@@ -457,11 +451,56 @@ function delete_RRA($dom, $rra_parm, $debug) {
 			$xff 			== $rra_parm['xff'] && 
 			$rows 			== $rra_parm['rows']) {
 			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n", $cf, $rows, $pdp_per_row, $xff));
-			if (!$debug) {
-				/* we need the parentNode for removal operation */
-				$parent = $rra->parentNode;
-				$parent->removeChild($rra);
-			}
+			/* we need the parentNode for removal operation */
+			$parent = $rra->parentNode;
+			$parent->removeChild($rra);
+			break; /* do NOT accidentally remove more than one element, else loop back to forth */
+		}
+	}
+	return $dom;
+}
+
+/**
+ * clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+ * @param object $dom		- the DOM document, where the RRD XML is stored
+ * @param string $cf		- new consolidation function
+ * @param array $rra_parm	- a single rra parameter set, given by the user
+ * return object			- the modified DOM object
+ */
+function copy_RRA($dom, $cf, $rra_parm) {
+
+	/* find all RRA DOMNodes */
+	$rras = $dom->getElementsByTagName('rra');
+
+	/* iterate all entries found */
+	$nb = $rras->length;
+	for ($pos = 0; $pos < $nb; $pos++) {
+		/* retrieve all RRA DOMNodes one by one */
+		$rra = $rras->item($pos);
+		$_cf = $rra->getElementsByTagName('cf')->item(0)->nodeValue;
+		$_pdp_per_row = $rra->getElementsByTagName('pdp_per_row')->item(0)->nodeValue;
+		$_xff = $rra->getElementsByTagName('xff')->item(0)->nodeValue;
+		$_rows = $rra->getElementsByTagName('row')->length;
+		
+		if ($_cf 			== $rra_parm['cf'] && 
+			$_pdp_per_row 	== $rra_parm['pdp_per_row'] &&
+			$_xff 			== $rra_parm['xff'] && 
+			$_rows 			== $rra_parm['rows']) {
+			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n", $cf, $_rows, $_pdp_per_row, $_xff));
+			/* we need the parentNode for append operation */
+			$parent = $rra->parentNode;
+
+			/* get a clone of the matching RRA */
+			$new_rra = $rra->cloneNode(true);
+			/* and find the "old" cf */
+			#$old_cf = $new_rra->getElementsByTagName('cf')->item(0);
+			/* now replace old cf with new one */
+			#$old_cf->childNodes->item(0)->replaceData(0,20,$cf);			
+			$new_rra->getElementsByTagName("cf")->item(0)->nodeValue = $cf;
+
+			/* append new rra entry at end of the list */
+			$parent->appendChild($new_rra);
+			break; /* do NOT accidentally clone more than one element, else loop back to forth */
 		}
 	}
 	return $dom;
