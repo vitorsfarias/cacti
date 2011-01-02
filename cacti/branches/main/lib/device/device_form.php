@@ -167,8 +167,11 @@ function api_device_form_save() {
    ------------------------ */
 
 function api_device_form_actions() {
-	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
+	require_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 
 	$fields_device_edit = device_form_list();
 	$fields_device_edit_availability = device_availability_form_list();
