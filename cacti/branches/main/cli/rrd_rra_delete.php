@@ -99,7 +99,6 @@ if (sizeof($parms)) {
 		echo __("Please either supply %s or %s or %s", "--data-template-id", "--data-source-id", "--rrd") . "\n";
 		exit (1);
 	}
-	print_r($file_array);
 
 	/* we may have multiple rra's to delete
 	 * so let's first get the array of rra's
@@ -121,44 +120,42 @@ if (sizeof($parms)) {
 	if (sizeof($rra_parm_array)) {
 		foreach($rra_parm_array as $key => $value) {
 			/* verify the given parameters */
-			@list($cf, $rows, $pdp_per_row, $xff) = explode(":", $value);
+			@list($_cf, $_rows, $_pdp_per_row, $_xff) = explode(":", $value);
 			/* cf must equal [AVERAGE|MAX|MIN|LAST] */
-			if ((!preg_match('/^(AVERAGE|MAX|MIN|LAST)$/', $cf))) {
+			if ((!preg_match('/^(AVERAGE|MAX|MIN|LAST)$/', $_cf))) {
 				echo __("ERROR: You must supply a valid consolidation function.") . "\n";
-				echo __("Found:") . " $cf\n";
+				echo __("Found: %s\n", $_cf);
 				exit (1);
 			}else {
-				$rra_array[$key]['cf'] = $cf;
+				$rra_array[$key]['cf'] = $_cf;
 			}
 			/* rows must be numeric */
-			if ((!preg_match('/^[0-9]*$/', $rows))) {
+			if ((!preg_match('/^[0-9]*$/', $_rows))) {
 				echo __("ERROR: You must supply a valid row number.") . "\n";
-				echo __("Found:") . " $rows\n";
+				echo __("Found: %s\n", $_rows);
 				exit (1);
 			}else {
-				$rra_array[$key]['rows'] = $rows;
+				$rra_array[$key]['rows'] = $_rows;
 			}
 			/* pdp_per_row must be numeric */
-			if ((!preg_match('/^[0-9]*$/', $pdp_per_row))) {
+			if ((!preg_match('/^[0-9]*$/', $_pdp_per_row))) {
 				echo __("ERROR: You must supply a valid pdp_per_row number.") . "\n";
-				echo __("Found:") . " $pdp_per_row\n";
+				echo __("Found: %s\n", $_pdp_per_row);
 				exit (1);
 			}else {
-				$rra_array[$key]['pdp_per_row'] = $pdp_per_row;
+				$rra_array[$key]['pdp_per_row'] = $_pdp_per_row;
 			}
 			/* xff must be numeric < 1 */
-			if ((!preg_match('/^[.0-9]*$/', $xff) || (int)$xff >= 1)) {
+			if ((!preg_match('/^[.0-9]*$/', $_xff) || (int)$_xff >= 1)) {
 				echo __("ERROR: You must supply a valid xff number.") . "\n";
-				echo __("Found:") . " $xff\n";
+				echo __("Found: %s\n", $_xff);
 				exit (1);
 			}else {
-				$rra_array[$key]['xff'] = $xff;
+				$rra_array[$key]['xff'] = $_xff;
 			}
 
 		}
 	}
-
-	print_r($rra_array);
 
 	$rc= api_rrd_rra_delete($file_array, $rra_array, $debug);
 	if (isset($rc["err_msg"])) {
