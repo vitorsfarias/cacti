@@ -184,6 +184,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature: tabbed view for templates (device, graph, data source)
 -feature: cli/rrd_datasouce_add.php allows for adding new datasouces to existing rrd files; supports RRD file version 0001, 0003
 -feature: cli/rrd_rra_delete.php allows for deleting certain RRAs from existing rrd files
+-feature: cli/rrd_rra_clone.php allows for cloning certain RRAs from existing rrd files
 -feature: Add error messages to upgrade script SQL failures
 -feature: Return nav as the title for the page
 -feature: Modularize table display
