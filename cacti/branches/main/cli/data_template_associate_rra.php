@@ -54,7 +54,7 @@ if (sizeof($parms)) {
 			case "--help":
 			case "--version":		display_help($me);								exit(0);
 			case "--quiet":			$quietMode = TRUE;								break;
-			default:				echo "ERROR: Invalid Argument: ($arg)\n\n"; display_help($me); exit(1);
+			default:				echo __("ERROR: Invalid Argument: (%s)", $arg) . "\n\n"; display_help($me); exit(1);
 		}
 	}
 
@@ -100,11 +100,11 @@ function associate($data_template_id, $data_rra) {
 }
 
 function display_help($me) {
-	echo "Data Template Associate RRA Script 1.0, Copyright 2004-2010 - The Cacti Group\n\n";
-	echo "A simple command line utility to associate RRA definitions to a data template in Cacti\n\n";
-	echo "usage: $me --rra='rra-1:..:rra-n' --data-template-id=[ID]\n";
-	echo "Required:\n";
-	echo "    --rra                  the rra ids that shall be associated, seperated by colon\n";
-	echo "    --data-template-id     the data template id\n";
+	echo __("Data Template Associate RRA Script 1.0") . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
+	echo __("A simple command line utility to associate RRA definitions to a data template in Cacti") . "\n\n";
+	echo __("usage:") . $me . __("--rra='rra-1:..:rra-n' --data-template-id=[ID]") . "\n";
+	echo __("Required:") . "\n";
+	echo "    --rra                  " . __("the rra ids that shall be associated, seperated by colon") . "\n";
+	echo "    --data-template-id     " . __("the data template id") . "\n";
 }
 ?>
