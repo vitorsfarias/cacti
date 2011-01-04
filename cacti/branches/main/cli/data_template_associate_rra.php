@@ -37,8 +37,9 @@ include (dirname(__FILE__) . "/../include/global.php");
 $parms = $_SERVER["argv"];
 $me    = array_shift($parms);
 $debug = FALSE;	# no debug mode
-array_shift($parms);
-$template_id = 0;
+$data_template_id = 0;
+$quietMode = false;
+$rra = '';
 
 if (sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -59,8 +60,29 @@ if (sizeof($parms)) {
 	}
 
 	$data_template = db_fetch_row("SELECT * from data_template WHERE id=$data_template_id");
+	if (sizeof($data_template)) {
+		if (!$quietMode) print __("Working on Data Template Id %s: %s\n", $data_template_id, $data_template["name"]);
+	} else {
+		print __("ERROR: Invalid data template id given: %s\n", $data_template_id);
+		exit(1);
+	}
+
 	$data_rra = explode(':', $rra);
-	associate($data_template["id"], $data_rra);
+	if (sizeof($data_rra)) {
+		foreach ($data_rra as $rra_id) {
+			$rra_curr = db_fetch_row("SELECT * FROM rra WHERE id=" . $rra_id);
+			if (sizeof($rra_curr)) {
+				if (!$quietMode) print __("Working on RRA Id %s:%s:%s:%s:%s\n", $rra_id, $rra_curr["name"], $rra_curr["x_files_factor"], $rra_curr["steps"], $rra_curr["rows"], $rra_curr["timespan"]);
+			} else {
+				print __("ERROR: Invalid rra id given: %s\n", $rra_id);
+				exit(1);
+			}
+		}
+		associate($data_template["id"], $data_rra, $debug, $quietMode);
+	} else {
+		print __("ERROR: Invalid rra definition given: %s\n", $rra);
+		exit(1);
+	}
 
 } else {
 	display_help();
@@ -68,7 +90,7 @@ if (sizeof($parms)) {
 }
 
 
-function associate($data_template_id, $data_rra) {
+function associate($data_template_id, $data_rra, $debug, $quiet) {
 
 	/* get a list of data sources using this template 
 	 * including the template itself */
@@ -79,6 +101,8 @@ function associate($data_template_id, $data_rra) {
 
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
+			if (!$quiet) print __("Working on data source id %s\n", $data_source["id"]);
+			if ($debug) continue;
 
 			/* make sure to update the 'data_template_data_rra' table for each data source */
 			db_execute("DELETE
