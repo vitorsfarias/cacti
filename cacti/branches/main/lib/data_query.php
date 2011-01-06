@@ -247,14 +247,14 @@ function query_snmp_device($device_id, $snmp_query_id) {
 	}
 
 	/* the last octet of the oid is the index by default */
-	$index_parse_regexp = '/.*\.([0-9]+)$/';
+	$index_parse_regexp = '.*\.([0-9]+)$';
 
 	/* parse the index if required */
 	if (isset($snmp_queries["oid_index_parse"])) {
 		$index_parse_regexp = str_replace("OID/REGEXP:", "", $snmp_queries["oid_index_parse"]);
 
 		for ($i=0; $i<sizeof($snmp_indexes); $i++) {
-			$snmp_indexes[$i]["value"] = preg_replace($index_parse_regexp, "\\1", $snmp_indexes[$i]["oid"]);
+			$snmp_indexes[$i]["value"] = preg_replace('/' . $index_parse_regexp . '/', "\\1", $snmp_indexes[$i]["oid"]);
 			debug_log_insert("data_query", __("index_parse at OID: '%s' results: '%s'", $snmp_indexes[$i]["oid"], $snmp_indexes[$i]["value"]));
 		}
 	}
@@ -339,7 +339,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 			if ($field_array["source"] == "value") {
 				for ($i=0; $i<sizeof($snmp_data); $i++) {
 					# Is this preg_replace functional? - JPP
-					$snmp_index = preg_replace(isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp, "\\1", $snmp_data[$i]["oid"]);
+					$snmp_index = preg_replace('/' . (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . '/', "\\1", $snmp_data[$i]["oid"]);
 
 					$oid = $field_array["oid"] . ".$snmp_index";
 
