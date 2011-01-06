@@ -212,7 +212,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 				}
 			}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 				if (isset($data_query_xml["arg_num_indexes"])) {
-					array_push($recache_stack, "INSERT INOT poller_reindex 
+					array_push($recache_stack, "INSERT INTO poller_reindex 
 						(host_id, data_query_id, action, op, assert_value, arg1) 
 						VALUES ($host_id, $data_query_id, 1, '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $host_id) . "')
 						ON DUPLICATE KEY UPDATE op=VALUES(op), assert_value=VALUES(assert_value), arg1=VALUES(arg1)");

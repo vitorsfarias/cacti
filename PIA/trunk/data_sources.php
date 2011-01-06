@@ -416,7 +416,7 @@ function form_actions() {
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	while (list($var,$val) = each($_POST)) {
-		if (ereg("^chk_([0-9]+)$", $var, $matches)) {
+		if (preg_match("/^chk_([0-9]+)$/", $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
@@ -627,7 +627,7 @@ function data_edit() {
 
 			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
 
-			if ((!empty($host["id"])) && (eregi('^' . VALID_HOST_FIELDS . '$', $field["type_code"]))) {
+			if ((!empty($host["id"])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field["type_code"]))) {
 				print "<td width='50%'><strong>" . $field["name"] . "</strong> (From Host: " . $host["hostname"] . ")</td>\n";
 				print "<td><em>$old_value</em></td>\n";
 			}elseif (empty($can_template)) {
@@ -1327,9 +1327,9 @@ function ds() {
 			$data_name_cache = title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"));
 
 			if (trim(get_request_var_request("filter") != "")) {
-				$data_source['data_input_name'] = (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name'])));
-				$data_source['data_template_name'] = eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']);
-				$data_name_cache = eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", ($data_name_cache));
+				$data_source['data_input_name'] = (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", htmlspecialchars($data_source['data_input_name'])));
+				$data_source['data_template_name'] = preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $data_source['data_template_name']);
+				$data_name_cache = preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", ($data_name_cache));
 			}
 
 			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
