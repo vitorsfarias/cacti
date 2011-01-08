@@ -476,8 +476,8 @@ function format_snmp_string($string, $snmp_oid_included) {
 		(substr_count($string, "Hex:"))) {
 		/* strip of the 'Hex-STRING:' */
 		$string = preg_replace("/Hex-STRING: ?/i", "", $string);
-		$string = preg_replace("/Hex: ?/", "", $string);
-		$string = preg_replace("/Hex- ?/", "", $string);
+		$string = preg_replace("/Hex: ?/i", "", $string);
+		$string = preg_replace("/Hex- ?/i", "", $string);
 
 		$string_array = explode(" ", $string);
 
