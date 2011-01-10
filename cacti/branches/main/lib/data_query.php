@@ -35,7 +35,7 @@ function run_data_query($device_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", __("Running data query") . " [$snmp_query_id].");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
-	debug_log_insert("data_query", __("Found type") . " = '" . $type_id . "' [" . $input_types[$type_id]. "].");
+	if (isset($input_types[$type_id])) debug_log_insert("data_query", __("Found type") . " = '" . $type_id . "' [" . $input_types[$type_id]. "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
 		$result = query_snmp_device($device_id, $snmp_query_id);
