@@ -23,22 +23,20 @@
 */
 
 function run_data_query($host_id, $snmp_query_id) {
-	global $config;
+	global $config, $input_types;
 
 	include_once($config["library_path"] . "/poller.php");
 	include_once($config["library_path"] . "/utility.php");
 
 	debug_log_insert("data_query", "Running data query [$snmp_query_id].");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
+	if (isset($input_types[$type_id])) debug_log_insert("data_query", "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
-		debug_log_insert("data_query", "Found type = '3' [snmp query].");
 		$result = query_snmp_host($host_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-		debug_log_insert("data_query", "Found type = '4 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
-		debug_log_insert("data_query", "Found type = '6 '[script query].");
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
 		debug_log_insert("data_query", "Unknown type = '$type_id'");
@@ -91,16 +89,40 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", "XML file parsed ok.");
 
+	/* are we talking to script server? */
 	if (isset($script_queries["script_server"])) {
 		$script_queries["script_path"] = "\"|path_php_binary|\" -q " . $script_queries["script_path"];
 	}
 
+	if (!verify_index_order($script_queries)) {
+		debug_log_insert("data_query", "Invalid field &lt;index_order&gt;" . $script_queries["index_order"] . "&lt;/index_order&gt;");
+		debug_log_insert("data_query", "Must contain &lt;direction&gt;input&lt;/direction&gt; fields only");
+		return false;
+	}
+
+	/* provide data for arg_num_indexes, if given */
+	if (isset($script_queries["arg_num_indexes"])) {
+		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $host_id);
+
+		/* fetch specified index at specified OID */
+		$script_num_index_array = exec_into_array($script_path);
+	
+		debug_log_insert("data_query", "Executing script for num of indexes" . " '$script_path'");
+		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
+			debug_log_insert("data_query", "Found number of indexes: " . $script_num_index_array[$i]);
+		}
+	}
+
+	/* provide data for index, mandatory */
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $host_id);
 
 	/* fetch specified index at specified OID */
 	$script_index_array = exec_into_array($script_path);
 
-	debug_log_insert("data_query", "Executing script for list of indexes '$script_path'");
+	debug_log_insert("data_query", "Executing script for list of indexes" . " '$script_path' " . "Index Count: " . sizeof($script_index_array));
+	for ($i=0;($i<sizeof($script_index_array));$i++) {
+		debug_log_insert("data_query", "Found index: " . $script_index_array[$i]);
+	}
 
 	db_execute("delete from host_snmp_cache where host_id=$host_id and snmp_query_id=$snmp_query_id");
 
@@ -167,6 +189,24 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	debug_log_insert("data_query", "XML file parsed ok.");
 
+	if (!verify_index_order($snmp_queries)) {
+		debug_log_insert("data_query", "Invalid field &lt;index_order&gt;" . $snmp_queries["index_order"] . "&lt;/index_order&gt;");
+		debug_log_insert("data_query", "Must contain &lt;direction&gt;input&lt;/direction&gt; fields only");
+		return false;
+	}
+
+	/* provide data for oid_num_indexes, if given */
+	if (isset($snmp_queries["oid_num_indexes"])) {
+		$snmp_num_indexes = cacti_snmp_get($host["hostname"], $host["snmp_community"], $snmp_queries["oid_num_indexes"],
+										$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
+										$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+										$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"],
+										$host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
+	
+		debug_log_insert("data_query", "Executing SNMP get for num of indexes @ '" . $snmp_queries["oid_num_indexes"] . "'");
+		debug_log_insert("data_query", "Found number of indexes: " . $snmp_num_indexes);
+	}
+
 	/* fetch specified index at specified OID */
 	$snmp_indexes = cacti_snmp_walk($host["hostname"], $host["snmp_community"], $snmp_queries["oid_index"],
 		$host["snmp_version"], $host["snmp_username"], $host["snmp_password"],
@@ -174,6 +214,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"], $host["max_oids"], SNMP_WEBUI);
 
 	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "'");
+	debug_log_insert("data_query", "Executing SNMP walk for list of indexes @ '" . $snmp_queries["oid_index"] . "' Index Count: " . sizeof($snmp_indexes));
 
 	/* no data found; get out */
 	if (!$snmp_indexes) {
@@ -669,6 +710,45 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 	/* get a complete path for out target script */
 	return substitute_script_query_path($script_path) . " $extra_arguments";
+}
+
+
+/**
+ * verify a given index_order
+ * @param array $raw_xml 	- parsed XML array
+ * @return bool 			- index_order field valid
+ */
+function verify_index_order($raw_xml) {
+
+	/* invalid xml check */
+	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+		debug_log_insert("data_query", "Error parsing XML file into an array.");
+		return false;
+	}
+
+	$xml_inputs = array();
+
+	/* list each of the input fields for this snmp query */
+	while (list($field_name, $field_array) = each($raw_xml["fields"])) {
+		if ($field_array["direction"] == "input") {
+			/* create a list of all values for this index */
+			array_push($xml_inputs, $field_name);
+		}
+	}
+
+	$all_index_order_fields_found = true;
+	/* the xml file contains an ordered list of "indexable" fields */
+	if (isset($raw_xml["index_order"])) {
+		$index_order_array = explode(":", $raw_xml["index_order"]);
+
+		for ($i=0; $i<count($index_order_array); $i++) {
+			$all_index_order_fields_found = $all_index_order_fields_found && (in_array($index_order_array[$i], $xml_inputs));
+		}
+	} else {
+		/* the xml file does not contain an index order */
+	}
+
+	return $all_index_order_fields_found;
 }
 
 ?>
