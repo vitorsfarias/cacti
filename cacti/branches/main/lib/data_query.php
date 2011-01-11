@@ -117,6 +117,12 @@ function query_script_device($device_id, $snmp_query_id) {
 		$script_queries["script_path"] = "|path_php_binary| -q " . $script_queries["script_path"];
 	}
 
+	if (!verify_index_order($script_queries)) {
+		debug_log_insert("data_query", __("Invalid field &lt;index_order&gt; %s &lt;/index_order&gt;", $script_queries["index_order"]));
+		debug_log_insert("data_query", __("Must contain &lt;direction&gt;input&lt;/direction&gt; fields only"));
+		return false;
+	}
+
 	/* provide data for arg_num_indexes, if given */
 	if (isset($script_queries["arg_num_indexes"])) {
 		$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_num_indexes"], $script_queries["script_path"], $device_id);
@@ -213,6 +219,12 @@ function query_snmp_device($device_id, $snmp_query_id) {
 	}
 
 	debug_log_insert("data_query", __("XML file parsed ok."));
+
+	if (!verify_index_order($snmp_queries)) {
+		debug_log_insert("data_query", __("Invalid field &lt;index_order&gt; %s &lt;/index_order&gt;", $snmp_queries["index_order"]));
+		debug_log_insert("data_query", __("Must contain &lt;direction&gt;input&lt;/direction&gt; fields only"));
+		return false;
+	}
 
 	/* provide data for oid_num_indexes, if given */
 	if (isset($snmp_queries["oid_num_indexes"])) {
@@ -979,4 +991,43 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL) {
 	}
 
 	return $value;
+}
+
+
+/**
+ * verify a given index_order
+ * @param array $raw_xml 	- parsed XML array
+ * @return bool 			- index_order field valid
+ */
+function verify_index_order($raw_xml) {
+
+	/* invalid xml check */
+	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+		debug_log_insert("data_query", __("Error parsing XML file into an array."));
+		return false;
+	}
+
+	$xml_inputs = array();
+
+	/* list each of the input fields for this snmp query */
+	while (list($field_name, $field_array) = each($raw_xml["fields"])) {
+		if ($field_array["direction"] == "input") {
+			/* create a list of all values for this index */
+			array_push($xml_inputs, $field_name);
+		}
+	}
+
+	$all_index_order_fields_found = true;
+	/* the xml file contains an ordered list of "indexable" fields */
+	if (isset($raw_xml["index_order"])) {
+		$index_order_array = explode(":", $raw_xml["index_order"]);
+
+		for ($i=0; $i<count($index_order_array); $i++) {
+			$all_index_order_fields_found = $all_index_order_fields_found && (in_array($index_order_array[$i], $xml_inputs));
+		}
+	} else {
+		/* the xml file does not contain an index order */
+	}
+
+	return $all_index_order_fields_found;
 }
