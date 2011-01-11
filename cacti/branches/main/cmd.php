@@ -308,7 +308,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 							}
 
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $item["arg1"] . ", output: $output",$stdout);
+								cacti_log("Host[$device_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $index_item["arg1"] . ", output: $output",$stdout);
 							}
 							break;
 
@@ -367,7 +367,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 							}
 
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $item["arg1"] . ", output count: $output",$stdout);
+								cacti_log("Host[$device_id]: RECACHE DQ[" . $index_item["data_query_id"] . "] CMD: " . $index_item["arg1"] . ", output count: $output",$stdout);
 							}
 							break;
 
@@ -399,6 +399,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 						default: /* invalid reindex option */
 							cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "]: ERROR: Invalid reindex option: " . $index_item["action"], $stdout);						
 						}
+
 
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
