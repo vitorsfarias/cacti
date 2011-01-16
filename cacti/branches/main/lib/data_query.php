@@ -134,12 +134,14 @@ function query_script_device($device_id, $snmp_query_id) {
 		for ($i=0;($i<sizeof($script_num_index_array));$i++) {
 			debug_log_insert("data_query", __("Found number of indexes: %s", $script_num_index_array[$i]));
 		}
+	} else {
+		debug_log_insert("data_query", __("'Index Count Changed' not supported, &lt;arg_num_indexes&gt; missing in XML file"));		
 	}
 
 	/* provide data for index, mandatory */
 	$script_path = get_script_query_path((isset($script_queries["arg_prepend"]) ? $script_queries["arg_prepend"] . " ": "") . $script_queries["arg_index"], $script_queries["script_path"], $device_id);
 
-	/* fetch specified index at specified OID */
+	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
 
 	debug_log_insert("data_query", __("Executing script for list of indexes") . " '$script_path' " . __("Index Count: %s", sizeof($script_index_array)));
@@ -234,8 +236,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 										$device["snmp_context"], $device["snmp_port"], $device["snmp_timeout"],
 										$device["ping_retries"], $device["max_oids"], SNMP_WEBUI);
 	
-		debug_log_insert("data_query", __("Executing SNMP get for num of indexes @ '%s'", $snmp_queries["oid_num_indexes"]));
-		debug_log_insert("data_query", __("Found number of indexes: %s", $snmp_num_indexes));
+		debug_log_insert("data_query", __("Executing SNMP get for num of indexes @ '%s' Index Count: %s", $snmp_queries["oid_num_indexes"], $snmp_num_indexes));
 	}
 
 	/* fetch specified index at specified OID */
@@ -245,7 +246,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 									$device["snmp_context"], $device["snmp_port"], $device["snmp_timeout"],
 									$device["ping_retries"], $device["max_oids"], SNMP_WEBUI);
 
-	debug_log_insert("data_query", __("Executing SNMP walk for list of indexes @ '%s' ", $snmp_queries["oid_index"]) . __("Index Count: %s", sizeof($snmp_indexes)));
+	debug_log_insert("data_query", __("Executing SNMP walk for list of indexes @ '%s' Index Count: %s", $snmp_queries["oid_index"], sizeof($snmp_indexes)));
 
 	/* no data found; get out */
 	if (!$snmp_indexes) {
