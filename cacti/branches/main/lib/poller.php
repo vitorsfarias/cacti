@@ -207,7 +207,9 @@ function update_reindex_cache($device_id, $data_query_id) {
 					if (isset($data_query_xml["arg_num_indexes"])) { /* we have a specific request for counting indexes */
 						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_num_indexes"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
 					} else { /* count all indexes found */
-						$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+						# TODO: push the correct assert value
+						#$recache_stack[] = "($device_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', '$assert_value', " . '"' . get_script_query_path($data_query_xml["script_function"] . " " . (isset($data_query_xml["arg_prepend"]) ? $data_query_xml["arg_prepend"] . " ": "") . $data_query_xml["arg_index"], $data_query_xml["script_path"], $device_id) . '"' . ", '1')";
+						# omit the assert value until we are able to run an 'index' command through script server
 					}
 					break;
 			}
