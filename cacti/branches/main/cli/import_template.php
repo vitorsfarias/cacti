@@ -41,6 +41,7 @@ $me = array_shift($parms);
 if (sizeof($parms)) {
 	$filename = "";
 	$import_custom_rra_settings = false;
+	$rra_set = "";
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -50,8 +51,12 @@ if (sizeof($parms)) {
 				$filename = trim($value);
 
 				break;
-			case "--with-rras":
+			case "--with-template-rras":
 				$import_custom_rra_settings = true;
+
+				break;
+			case "--with-user-rras":
+				$rra_set = trim($value);
 
 				break;
 			case "--version":
@@ -65,6 +70,31 @@ if (sizeof($parms)) {
 				exit(1);
 		}
 	}
+	
+	if($rra_set != "") {
+		if ($import_custom_rra_settings) {
+			echo "ERROR: '--with-template-rras' given and '--with-user-rras' given. Ignoring '--with-user-rras'\n";
+		} else {
+			$rra_array = explode(':', $rra_set);
+			if (sizeof($rra_array)) {
+				foreach ($rra_array as $key => $value) {
+					$name = db_fetch_cell("SELECT name FROM rra WHERE id=" . intval($value));
+					if (strlen($name)) {
+						print (__("using RRA %s\n", $name));
+					} else {
+						print (__("RRA id %s not found\n", $value));
+						unset($rra_array[$key]);
+					}
+				}
+			}
+		}
+	}else{
+		$rra_array = array();
+		if (!$import_custom_rra_settings) {
+			print (__("ERROR: neither '--with-template-rras' given nor '--with-user-rras' given. Exiting'\n"));
+			return false;
+		}
+	}
 
 	if($filename != "") {
 		if(file_exists($filename) && is_readable($filename)) {
@@ -74,7 +104,7 @@ if (sizeof($parms)) {
 
 			printf(__("Read %d bytes of XML data\n"), strlen($xml_data));
 
-			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings);
+			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
 
 			while (list($type, $type_array) = each($debug_data)) {
 				print "** " . $hash_type_names[$type] . "\n";
@@ -132,13 +162,14 @@ if (sizeof($parms)) {
 }
 
 function display_help($me) {
-	echo "Add Graphs Script 1.0" . ", " . __("Copyright 2004-2010 - The Cacti Group") . "\n";
+	echo "Add Graphs Script 1.1" . ", " . __("Copyright 2004-2010 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to import a Template into Cacti") . "\n\n";
-	echo __("usage: ") . $me . " --filename=[filename] [--with-rras] [-h] [--help] [-v] [--version]\n";
+	echo __("usage: ") . $me . " --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]] [-h] [--help] [-v] [--version]\n";
 	echo __("Required:") . "\n";
 	echo "   --filename     " . __("the name of the XML file to import") . "\n";
 	echo __("Optional:") . "\n";
-	echo "   --with-rras    " . __("also import custom RRA definitions from the template") . "\n";
-	echo "   -v --version   " . __("Display this help message") . "\n";
-	echo "   -h --help      " . __("Display this help message") . "\n";
+	echo "   --with-template-rras " . __("also import custom RRA definitions from the template\n");
+	echo "   --with-user-rras     " . __("use your own set of RRA like '1:2:3:4'\n");
+	echo "   -v --version         " . __("Display this help message") . "\n";
+	echo "   -h --help            " . __("Display this help message") . "\n";
 }
