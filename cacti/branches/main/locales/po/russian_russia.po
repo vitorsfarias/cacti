@@ -2440,7 +2440,7 @@ msgstr ""
 #: ../cli/data_query_list.php:135 ../cli/graph_create.php:357
 #: ../cli/perms_create.php:161 ../cli/repair_database.php:87
 #: ../cli/data_source_remove.php:191 ../cli/poller_output_empty.php:87
-msgid "Copyright 2004-2010 - The Cacti Group"
+msgid "Copyright 2004-2011 - The Cacti Group"
 msgstr ""
 
 #: ../include/global_timezones.php:191 ../lib/ajax/get_timezones.php:92

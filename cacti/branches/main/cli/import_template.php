@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -162,7 +162,7 @@ if (sizeof($parms)) {
 }
 
 function display_help($me) {
-	echo "Add Graphs Script 1.1" . ", " . __("Copyright 2004-2010 - The Cacti Group") . "\n";
+	echo "Add Graphs Script 1.1" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to import a Template into Cacti") . "\n\n";
 	echo __("usage: ") . $me . " --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]] [-h] [--help] [-v] [--version]\n";
 	echo __("Required:") . "\n";
