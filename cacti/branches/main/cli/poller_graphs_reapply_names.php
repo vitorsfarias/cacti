@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -144,7 +144,7 @@ foreach ($graph_list as $graph) {
 
 /*	display_help - displays the usage of the function */
 function display_help($me) {
-	echo "Cacti Reapply Graph Names Script 1.0" . ", " . __("Copyright 2004-2010 - The Cacti Group") . "\n";
+	echo "Cacti Reapply Graph Names Script 1.0" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("usage: ") . $me . " -id=[device-id|All][device-id1|device-id2|...]\n";
 	echo "         [-s=[search_string] [-d] [-h] [--help] [-v] [--version]\n\n";
 	echo "   -id           " . __("The device-id or 'All' or a pipe delimited list of device-id's") . "\n";

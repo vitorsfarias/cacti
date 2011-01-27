@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -301,7 +301,7 @@ if (sizeof($parms)) {
 }
 
 function display_help($me) {
-	echo "Add Device Script 1.2" . ", " . __("Copyright 2004-2010 - The Cacti Group") . "\n";
+	echo "Add Device Script 1.2" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to add a device in Cacti") . "\n\n";
 	echo __("usage: ") . $me . " [--site-id=] [--poller-id=]\n";
 	echo "       [--description=] [--ip=] [--template=] [--notes=\"[]\"] [--disabled]\n";
