@@ -2,7 +2,7 @@
 // $Id: html_form.php 2993 2010-10-14 14:30:36Z ladams $
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2010 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
