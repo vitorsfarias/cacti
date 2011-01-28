@@ -76,6 +76,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001814: CLI - Add Device Script problem when SNMP Default is Disabled 
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
 -bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4  
+-bug#0001851: graph selector in graphs_new.php is broken when there is a data query without graphs 
 -bug#0001862: ping graphs do not work with new version of iputils. 
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 -bug#0001882: lib/snmp.php fails if if max_oids undefined in snmp_walk function call
