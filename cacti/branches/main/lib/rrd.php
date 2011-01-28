@@ -1515,7 +1515,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, &$rrdtool_pipe = "") {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
 	global $config;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 
@@ -2105,7 +2105,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-	$xport_array = rrdxport2array(rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrdtool_pipe));
+	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag));
 
 	/* add device and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
@@ -2625,7 +2625,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 					$option .= "--dynamic-labels" . RRD_NL;
 				}
 				break;
-				
+
 			case "force_rules_legend":
 				if ($value == CHECKED) {
 					$option .= "--force-rules-legend" . RRD_NL;
@@ -2871,7 +2871,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 				/* in case of mismatch, $file_rra["pdp_per_row"] might not be defined */
 				if (!isset($file_rra["pdp_per_row"])) $file_rra["pdp_per_row"] = 0;
-				
+
 				if ($consolidation_functions{$cacti_rra["cf"]} == trim($file_rra["cf"], '"') &&
 					$cacti_rra["steps"] == $file_rra["pdp_per_row"]) {
 
