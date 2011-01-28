@@ -589,12 +589,15 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 										poll_result[0] = '\0';
 
 										snprintf(poll_result, BUFSIZE, "%s", sysUptime);
+										SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] OID: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
 									}else{
 										poll_result = snmp_get(device, reindex->arg1);
 										snprintf(sysUptime, BUFSIZE, "%s", poll_result);
+										SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] OID: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
 									}
 								}else{
 									poll_result = snmp_get(device, reindex->arg1);
+									SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] OID: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
 								}
 							}else{
 								SPINE_LOG(("WARNING: Device[%i] TH[%i] DataQuery[%i] Reindex Check FAILED: No SNMP Session.  If not an SNMP device, don't use Uptime Goes Backwards!", device->id, device_thread, reindex->data_query_id));
@@ -602,7 +605,45 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 							break;
 						case POLLER_ACTION_SCRIPT: /* script (popen) */
-							poll_result = exec_poll(device, reindex->arg1);
+							poll_result = trim(exec_poll(device, reindex->arg1));
+							SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] CMD: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
+
+							break;
+						case POLLER_ACTION_PHP_SCRIPT_SERVER: /* script (php script server) */
+							php_process = php_get_process();
+							poll_result = trim(php_cmd(reindex->arg1, php_process));
+							SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] SERVER: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
+
+							break;
+						case POLLER_ACTION_SNMP_COUNT: /* snmp; count items */
+							if (!(poll_result = (char *) malloc(BUFSIZE))) {
+								die("ERROR: Fatal malloc error: poller.c poll_result");
+							}
+							poll_result[0] = '\0';
+
+							snprintf(poll_result, BUFSIZE, "%d", snmp_count(device, reindex->arg1));
+							SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i]: OID_COUNT: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
+
+							break;
+						case POLLER_ACTION_SCRIPT_COUNT: /* script (popen); count items by counting line feeds */
+							if (!(poll_result = (char *) malloc(BUFSIZE))) {
+								die("ERROR: Fatal malloc error: poller.c poll_result");
+							}
+							poll_result[0] = '\0';
+
+							snprintf(poll_result, BUFSIZE, "%d", char_count(exec_poll(device, reindex->arg1), '\n'));
+							SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] CMD Count: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
+
+							break;
+						case POLLER_ACTION_PHP_SCRIPT_SERVER_COUNT: /* script (php script server); count number of lines */
+							//php_process = php_get_process(); // todo not yet provided by cmd.php!
+							//sprintf(poll_result, "%d", char_count(php_cmd(reindex->arg1, php_process), '\n'));
+							//SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Recache DataQuery[%i] SERVER Count: %s, output: %s", device->id, device_thread, reindex->data_query_id, reindex->arg1, poll_result));
+							if (!(poll_result = (char *) malloc(BUFSIZE))) {
+								die("ERROR: Fatal malloc error: poller.c poll_result");
+							}
+							poll_result[0] = '\0';
+							SPINE_LOG(("Device[%i] TH[%i] Recache DataQuery[%i] *SKIPPING* Script Server Count: %s,  (arg_num_indexes required)", device->id, device_thread, reindex->data_query_id, reindex->arg1));
 
 							break;
 						default:
@@ -1334,7 +1375,7 @@ char *exec_poll(device_t *current_device, char *command) {
 		FD_ZERO(&fds);
 		FD_SET(cmd_fd, &fds);
 
-		/* wait x seonds for pipe response */
+		/* wait x seconds for pipe response */
 		switch (select(cmd_fd+1, &fds, NULL, NULL, &timeout)) {
 		case -1:
 			switch (errno) {
