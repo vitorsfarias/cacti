@@ -85,6 +85,8 @@ function form_actions() {
 				/* ==================================================== */
 
 				user_remove($selected_items[$i]);
+
+				api_plugin_hook_function('user_remove', $selected_items[$i]);
 			}
 		}
 
@@ -421,7 +423,7 @@ function form_save() {
 				while (list($var, $val) = each($_POST)) {
 					if (preg_match("/^[section]/i", $var)) {
 						if (substr($var, 0, 7) == "section") {
-						    db_execute("REPLACE INTO user_auth_realm (user_id,realm_id) VALUES (" . $user_id . "," . substr($var, 7) . ")");
+							db_execute("REPLACE INTO user_auth_realm (user_id,realm_id) VALUES (" . $user_id . "," . substr($var, 7) . ")");
 						}
 					}
 				}

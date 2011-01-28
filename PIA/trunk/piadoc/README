@@ -4,7 +4,7 @@
     Contact ........ jimmy@sqmail.org
     Home Site ...... http://cactiusers.org
     Program ........ Plugin Architecture
-    Version ........ 2.9
+    Version ........ 3.0
     Purpose ........ Provides users with the ability to write or use plugins with Cacti
 
 *******************************************************************************/
@@ -31,6 +31,7 @@
     
  ----[ ChangeLog ]
     --- SVN ---
+	feature: Add hooks for removing Devices, Graphs, Data Sources and Users
 	bug: Prevent searching on Data Sources page from showing odd characters
 	bug: Reduce default font sizes
 	bug: Escape some commands

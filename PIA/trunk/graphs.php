@@ -289,12 +289,15 @@ function form_actions() {
 
 					if (sizeof($data_sources)) {
 						api_data_source_remove_multi($data_sources);
+						api_plugin_hook_function('data_source_remove', $data_sources);
 					}
 
 					break;
 			}
 
 			api_graph_remove_multi($selected_items);
+
+			api_plugin_hook_function('graphs_remove', $selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			input_validate_input_number(get_request_var_post("graph_template_id"));
 			for ($i=0;($i<count($selected_items));$i++) {

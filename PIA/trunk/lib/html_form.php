@@ -250,7 +250,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'file':
-		form_file($field_name, 
+		form_file($field_name,
 			((isset($field_array["size"])) ? $field_array["size"] : "40"));
 
 		break;
@@ -439,6 +439,13 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value) 
 function form_dropdown($form_name, $form_data, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = "", $on_change = "") {
 	if ($form_previous_value == "") {
 		$form_previous_value = $form_default_value;
+	}
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
 	}
 
 	if (isset($_SESSION["sess_field_values"])) {

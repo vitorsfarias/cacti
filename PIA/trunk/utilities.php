@@ -283,7 +283,7 @@ function utilities_view_tech($php_info = "") {
 			$spine_version = $out_array[0];
 		}
 	}
-		
+
 	/* Display tech information */
 	html_start_box("<strong>Technical Support</strong>", "100%", $colors["header"], "3", "center", "");
 	html_header(array("General Information"), 2);

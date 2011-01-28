@@ -985,7 +985,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	<?php
 	html_end_box();
 
-	do_hook_function('graph_tree_page_buttons',
+	api_plugin_hook_function('graph_tree_page_buttons',
 		array(
 			'treeid' => $tree_id,
 			'leafid' => $leaf_id,
@@ -1200,10 +1200,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if (!empty($leaf_id)) {
-		do_hook_function('tree_after',$host_name.','.get_request_var("leaf_id"));
+		api_plugin_hook_function('tree_after',$host_name.','.get_request_var("leaf_id"));
 	}
 
-	do_hook_function('tree_view_page_end');
+	api_plugin_hook_function('tree_view_page_end');
 
 	print $nav;
 
