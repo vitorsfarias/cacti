@@ -79,7 +79,7 @@ $rras = get_associated_rras($_GET["local_graph_id"]);
 
 switch ($_REQUEST["action"]) {
 case 'view':
-	do_hook_function('page_buttons',
+	api_plugin_hook_function('page_buttons',
 		array('lgid' => $_GET["local_graph_id"],
 			'leafid' => '',//$leaf_id,
 			'mode' => 'mrtg',
@@ -122,7 +122,7 @@ case 'view':
 			<?php
 			$i++;
 		}
-		do_hook_function('tree_view_page_end');
+		api_plugin_hook_function('tree_view_page_end');
 	}
 
 	break;

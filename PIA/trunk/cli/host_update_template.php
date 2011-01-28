@@ -149,7 +149,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-print "Cacti Retemplate Host Script 1.0, Copyright 2004-2010 - The Cacti Group\n";
+print "Cacti Retemplate Host Script 1.0, Copyright 2004-2011 - The Cacti Group\n";
 	print "usage: host_update_template.php -host-id=[host-id|All] [--host-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
 	print "--host-id=host_id  - The host_id to have templates reapplied 'all' to do all hosts\n";
 	print "--host-template=ID - Which Host Template to Refresh\n\n";
