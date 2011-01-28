@@ -76,6 +76,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001816: Cannot export graph data to CSV with IE 8 (8.0.7600.16385) 
 -bug#0001819: MySQL "TYPE=" command deprecated since MySQL 4.1 removed in MySQL 5.4.4  
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
+-bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001934: Poller sig_handler Bug
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
