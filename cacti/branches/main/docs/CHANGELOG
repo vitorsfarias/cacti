@@ -50,6 +50,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001532: Various crashes in early stages of installation with no database populated.
 -bug#0001534: IP:PORT Granularity issue in cli/add_device.php
 -bug#0001535: Tree Automation Difficult Due to Lack of Parent ID in Tree Nodes
+-bug#0001540: SFTP is actually FTPS
 -bug#0001543: all graphs are exported 
 -bug#0001549: Database crashes with use of array_to_sql_or
 -bug#0001557: Quotes in Text Format graph template field breaks graph

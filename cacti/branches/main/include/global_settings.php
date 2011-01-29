@@ -389,7 +389,7 @@ $settings = array(
 						"local" => __("Classic (local path)"),
 						"ftp_php" => __("FTP (remote) - use php functions"),
 						"ftp_ncftpput" => __("FTP (remote) - use ncftpput"),
-						"sftp_php" => __("SFTP (remote) - use ssh php functions"),
+						"sftp_php" => __("FTPS (remote) - use ssh php functions"),
 						),
 			),
 		"export_presentation" => array(
