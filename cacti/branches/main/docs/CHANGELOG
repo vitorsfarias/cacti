@@ -85,6 +85,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001876: strip_quotes from function.php altering hex values
 -bug#0001880: When Performing Form Validation Error Message Areas Not Highlighted Upon Form Save
 -bug#0001882: lib/snmp.php fails if if max_oids undefined in snmp_walk function call
+-bug#0001918: Script server doesn't accept more than 1 blank space before the function name 
 -bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001934: Poller sig_handler Bug
 -bug#0001936: Removing Data Sources is Inneficient 
