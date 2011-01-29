@@ -91,6 +91,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001928: graph_image.php does not check local_graph_id
 -bug#0001934: Poller sig_handler Bug
 -bug#0001936: Removing Data Sources is Inneficient 
+-bug#0001937: The Cacti Technical Support Page Uses Check Table Which Blocks 
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
 -bug: add_tree.php did not allow nodes with propagating sort options

@@ -519,8 +519,7 @@ function display_database() {
 		array("name" => __("Data Length"), "align" => "right"),
 		array("name" => __("Index Length"), "align" => "right"),
 		array("name" => __("Auto Increment"), "align" => "left"),
-		array("name" => __("Collation"), "align" => "left"),
-		array("name" => __("Comment"), "align" => "left"));
+		array("name" => __("Collation"), "align" => "left"));
 
 	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", "3", "center", "");
 	print "<tr><td>";
@@ -546,7 +545,6 @@ function display_database() {
 			} else {
 				print "  <td>". __("Unknown") . "</td>\n";
 			}
-			print "<td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
 			print "</tr>\n";
 		}
 	}else{
