@@ -131,6 +131,9 @@ function api_device_save($id, $site_id, $poller_id, $device_template_id, $descri
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, $template_enabled) {
+	require_once(CACTI_BASE_PATH . "/lib/utility.php");
+	require_once(CACTI_BASE_PATH . "/lib/variables.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* fetch some cache variables */
 	if (empty($id)) {
