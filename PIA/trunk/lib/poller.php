@@ -191,7 +191,6 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host["snmp_timeout"],
 					SNMP_POLLER);
 
-				array_push($recache_stack, "insert into poller_reindex (host_id,data_query_id,action,op,assert_value,arg1) values ($host_id,$data_query_id," .  POLLER_ACTION_SNMP . ",'<','$assert_value','$oid_uptime')");
 				$recache_stack[] = "('$host_id', '$data_query_id'," .  POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', '1')";
 			}
 
@@ -311,7 +310,6 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 	db_execute("DELETE FROM poller_reindex WHERE host_id='$host_id' AND data_query_id='$data_query_id' AND present='0'");
 }
 
-
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDTool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
@@ -427,7 +425,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 				}
 			}
 		}
-
 
 		if ($k > 0) {
 			db_execute("DELETE FROM poller_output WHERE " . array_to_sql_or($data_ids, "local_data_id"));

@@ -64,6 +64,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
+	}else if (isset($_SESSION["action"]) && $_SESSION["action"] == 'zoom') {
+		print "<meta http-equiv=refresh content='99999'>\r\n";
 	}else{
 		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
 		print "<meta http-equiv=refresh content='" . $refresh . "'>\r\n";
