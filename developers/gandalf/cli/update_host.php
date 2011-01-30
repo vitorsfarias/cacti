@@ -100,7 +100,7 @@ if (sizeof($parms)) {
 	if (isset($host_id)) {
 		$sql = "SELECT * FROM host WHERE id = " . $host_id;
 	} else {
-		$sql = "SELECT * FROM host";
+		$sql = "SELECT * FROM host ORDER BY id";
 	}
 	$hosts = db_fetch_assoc($sql);
 
@@ -108,7 +108,7 @@ if (sizeof($parms)) {
 	 * verify valid host template and get a name for it
 	 */
 	if (isset($host_template_id)) {
-		$host_template_name = db_fetch_cell("SELECT name FROM snmp_query WHERE id = " . $host_template_id);
+		$host_template_name = db_fetch_cell("SELECT name FROM host_template WHERE id = " . $host_template_id);
 		if (!isset($host_template_name)) {
 			echo "ERROR: Unknown Host Template Id ($host_template_id)\n";
 			exit(1);
@@ -121,6 +121,12 @@ if (sizeof($parms)) {
 	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			
+			if ($host["status"] == 1) {	# DOWN
+				print "Host down " . $host["id"] . ":" . $host["description"] . "\n";
+				continue;
+			}
+			$snmp_sysName = '';
+			$snmp_sysDescr = '';
 			if ($update_descr && 
 				(($host["availability_method"] == AVAIL_SNMP) ||
 				($host["availability_method"] == AVAIL_SNMP_AND_PING) ||
