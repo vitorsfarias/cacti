@@ -44,6 +44,7 @@ if (sizeof($parms)) {
 	$debug = false;
 	unset($host_id);
 	unset($host_template_id);
+	unset($require_sysdescr);
 
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
@@ -68,6 +69,10 @@ if (sizeof($parms)) {
 				echo "ERROR: You must supply a numeric host-template for all hosts!\n";
 				exit(1);
 			}
+
+			break;
+		case "--require-sysdescr":
+			$require_sysdescr = trim($value);
 
 			break;
 		case "--update-description":
@@ -134,9 +139,34 @@ if (sizeof($parms)) {
 				}
 			}
 
-			if (isset($host_template_id)) {
+			/* if we require a specific sysName, check it */
+			if (isset($require_sysdescr) && 
+				(($host["availability_method"] == AVAIL_SNMP) ||
+				($host["availability_method"] == AVAIL_SNMP_AND_PING) ||
+				($host["availability_method"] == AVAIL_SNMP_OR_PING))) {
+				/* get system name */
+				$snmp_sysDescr = cacti_snmp_get($host["hostname"], $host["snmp_community"],
+							".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
+							$host["snmp_username"], $host["snmp_password"],
+							$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"],
+							$host["snmp_priv_protocol"], $host["snmp_context"], 
+							$host["snmp_port"], $host["snmp_timeout"], $host["ping_retries"]);
+				if (strlen($snmp_sysDescr) > 0) {
+					/* wanted string given? */
+					if (preg_match("/" . $require_sysdescr . "/", $snmp_sysDescr)) {
+						$host["host_template_id"] = $host_template_id;
+					} else {
+						print "Skipping " . $host["id"] . ":" . $host["description"] . ":" . $snmp_sysDescr . "\n";
+						continue;
+					}
+				} else {
+					print "Skipping " . $host["id"] . ":" . $host["description"] . ":" . $snmp_sysDescr . "\n";
+					continue;
+				}
+			} elseif (isset($host_template_id)) { /* else use given host template id, if any */
 				$host["host_template_id"] = $host_template_id;
 			}
+			
 			
 			if ($debug) {
 				print "DEBUG: update " . $host["id"] . ":" . $host["description"] . ":" . $host["host_template_id"] . "\n";
@@ -166,6 +196,7 @@ function display_help() {
 	echo "usage: update_host.php [--host-id=[ID]] [--host-template=[dq_id]] [--update-description]\n\n";
 	echo "    --host-id             the numerical ID of the host\n";
 	echo "    --host-template       the numerical ID of the data_query to be added\n";
+	echo "    --require-sysdescr    update host template only if this string is part of sysDescr\n";
 	echo "    --update-description  update host description from SNMP sysName\n";
 }
 
