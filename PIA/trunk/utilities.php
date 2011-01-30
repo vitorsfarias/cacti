@@ -465,7 +465,6 @@ function utilities_view_tech($php_info = "") {
 		print "  <th>Rows</th>\n";
 		print "  <th>Engine</th>\n";
 		print "  <th>Collation</th>\n";
-		print "  <th>Check Status</th>\n";
 		print "</tr>\n";
 		foreach ($table_status as $item) {
 			print "<tr>\n";
@@ -481,7 +480,6 @@ function utilities_view_tech($php_info = "") {
 			} else {
 				print "  <td>Unknown</td>\n";
 			}
-			print "  <td>" . db_fetch_cell("CHECK TABLE " . $item["Name"], "Msg_text") . "</td>\n";
 			print "</tr>\n";
 		}
 
@@ -1561,16 +1559,16 @@ function utilities_view_poller_cache() {
 					$details =
 						"SNMP Version: " . $item["snmp_version"] . ", " .
 						"Community: " . $item["snmp_community"] . ", " .
-						"OID: " . (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+						"OID: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
 				}else{
 					$details =
 						"SNMP Version: " . $item["snmp_version"] . ", " .
 						"User: " . $item["snmp_username"] . ", OID: " . $item["arg1"];
 				}
 			}elseif ($item["action"] == 1) {
-					$details = "Script: " . (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+					$details = "Script: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
 			}else{
-					$details = "Script Server: " . (strlen(get_request_var_request("filter")) ? (eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
+					$details = "Script Server: " . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["arg1"])) : $item["arg1"]);
 			}
 
 			print $details;

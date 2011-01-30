@@ -543,7 +543,7 @@ function create_dhtml_tree() {
 
 	$dhtml_tree[0] = $start;
 	$dhtml_tree[1] = read_graph_config_option("expand_hosts");
-	$dhtml_tree[2] = "var foldersTree = gFld(\"\", \"\")\n";
+	$dhtml_tree[2] = "foldersTree = gFld(\"\", \"\")\n";
 	$dhtml_tree[3] = "foldersTree.xID = \"root\"\n";
 	$i = 3;
 

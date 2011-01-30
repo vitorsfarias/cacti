@@ -453,12 +453,12 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 				ever seen */
 				if ($j == $i) {
 					if ($show_unknown == 1) {
-						$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})|(nan)|(NaN)';
+						$regexps[$i] .= '([\-]?[0-9]{1}[.,][0-9]+)e([\+-][0-9]{2,3})|(nan)|(NaN)';
 					} else {
-						$regexps[$i] .= '([\-]?[0-9]{1}\.[0-9]+)e([\+-][0-9]{2,3})';
+						$regexps[$i] .= '([\-]?[0-9]{1}[.,][0-9]+)e([\+-][0-9]{2,3})';
 					}
 				}else{
-					$regexps[$i] .= '[\-]?[0-9]{1}\.[0-9]+e[\+-][0-9]{2,3}';
+					$regexps[$i] .= '[\-]?[0-9]{1}[.,][0-9]+e[\+-][0-9]{2,3}';
 				}
 
 				if ($j < count($fetch_array["data_source_names"])) {
@@ -1415,7 +1415,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, &$rrdtool_pipe) {
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
 	global $config, $consolidation_functions;
 
 	include_once($config["library_path"] . "/cdef.php");
@@ -1970,7 +1970,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	$output_flag = RRDTOOL_OUTPUT_STDOUT;
 
-	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag, $rrdtool_pipe));
+	$xport_array = rrdxport2array(@rrdtool_execute("xport $xport_opts$xport_defs$txt_xport_items", false, $output_flag));
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;

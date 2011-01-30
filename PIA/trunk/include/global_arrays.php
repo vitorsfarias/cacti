@@ -657,7 +657,7 @@ $graph_datechar = array(
 	);
 
 $plugin_architecture = array(
-	'version' => '2.9'
+	'version' => '3.0'
 	);
 
 api_plugin_hook('config_arrays');
