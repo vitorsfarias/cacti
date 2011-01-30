@@ -281,7 +281,7 @@ function auth_display_custom_error_message($message) {
 	<input type="hidden" name="action" value="login">
 <?php
 
-api_plugin_hook("login_before");
+api_plugin_hook_function("login_before", array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
 
 $cacti_logo = $config['url_path'] . 'images/auth_login.gif';
 $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
