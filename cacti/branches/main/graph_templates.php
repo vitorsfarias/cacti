@@ -603,12 +603,12 @@ function graph_template_display_items() {
 	}
 
 	/* graph template item */
-	html_start_box("<strong>" . __("Graph Template Items") . "</strong> $header_label", "100", "0", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . $_REQUEST["id"], true);
+	html_start_box("<strong>" . __("Graph Template Items") . "</strong> $header_label", "100", "0", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
 	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_REQUEST["id"], false);
 	html_end_box(true);
 
 	/* graph template inputs */
-	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong>", "100", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . $_REQUEST["id"], true);
+	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong>", "100", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
 	print "<tr><td>\n";
 	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');
 
