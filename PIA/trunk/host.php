@@ -348,7 +348,7 @@ function form_actions() {
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
-	html_start_box("<strong>" . $device_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
 	print "<form action='host.php' autocomplete='off' method='post'>\n";
 
@@ -1215,7 +1215,8 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"));
+	html_start_box("<strong>Devices</strong>", "100%", $colors["header"], "3", "center", "host.php?action=edit&host_template_id=" . htmlspecialchars(get_request_var_request("host_template_id")) . "&host_status=" . htmlspecialchars(get_request_var_request("host_status")));
+
 
 	?>
 	<tr bgcolor="#<?php print $colors["panel"];?>">
