@@ -422,7 +422,7 @@ function data_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("<strong>" . __("Input Fields") . "</strong>", "100", 0, "center", "data_input.php?action=field_edit&type=in&data_input_id=" . $_GET["id"]);
+		html_start_box("<strong>" . __("Input Fields") . "</strong>", "100", 0, "center", "data_input.php?action=field_edit&type=in&data_input_id=" . htmlspecialchars(get_request_var("id")));
 		$header_items = array(
 			array("name" => __("Name"), "align" => "left"),
 			array("name" => __("Field Order"), "align" => "left"),

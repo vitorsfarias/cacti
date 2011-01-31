@@ -152,7 +152,7 @@ function item_edit() {
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
-		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . $_GET["id"]);
+		$tree_item = db_fetch_row("select * from graph_tree_items where id=" . get_request_var("id"));
 
 		if ($tree_item["local_graph_id"] > 0) { $db_type = TREE_ITEM_TYPE_GRAPH; }
 		if ($tree_item["title"] != "") { $db_type = TREE_ITEM_TYPE_HEADER; }
@@ -167,7 +167,7 @@ function item_edit() {
 		$current_type = TREE_ITEM_TYPE_HEADER;
 	}
 
-	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . $_GET["tree_id"] . "'");
+	$tree_sort_type = db_fetch_cell("select sort_type from graph_tree where id='" . get_request_var("tree_id") . "'");
 
 	print "<form action='tree.php' name='form_tree' method='post'>\n";
 
