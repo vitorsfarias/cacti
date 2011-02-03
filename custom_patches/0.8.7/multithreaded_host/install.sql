@@ -1,1 +1,0 @@
-ALTER TABLE host ADD COLUMN device_threads tinyint(2) unsigned NOT NULL DEFAULT '1' AFTER max_oids;
