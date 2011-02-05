@@ -1557,10 +1557,10 @@ INSERT INTO `graph_templates` VALUES(22, '06621cd4a9289417cadcb8f9b5cfba80', 'In
 INSERT INTO `graph_templates` VALUES(23, 'e0d1625a1f4776a5294583659d5cee15', 'Interface - Unicast Packets', '', '');
 INSERT INTO `graph_templates` VALUES(24, '10ca5530554da7b73dc69d291bf55d38', 'Interface - Non-Unicast Packets', '', '');
 INSERT INTO `graph_templates` VALUES(25, 'df244b337547b434b486662c3c5c7472', 'Interface - Traffic (bytes/sec)', '', '');
-INSERT INTO `graph_templates` VALUES(26, '7489e44466abee8a7d8636cb2cb14a1a', 'HOST-RESSOURCES - hrStorageTable - Hard Drive Space', '', '');
-INSERT INTO `graph_templates` VALUES(27, 'c6bb62bedec4ab97f9db9fd780bd85a6', 'HOST-RESSOURCES - hrProcessorTable - CPU Utilization', '', '');
-INSERT INTO `graph_templates` VALUES(28, 'e8462bbe094e4e9e814d4e681671ea82', 'HOST-RESSOURCES - hrSystemNumUsers - Logged in Users', '', '');
-INSERT INTO `graph_templates` VALUES(29, '62205afbd4066e5c4700338841e3901e', 'HOST-RESSOURCES - hrSystemProcesses - Processes', '', '');
+INSERT INTO `graph_templates` VALUES(26, '7489e44466abee8a7d8636cb2cb14a1a', 'HOST-RESOURCES - hrStorageTable - Hard Drive Space', '', '');
+INSERT INTO `graph_templates` VALUES(27, 'c6bb62bedec4ab97f9db9fd780bd85a6', 'HOST-RESOURCES - hrProcessorTable - CPU Utilization', '', '');
+INSERT INTO `graph_templates` VALUES(28, 'e8462bbe094e4e9e814d4e681671ea82', 'HOST-RESOURCES - hrSystemNumUsers - Logged in Users', '', '');
+INSERT INTO `graph_templates` VALUES(29, '62205afbd4066e5c4700338841e3901e', 'HOST-RESOURCES - hrSystemProcesses - Processes', '', '');
 INSERT INTO `graph_templates` VALUES(30, 'e3780a13b0f7a3f85a44b70cd4d2fd36', 'Netware - Open Files', '', '');
 INSERT INTO `graph_templates` VALUES(31, '1742b2066384637022d178cc5072905a', 'Interface - Traffic (bits/sec, 95th Percentile)', '', '');
 INSERT INTO `graph_templates` VALUES(32, '13b47e10b2d5db45707d61851f69c52b', 'Interface - Traffic (bits/sec, Total Bandwidth)', '', '');

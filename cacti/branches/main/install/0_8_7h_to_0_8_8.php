@@ -700,10 +700,10 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE graph_templates SET name='Linux Localhost - meminfo - Memory' where name='Linux - Memory Usage'");
 	db_install_execute("0.8.8", "UPDATE graph_templates SET name='UCD-SNMP - memory - Memory Usage' where name='ucd/net - Memory Usage'");
 	db_install_execute("0.8.8", "UPDATE graph_templates SET name='Linux Localhost - df - Hard Drive Space' where name='Unix - Available Disk Space'");
-	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESSOURCES - hrStorageTable - Hard Drive Space' where name='Host MIB - Available Disk Space'");
-	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESSOURCES - hrProcessorTable - CPU Utilization' where name='Host MIB - CPU Utilization'");
-	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESSOURCES - hrSystemNumUsers - Logged in Users' where name='Host MIB - Logged in Users'");
-	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESSOURCES - hrSystemProcesses - Processes' where name='Host MIB - Processes'");
+	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESOURCES - hrStorageTable - Hard Drive Space' where name='Host MIB - Available Disk Space'");
+	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESOURCES - hrProcessorTable - CPU Utilization' where name='Host MIB - CPU Utilization'");
+	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESOURCES - hrSystemNumUsers - Logged in Users' where name='Host MIB - Logged in Users'");
+	db_install_execute("0.8.8", "UPDATE graph_templates SET name='HOST-RESOURCES - hrSystemProcesses - Processes' where name='Host MIB - Processes'");
 	/* data templates */
 	db_install_execute("0.8.8", "UPDATE data_template SET name='UCD-SNMP - diskTable - Hard Drive Space'  WHERE name='ucd/net - Hard Drive Space'");
 	db_install_execute("0.8.8", "UPDATE data_template SET name='UCD-SNMP - systemStats - CPU Usage: System'  WHERE name='ucd/net - CPU Usage - System'");
@@ -721,16 +721,16 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE data_template SET name='UCD-SNMP - memory - Buffers'  WHERE name='ucd/net - Memory - Buffers'");
 	db_install_execute("0.8.8", "UPDATE data_template SET name='UCD-SNMP - memory - Free'  WHERE name='ucd/net - Memory - Free'");
 	db_install_execute("0.8.8", "UPDATE data_template SET name='Linux Localhost - df - Hard Drive Space'  WHERE name='Unix - Hard Drive Space'");
-	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESSOURCES - hrStorageTable - Hard Drive Space'  WHERE name='Host MIB - Hard Drive Space'");
-	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESSOURCES - hrProcessorTable - CPU Utilization'  WHERE name='Host MIB - CPU Utilization'");
-	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESSOURCES - hrSystemProcesses - Processes'  WHERE name='Host MIB - Processes'");
-	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESSOURCES - hrSystemNumUsers - Logged in Users'  WHERE name='Host MIB - Logged in Users'");
+	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESOURCES - hrStorageTable - Hard Drive Space'  WHERE name='Host MIB - Hard Drive Space'");
+	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESOURCES - hrProcessorTable - CPU Utilization'  WHERE name='Host MIB - CPU Utilization'");
+	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESOURCES - hrSystemProcesses - Processes'  WHERE name='Host MIB - Processes'");
+	db_install_execute("0.8.8", "UPDATE data_template SET name='HOST-RESOURCES - hrSystemNumUsers - Logged in Users'  WHERE name='Host MIB - Logged in Users'");
 	db_install_execute("0.8.8", "UPDATE data_template SET name='UCD-SNMP - memory - Cache'  WHERE name='ucd/net - Memory - Cache'");
 	/* data queries */
 	db_install_execute("0.8.8", "UPDATE snmp_query SET name='UCD-SNMP - diskTable - Hard Drive Space' where name='ucd/net -  Get Monitored Partitions'");
 	db_install_execute("0.8.8", "UPDATE snmp_query SET name='Linux Localhost - df - Hard Drive Space' where name='Unix - Get Mounted Partitions'");
-	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESSOURCES - hrStorageTable - Hard Drive Space' where name='SNMP - Get Mounted Partitions'");
-	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESSOURCES - hrProcessorTable - CPU Utilization' where name='SNMP - Get Processor Information'");
+	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESOURCES - hrStorageTable - Hard Drive Space' where name='SNMP - Get Mounted Partitions'");
+	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESOURCES - hrProcessorTable - CPU Utilization' where name='SNMP - Get Processor Information'");
 	
 	/* Add SNMPv3 Context to SNMP Input Methods */
 	/* first we must see if the user was smart enough to add it themselves */
