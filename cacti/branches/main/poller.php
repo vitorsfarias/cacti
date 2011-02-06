@@ -266,23 +266,26 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 	db_execute("DELETE FROM poller_time WHERE poller_id=$poller_id");
 
-	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id "));
+	$issues_limit = 20;
+	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ") . " LIMIT " . ($issues_limit + 1));
+	
 	if (sizeof($issues)) {
 		$issue_list = "";
 		$count = 0;
 		foreach($issues as $issue) {
-			if ($count <= 20) {
-				if ($count == 0) {
-					$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
-				}else{
-					$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
-				}
+			if ($count > $issues_limit) {
+				break;
+			}
+			if ($count == 0) {
+				$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
+			}else{
+				$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
 			}
 			$count++;
 		}
 
-		if ($count > 20) {
-			$issue_list .= ", Additional Issues Remain.  Only showing first 20";
+		if ($count > $issues_limit) {
+			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
 		}
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Poller ID: '$poller_id', Issues: '$count', Data Sources: $issue_list", FALSE, "POLLER");
