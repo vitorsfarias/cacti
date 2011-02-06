@@ -145,31 +145,28 @@ $process_leveling = read_config_option("process_leveling");
 /* retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
 
+$sql_where = ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ");
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
-	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item WHERE rrd_next_step<=0" . ($poller_id == 0 ? "" : " AND poller_id=$poller_id "));
-	$items_perdevice     = array_rekey(db_fetch_assoc("SELECT device_id, COUNT(*) AS data_sources
-							FROM poller_item
-							WHERE rrd_next_step<=0 " .
-							($poller_id == 0 ? "" : "AND poller_id=$poller_id ") . "
-							GROUP BY device_id
-							ORDER BY device_id"), "device_id", "data_sources");
 	$poller_runs       = $cron_interval / $poller_interval;
+	$sql_where = (strlen($sql_where) == 0 ? " WHERE " : " AND ") . " rrd_next_step<=0 ";
 
 	define("MAX_POLLER_RUNTIME", $poller_runs * $poller_interval - 2);
 }else{
-	$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id "));
-	$items_perdevice     = array_rekey(db_fetch_assoc("SELECT device_id, COUNT(*) AS data_sources
-							FROM poller_item " .
-							($poller_id == 0 ? "" : "WHERE poller_id=$poller_id ") . "
-							GROUP BY device_id
-							ORDER BY device_id"), "device_id", "data_sources");
 	$poller_runs       = 1;
-
 	define("MAX_POLLER_RUNTIME", 298);
 }
 
-if (sizeof($items_perdevice)) {
+$num_polling_items = db_fetch_cell("SELECT COUNT(*) FROM poller_item $sql_where");
+if (isset($concurrent_processes) && $concurrent_processes > 1) {
+	$items_perdevice     = array_rekey(db_fetch_assoc("SELECT device_id, COUNT(*) AS data_sources " .
+			"FROM poller_item " .
+			$sql_where . " " .
+			"GROUP BY device_id " .
+			"ORDER BY device_id"), "device_id", "data_sources");
+}
+
+if (isset($items_perhost) && sizeof($items_perhost)) {
 	$items_per_process   = floor($num_polling_items / $concurrent_processes);
 
 	if ($items_per_process == 0) {
