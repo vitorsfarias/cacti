@@ -37,6 +37,11 @@ define("DEVICE_RECOVERING", 2);
 define("DEVICE_UP", 3);
 define("DEVICE_ERROR", 4);
 
+define("SNMP_VERSION_NONE", 0);
+define("SNMP_VERSION_1", 1);
+define("SNMP_VERSION_2", 2);
+define("SNMP_VERSION_3", 3);
+
 define("SNMP_AUTH_PROTOCOL_NONE", 	'');
 define("SNMP_AUTH_PROTOCOL_MD5", 	'MD5');
 define("SNMP_AUTH_PROTOCOL_SHA", 	'SHA');
