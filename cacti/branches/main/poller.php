@@ -61,6 +61,7 @@ $no_http_headers = true;
 
 /* start initialization section */
 include(dirname(__FILE__) . "/include/global.php");
+include_once(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
 include_once(CACTI_BASE_PATH . "/lib/poller.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 include_once(CACTI_BASE_PATH . "/lib/graph_export.php");
@@ -299,13 +300,13 @@ while ($poller_runs_completed < $poller_runs) {
 		$items_launched    = 0;
 
 		/* exit poller if spine is selected and file does not exist */
-		if (($poller == "2") && (!file_exists(read_config_option("path_spine")))) {
+		if (($poller == POLLER_SPINE) && (!file_exists(read_config_option("path_spine")))) {
 			cacti_log("ERROR: The path: " . read_config_option("path_spine") . " is invalid.  Can not continue", true, "POLLER");
 			exit;
 		}
 
 		/* Determine Command Name */
-		if ($poller == "2") {
+		if ($poller == POLLER_SPINE) {
 			$command_string = cacti_escapeshellcmd(read_config_option("path_spine"));
 			$extra_args     = "";
 			$method         = "spine";
@@ -349,7 +350,9 @@ while ($poller_runs_completed < $poller_runs) {
 				if (($items_launched >= $items_per_process) ||
 					(sizeof($items_perdevice) == $concurrent_processes)) {
 					$last_device      = $item["id"];
-					$change_proc    = true;
+					/* if this is the dummy entry for externally updated data sources 
+					 * that are not related to any host (host id = 0), do NOT change_proc */
+					$change_proc    = ($item["id"] == 0 ? false : true);
 					$items_launched = 0;
 				}
 			}
@@ -384,7 +387,7 @@ while ($poller_runs_completed < $poller_runs) {
 			db_execute("REPLACE INTO settings (name,value) VALUES ('date',NOW())");
 		}
 
-		if ($poller == "1") {
+		if ($poller == POLLER_CMD) {
 			$max_threads = "N/A";
 		}
 
