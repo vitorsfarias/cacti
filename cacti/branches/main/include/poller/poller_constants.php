@@ -37,3 +37,6 @@ define("POLLER_ACTION_SCRIPT_PHP_COUNT", 12);
 
 define("POLLER_COMMAND_REINDEX", 1);
 define("POLLER_COMMAND_RRDPURGE", 2);
+
+define("POLLER_CMD", 1);
+define("POLLER_SPINE", 2);

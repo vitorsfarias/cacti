@@ -24,6 +24,6 @@
 
 require_once(CACTI_BASE_PATH . "/include/poller/poller_constants.php");
 
-$poller_options = array(1 =>
-	"cmd.php",
-	"spine");
+$poller_options = array(
+	POLLER_CMD		=> "cmd.php",
+	POLLER_SPINE	=> "spine");
