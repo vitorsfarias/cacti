@@ -734,6 +734,7 @@ function device_edit() {
 
 function device_display_general($device, $device_text) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 
 	if (isset($device["id"])) {
@@ -954,18 +955,18 @@ function device_display_general($device, $device_text) {
 		ping_method         = document.getElementById('ping_method').value;
 
 		/* debugging, uncomment as required */
-		//alert("The availability method is '" + availability_method + "'");
+		//alert("setPingVisibility The availability method is '" + availability_method + "'");
 		//alert("The ping method is '" + ping_method + "'");
 
 		switch(availability_method) {
-		case "0": // none
+		case "<?php print AVAIL_NONE;?>": // none
 			document.getElementById('row_ping_method').style.display  = "none";
 			document.getElementById('row_ping_port').style.display    = "none";
 			document.getElementById('row_ping_timeout').style.display = "none";
 			document.getElementById('row_ping_retries').style.display = "none";
 
 			break;
-		case "2": // snmp
+		case "<?php print AVAIL_SNMP;?>": // snmp
 			document.getElementById('row_ping_method').style.display  = "none";
 			document.getElementById('row_ping_port').style.display    = "none";
 			document.getElementById('row_ping_timeout').style.display = "";
@@ -974,15 +975,15 @@ function device_display_general($device, $device_text) {
 			break;
 		default: // ping ok
 			switch(ping_method) {
-			case "1": // ping icmp
+			case "<?php print PING_ICMP;?>": // ping icmp
 				document.getElementById('row_ping_method').style.display  = "";
 				document.getElementById('row_ping_port').style.display    = "none";
 				document.getElementById('row_ping_timeout').style.display = "";
 				document.getElementById('row_ping_retries').style.display = "";
 
 				break;
-			case "2": // ping udp
-			case "3": // ping tcp
+			case "<?php print PING_UDP;?>": // ping udp
+			case "<?php print PING_TCP;?>": // ping tcp
 				document.getElementById('row_ping_method').style.display  = "";
 				document.getElementById('row_ping_port').style.display    = "";
 				document.getElementById('row_ping_timeout').style.display = "";
@@ -1011,21 +1012,21 @@ function device_display_general($device, $device_text) {
 		selectedIndex = document.getElementById('availability_method').selectedIndex;
 
 		/* debugging uncomment as required */
-		//alert("The selectedIndex is '" + selectedIndex + "'");
+		//alert("setAvailability The selectedIndex is '" + selectedIndex + "'");
 		//alert("The array length is '" + am.length + "'");
 
 		switch(type) {
 		case "NoSNMP":
-			/* remove snmp options */
-			if (am.length == 4) {
+		/* remove snmp options */
+			if (am.length == <?php print sizeof($availability_options);?>) {
 				am.remove(1);
 				am.remove(1);
 				am.remove(1);
 			}
 
-			/* set the index to something valid, like "ping" */
+			/* set the index to something valid */
 			if (selectedIndex > 1) {
-				am.selectedIndex=1;
+				am.selectedIndex=1; /* we cannot use AVAIL_PING here, as we modified the am array */
 			}
 
 			break;
@@ -1041,31 +1042,31 @@ function device_display_general($device, $device_text) {
 				var d=document.createElement('option');
 				var e=document.createElement('option');
 
-				a.value="0";
-				a.text="None";
+				a.value=<?php print AVAIL_NONE;?>;
+				a.text="<?php print $availability_options[AVAIL_NONE];?>";
 				addSelectItem(a,am);
 
-				b.value="1";
-				b.text="Ping and SNMP";
+				b.value=<?php print AVAIL_SNMP_AND_PING;?>;
+				b.text="<?php print $availability_options[AVAIL_SNMP_AND_PING];?>";
 				addSelectItem(b,am);
 
-				e.value="4";
-				e.text="Ping or SNMP";
+				e.value=<?php print AVAIL_SNMP_OR_PING;?>;
+				e.text="<?php print $availability_options[AVAIL_SNMP_OR_PING];?>";
 				addSelectItem(e,am);
 
-				c.value="2";
-				c.text="SNMP";
+				c.value=<?php print AVAIL_SNMP;?>;
+				c.text="<?php print $availability_options[AVAIL_SNMP];?>";
 				addSelectItem(c,am);
 
-				d.value="3";
-				d.text="Ping";
+				d.value=<?php print AVAIL_PING;?>;
+				d.text="<?php print $availability_options[AVAIL_PING];?>";
 				addSelectItem(d,am);
 
 				/* restore the correct index number */
 				if (selectedIndex == 0) {
-					am.selectedIndex = 0;
+					am.selectedIndex = <?php print AVAIL_NONE;?>;
 				}else{
-					am.selectedIndex = 3;
+					am.selectedIndex = <?php print AVAIL_PING;?>;
 				}
 			}
 
@@ -1077,15 +1078,17 @@ function device_display_general($device, $device_text) {
 	}
 
 	function setAvailabilityVisibility(type, selectedIndex) {
+		//alert("setAvailabilityVisibility type is '" + type + "'");
+		//alert("The selectedIndex is '" + selectedIndex + "'");
 		switch(type) {
 		case "NoSNMP":
 			switch(selectedIndex) {
-			case "0": // availability none
+			case <?php print AVAIL_NONE;?>: // availability none
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value=0;
 
 				break;
-			case "1": // ping
+			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
 				document.getElementById('row_ping_method').style.display="";
 				document.getElementById('ping_method').value=ping_method;
 
@@ -1093,14 +1096,14 @@ function device_display_general($device, $device_text) {
 			}
 		case "All":
 			switch(selectedIndex) {
-			case "0": // availability none
+			case <?php print AVAIL_NONE;?>: // availability none
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value=0;
 
 				break;
-			case "1": // ping and snmp
-			case "3": // ping
-			case "4": // ping or snmp
+			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
+			case <?php print AVAIL_PING;?>: // ping
+			case <?php print AVAIL_SNMP_OR_PING;?>: // ping or snmp
 				if ((document.getElementById('row_ping_method').style.display == "none") ||
 					(document.getElementById('row_ping_method').style.display == undefined)) {
 					document.getElementById('ping_method').value=ping_method;
@@ -1108,7 +1111,7 @@ function device_display_general($device, $device_text) {
 				}
 
 				break;
-			case "2": // snmp
+			case <?php print AVAIL_SNMP;?>: // snmp
 				document.getElementById('row_ping_method').style.display="none";
 				document.getElementById('ping_method').value="0";
 
@@ -1119,20 +1122,21 @@ function device_display_general($device, $device_text) {
 
 	function changeHostForm() {
 		snmp_version        = document.getElementById('snmp_version').value;
+		//alert("changeHostForm SNMP Version is '" + snmp_version + "'");
 
 		switch(snmp_version) {
-		case "0":
+		case "<?php print SNMP_VERSION_NONE;?>":
 			setAvailability("NoSNMP");
 			setSNMP("None");
 
 			break;
-		case "1":
-		case "2":
+		case "<?php print SNMP_VERSION_1;?>":
+		case "<?php print SNMP_VERSION_2;?>":
 			setAvailability("All");
 			setSNMP("v1v2");
 
 			break;
-		case "3":
+		case "<?php print SNMP_VERSION_3;?>":
 			setAvailability("All");
 			setSNMP("v3");
 
@@ -1141,6 +1145,7 @@ function device_display_general($device, $device_text) {
 	}
 
 	function setSNMP(snmp_type) {
+		//alert("setSNMP SNMP type is '" + snmp_type + "'");
 		switch(snmp_type) {
 		case "None":
 			document.getElementById('row_snmp_username').style.display        = "none";

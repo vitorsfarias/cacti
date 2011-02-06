@@ -80,11 +80,11 @@ $device_struc = array(
 	"availability"
 	);
 
-$snmp_versions = array(0 =>
-	__("Not In Use"),
-	__("Version 1"),
-	__("Version 2"),
-	__("Version 3"),
+$snmp_versions = array(
+	SNMP_VERSION_NONE	=> __("Not In Use"),
+	SNMP_VERSION_1		=> __("Version 1"),
+	SNMP_VERSION_2		=> __("Version 2"),
+	SNMP_VERSION_3		=> __("Version 3"),
 	);
 
 $snmp_auth_protocols = array(
