@@ -13,7 +13,7 @@ CREATE TABLE `plugin_config` (
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -31,7 +31,7 @@ CREATE TABLE `plugin_hooks` (
   PRIMARY KEY  (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -46,7 +46,7 @@ CREATE TABLE `plugin_realms` (
   `display` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `plugin` (`plugin`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 
 CREATE TABLE `plugin_db_changes` (
@@ -58,7 +58,7 @@ CREATE TABLE `plugin_db_changes` (
   PRIMARY KEY  (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 
 REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management');
