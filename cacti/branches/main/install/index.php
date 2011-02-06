@@ -215,7 +215,7 @@ if (CACTI_SERVER_OS == "unix") {
 }
 
 /* Shell Binary Path */
-$input["path_shell_binary"] = $settings["path"]["path_shell_binary"];
+$input["path_sh_binary"] = $settings["path"]["path_sh_binary"];
 
 if (CACTI_SERVER_OS == "unix") {
 	$which_sh = find_best_path("sh");
