@@ -2263,7 +2263,16 @@ function rrdtool_set_x_grid($xaxis_id, $start, $end) {
  */
 function rrd_substitute_device_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace device variables in graph elements */
-	$txt_graph_item = substitute_device_data($txt_graph_item, '|','|', $graph["device_id"], true);
+	if (empty($graph["device_id"])) { 
+		/* if graph has no associated device determine host_id from graph item data source */
+		if (!empty($graph_item["local_data_id"])) {
+			$device_id = db_fetch_cell("select device_id from data_local where id='" . $graph_item["local_data_id"] . "'");
+		}
+	}
+	else {
+		$device_id = $graph["device_id"];
+	}
+	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $device_id);
 
 	/* replace query variables in graph elements */
 	if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {
