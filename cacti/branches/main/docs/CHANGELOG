@@ -221,6 +221,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug: Change default font sizes
 -bug: fixing issues with multiple "U" results for data input methods with multiple output parms
 -bug: when using template and search filter on graph management, sql error occurs
+-bug: be smart for SNMP V3 and use AuthNoPriv when privacy passphrase is empty
 -feature#0001667: Get values of |host_*| variables in graph elements from data source
 -feature#0001922: Reindex method "Index Count Changed" requires that OID_NUM_INDEXES is given for SNMP Data Queries
 -feature#0001923: Implement counting for script (server) data queries just like OID_NUM_INDEXES
