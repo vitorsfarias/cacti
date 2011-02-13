@@ -2272,7 +2272,7 @@ function rrd_substitute_device_query_data($txt_graph_item, $graph, $graph_item) 
 	else {
 		$device_id = $graph["device_id"];
 	}
-	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $device_id);
+	$txt_graph_item = substitute_device_data($txt_graph_item, '|','|', $device_id);
 
 	/* replace query variables in graph elements */
 	if (preg_match("/\|query_[a-zA-Z0-9_]+\|/", $txt_graph_item)) {
