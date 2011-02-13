@@ -185,7 +185,7 @@ function ajax_get_form_dropdown() {
 
 	if ($where_pos = strpos(strtoupper($sql), "WHERE")) {
 		$sql = substr($sql, 0, $where_pos+5) . " LOWER($name_qry) LIKE '%$q%' AND " . substr($sql, $where_pos+5);
-	}elseif ($orderby_pos = strpos(strtoupper($form_data), "ORDER BY")) {
+	}elseif ($orderby_pos = strpos(strtoupper($form_data), "ORDER BY")) { # TODO $form_data is not defined
 		$sql = substr($sql, 0, $orderby_pos) . " AND LOWER($name_qry) LIKE '%$q%' " . substr($sql, $orderby_pos);
 	}else{
 		$sql = $sql . " AND LOWER($name_qry) LIKE '%$s%'";
@@ -238,7 +238,7 @@ function ajax_get_graph_templates()  {
 }
 
 function ajax_get_graph_tree_content() {
-	include(dirname(__FILE__) . "/../../include/global.php");
+	include_once(CACTI_BASE_PATH . "/include/global.php");
 	include_once(CACTI_BASE_PATH . "/lib/functions.php");
 	include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/timespan_settings.php");
