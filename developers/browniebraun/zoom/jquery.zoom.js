@@ -42,7 +42,6 @@
 
 		var zoomStartPos	= 'none';
 		var zoomEndPos		= 'none';
-		var zoomAreaHeight	= 0;
 		var zoomAction		= 'zoom-in';
 
 		var graphWidth		= 0;
@@ -83,10 +82,21 @@
 			localGraphID		= graphParameters["local_graph_id"];
 			graphStartTime		= graphParameters["graph_start"];
 			graphEndTime		= graphParameters["graph_end"];
-			graphTitleFontSize	= graphParameters["title_font_size"];
+
 
 			graphWidth			= graphParameters["graph_width"];
 			graphHeight			= graphParameters["graph_height"];
+
+			if((graphParameters["title_font_size"] <= 0) || (graphParameters["title_font_size"] == "")) {
+				graphTitleFontSize = 12;
+			}else {
+				graphTitleFontSize = graphParameters["title_font_size"];
+			}
+
+			if("graph_nolegend" in graphParameters) {
+				graphTitleFontSize	*= .70;
+			}
+
 			imageWidth			= $this.width();
 			imageHeight			= $this.height();
 			imagePosTop 		= $this.offset().top;
@@ -95,6 +105,7 @@
 			// define the zoom box
 			var zoomBoxWidth	= graphWidth;
 			var zoomBoxHeight	= graphHeight;
+			var zoomAreaHeight  = graphHeight;
 
 			if(graphTitleFontSize == null) {
 				zoomBoxPosTop = 32 - 1;
@@ -103,10 +114,10 @@
 				var multiplier = 2.4;
 
 				// array of "best fit" multipliers
-				multipliers = new Array("1.7", "1.7", "1.8", "1.9", "2", "2.1", "2.1", "2.2", "2.2", "2.2", "2.3", "2.3", "2.3", "2.3");
+				multipliers = new Array("-5", "-2", "0", "1.7", "1.6", "1.7", "1.8", "1.9", "2", "2", "2.1", "2.1", "2.2", "2.2", "2.3", "2.3", "2.3", "2.3", "2.3");
 
-				if(multipliers[parseInt(graphTitleFontSize)-5] != null) {
-					multiplier = multipliers[parseInt(graphTitleFontSize)-5];
+				if(multipliers[Math.round(graphTitleFontSize)] != null) {
+					multiplier = multipliers[Math.round(graphTitleFontSize)];
 				}
 
 				zoomBoxPosTop = imagePosTop + parseInt(Math.abs(graphTitleFontSize) * multiplier) + 15;
@@ -125,16 +136,13 @@
 			// reset the zoom box
 			$("#zoomBox").css({ cursor:'crosshair', width:zoomBoxWidth + 'px', height:zoomBoxHeight + 'px', top:zoomBoxPosTop+'px', left:zoomBoxPosLeft+'px' });
 
-			// define the height of the area box
-			zoomAreaHeight	= zoomBoxHeight;
-
 			// add the zoom area if it has not been created yet.
 			if($("#zoomArea").length == 0) {
-				$("<div id='zoomArea' style=' cursor:e-resize; background-color:red; height:"+zoomAreaHeight+"px; top:"+zoomBoxPosTop+"px; position:absolute; z-index:900; filter:alpha(opacity=40); -moz-opacity:0.4; -khtml-opacity:0.4; opacity:0.4; overflow:hidden; border:0; padding:0; margin:0'>").appendTo("body");
+				$("<div id='zoomArea' style=' cursor:e-resize; background-color:red; height:0px; top:"+zoomBoxPosTop+"px; position:absolute; z-index:900; filter:alpha(opacity=40); -moz-opacity:0.4; -khtml-opacity:0.4; opacity:0.4; overflow:hidden; border:0; padding:0; margin:0'>").appendTo("body");
 			}
 
 			// reset the area box
-			$("#zoomArea").css({top:zoomBoxPosTop+'px'});
+			$("#zoomArea").css({ top:zoomBoxPosTop+'px', height:zoomAreaHeight+'px' });
 			initZoomAction(image);
 		}
 
@@ -176,6 +184,7 @@
 					case 1:
 						// reset the zoom area
 						zoomStartPos = e.pageX;
+
 						$("#zoomBox").css({ cursor:'e-resize' });
 						$("#zoomArea").css({ width:'0px', left:zoomStartPos+'px' });
 					break;
