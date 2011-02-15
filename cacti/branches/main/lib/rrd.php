@@ -501,6 +501,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	include_once(CACTI_BASE_PATH . "/lib/cdef.php");
 	include_once(CACTI_BASE_PATH . "/lib/vdef.php");
 	include_once(CACTI_BASE_PATH . "/lib/graph_variables.php");
+	include_once(CACTI_BASE_PATH . "/lib/variables.php");
 	include_once(CACTI_BASE_PATH . "/lib/time.php");
 
 	/* set the rrdtool default font */
@@ -690,27 +691,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 
 	$graph_date = date_time_format();
 
-	/* display the timespan for zoomed graphs */
-	if ((isset($graph_data_array["graph_start"])) && (isset($graph_data_array["graph_end"]))) {
-		if (($graph_data_array["graph_start"] < 0) && ($graph_data_array["graph_end"] < 0)) {
-			if ($rrdtool_version != RRD_VERSION_1_0) {
-				$graph_opts .= "COMMENT:\"" . __("From") . " " . str_replace(":", "\:", date($graph_date, time()+$graph_data_array["graph_start"])) . " " . __("To") . " " . str_replace(":", "\:", date($graph_date, time()+$graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
-			}else {
-				$graph_opts .= "COMMENT:\"" . __("From") . " " . date($graph_date, time()+$graph_data_array["graph_start"]) . " " . __("To") . " " . date($graph_date, time()+$graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
-			}
-		}else if (($graph_data_array["graph_start"] >= 0) && ($graph_data_array["graph_end"] >= 0)) {
-			if ($rrdtool_version != RRD_VERSION_1_0) {
-				$graph_opts .= "COMMENT:\"" . __("From") . " " . str_replace(":", "\:", date($graph_date, $graph_data_array["graph_start"])) . " " . __("To") . " " . str_replace(":", "\:", date($graph_date, $graph_data_array["graph_end"])) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
-			}else {
-				$graph_opts .= "COMMENT:\"" . __("From") . " " . date($graph_date, $graph_data_array["graph_start"]) . " " . __("To") . " " . date($graph_date, $graph_data_array["graph_end"]) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL;
-			}
-		}
-	}
-
-
 	/* Replace "|query_*|" in the graph command to replace e.g. vertical_label.  */
 	$graph_opts = rrd_substitute_device_query_data($graph_opts, $graph, NULL);
-
 
 	/* define some variables */
 	$graph_defs = "";
@@ -1486,6 +1468,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 
 	$graph_array = api_plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
 	if (!empty($graph_array)) {
+
+		/* display the timespan for zoomed graphs,
+		 * but prefer any setting made by the user */
+		$graph_array['txt_graph_items'] = substitute_graph_data($graph_array['txt_graph_items'], $graph, $graph_data_array, $rrdtool_version);
+
 		$graph_defs = $graph_array['graph_defs'];
 		$txt_graph_items = $graph_array['txt_graph_items'];
 		$graph_opts = $graph_array['graph_opts'];
