@@ -94,7 +94,7 @@ $config["cacti_server_os"] = (strstr(PHP_OS, "WIN")) ? "win32" : "unix";
 $config["php_snmp_support"] = function_exists("snmpget");
 
 /* set URL path */
-if (! isset($url_path)) { 
+if (! isset($url_path)) {
 	$url_path = "";
 }
 $config['url_path'] = $url_path;
@@ -198,8 +198,8 @@ if ((bool)ini_get("register_globals")) {
 }
 
 /* include base modules */
-include($config["library_path"] . "/adodb/adodb.inc.php");
-include($config["library_path"] . "/database.php");
+include_once($config["library_path"] . "/adodb/adodb.inc.php");
+include_once($config["library_path"] . "/database.php");
 
 /* connect to the database server */
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
