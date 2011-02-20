@@ -343,7 +343,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 	if (!$parse_ok) {
 		echo "ERROR: " . $msg . " '" . $string . "'\n";
-	}else{
+	}elseif (strlen($curstr)) {
 		$str_list[] = $curstr;
 	}
 
