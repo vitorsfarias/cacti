@@ -36,7 +36,7 @@ $fields_data_input_edit = array(
 	"type_id" => array(
 		"method" => "drop_array",
 		"friendly_name" => __("Input Type"),
-		"description" => __("Choose what type of data input method this is."),
+		"description" => __("Choose the method you wish to use to collect data for this Data Input method."),
 		"value" => "|arg1:type_id|",
 		"array" => $input_types,
 		),

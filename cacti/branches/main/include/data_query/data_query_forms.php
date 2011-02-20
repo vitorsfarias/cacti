@@ -62,7 +62,7 @@ $fields_data_query_edit = array(
 	"data_input_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => __("Data Input Method"),
-		"description" => __("Choose what type of device, device template this is. The device template will govern what kinds of data should be gathered from this type of device."),
+		"description" => __("Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query."),
 		"value" => "|arg1:data_input_id|",
 		"sql" => "select id,name from data_input where (type_id=3 or type_id=4 or type_id=5 or type_id=6) order by name",
 		),
@@ -89,7 +89,7 @@ $fields_data_query_item_edit = array(
 	"graph_template_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => __("Graph Template"),
-		"description" => __("Choose what type of device, device template this is. The device template will govern what kinds of data should be gathered from this type of device."),
+		"description" => __("Choose the Graph Template to use for this Data Query Graph Template item."),
 		"value" => "|arg1:graph_template_id|",
 		"sql" => "select id,name from graph_templates order by name",
 		),
