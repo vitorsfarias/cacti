@@ -74,6 +74,30 @@ $messages = array(
 	22 => array(
 		"message" => __('User delete not permitted for designated graph export user.'),
 		"type" => "error"),
+	23 => array(
+		"message" => __('Data Template Includes Deleted Round Robin Archive.  Please run Database Repair Script to Identify and/or Correct.'),
+		"type" => "error"),
+	24 => array(
+		"message" => __('Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair Script to Identify and/or Correct.'),
+		"type" => "error"),
+	25 => array(
+		"message" => __('Graph Template Includes Deleted CDEFs.  Please run Database Repair Script to Identify and/or Correct.'),
+		"type" => "error"),
+	26 => array(
+		"message" => __('Graph Template Includes Deleted Data Input Method.  Please run Database Repair Script to Identify.'),
+		"type" => "error"),
+	27 => array(
+		"message" => __('Data Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		"type" => "error"),
+	28 => array(
+		"message" => __('Device Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		"type" => "error"),
+	29 => array(
+		"message" => __('Data Query Not Found during Export.  Please run Database Repair Script to Identify.'),
+		"type" => "error"),
+	30 => array(
+		"message" => __('Graph Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		"type" => "error"),
 	);
 
 $snmp_query_field_actions = array(1 =>
