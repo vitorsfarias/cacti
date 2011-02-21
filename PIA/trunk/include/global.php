@@ -37,6 +37,7 @@ $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 $database_port = "3306";
+$database_ssl = false;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = "Cacti";
@@ -202,7 +203,7 @@ include_once($config["library_path"] . "/adodb/adodb.inc.php");
 include_once($config["library_path"] . "/database.php");
 
 /* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
+db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
 /* include additional modules */
 include_once($config["library_path"] . "/functions.php");

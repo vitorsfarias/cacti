@@ -29,6 +29,7 @@ $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 $database_port = "3306";
+$database_ssl = false;
 
 /*
    Edit this to point to the default URL of your Cacti install
