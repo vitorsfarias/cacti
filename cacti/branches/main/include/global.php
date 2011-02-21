@@ -37,6 +37,7 @@ $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cactiuser";
 $database_port = "3306";
+$database_ssl = false;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = "Cacti";
@@ -138,7 +139,7 @@ if (!function_exists('mysql_data_seek')) {
 }
 
 /* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port);
+db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
 /* Check that the database has tables in it - can't use db_fetch_assoc because that uses read_config_option! */
 $result = mysql_query("show tables from $database_default");
