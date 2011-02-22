@@ -65,7 +65,7 @@ foreach($parms as $parameter) {
 		display_help($me);
 		exit;
 	default:
-		printf(__("ERROR: Invalid Parameter %s\n\n"), $parameter);
+		echo __("ERROR: Invalid Parameter %s", $parameter) . "\n\n";
 		display_help($me);
 		exit;
 	}
@@ -78,13 +78,13 @@ $tables = db_fetch_assoc("SHOW TABLES FROM " . $database_default);
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
-		printf(__("Repairing Table -> '%s'"), $table['Tables_in_' . $database_default]);
+		echo __("Repairing Table -> '%s'", $table['Tables_in_' . $database_default]);
 		$status = db_execute("REPAIR TABLE " . $table['Tables_in_' . $database_default] . $form);
 		echo ($status == 0 ? __(" Failed") : __(" Successful")) . "\n";
 	}
 }
 
-echo "\nNOTE: Checking for Invalid Cacti Templates\n";
+echo "\n" . __("NOTE: Checking for Invalid Cacti Templates") . "\n";
 
 /* keep track of total rows */
 $total_rows = 0;
@@ -93,70 +93,103 @@ $total_rows = 0;
 $rows = db_fetch_cell("SELECT count(*) FROM rra_cf LEFT JOIN rra ON rra_cf.rra_id=rra.id WHERE rra.id IS NULL;");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM rra_cf WHERE rra_id NOT IN (SELECT id FROM rra)");
-	echo "NOTE: $rows Invalid Consolidation Function Rows " . ($force ? "Removed from":"Found in") . " Database\n";
+	if ($force) {
+		db_execute("DELETE FROM rra_cf WHERE rra_id NOT IN (SELECT id FROM rra)");
+		echo __("NOTE: %d Invalid Consolidation Function Rows Removed from Database", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Consolidation Function Rows Found in Database", $rows) . "\n";
+	}
 }
 
 /* remove invalid RRA's from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM data_template_data_rra LEFT JOIN rra ON data_template_data_rra.rra_id=rra.id WHERE rra.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_template_data_rra WHERE rra_id NOT IN (SELECT id FROM rra)");
-	echo "NOTE: $rows Invalid Data Template Data RRA Rows " . ($force ? "Removed from":"Found in") . " Database\n";
+	if ($force) {
+		db_execute("DELETE FROM data_template_data_rra WHERE rra_id NOT IN (SELECT id FROM rra)");
+		echo __("NOTE: %d Invalid Data Template Data RRA Rows Removed from Database", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Data Template Data RRA Rows Found In Database", $rows) . "\n";
+	}
+
 }
 
 /* remove invalid GPrint Presets from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM graph_templates_item LEFT JOIN graph_templates_gprint ON graph_templates_item.gprint_id=graph_templates_gprint.id WHERE graph_templates_gprint.id IS NULL AND graph_templates_item.gprint_id>0");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM graph_templates_item WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint) AND gprint_id>0");
-	echo "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? "Removed from":"Found in") . " Graph Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM graph_templates_item WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint) AND gprint_id>0");
+		echo __("NOTE: %d Invalid GPrint Preset Rows Removed from Graph Templates", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid GPrint Preset Rows Found in Graph Templates", $rows) . "\n";
+	}
 }
 
 /* remove invalid CDEF Items from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM cdef_items LEFT JOIN cdef ON cdef_items.cdef_id=cdef.id WHERE cdef.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM cdef_items WHERE cdef_id NOT IN (SELECT id FROM cdef)");
-	echo "NOTE: $rows Invalid CDEF Item Rows " . ($force ? "Removed from":"Found in") . " Graph Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM cdef_items WHERE cdef_id NOT IN (SELECT id FROM cdef)");
+		echo __("NOTE: %d Invalid CDEF Item Rows Removed from Graph Templates", $rows). "\n";
+	}else {
+		echo __("NOTE: %d Invalid CDEF Item Rows Found in Graph Templates", $rows) . "\n";
+	}
 }
 
 /* remove invalid Data Templates from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM data_template_data LEFT JOIN data_input ON data_template_data.data_input_id=data_input.id WHERE data_input.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_template_data WHERE data_input_id NOT IN (SELECT id FROM data_input)");
-	echo "NOTE: $rows Invalid Data Input Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM data_template_data WHERE data_input_id NOT IN (SELECT id FROM data_input)");
+		echo __("NOTE: %d Invalid Data Input Rows Removed from Data Templates", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Data Input Rows Found in Data Templates", $rows) . "\n";
+	}
 }
 
 /* remove invalid Data Input Fields from the Database */
 $rows = db_fetch_cell("SELECT count(*) FROM data_input_fields LEFT JOIN data_input ON data_input_fields.data_input_id=data_input.id WHERE data_input.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_input_fields WHERE data_input_fields.data_input_id NOT IN (SELECT id FROM data_input)");
-	echo "NOTE: $rows Invalid Data Input Field Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM data_input_fields WHERE data_input_fields.data_input_id NOT IN (SELECT id FROM data_input)");
+		echo __("NOTE: %d Invalid Data Input Field Rows Removed from Data Templates", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Data Input Field Rows Found in Data Templates", $rows) . "\n";
+	}
 }
 
 /* remove invalid Data Input Data Rows from the Database in two passes */
 $rows = db_fetch_cell("SELECT count(*) FROM data_input_data LEFT JOIN data_template_data ON data_template_data.data_input_id=data_input_data.data_template_data_id WHERE data_template_data.data_input_id IS NULL AND data_template_data.data_input_id>0");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_input_data WHERE data_input_data.data_template_data_id NOT IN (SELECT data_input_id FROM data_template_data)");
-	echo "NOTE: $rows Invalid Data Input Data Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM data_input_data WHERE data_input_data.data_template_data_id NOT IN (SELECT data_input_id FROM data_template_data)");
+		echo __("NOTE: %d Invalid Data Input Data Rows Removed from Data Templates", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Data Input Data Rows Found in Data Templates", $rows) ."\n";
+	}
 }
 $rows = db_fetch_cell("SELECT count(*) FROM data_input_data LEFT JOIN data_input_fields ON data_input_fields.id=data_input_data.data_input_field_id WHERE data_input_fields.id IS NULL");
 $total_rows += $rows;
 if ($rows > 0) {
-	if ($force) db_execute("DELETE FROM data_input_data WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)");
-	echo "NOTE: $rows Invalid Data Input Data Rows " . ($force ? "Removed from":"Found in") . " Data Templates\n";
+	if ($force) {
+		db_execute("DELETE FROM data_input_data WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)");
+		echo __("NOTE: %d Invalid Data Input Data Rows Removed from Data Templates", $rows) . "\n";
+	}else {
+		echo __("NOTE: %d Invalid Data Input Data Rows Found in Data Templates", $rows) . "\n";
+	}
 }
 
 if ($total_rows > 0 && !$force) {
-	echo "\nWARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
-	echo "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
-	echo "should contact your support organization prior to proceeding with that repair.\n\n";
+	echo "\n" . __("WARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove\n
+					the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n
+	 				should contact your support organization prior to proceeding with that repair.") . "\n\n";
 }elseif ($total_rows == 0) {
-	echo "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
+	echo __("NOTE: No Invalid Cacti Template Records found in your Database") . "\n\n";
 }
 
 /*	display_help - displays the usage of the function */
