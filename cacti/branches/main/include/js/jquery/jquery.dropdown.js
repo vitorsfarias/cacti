@@ -151,7 +151,7 @@
 				});
 
 		//change the orientation from right to left if width exceeds the windows size
-		if((parseInt(menu.css('left')) + menu.outerWidth(true)) > $(window).width()) {
+		if((initiator.offset().left + initiator.width() + options.offsetX + menu.outerWidth(true)) > $(window).width()) {
 			menu.css({'left' : (initiator.offset().left + initiator.width() - menu.outerWidth(true)) + 'px'});
 		}
 
