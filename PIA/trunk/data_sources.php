@@ -1337,7 +1337,7 @@ function ds() {
 			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$data_template_name = ((empty($data_source["data_template_name"])) ? "<em>None</em>" : htmlspecialchars($data_source["data_template_name"]));
-			$data_input_name    = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : htmlspecialchars($data_source["data_input_name"])));
+			$data_input_name    = ((empty($data_source["data_input_name"])) ? "<em>External</em>" : htmlspecialchars($data_source["data_input_name"]));
 			$poller_interval    = ((isset($poller_intervals[$data_source["local_data_id"]])) ? $poller_intervals[$data_source["local_data_id"]] : 0);
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $data_source["local_data_id"]); $i++;
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars("data_sources.php?action=ds_edit&id=" . $data_source["local_data_id"]) . "' title='" . $data_source["name_cache"] . "'>" . ((get_request_var_request("filter") != "") ? preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) : title_trim(htmlspecialchars($data_source["name_cache"]), read_config_option("max_title_data_source"))) . "</a>", $data_source["local_data_id"]);
