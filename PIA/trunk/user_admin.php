@@ -924,6 +924,7 @@ function user_edit() {
 				<td <?php print ((get_request_var_request("tab") == "graph_settings_edit") ? "bgcolor='silver'" : "bgcolor='#DFDFDF'");?> nowrap='nowrap' width='130' align='center' class='tab'>
 					<span class='textHeader'><a href='<?php print htmlspecialchars("user_admin.php?action=user_edit&tab=graph_settings_edit&id=" . $_GET["id"]);?>'>Graph Settings</a></span>
 				</td>
+				<?php api_plugin_hook('user_admin_tab');?>				
 				<td></td>
 			</tr>
 		</table>
@@ -937,7 +938,9 @@ function user_edit() {
 	}elseif (get_request_var_request("tab") == "graph_perms_edit") {
 		graph_perms_edit();
 	}else{
-		user_realms_edit();
+		if (api_plugin_hook_function('user_admin_run_action', get_request_var_request("tab"))) {
+			user_realms_edit();
+		}
 	}
 
 	form_save_button("user_admin.php", "return");
