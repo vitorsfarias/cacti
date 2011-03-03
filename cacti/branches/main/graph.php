@@ -189,15 +189,13 @@ case 'zoom':
 
 	$graph_height = $graph["height"];
 	$graph_width = $graph["width"];
-	if ((read_config_option("rrdtool_version")) != RRD_VERSION_1_0) {
-		if (read_graph_config_option("title_font") == "") {
-			if (read_config_option("title_font") == "") {
-				$title_font_size = 10;
-			}else {
-				$title_font_size = read_config_option("title_size");
-			}
-		}else {
+	if ((read_config_option("rrdtool_version")) != "rrd-1.0.x") {
+		if (read_graph_config_option("custom_fonts") == "on" & read_graph_config_option("title_size") != "") {
 			$title_font_size = read_graph_config_option("title_size");
+		}elseif (read_config_option("title_size") != "") {
+			$title_font_size = read_config_option("title_size");
+		}else {
+			$title_font_size = 10;
 		}
 	}else {
 		$title_font_size = 0;
@@ -209,14 +207,6 @@ case 'zoom':
 			<strong><?php print __("Zooming Graph");?></strong> '<?php print $graph_title;?>'
 		</td>
 	</tr>
-	<div id='zoomBox' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; background:red; filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5'></div>
-	<div id='zoomSensitiveZone' style='position:absolute; overflow:hidden; left:0px; top:0px; width:0px; height:0px; visibility:visible; cursor:crosshair; background:blue; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity:0; opacity:0' oncontextmenu='return false'></div>
-	<STYLE MEDIA="print">
-	/*Turn off the zoomBox*/
-	div#zoomBox, div#zoomSensitiveZone {display: none}
-	/*This keeps IE from cutting things off*/
-	#why {position: static; width: auto}
-	</STYLE>
 	<tr>
 		<td align='center'>
 			<table cellpadding='0'>
@@ -248,9 +238,10 @@ case 'zoom':
 			</table>
 		</td>
 	</tr>
+	<script type="text/javascript" >
+		$(document).ready(function() { $(".graphimage").ZoomGraph(); });
+	</script>
 	<?php
-
-	include(CACTI_BASE_PATH . "/include/js/zoom.js");
 
 	break;
 case 'properties':

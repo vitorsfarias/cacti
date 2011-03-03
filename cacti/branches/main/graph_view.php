@@ -121,6 +121,7 @@ case 'tree':
 	?>
 	<script type="text/javascript">
 	<!--
+
 	$(function () {
 		Panel = {};
 
@@ -208,11 +209,11 @@ case 'preview':
 	?>
 	<script type='text/javascript'>
 	<!--
-
 	$().ready(function() {
 		$.get("graph_view.php?action=ajax_preview", function (data) {
 			$("#graph_content").html(data);
 		});
+
 	});
 
 	-->
