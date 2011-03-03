@@ -1132,6 +1132,7 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 			graph_tree_items.rra_id,
 			graph_tree_items.order_key,
 			graph_templates_graph.height,
+			graph_templates_graph.width,
 			graph_templates_graph.title_cache as title_cache,
 			graph_templates_graph.image_format_id
 			FROM (graph_tree_items,graph_local)
@@ -1174,6 +1175,7 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 						graph_templates_graph.title_cache,
 						graph_templates_graph.local_graph_id,
 						graph_templates_graph.height,
+						graph_templates_graph.width,
 						graph_templates_graph.image_format_id
 						FROM (graph_local,graph_templates_graph)
 						$sql_join
@@ -1228,6 +1230,7 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 						graph_templates_graph.title_cache,
 						graph_templates_graph.local_graph_id,
 						graph_templates_graph.height,
+						graph_templates_graph.width,
 						graph_templates_graph.image_format_id,
 						graph_local.snmp_index
 						FROM (graph_local, graph_templates_graph)

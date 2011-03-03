@@ -245,7 +245,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 									<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;">
 									<a href='<?php print htmlspecialchars("graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'>
 										<img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>'
-											src='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
+											src='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . $graph["height"] . "&graph_width=" . $graph["width"] . "&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
 											border='0' alt='<?php print $graph["title_cache"];?>'>
 									</a></div>
 									<?php
@@ -392,7 +392,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 								?>
 								<div style="min-height: <?php echo (1.6 * read_graph_config_option("default_height")) . "px"?>;"><a href='<?php print htmlspecialchars("graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'>
 									<img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>'
-										src='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true" . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
+										src='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . read_graph_config_option("default_height") . "&graph_width=" . read_graph_config_option("default_width") . "&graph_nolegend=true&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
 										border='0' alt='<?php print $graph["title_cache"];?>'>
 								</a></div>
 								<?php
