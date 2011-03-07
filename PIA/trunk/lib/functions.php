@@ -248,7 +248,7 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	include($config["include_path"] . "/global_arrays.php");
+	include_once($config["include_path"] . "/global_arrays.php");
 
 	if (isset($_SESSION["sess_messages"])) {
 		if (is_array($_SESSION["sess_messages"])) {
