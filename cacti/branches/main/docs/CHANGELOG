@@ -222,6 +222,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001938: Excessive processing poller_output before truncating it on poller start
 -bug#0001939: Do not query for items_perhost if concurrent_processes == 1
 -bug#0001941: Queries are run twice
+-bug#0001954: Usage of PHP_SELF without basename in html.php (at least partly fixed)
 -bug#0001956: Attempts to Update Existing Tree Items Fails
 -bug: accept "Connection refused" on TCP ping tests
 -bug: add missing row selection to graph preview
