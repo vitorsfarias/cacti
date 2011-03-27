@@ -941,7 +941,7 @@ function upgrade_to_0_8_8() {
 	$users = db_fetch_assoc("SELECT user_id FROM settings_graphs WHERE name='custom_fonts' AND value=''");
 	if (sizeof($users)) {
 		foreach ($users as $user) {
-			db_install_execute("0.8.8", "UPDATE settings_graphs SET `value`='' WHERE  name IN ('title_size','title_font','legend_size','legend_font','axis_size','axis_font','unit_size','unit_font') AND `user_id`=" . $user);
+			db_install_execute("0.8.8", "UPDATE settings_graphs SET `value`='' WHERE  name IN ('title_size','title_font','legend_size','legend_font','axis_size','axis_font','unit_size','unit_font') AND `user_id`=" . $user['user_id']);
 		}
 	}
 	
