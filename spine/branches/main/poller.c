@@ -117,6 +117,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	char query10[BUFSIZE];
 	char query11[BUFSIZE];
 	char *query12 = NULL;
+	char posuffix[BUFSIZE];
 	char sysUptime[BUFSIZE];
 	char result_string[RESULTS_BUFFER+SMALL_BUFSIZE];
 	int  result_length;
@@ -247,6 +248,10 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 			"INSERT INTO poller_output"
 			" (local_data_id, rrd_name, time, output) VALUES");
 
+		/* query suffix to add rows to the poller output table */
+		snprintf(posuffix, BUFSIZE,
+			" ON DUPLICATE KEY UPDATE output=VALUES(output)");
+
 		/* number of agent's count for single polling interval */
 		snprintf(query9, BUFSIZE,
 			"SELECT snmp_port, count(snmp_port)"
@@ -312,6 +317,10 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 		snprintf(query8, BUFSIZE,
 			"INSERT INTO poller_output"
 			" (local_data_id, rrd_name, time, output) VALUES");
+
+		/* query suffix to add rows to the poller output table */
+		snprintf(posuffix, BUFSIZE,
+			" ON DUPLICATE KEY UPDATE output=VALUES(output)");
 
 		/* number of agent's count for single polling interval */
 		snprintf(query9, BUFSIZE,
@@ -1145,6 +1154,9 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 			/* if the next element to the buffer will overflow it, write to the database */
 			if ((out_buffer + result_length) >= MAX_MYSQL_BUF_SIZE) {
+				/* append the suffix */
+				strncat(query3, posuffix, strlen(posuffix));
+
 				/* insert the record */
 				db_insert(&mysql, query3);
 
@@ -1154,6 +1166,9 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 				/* insert the record for boost */
 				if (set.boost_redirect) {
+					/* append the suffix */
+					strncat(query12, posuffix, strlen(posuffix));
+
 					db_insert(&mysql, query12);
 					query12[0] = '\0';
 					strncat(query12, query11, strlen(query11));
@@ -1186,11 +1201,17 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 		/* perform the last insert if there is data to process */
 		if (out_buffer > strlen(query8)) {
+			/* append the suffix */
+			strncat(query3, posuffix, strlen(posuffix));
+
 			/* insert records into database */
 			db_insert(&mysql, query3);
 
 			/* insert the record for boost */
 			if (set.boost_redirect) {
+				/* append the suffix */
+				strncat(query12, posuffix, strlen(posuffix));
+
 				db_insert(&mysql, query12);
 			}
 		}
