@@ -179,6 +179,10 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature: introduce |graph_start| and |graph_end| for use with COMMENT/GPRINT or the like
 
 0.8.7h
+//FIXME: Consolidate the change log from 0.8.7h
+-bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
+
+0.8.7h
 -bug#0000401: Check for duplicate Data Source Item Names in Data Templates
 -bug#0001403: 'reapply suggested names' doesn't work correctly for graphs and data sources
 -bug#0001504: no newline fix
