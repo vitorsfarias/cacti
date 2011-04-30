@@ -490,13 +490,12 @@ function update_show_current () {
 	$display_text = array(
 		"nosort" => array("Actions", ""),
 		"directory" => array("Name", "ASC"),
+		"version" => array("Version", "ASC"),
 		"id" => array("Load Order", "ASC"),
 		"name" => array("Description", "ASC"),
 		"nosort1" => array("Type", "ASC"),
 		"status" => array("Status", "ASC"),
-		"author" => array("Author", "ASC"),
-		"webpage" => array("Web Page", "ASC"),
-		"version" => array("Version", "ASC"));
+		"author" => array("Author", "ASC"));
 
 	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), 1);
 
@@ -559,7 +558,8 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
-	$row .= "<td><strong>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", ucfirst($plugin["directory"])) : ucfirst($plugin["directory"])) . "</strong></td>";
+	$row .= "<td><a href='" . htmlspecialchars($plugin["webpage"]) . "' target='_blank'><strong>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", ucfirst($plugin["directory"])) : ucfirst($plugin["directory"])) . "</strong></a></td>";
+	$row .= "<td>" . $plugin["version"] . "</td>\n";
 	if ($include_ordering) {
 		$row .= "<td style='white-space:nowrap;'>";
 		if (!$first_plugin) {
@@ -581,8 +581,6 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? "System": ($plugin['status'] < 0 ? "Old PIA":"General")) . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin["status"]] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin["author"] . "</td>\n";
-	$row .= "<td><a href='" . htmlspecialchars($plugin["webpage"]) . "'>" . htmlspecialchars($plugin["webpage"]) . "</a></td>\n";
-	$row .= "<td>" . $plugin["version"] . "</td>\n";
 	$row .= "</tr>\n";
 
 	if ($include_ordering) {
