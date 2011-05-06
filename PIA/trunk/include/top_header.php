@@ -25,9 +25,7 @@
 global $colors, $config;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($oper_mode == OPER_MODE_RESKIN || $oper_mode == OPER_MODE_NOTABS) {
-	return;
-}
+if ($oper_mode != OPER_MODE_RESKIN) {
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
 
@@ -110,4 +108,5 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <?php }else{ ?>
 	<tr>
 		<td width="100%" valign="top"><?php display_output_messages();?>
-<?php } ?>
+<?php }
+} ?>
