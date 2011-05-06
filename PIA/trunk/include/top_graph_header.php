@@ -26,6 +26,7 @@ $using_guest_account = false;
 $show_console_tab = true;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
+if ($open_mode != OPER_MODE_RESKIN) {
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request("local_graph_id"));
@@ -187,3 +188,5 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 		<?php } ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:static;' id='main'>
+<?php
+}
