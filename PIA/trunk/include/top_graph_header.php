@@ -26,7 +26,7 @@ $using_guest_account = false;
 $show_console_tab = true;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($open_mode != OPER_MODE_RESKIN) {
+if ($oper_mode != OPER_MODE_RESKIN) {
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request("local_graph_id"));
