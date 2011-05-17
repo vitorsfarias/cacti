@@ -702,6 +702,7 @@ function get_graph_preview_content () {
 
 	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id,
+		graph_templates_graph.height,
 		graph_templates_graph.title_cache,
 		graph_templates_graph.image_format_id
 		$sql_base
