@@ -63,7 +63,8 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001772: Script Server is not honouring reindex method "Index Count Changed" and "Verify All Fields"
 -bug#0001965: database upgrade script fails when changing user specific font settings 
 -bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag
--bug#0001993: "Undefined index: height in /var/www/html/cacti/lib/html.php on line 147" in PHP error log 
+-bug#0001993: "Undefined index: height in /var/www/html/cacti/lib/html.php on line 147" in PHP error log
+-bug#0001995: $_SERVER["REQUEST_URI"] not properly escaped in graph_view.php for preview mode 
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
 -bug: add_tree.php did not allow nodes with propagating sort options
