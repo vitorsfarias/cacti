@@ -270,7 +270,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 								<a href='<?php print htmlspecialchars("graph.php?action=zoom&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='images/graph_zoom.gif' alt='<?php print __("Zoom Graph");?>' title='<?php print __("Zoom Graph");?>' class='img_info'></a><br>
 								<a href='<?php print htmlspecialchars("graph_xport.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='images/graph_query.png' alt='<?php print __("CSV Export");?>' title='<?php print __("CSV Export");?>' class='img_info'></a><br>
 								<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&" . $extra_url_args);?>'><img src='images/graph_properties.gif' alt='<?php print __("Properties");?>' title='<?php print __("Graph Source/Properties");?>' class='img_info'></a><br>
-								<a href='#page_top'><img src='images/graph_page_top.gif' alt='<?php print __("Page Top");?>' title='<?php print __("Page Top");?>' class='img_info'></a><br>
+								<a href=<?php print htmlspecialchars(get_browser_query_string() . "#page_top");?>><img src='images/graph_page_top.gif' alt='<?php print __("Page Top");?>' title='<?php print __("Page Top");?>' class='img_info'></a><br>
 							</td>
 						</tr>
 					</table>
