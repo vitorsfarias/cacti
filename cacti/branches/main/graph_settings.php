@@ -68,7 +68,7 @@ function form_save() {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var("sess_graph_config_array");
 
-	header("Location: " . sanitize_search_string(get_request_var_post("referer")));
+	header("Location: " . sanitize_uri(get_request_var_post("referer")));
 	exit;
 }
 
