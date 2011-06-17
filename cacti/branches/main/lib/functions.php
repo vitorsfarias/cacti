@@ -2688,3 +2688,39 @@ function cacti_escapeshellarg($string, $quote=true) {
 		}
 	}
 }
+
+/**
+ * @param string $needle1	string to be searched
+ * @param string $needle2	string to be searched
+ * @param string $haystack	target string
+ * @param string $url		base url to be used for building the reference
+ * returns string 			the reference url
+ */
+function create_object_link($needle1, $needle2, $haystack, $url) {
+	
+	$new_item = "";
+	/* search needle */
+	$_start = strpos($haystack, $needle1);
+	/* determine string offset for id following the search string */
+	$_length1 = strlen($needle1);
+	
+	/* check input parameters */
+	if ($_length1 > 0 && strlen($needle2) > 0 && strlen($haystack) > 0 && strlen($url) > 0) {
+		
+		while ($_start) {
+			/* this is the end position of the id to be extracted */
+			$_end   	= strpos($haystack, $needle2, $_start);
+			/* now get the id which is enclosed between $needle1 and $needle2 */
+			$_id    	= substr($haystack, $_start + $_length1, $_end-($_start + $_length1));
+			/* let's build the new item up to the current matching position;
+			 * we're using the URL provided by the caller */
+			$new_item   = $new_item . substr($haystack, 0, $_start + $_length1) . "<a href='" . htmlspecialchars($url . $_id) . "'>" . substr($haystack, $_start + $_length1, $_end-($_start + $_length1)) . "</a>";
+			/* advance to end of current matching position */
+			$haystack	= substr($haystack, $_end);
+			/* and try to find a possible next match in the same search string */
+			$_start 	= strpos($haystack, $needle1);
+		}
+	}
+	
+	return $new_item;
+}
