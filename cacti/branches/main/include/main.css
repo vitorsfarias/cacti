@@ -875,6 +875,34 @@ span.italic {
 	font-style: italic;
 }
 
+.log_error_fatal {
+	background-color: #FF3932;
+}
+
+.log_warn {
+	background-color: #EACC00;
+}
+
+.log_sql {
+	background-color: #6DC8FE;
+}
+
+.log_debug {
+	background-color: #C4FD3D;
+}
+
+.log_stats {
+	background-color: #96E78A;
+}
+
+.log_default1 {
+	background-color: #CCCCCC;
+}
+
+.log_default2 {
+	background-color: #FFFFFF;
+}
+
 tr.highlight {
 	background-color: #f0e68c;
 }

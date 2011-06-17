@@ -1174,56 +1174,34 @@ function utilities_view_logfile() {
 	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
-		$device_start = strpos($item, "Host[");
-		$ds_start   = strpos($item, "DS[");
-
 		$new_item = "";
+		$new_item .= create_object_link("Host[", "]", $item, "devices.php?action=edit&id=");
+		$new_item .= create_object_link("DS[", "]", $item, "data_sources.php?action=edit&id=");
+		$new_item .= create_object_link("Graph[", "]", $item, "graphs.php?action=graph_edit&id=");
+		/* TODO: allow for more objects here? Tree Items require parent tree id! Plugin Hook? */
+		/* e.g. Poller, Site, data Query, Data Input Method, ... */
 
-		if ((!$device_start) && (!$ds_start)) {
-			$new_item = $item;
-		}else{
-			while ($device_start) {
-				$device_end   = strpos($item, "]", $device_start);
-				$device_id    = substr($item, $device_start+5, $device_end-($device_start+5));
-				$new_item   = $new_item . substr($item, 0, $device_start + 5) . "<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $device_id) . "'>" . substr($item, $device_start + 5, $device_end-($device_start + 5)) . "</a>";
-				$item       = substr($item, $device_end);
-				$device_start = strpos($item, "Host[");
-			}
-
-			$ds_start = strpos($item, "DS[");
-			while ($ds_start) {
-				$ds_end   = strpos($item, "]", $ds_start);
-				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item = $new_item . substr($item, 0, $ds_start + 3) . "<a href='" . htmlspecialchars("data_sources.php?action=edit&id=" . $ds_id) . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . "</a>";
-				$item     = substr($item, $ds_end);
-				$ds_start = strpos($item, "DS[");
-			}
-
-			$new_item = $new_item . $item;
-		}
-
-		/* get the background color */
 		if ((substr_count($new_item, "ERROR")) || (substr_count($new_item, "FATAL"))) {
-			$bgcolor = "FF3932";
+			$log_class = "log_error_fatal";
 		}elseif (substr_count($new_item, "WARN")) {
-			$bgcolor = "EACC00";
+			$log_class = "log_warn";
 		}elseif (substr_count($new_item, " SQL ")) {
-			$bgcolor = "6DC8FE";
+			$log_class = "log_sql";
 		}elseif (substr_count($new_item, "DEBUG")) {
-			$bgcolor = "C4FD3D";
+			$log_class = "log_debug";
 		}elseif (substr_count($new_item, "STATS")) {
-			$bgcolor = "96E78A";
+			$log_class = "log_stats";
 		}else{
 			if ($linecolor) {
-				$bgcolor = "CCCCCC";
+				$log_class = "log_default1";
 			}else{
-				$bgcolor = "FFFFFF";
+				$log_class = "log_default2";
 			}
 			$linecolor = !$linecolor;
 		}
 
 		?>
-		<tr bgcolor='#<?php print $bgcolor;?>'>
+		<tr class="<?php print $log_class ?>">
 			<td>
 				<?php print $new_item;?>
 			</td>
@@ -1234,7 +1212,7 @@ function utilities_view_logfile() {
 
 		if ($j > 1000) {
 			?>
-			<tr bgcolor='#EACC00'>
+			<tr class="log_warn">
 				<td>
 					<?php print ">>>>  " . __("LINE LIMIT OF 1000 LINES REACHED!!") . "  <<<<";?>
 				</td>
