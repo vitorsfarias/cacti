@@ -732,6 +732,71 @@ function duplicate_device_template($_device_template_id, $device_template_title)
 	}
 }
 
+function duplicate_data_query($data_query_id, $data_query_name) {
+	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+
+	$_data_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
+
+	/* substitute the title variable */
+	$_data_query["name"] = str_replace(__("<data_query_name>"), $_data_query["name"], $data_query_name);
+
+	/* create new entry: snmp_query */
+	$save["id"] = 0;
+	$save["hash"] = get_hash_data_query(0, "data_query");
+
+	$fields_data_query_edit = data_query_form_list();
+	reset($fields_data_query_edit);
+	while (list($field, $array) = each($fields_data_query_edit)) {
+		if (!preg_match("/^hidden/", $array["method"])) {
+			$save[$field] = $_data_query[$field];
+		}
+	}
+	$_data_query_id = sql_save($save, "snmp_query");
+
+	/* create new entry(s): snmp_query_graph */
+	$_data_query_graphs = db_fetch_assoc("select * from snmp_query_graph where snmp_query_id=$data_query_id");
+	if (sizeof($_data_query_graphs) > 0) {
+		foreach ($_data_query_graphs as $_data_query_graph) {
+			$_data_query_graph_id_orig = $_data_query_graph["id"];
+			$_data_query_graph["id"] = 0;
+			$_data_query_graph["snmp_query_id"] = $_data_query_id;
+			$_data_query_graph["hash"] = get_hash_data_query(0, "data_query_graph");
+			$_data_query_graph_id = sql_save($_data_query_graph, "snmp_query_graph");
+			
+			/* create new entry(s): snmp_query_graph_rrd, mimic from original data_query_graph */
+			$_data_query_graph_rrds = db_fetch_assoc("select * from snmp_query_graph_rrd where snmp_query_graph_id=$_data_query_graph_id_orig");
+			if (sizeof($_data_query_graph_rrds) > 0) {
+				foreach ($_data_query_graph_rrds as $_data_query_graph_rrd) {
+					$_data_query_graph_rrd["snmp_query_graph_id"] = $_data_query_graph_id;
+					$_data_query_graph_rrd_id = sql_save($_data_query_graph_rrd, "snmp_query_graph_rrd"); # in fact, there is no such id
+				}
+			}
+			
+			/* create new entry(s): snmp_query_graph_rrd_sv, mimic from original data_query_graph */
+			$_data_query_graph_rrd_svs = db_fetch_assoc("select * from snmp_query_graph_rrd_sv where snmp_query_graph_id=$_data_query_graph_id_orig");
+			if (sizeof($_data_query_graph_rrd_svs) > 0) {
+				foreach ($_data_query_graph_rrd_svs as $_data_query_graph_rrd_sv) {
+					$_data_query_graph_rrd_sv["id"] = 0;
+					$_data_query_graph_rrd_sv["hash"] = get_hash_data_query(0, "data_query_sv_data_source");
+					$_data_query_graph_rrd_sv["snmp_query_graph_id"] = $_data_query_graph_id;
+					$_data_query_graph_rrd_sv_id = sql_save($_data_query_graph_rrd_sv, "snmp_query_graph_rrd_sv");
+				}
+			}
+			
+			/* create new entry(s): snmp_query_graph_sv, mimic from original data_query_graph */
+			$_data_query_graph_svs = db_fetch_assoc("select * from snmp_query_graph_sv where snmp_query_graph_id=$_data_query_graph_id_orig");
+			if (sizeof($_data_query_graph_svs) > 0) {
+				foreach ($_data_query_graph_svs as $_data_query_graph_sv) {
+					$_data_query_graph_sv["id"] = 0;
+					$_data_query_graph_sv["hash"] = get_hash_data_query(0, "data_query_sv_graph");
+					$_data_query_graph_sv["snmp_query_graph_id"] = $_data_query_graph_id;
+					$_data_query_graph_sv_id = sql_save($_data_query_graph_sv, "snmp_query_graph_sv");
+				}
+			}
+		}
+	}
+}
+
 function duplicate_cdef($_cdef_id, $cdef_title) {
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
 

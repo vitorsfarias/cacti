@@ -180,6 +180,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature: add more table upgrade procedures and API functions: table install, column and key upgrade
 -feature: path for perl/shell like path for php to be used in Data Input Methods
 -feature: introduce |graph_start| and |graph_end| for use with COMMENT/GPRINT or the like
+-feature: duplicate Data Query (duplicates all associated graph templates and suggested values)
 
 0.8.7h
 //FIXME: Consolidate the change log from 0.8.7h
