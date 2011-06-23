@@ -24,12 +24,14 @@
 
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+include_once(CACTI_BASE_PATH . "/lib/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
 $dq_actions = array(
 	ACTION_NONE => __("None"),
-	"1" => __("Delete")
+	"1" => __("Delete"),
+	"2" => __("Duplicate")
 	);
 
 /* set default action */
@@ -37,11 +39,11 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch (get_request_var_request("action")) {
 	case 'save':
-		form_save();
+		data_query_form_save();
 
 		break;
 	case 'actions':
-		form_actions();
+		data_query_form_actions();
 
 		break;
 	case 'item_moveup_dssv':
@@ -119,7 +121,7 @@ switch (get_request_var_request("action")) {
     The Save Function
    -------------------------- */
 
-function form_save() {
+function data_query_form_save() {
 	if (isset($_POST["save_component_snmp_query"])) {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_data_query($_POST["id"]);
@@ -208,7 +210,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function data_query_form_actions() {
 	global $dq_actions;
 
 	/* if we are to save this form, instead of display it */
@@ -218,47 +220,56 @@ function form_actions() {
 		if (get_request_var_post("drp_action") === "1") { /* delete */
 			/* do a referential integrity check */
 			if (sizeof($selected_items)) {
-			foreach($selected_items as $query_id) {
-				/* ================= input validation ================= */
-				input_validate_input_number($query_id);
-				/* ==================================================== */
-
-				$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id AS id FROM snmp_query_graph WHERE snmp_query_id=$query_id");
-
-				$in_clause = "";
-				if (sizeof($graph_templates)) {
-				foreach($graph_templates as $graph_template) {
-					$in_clause .= (strlen($in_clause) ? ", ":"") . $graph_template["id"];
-				}
-				}
-
-				if (sizeof(db_fetch_assoc("SELECT * FROM graph_templates_graph WHERE graph_template_id IN($in_clause) LIMIT 1"))) {
-					$bad_ids[] = $query_id;
-				}else{
-					$query_ids[] = $query_id;
-				}
-			}
-			}
-
-			if (isset($bad_ids)) {
-				$message = "";
-				foreach($bad_ids as $query_id) {
-					$message .= (strlen($message) ? "<br>":"") . "<i>Data Query " . $query_id . " is in use and can not be removed</i>\n";
-				}
-
-				$_SESSION['sess_message_dt_ref_int'] = array('message' => "<font size=-2>$message</font>", 'type' => 'info');
-
-				raise_message('dt_ref_int');
-			}
-
-			if (isset($query_ids)) {
-				foreach($query_ids as $query_id) {
+				foreach($selected_items as $query_id) {
 					/* ================= input validation ================= */
 					input_validate_input_number($query_id);
 					/* ==================================================== */
-
-					 data_query_remove($query_id);
+					
+					$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id AS id FROM snmp_query_graph WHERE snmp_query_id=$query_id");
+					
+					$in_clause = "";
+					if (sizeof($graph_templates)) {
+						foreach($graph_templates as $graph_template) {
+							$in_clause .= (strlen($in_clause) ? ", ":"") . $graph_template["id"];
+						}
+					}
+					
+					if (sizeof(db_fetch_assoc("SELECT * FROM graph_templates_graph WHERE graph_template_id IN($in_clause) LIMIT 1"))) {
+						$bad_ids[] = $query_id;
+					}else{
+						$query_ids[] = $query_id;
+					}
+				}		
+						
+				if (isset($bad_ids)) {
+					$message = "";
+					foreach($bad_ids as $query_id) {
+						$message .= (strlen($message) ? "<br>":"") . "<i>Data Query " . $query_id . " is in use and can not be removed</i>\n";
+					}
+					
+					$_SESSION['sess_message_dt_ref_int'] = array('message' => "<font size=-2>$message</font>", 'type' => 'info');
+					
+					raise_message('dt_ref_int');
 				}
+				
+				if (isset($query_ids)) {
+					foreach($query_ids as $query_id) {
+						/* ================= input validation ================= */
+						input_validate_input_number($query_id);
+						/* ==================================================== */			
+						data_query_remove($query_id);
+					}
+				}
+			}
+				
+				
+		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+				
+				duplicate_data_query($selected_items[$i], get_request_var_post("title_format"));
 			}
 		}
 
@@ -306,6 +317,16 @@ function form_actions() {
 				</tr>\n";
 
 			$title = __("Delete Data Querie(s)");
+		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
+			print "	<tr>
+					<td class='textArea'>
+						<p>" . __("When you click 'Continue', the following Data Queries will be duplicated. You can optionally change the title format for the new Data Query.") . "</p>
+						<p><ul>$dq_list</ul></p>
+						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<data_query_name> (1)", "", "255", "30", "text"); print "</p>
+					</td>
+				</tr>\n";
+
+			$title = __("Duplicate Data Queries");
 		}
 	} else {
 		print "	<tr>
@@ -362,7 +383,11 @@ function data_query_item_remove() {
 	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
 		$graph_template_id = db_fetch_cell("SELECT graph_template_id FROM snmp_query_graph WHERE id=" . $_GET["id"]);
 
-		if (!sizeof(db_fetch_assoc("SELECT * FROM graph_templates_graph WHERE graph_template_id=" . $graph_template_id . " AND local_graph_template_graph_id<>0"))) {
+		if (!sizeof(db_fetch_assoc("SELECT * FROM graph_templates_graph " .
+				"LEFT JOIN graph_local ON (graph_templates_graph.local_graph_id = graph_local.id) " .
+				"WHERE graph_templates_graph.graph_template_id=" . $graph_template_id .
+				" AND graph_local.snmp_query_id=" . $_GET["snmp_query_id"] .
+				" AND graph_templates_graph.local_graph_template_graph_id<>0"))) {
 			db_execute("delete from snmp_query_graph where id=" . $_GET["id"]);
 			db_execute("delete from snmp_query_graph_rrd where snmp_query_graph_id=" . $_GET["id"]);
 			db_execute("delete from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $_GET["id"]);
@@ -436,16 +461,16 @@ function data_query_item_edit() {
 							<td></td>
 						</tr>";
 
-				$data_template_rrds = db_fetch_assoc("select
-					data_template_rrd.id,
-					data_template_rrd.data_source_name,
-					snmp_query_graph_rrd.snmp_field_name,
-					snmp_query_graph_rrd.snmp_query_graph_id
-					from data_template_rrd
-					left join snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ")
-					where data_template_rrd.data_template_id=" . $data_template["id"] . "
-					and data_template_rrd.local_data_id=0
-					order by data_template_rrd.data_source_name");
+				$data_template_rrds = db_fetch_assoc("SELECT " .
+					"data_template_rrd.id, " .
+					"data_template_rrd.data_source_name, " .
+					"snmp_query_graph_rrd.snmp_field_name, " .
+					"snmp_query_graph_rrd.snmp_query_graph_id " .
+					"FROM data_template_rrd " .
+					"LEFT JOIN snmp_query_graph_rrd ON (snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.id and snmp_query_graph_rrd.snmp_query_graph_id=" . $_GET["id"] . " and snmp_query_graph_rrd.data_template_id=" . $data_template["id"] . ") " .
+					"WHERE data_template_rrd.data_template_id=" . $data_template["id"] .
+					" AND data_template_rrd.local_data_id=0 " .
+					"ORDER BY data_template_rrd.data_source_name");
 
 				if (sizeof($data_template_rrds) > 0) {
 					foreach ($data_template_rrds as $data_template_rrd) {
@@ -494,7 +519,7 @@ function data_query_item_edit() {
 				);
 
 				print "<tr><td>";
-				html_header($header_items, 2, true, 'data_template_suggested_values_' . $data_template["id"], 'left wp100');
+				html_header($header_items, 3, true, 'data_template_suggested_values_' . $data_template["id"], 'left wp100');
 
 				$suggested_values = db_fetch_assoc("select
 					text,
@@ -571,7 +596,7 @@ function data_query_item_edit() {
 		);
 
 		print "<tr><td>";
-		html_header($header_items, 2, false, 'graph_template_suggested_values_' . get_request_var("id"), 'left wp100');
+		html_header($header_items, 3, false, 'graph_template_suggested_values_' . get_request_var("id"), 'left wp100');
 
 		if (sizeof($suggested_values) > 0) {
 			foreach ($suggested_values as $suggested_value) {
