@@ -101,7 +101,6 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 		}
 	}else{
 		$i = 0;
-
 		while (1) {
 			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");

@@ -264,7 +264,7 @@ function auth_display_custom_error_message($message) {
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title><?php print read_config_option("loginmod_title");?></title>
+	<title><?php print api_plugin_hook_function("login_title", "Login to Cacti");?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
