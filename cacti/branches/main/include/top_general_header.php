@@ -34,6 +34,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 <html>
 <head>
 	<title><?php echo $page_title; ?></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<?php
 	if (isset($_SESSION["custom"])) {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
