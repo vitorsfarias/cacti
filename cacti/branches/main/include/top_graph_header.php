@@ -87,8 +87,8 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8">
 	<title><?php echo $page_title; ?></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<?php
 	if (isset($_SESSION["custom"]) && $_SESSION["custom"] == true) {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
