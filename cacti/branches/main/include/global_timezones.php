@@ -36,17 +36,17 @@ if (read_config_option("i18n_timezone_support") == 0) {
 if (isset($_GET['time_zone'])) {
 	if(init_time_zone($_GET['time_zone'])) {
 		set_user_config_option('time_zone', $_GET['time_zone']);
-		$_SESSION['time_zone'] = $_GET['time_zone'];
+		$_SESSION['sess_i18n_timezone'] = $_GET['time_zone'];
 	}
 
 /* time zone definition is stored in the SESSION */
-}elseif (isset($_SESSION['time_zone'])) {
-	init_time_zone($_SESSION['time_zone']);
+}elseif (isset($_SESSION['sess_i18n_timezone'])) {
+	init_time_zone($_SESSION['sess_i18n_timezone']);
 
 /* look up for user customized time zone stored in Cacti DB */
 }elseif ($time_zone = read_user_config_option('time_zone')) {
 	if(init_time_zone($time_zone)) {
-		$_SESSION['time_zone'] = $time_zone;
+		$_SESSION['sess_i18n_timezone'] = $time_zone;
 	};
 
 /* use the default time zone defined under "general" or fall back to sytsem time zone*/
