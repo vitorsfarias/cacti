@@ -44,22 +44,22 @@ $lang2locale = get_list_of_locales();
 if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 	$cacti_locale = $_GET['language'];
 	$cacti_country = $lang2locale[$_GET['language']]['country'];
-	$_SESSION['language'] = $cacti_locale;
+	$_SESSION['sess_i18n_language'] = $cacti_locale;
 
 	/* save customized language setting (authenticated users only) */
 	set_user_config_option('language', $cacti_locale);
 
 /* language definition stored in the SESSION */
-}elseif (isset($_SESSION['language']) && isset($lang2locale[$_SESSION['language']])){
-	$cacti_locale = $_SESSION['language'];
-	$cacti_country = $lang2locale[$_SESSION['language']]['country'];
+}elseif (isset($_SESSION['sess_i18n_language']) && isset($lang2locale[$_SESSION['language']])){
+	$cacti_locale = $_SESSION['sess_i18n_language'];
+	$cacti_country = $lang2locale[$_SESSION['sess_i18n_language']]['country'];
 
 /* look up for user customized language setting stored in Cacti DB */
 }elseif ($user_locale = read_user_config_option('language')) {
 	if(isset($lang2locale[$user_locale])) {
 		$cacti_locale = $user_locale;
 		$cacti_country = $lang2locale[$cacti_locale]['country'];
-		$_SESSION['language'] = $cacti_locale;
+		$_SESSION['sess_i18n_language'] = $cacti_locale;
 	}
 
 /* detect browser settings if auto detection is enabled */
@@ -169,7 +169,7 @@ function load_fallback_procedure(){
 	load_i18n_fallback_wrappers();
 
 	/* reset variables */
-	$_SESSION['language'] = "";
+	$_SESSION['sess_i18n_language'] = "";
 
 	$cacti_textdomains = array();
 	define("CACTI_LOCALE", "en");
