@@ -258,8 +258,8 @@ function plugins_load_temp_table() {
 	}else{
 		$table = "plugin_temp_table_" . rand();
 	}
-
-	while (true) {
+	$x = 0;
+	while ($x < 30) {
 		if (!plugins_temp_table_exists($table)) {
 			$_SESSION["plugin_temp_table"] = $table;
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
@@ -269,6 +269,7 @@ function plugins_load_temp_table() {
 		}else{
 			$table = "plugin_temp_table_" . rand();
 		}
+		$x++;
 	}
 
 	$path = $config['base_path'] . '/plugins/';
