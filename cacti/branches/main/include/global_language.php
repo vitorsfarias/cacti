@@ -30,7 +30,7 @@ $cacti_country = "us";
 $cacti_textdomains = array();
 
 /* use a fallback if i18n is disabled (default) */
-if (read_config_option('i18n_language_support') == 0 & !defined("FORCE_LANGUAGE_SUPPORT")) {
+if (!read_config_option('i18n_language_support') & read_config_option('i18n_language_support') != '') {
 	load_fallback_procedure();
 	return;
 }
@@ -50,7 +50,7 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 	set_user_config_option('language', $cacti_locale);
 
 /* language definition stored in the SESSION */
-}elseif (isset($_SESSION['sess_i18n_language']) && isset($lang2locale[$_SESSION['language']])){
+}elseif (isset($_SESSION['sess_i18n_language']) && isset($lang2locale[$_SESSION['sess_i18n_language']])){
 	$cacti_locale = $_SESSION['sess_i18n_language'];
 	$cacti_country = $lang2locale[$_SESSION['sess_i18n_language']]['country'];
 
@@ -63,7 +63,7 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 	}
 
 /* detect browser settings if auto detection is enabled */
-}elseif ((defined("FORCE_LANGUAGE_SUPPORT") | read_config_option('i18n_auto_detection')) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+}elseif ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ) ) {
 	$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 	$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
 
@@ -78,6 +78,9 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 /* use the default language defined under "general" */
 }else {
 	$accepted = read_config_option("i18n_default_language");
+	if($accepted == '') {
+		$accepted = read_default_config_option("i18n_default_language");
+	}
 
 	if (isset($lang2locale[$accepted])) {
 		$cacti_locale = $accepted;
