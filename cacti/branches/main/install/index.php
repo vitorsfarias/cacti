@@ -21,7 +21,7 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
-define("FORCE_LANGUAGE_SUPPORT", 1);
+
 include("../include/global.php");
 
 /* allow the upgrade script to run for as long as it needs to */
