@@ -288,7 +288,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
+								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
 							}
 							break;
 
@@ -350,7 +350,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP));
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$host_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID Count: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
+								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID Count: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
 							}
 
 							break;
@@ -383,7 +383,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 
 							/* fetch specified index */
 							$output = 'U'; # TODO compatibility until option is correctly implemented
-							cacti_log("Host[$host_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
+							cacti_log("Host[$device_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
 							#$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
 
 							/* remove any quotes from string */

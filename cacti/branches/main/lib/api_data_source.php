@@ -217,7 +217,7 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 	if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
 			if (!$found) {
- 				$subs_string = substitute_snmp_query_data($suggested_value["text"],$data_local["host_id"],
+ 				$subs_string = substitute_snmp_query_data($suggested_value["text"],$data_local["device_id"],
 								$data_local["snmp_query_id"], $data_local["snmp_index"],
 								read_config_option("max_data_query_field_length"));
 				/* if there are no '|query' characters, all of the substitutions were successful */
