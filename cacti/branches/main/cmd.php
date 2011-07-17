@@ -288,7 +288,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP);
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
+								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID: " . $index_item["arg1"] . ", output: " . $output, $stdout);
 							}
 							break;
 
@@ -350,7 +350,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 								$item["snmp_auth_protocol"], $item["snmp_priv_passphrase"], $item["snmp_priv_protocol"],
 								$item["snmp_context"], $item["snmp_port"], $item["snmp_timeout"], read_config_option("snmp_retries"), SNMP_CMDPHP));
 							if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID Count: " . $index_item["arg1"] . ", output: " . $output, $print_data_to_stdout);
+								cacti_log("Host[$device_id] RECACHE DQ[" . $index_item["data_query_id"] . "] OID Count: " . $index_item["arg1"] . ", output: " . $output, $stdout);
 							}
 
 							break;
@@ -383,7 +383,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 
 							/* fetch specified index */
 							$output = 'U'; # TODO compatibility until option is correctly implemented
-							cacti_log("Host[$device_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $print_data_to_stdout);
+							cacti_log("Host[$device_id] DS[$data_source] *SKIPPING* Script Server: " . $item["arg1"] . " (arg_num_indexes required)", $stdout);
 							#$output = trim(str_replace("\n", "", exec_poll_php($index_item["arg1"], $pipes, $cactiphp)));
 
 							/* remove any quotes from string */
@@ -599,7 +599,7 @@ function display_help() {
 	echo "The slower, yet easier to use Data Collector for Cacti\n\n";
 	echo "usage: cmd.php [--poller=n] [-f n | --first=n] [-l n | --last=n] [--verbosity=n] [--debug]\n\n";
 	echo "Optional:\n";
-	echo "   --poller=n        Defines which Cacti poller will be handles the polling of this device.\n";
+	echo "   --poller=n        Defines which Cacti poller will be handling the polling of the device(s).\n";
 	echo "   --verbosity=[1-5] Overrides the Database Value for verbosity allowing easy review of log details.\n";
 	echo "   --debug           Prints debug to standard output only.\n";
 	echo "    -f n | --first=n Defines the first device for this Data Collector to be polled.\n";
