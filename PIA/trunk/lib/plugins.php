@@ -176,7 +176,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 			}
 		}
 		}
-		$sql .= ') TYPE = ' . $data['type'];
+		$sql .= ') ENGINE = ' . $data['type'];
 
 		if (isset($data['comment'])) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
