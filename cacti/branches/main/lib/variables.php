@@ -133,9 +133,9 @@ function null_out_substitutions($string) {
 function expand_title($device_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, "|")) && (!empty($device_id))) {
 		if (($snmp_query_id != "0") && ($snmp_index != "")) {
-			return substitute_snmp_query_data(null_out_substitutions(substitute_device_data($title, "|", "|", $device_id)), $device_id, $snmp_query_id, $snmp_index, read_config_option("max_data_query_field_length"), false);
+			return substitute_snmp_query_data(null_out_substitutions(substitute_device_data($title, "|", "|", $device_id, false)), $device_id, $snmp_query_id, $snmp_index, read_config_option("max_data_query_field_length"), false);
 		}else{
-			return null_out_substitutions(substitute_device_data($title, "|", "|", $device_id));
+			return null_out_substitutions(substitute_device_data($title, "|", "|", $device_id, false));
 		}
 	}else{
 		return null_out_substitutions($title);
