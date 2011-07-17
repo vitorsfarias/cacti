@@ -414,7 +414,7 @@ function data_source_template_edit() {
 	if (!empty($_GET["id"])) {
 		$data_template = db_fetch_row("SELECT * FROM data_template WHERE id=" . $_REQUEST["id"]);
 		$header_label = __("[edit: ") . $data_template["name"] . "]";
-		if (!db_fetch_cell("SELECT COUNT(*) FROM data_local WHERE graph_template_id=" . $_REQUEST["id"])) {
+		if (!db_fetch_cell("SELECT COUNT(*) FROM data_local WHERE data_template_id=" . $_REQUEST["id"])) {
 			unset($data_template_tabs["datasources"]);
 		}
 	}else{
