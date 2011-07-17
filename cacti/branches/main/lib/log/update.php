@@ -484,7 +484,7 @@ function log_save_syslog ($syslog_server, $syslog_server_port, $syslog_facility,
 	}else{
 		/* socket error - log to database */
 		$sql = "insert into log
-			(logdate,facility,severity,poller_id,host_id,username,source,plugin,message) values
+			(logdate,facility,severity,poller_id,device_id,username,source,plugin,message) values
 			(SYSDATE(), " . CACTI_LOG_FAC_SYSTEM . "," . CACTI_LOG_SEV_ERROR . ",0,0,'SYSTEM','SYSLOG','N/A','". sql_sanitize("Syslog error[" . $error_number ."]: " . $error_string) . "');";
 		/* DO NOT USE db_execute, function looping can occur when in CACTI_LOG_SEV_DEV mode */
 		$cnn_id->Execute($sql);
