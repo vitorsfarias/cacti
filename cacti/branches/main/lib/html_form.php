@@ -475,9 +475,9 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
 	}
 
 	if ($echo) { /* TODO: both times same action??? */
-		print "<input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+		print "<tr style='display:none;'><td><input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'></td></tr>\n";
 	}else{
-		print "<input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+		print "<tr style='display:none;'><td><input type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'></td></tr>\n";
 	}
 }
 
