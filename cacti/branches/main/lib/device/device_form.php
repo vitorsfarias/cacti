@@ -931,13 +931,14 @@ function device_display_general($device, $device_text) {
 		"fields" => inject_form_variables(device_availability_form_list(), (isset($template_settings) ? $template_settings : $device))
 		));
 
-	html_end_box(!isset($device["id"]));
 	form_hidden_box("id", (isset($device["id"]) ? $device["id"] : "0"), "");
 	form_hidden_box("hidden_device_template_id", (isset($device["device_template_id"]) ? $device["device_template_id"] : "0"), "");
 	form_hidden_box("save_basic_device", "1", "");
 	form_hidden_box("save_component_device", "1", "");
 	form_hidden_box("override_permitted", ($override_permitted ? "true":"false"), "");
 	form_hidden_box("propagation_allowed", ($propagation_allowed ? "true":"false"), "");
+
+	html_end_box(!isset($device["id"]));
 
 	/* javascript relates to availability options, so include it only for existing devices */
 	?>
