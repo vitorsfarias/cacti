@@ -59,7 +59,10 @@ load_current_session_value("toptab", "sess_cacti_toptab", "console");
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/colorpicker.js'></script>
 
-<?php if (isset($refresh)) { print "\t<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">\n"; }
+<?php
+if (isset($refresh)) {
+	print "\t<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">\n";
+}
 initializeCookieVariable();
 api_plugin_hook('page_head');
 ?>

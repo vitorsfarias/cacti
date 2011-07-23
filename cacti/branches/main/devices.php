@@ -80,6 +80,10 @@ switch (get_request_var_request("action")) {
 
 		header("Location: devices.php?action=edit&id=" . $_GET["device_id"] . "&display_dq_details=true");
 		break;
+	case 'ajax':
+		device_ajax_actions();
+
+		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 

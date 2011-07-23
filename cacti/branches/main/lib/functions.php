@@ -2294,7 +2294,7 @@ function get_associated_rras($local_graph_id) {
 		LEFT JOIN data_template_data ON (data_template_rrd.local_data_id=data_template_data.local_data_id)
 		LEFT JOIN data_template_data_rra ON (data_template_data.id=data_template_data_rra.data_template_data_id)
 		LEFT JOIN rra ON (data_template_data_rra.rra_id=rra.id)
-                where graph_templates_item.local_graph_id=$local_graph_id
+		WHERE graph_templates_item.local_graph_id=$local_graph_id
 		AND data_template_rrd.local_data_id != 0
 		group by rra.id
 		order by rra.timespan");
