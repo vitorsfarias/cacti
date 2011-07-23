@@ -317,6 +317,7 @@ function site_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='site_edit'>\n";
+
 	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
@@ -324,10 +325,11 @@ function site_edit() {
 		"fields" => inject_form_variables(site_form_list(), (isset($site) ? $site : array()))
 		));
 
-	html_end_box();
 	form_hidden_box("id", (isset($site["id"]) ? $site["id"] : "0"), "");
 	form_hidden_box("hidden_id", (isset($site["hidden_id"]) ? $site["hidden_id"] : "0"), "");
 	form_hidden_box("save_component_site", "1", "");
+
+	html_end_box();
 
 	form_save_button("sites.php", "return");
 }
@@ -628,7 +630,7 @@ function site($refresh = true) {
 			)
 		);
 	}
-	
+
 	/* get the records */
 	$table->rows = get_site_records($table->total_rows, $table->rows_per_page);
 
