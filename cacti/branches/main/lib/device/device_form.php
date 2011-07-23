@@ -1280,8 +1280,8 @@ function device_display_general($device, $device_text) {
 		if ($('#id').val() == 0) {
 			$('#device_template_id').change(function() {
 				$.get("devices.php?action=ajax&jaction=template&template="+this.value, function(data) {
-					data = $.parseJSON(data);
-					if (data.availability_method) {
+					if (data != "null") {
+						data = $.parseJSON(data);
 						$('#availability_method').val(data.availability_method);
 						$('#ping_method').val(data.ping_method);
 						$('#ping_port').val(data.ping_port);
@@ -1306,6 +1306,8 @@ function device_display_general($device, $device_text) {
 						}else{
 							toggleAvailabilityAndSnmp(true);
 						}
+					}else{
+						toggleAvailabilityAndSnmp(false);
 					}
 				});
 			});
