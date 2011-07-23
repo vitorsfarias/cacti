@@ -46,17 +46,13 @@ $fields_device_edit = array(
 		"max_length" => "250",
 		"size" => "70"
 		),
-//	"poller_id" => array(
-//		"method" => "drop_sql",
-//		"friendly_name" => __("Poller"),
-//		"description" => __("Choose which poller will be the polling of this device."),
-//		"value" => "|arg1:poller_id|",
-//		"none_value" => __("System Default"),
-//		"sql" => "select id,description as name from poller order by name",
-//		),
 	"poller_id" => array(
-		"method" => "hidden",
-		"value" => "0"
+		"method" => "drop_sql",
+		"friendly_name" => __("Poller"),
+		"description" => __("Choose which poller will be the polling of this device."),
+		"value" => "|arg1:poller_id|",
+		"none_value" => __("System Default"),
+		"sql" => "select id,description as name from poller order by name",
 		),
 	"site_id" => array(
 		"method" => "drop_sql",
@@ -112,57 +108,6 @@ $fields_device_edit = array(
 
 /* file: devices.php, action: edit */
 $fields_device_edit_availability = array(
-	"availability_header" => array(
-		"method" => "spacer",
-		"friendly_name" => __("Availability/Reachability Options"),
-		),
-	"availability_method" => array(
-		"friendly_name" => __("Downed Device Detection"),
-		"description" => __("The method Cacti will use to determine if a device is available for polling.") . "<br>" .
-						"<i>" . __("NOTE:") . " " . __("It is recommended that, at a minimum, SNMP always be selected.") . "</i>",
-		"on_change" => "changeHostForm()",
-		"value" => "|arg1:availability_method|",
-		"method" => "drop_array",
-		"default" => read_config_option("availability_method"),
-		"array" => $availability_options
-		),
-	"ping_method" => array(
-		"friendly_name" => __("Ping Method"),
-		"description" => __("The type of ping packet to sent.") . "<br>" .
-						"<i>" . __("NOTE:") . __("ICMP on Linux/UNIX requires root privileges.") . "</i>",
-		"on_change" => "changeHostForm()",
-		"value" => "|arg1:ping_method|",
-		"method" => "drop_array",
-		"default" => read_config_option("ping_method"),
-		"array" => $ping_methods
-		),
-	"ping_port" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Ping Port"),
-		"value" => "|arg1:ping_port|",
-		"description" => __("TCP or UDP port to attempt connection."),
-		"default" => read_config_option("ping_port"),
-		"max_length" => "50",
-		"size" => "15"
-		),
-	"ping_timeout" => array(
-		"friendly_name" => __("Ping Timeout Value"),
-		"description" => __("The timeout value to use for device ICMP and UDP pinging. This device SNMP timeout value applies for SNMP pings."),
-		"method" => "textbox",
-		"value" => "|arg1:ping_timeout|",
-		"default" => read_config_option("ping_timeout"),
-		"max_length" => "10",
-		"size" => "15"
-		),
-	"ping_retries" => array(
-		"friendly_name" => __("Ping Retry Count"),
-		"description" => __("After an initial failure, the number of ping retries Cacti will attempt before failing."),
-		"method" => "textbox",
-		"value" => "|arg1:ping_retries|",
-		"default" => read_config_option("ping_retries"),
-		"max_length" => "10",
-		"size" => "15"
-		),
 	"snmp_spacer" => array(
 		"method" => "spacer",
 		"friendly_name" => __("SNMP Options"),
@@ -263,6 +208,57 @@ $fields_device_edit_availability = array(
 		"value" => "|arg1:max_oids|",
 		"max_length" => "8",
 		"default" => read_config_option("max_get_size"),
+		"size" => "15"
+		),
+	"availability_header" => array(
+		"method" => "spacer",
+		"friendly_name" => __("Availability/Reachability Options"),
+		),
+	"availability_method" => array(
+		"friendly_name" => __("Downed Device Detection"),
+		"description" => __("The method Cacti will use to determine if a device is available for polling.") . "<br>" .
+						"<i>" . __("NOTE:") . " " . __("It is recommended that, at a minimum, SNMP always be selected.") . "</i>",
+		"on_change" => "changeHostForm()",
+		"value" => "|arg1:availability_method|",
+		"method" => "drop_array",
+		"default" => read_config_option("availability_method"),
+		"array" => $availability_options
+		),
+	"ping_method" => array(
+		"friendly_name" => __("Ping Method"),
+		"description" => __("The type of ping packet to sent.") . "<br>" .
+						"<i>" . __("NOTE:") . __("ICMP on Linux/UNIX requires root privileges.") . "</i>",
+		"on_change" => "changeHostForm()",
+		"value" => "|arg1:ping_method|",
+		"method" => "drop_array",
+		"default" => read_config_option("ping_method"),
+		"array" => $ping_methods
+		),
+	"ping_port" => array(
+		"method" => "textbox",
+		"friendly_name" => __("Ping Port"),
+		"value" => "|arg1:ping_port|",
+		"description" => __("TCP or UDP port to attempt connection."),
+		"default" => read_config_option("ping_port"),
+		"max_length" => "50",
+		"size" => "15"
+		),
+	"ping_timeout" => array(
+		"friendly_name" => __("Ping Timeout Value"),
+		"description" => __("The timeout value to use for device ICMP and UDP pinging. This device SNMP timeout value applies for SNMP pings."),
+		"method" => "textbox",
+		"value" => "|arg1:ping_timeout|",
+		"default" => read_config_option("ping_timeout"),
+		"max_length" => "10",
+		"size" => "15"
+		),
+	"ping_retries" => array(
+		"friendly_name" => __("Ping Retry Count"),
+		"description" => __("After an initial failure, the number of ping retries Cacti will attempt before failing."),
+		"method" => "textbox",
+		"value" => "|arg1:ping_retries|",
+		"default" => read_config_option("ping_retries"),
+		"max_length" => "10",
 		"size" => "15"
 		),
 	);

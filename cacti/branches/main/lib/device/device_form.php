@@ -26,6 +26,25 @@
     The Save Function
    -------------------------- */
 
+function device_ajax_actions () {
+	/* ================= input validation ================= */
+	$jaction = sanitize_search_string(get_request_var("jaction"));
+	/* ================= input validation ================= */
+
+	switch($jaction) {
+	case "template":
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("template"));
+		/* ================= input validation ================= */
+
+		$template = db_fetch_row("SELECT * FROM device_template WHERE id=" . get_request_var("template"));
+
+		echo json_encode($template);
+
+		break;
+	}
+}
+
 function api_device_form_save() {
 	/*
 	 * loop for all possible changes of reindex_method
@@ -740,7 +759,7 @@ function device_display_general($device, $device_text) {
 	if (isset($device["id"])) {
 
 		$dd_menu_options = 'cacti_dd_menu=device_options&device_id=' . $device["id"];
-	
+
 		html_start_box($device_text, "100", "3", "center", (isset($_GET["id"]) ? "menu::" . __("Device Options") . ":device_options:html_start_box:" . $dd_menu_options : ""), true);
 		?>
 			<tr class="rowAlternate2">
@@ -926,33 +945,33 @@ function device_display_general($device, $device_text) {
 	<!--
 
 	// default snmp information
-	var snmp_community       = document.getElementById('snmp_community').value;
-	var snmp_username        = document.getElementById('snmp_username').value;
-	var snmp_password        = document.getElementById('snmp_password').value;
-	var snmp_auth_protocol   = document.getElementById('snmp_auth_protocol').value;
-	var snmp_priv_passphrase = document.getElementById('snmp_priv_passphrase').value;
-	var snmp_priv_protocol   = document.getElementById('snmp_priv_protocol').value;
-	var snmp_context         = document.getElementById('snmp_context').value;
-	var snmp_port            = document.getElementById('snmp_port').value;
-	var snmp_timeout         = document.getElementById('snmp_timeout').value;
-	var max_oids             = document.getElementById('max_oids').value;
+	var snmp_community       = $('#snmp_community').value;
+	var snmp_username        = $('#snmp_username').value;
+	var snmp_password        = $('#snmp_password').value;
+	var snmp_auth_protocol   = $('#snmp_auth_protocol').value;
+	var snmp_priv_passphrase = $('#snmp_priv_passphrase').value;
+	var snmp_priv_protocol   = $('#snmp_priv_protocol').value;
+	var snmp_context         = $('#snmp_context').value;
+	var snmp_port            = $('#snmp_port').value;
+	var snmp_timeout         = $('#snmp_timeout').value;
+	var max_oids             = $('#max_oids').value;
 
 	// default ping methods
-	var ping_method    = document.getElementById('ping_method').value;
-	var ping_port      = document.getElementById('ping_port').value;
-	var ping_timeout   = document.getElementById('ping_timeout').value;
-	var ping_retries   = document.getElementById('ping_retries').value;
+	var ping_method    = $('#ping_method').value;
+	var ping_port      = $('#ping_port').value;
+	var ping_timeout   = $('#ping_timeout').value;
+	var ping_retries   = $('#ping_retries').value;
 
-	var availability_methods = document.getElementById('availability_method').options;
-	var num_methods          = document.getElementById('availability_method').length;
-	var selectedIndex        = document.getElementById('availability_method').selectedIndex;
+	var availability_methods = $('#availability_method').options;
+	var num_methods          = $('#availability_method').length;
+	var selectedIndex        = $('#availability_method').selectedIndex;
 
 	var agent = navigator.userAgent;
 	agent = agent.match("MSIE");
 
 	function setPingVisibility() {
-		availability_method = document.getElementById('availability_method').value;
-		ping_method         = document.getElementById('ping_method').value;
+		availability_method = $('#availability_method').value;
+		ping_method         = $('#ping_method').value;
 
 		/* debugging, uncomment as required */
 		//alert("setPingVisibility The availability method is '" + availability_method + "'");
@@ -960,34 +979,34 @@ function device_display_general($device, $device_text) {
 
 		switch(availability_method) {
 		case "<?php print AVAIL_NONE;?>": // none
-			document.getElementById('row_ping_method').style.display  = "none";
-			document.getElementById('row_ping_port').style.display    = "none";
-			document.getElementById('row_ping_timeout').style.display = "none";
-			document.getElementById('row_ping_retries').style.display = "none";
+			$('#row_ping_method').style.display  = "none";
+			$('#row_ping_port').style.display    = "none";
+			$('#row_ping_timeout').style.display = "none";
+			$('#row_ping_retries').style.display = "none";
 
 			break;
 		case "<?php print AVAIL_SNMP;?>": // snmp
-			document.getElementById('row_ping_method').style.display  = "none";
-			document.getElementById('row_ping_port').style.display    = "none";
-			document.getElementById('row_ping_timeout').style.display = "";
-			document.getElementById('row_ping_retries').style.display = "";
+			$('#row_ping_method').style.display  = "none";
+			$('#row_ping_port').style.display    = "none";
+			$('#row_ping_timeout').style.display = "";
+			$('#row_ping_retries').style.display = "";
 
 			break;
 		default: // ping ok
 			switch(ping_method) {
 			case "<?php print PING_ICMP;?>": // ping icmp
-				document.getElementById('row_ping_method').style.display  = "";
-				document.getElementById('row_ping_port').style.display    = "none";
-				document.getElementById('row_ping_timeout').style.display = "";
-				document.getElementById('row_ping_retries').style.display = "";
+				$('#row_ping_method').style.display  = "";
+				$('#row_ping_port').style.display    = "none";
+				$('#row_ping_timeout').style.display = "";
+				$('#row_ping_retries').style.display = "";
 
 				break;
 			case "<?php print PING_UDP;?>": // ping udp
 			case "<?php print PING_TCP;?>": // ping tcp
-				document.getElementById('row_ping_method').style.display  = "";
-				document.getElementById('row_ping_port').style.display    = "";
-				document.getElementById('row_ping_timeout').style.display = "";
-				document.getElementById('row_ping_retries').style.display = "";
+				$('#row_ping_method').style.display  = "";
+				$('#row_ping_port').style.display    = "";
+				$('#row_ping_timeout').style.display = "";
+				$('#row_ping_retries').style.display = "";
 
 				break;
 			}
@@ -1006,10 +1025,10 @@ function device_display_general($device, $device_text) {
 
 	function setAvailability(type) {
 		/* get the availability structure */
-		var am=document.getElementById('availability_method');
+		var am=$('#availability_method');
 
 		/* get current selectedIndex */
-		selectedIndex = document.getElementById('availability_method').selectedIndex;
+		selectedIndex = $('#availability_method').selectedIndex;
 
 		/* debugging uncomment as required */
 		//alert("setAvailability The selectedIndex is '" + selectedIndex + "'");
@@ -1084,36 +1103,36 @@ function device_display_general($device, $device_text) {
 		case "NoSNMP":
 			switch(selectedIndex) {
 			case <?php print AVAIL_NONE;?>: // availability none
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value=0;
+				$('#row_ping_method').style.display="none";
+				$('#ping_method').value=0;
 
 				break;
 			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
-				document.getElementById('row_ping_method').style.display="";
-				document.getElementById('ping_method').value=ping_method;
+				$('#row_ping_method').style.display="";
+				$('#ping_method').value=ping_method;
 
 				break;
 			}
 		case "All":
 			switch(selectedIndex) {
 			case <?php print AVAIL_NONE;?>: // availability none
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value=0;
+				$('#row_ping_method').style.display="none";
+				$('#ping_method').value=0;
 
 				break;
 			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
 			case <?php print AVAIL_PING;?>: // ping
 			case <?php print AVAIL_SNMP_OR_PING;?>: // ping or snmp
-				if ((document.getElementById('row_ping_method').style.display == "none") ||
-					(document.getElementById('row_ping_method').style.display == undefined)) {
-					document.getElementById('ping_method').value=ping_method;
-					document.getElementById('row_ping_method').style.display="";
+				if (($('#row_ping_method').style.display == "none") ||
+					($('#row_ping_method').style.display == undefined)) {
+					$('#ping_method').value=ping_method;
+					$('#row_ping_method').style.display="";
 				}
 
 				break;
 			case <?php print AVAIL_SNMP;?>: // snmp
-				document.getElementById('row_ping_method').style.display="none";
-				document.getElementById('ping_method').value="0";
+				$('#row_ping_method').style.display="none";
+				$('#ping_method').value="0";
 
 				break;
 			}
@@ -1121,7 +1140,7 @@ function device_display_general($device, $device_text) {
 	}
 
 	function changeHostForm() {
-		snmp_version        = document.getElementById('snmp_version').value;
+		snmp_version        = $('#snmp_version').value;
 		//alert("changeHostForm SNMP Version is '" + snmp_version + "'");
 
 		switch(snmp_version) {
@@ -1148,42 +1167,42 @@ function device_display_general($device, $device_text) {
 		//alert("setSNMP SNMP type is '" + snmp_type + "'");
 		switch(snmp_type) {
 		case "None":
-			document.getElementById('row_snmp_username').style.display        = "none";
-			document.getElementById('row_snmp_password').style.display        = "none";
-			document.getElementById('row_snmp_community').style.display       = "none";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
-			document.getElementById('row_snmp_context').style.display         = "none";
-			document.getElementById('row_snmp_port').style.display            = "none";
-			document.getElementById('row_snmp_timeout').style.display         = "none";
-			document.getElementById('row_max_oids').style.display             = "none";
+			$('#row_snmp_username').style.display        = "none";
+			$('#row_snmp_password').style.display        = "none";
+			$('#row_snmp_community').style.display       = "none";
+			$('#row_snmp_auth_protocol').style.display   = "none";
+			$('#row_snmp_priv_passphrase').style.display = "none";
+			$('#row_snmp_priv_protocol').style.display   = "none";
+			$('#row_snmp_context').style.display         = "none";
+			$('#row_snmp_port').style.display            = "none";
+			$('#row_snmp_timeout').style.display         = "none";
+			$('#row_max_oids').style.display             = "none";
 
 			break;
 		case "v1v2":
-			document.getElementById('row_snmp_username').style.display        = "none";
-			document.getElementById('row_snmp_password').style.display        = "none";
-			document.getElementById('row_snmp_community').style.display       = "";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "none";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "none";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "none";
-			document.getElementById('row_snmp_context').style.display         = "none";
-			document.getElementById('row_snmp_port').style.display            = "";
-			document.getElementById('row_snmp_timeout').style.display         = "";
-			document.getElementById('row_max_oids').style.display             = "";
+			$('#row_snmp_username').style.display        = "none";
+			$('#row_snmp_password').style.display        = "none";
+			$('#row_snmp_community').style.display       = "";
+			$('#row_snmp_auth_protocol').style.display   = "none";
+			$('#row_snmp_priv_passphrase').style.display = "none";
+			$('#row_snmp_priv_protocol').style.display   = "none";
+			$('#row_snmp_context').style.display         = "none";
+			$('#row_snmp_port').style.display            = "";
+			$('#row_snmp_timeout').style.display         = "";
+			$('#row_max_oids').style.display             = "";
 
 			break;
 		case "v3":
-			document.getElementById('row_snmp_username').style.display        = "";
-			document.getElementById('row_snmp_password').style.display        = "";
-			document.getElementById('row_snmp_community').style.display       = "none";
-			document.getElementById('row_snmp_auth_protocol').style.display   = "";
-			document.getElementById('row_snmp_priv_passphrase').style.display = "";
-			document.getElementById('row_snmp_priv_protocol').style.display   = "";
-			document.getElementById('row_snmp_context').style.display         = "";
-			document.getElementById('row_snmp_port').style.display            = "";
-			document.getElementById('row_snmp_timeout').style.display         = "";
-			document.getElementById('row_max_oids').style.display             = "";
+			$('#row_snmp_username').style.display        = "";
+			$('#row_snmp_password').style.display        = "";
+			$('#row_snmp_community').style.display       = "none";
+			$('#row_snmp_auth_protocol').style.display   = "";
+			$('#row_snmp_priv_passphrase').style.display = "";
+			$('#row_snmp_priv_protocol').style.display   = "";
+			$('#row_snmp_context').style.display         = "";
+			$('#row_snmp_port').style.display            = "";
+			$('#row_snmp_timeout').style.display         = "";
+			$('#row_max_oids').style.display             = "";
 
 			break;
 		}
@@ -1251,7 +1270,7 @@ function device_display_general($device, $device_text) {
 	}
 
 	$().ready(function() {
-		toggleAvailabilityAndSnmp(document.getElementById('template_enabled').checked);
+		toggleAvailabilityAndSnmp($('#template_enabled').checked);
 
 		/* Hide options when override is turned off */
 		$("#template_enabled").change(function () {
@@ -1260,7 +1279,35 @@ function device_display_general($device, $device_text) {
 
 		if ($('#id').val() == 0) {
 			$('#device_template_id').change(function() {
-				document.location='devices.php?action=edit&template_id='+this.value+'&status=-1'
+				$.get("devices.php?action=ajax&jaction=template&template="+this.value, function(data) {
+					data = $.parseJSON(data);
+					if (data.availability_method) {
+						$('#availability_method').val(data.availability_method);
+						$('#ping_method').val(data.ping_method);
+						$('#ping_port').val(data.ping_port);
+						$('#ping_timeout').val(data.ping_timeout);
+						$('#ping_retries').val(data.ping_retries);
+						$('#snmp_version').val(data.snmp_version);
+						$('#snmp_username').val(data.snmp_username);
+						$('#snmp_password').val(data.snmp_password);
+						$('#snmp_password_confirm').val(data.snmp_password);
+						$('#snmp_community').val(data.snmp_community);
+						$('#snmp_auth_protocol').val(data.snmp_auth_protocol);
+						$('#snmp_priv_passphrase').val(data.snmp_priv_passphrase);
+						$('#snmp_priv_protocol').val(data.snmp_priv_protocol);
+						$('#snmp_context').val(data.snmp_port);
+						$('#snmp_port').val(data.snmp_port);
+						$('#snmp_timeout').val(data.snmp_timeout);
+						$('#max_oids').val(data.max_oids);
+						$('#device_threads').val(data.device_threads);
+
+						if (data.override_defaults=="" || data.override_permitted=="on") {
+							toggleAvailabilityAndSnmp(false);
+						}else{
+							toggleAvailabilityAndSnmp(true);
+						}
+					}
+				});
 			});
 		}
 	});
