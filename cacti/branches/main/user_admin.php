@@ -920,16 +920,15 @@ function graph_settings_edit() {
 		print "</table></td></tr>";		/* end of html_header */
 	}
 
-	html_end_box();
-
 	# the id tag is required for our js code!
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
+	form_hidden_box("id", get_request_var_request("id"), "");
+	form_hidden_box("save_component_graph_settings","1","");
+
+	html_end_box();
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
-
-	form_hidden_box("id", get_request_var_request("id"), "");
-	form_hidden_box("save_component_graph_settings","1","");
 }
 
 /* --------------------------
