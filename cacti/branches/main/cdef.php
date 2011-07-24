@@ -74,6 +74,10 @@ switch (get_request_var_request("action")) {
 		cdef_dnd();
 
 		break;
+	case 'ajaxpreview':
+		draw_cdef_preview(get_request_var("cdef_id"));
+
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -88,14 +92,8 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function draw_cdef_preview($cdef_id) {
-	?>
-	<tr>
-		<td>
-			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
-		</td>
-	</tr>
-<?php }
-
+	print "<tr><td><pre style='white-space:pre-wrap;'>cdef=" . get_cdef($cdef_id, true) . "</pre></td></tr>";
+}
 
 /* --------------------------
     The Save Function
@@ -315,6 +313,8 @@ function cdef_dnd(){
 		$sql = "UPDATE cdef_items SET sequence = $sequence WHERE id = $cdef_id";
 		db_execute($sql);
 	}
+
+	draw_cdef_preview(get_request_var("id"));
 }
 
 function item_edit() {
@@ -331,9 +331,9 @@ function item_edit() {
 		$values[$current_type] = $cdef["value"];
 	}
 
-	html_start_box("", "100", "3", "center", "");
+	echo "<table id='preview' class='left startBox1'>";
 	draw_cdef_preview(get_request_var("cdef_id"));
-	html_end_box();
+	echo "</table><br>";
 
 	print "<form action='cdef.php' name='form_cdef' method='post'>\n";
 	html_start_box("<strong>" . __("CDEF Items") . "</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100", "3", "center", "");
@@ -392,12 +392,12 @@ function item_edit() {
 	<?php
 	form_end_row();
 
-	html_end_box();
-
 	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
 	form_hidden_box("type", $current_type, "");
 	form_hidden_box("cdef_id", get_request_var("cdef_id"), "");
 	form_hidden_box("save_component_item", "1", "");
+
+	html_end_box();
 
 	form_save_button_alt("path!cdef.php|action!edit|id!" . get_request_var("cdef_id"));
 }
@@ -450,9 +450,9 @@ function cdef_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		html_start_box("", "100", "3", "center", "");
+		echo "<table id='preview' class='left startBox1 w100'>";
 		draw_cdef_preview(get_request_var("id"));
-		html_end_box();
+		echo "</table><br>";
 
 		html_start_box("<strong>" . __("CDEF Items") . "</strong>", "100", 0, "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"], false, "cdef");
 
@@ -477,7 +477,7 @@ function cdef_edit() {
 					<td>
 						<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print get_cdef_item_name($cdef_item["id"]);?></strong>
 					</td>
-					<td align="right">
+					<td align="right" style='width:16px;'>
 						<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php
@@ -493,7 +493,8 @@ function cdef_edit() {
 <script type="text/javascript">
 	$('#cdef_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&"+$.tableDnD.serialize());
+			$.get('cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&'+$.tableDnD.serialize(), function(data) {$('#preview').html(data);
+		});
 		}
 	});
 </script>

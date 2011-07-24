@@ -44,8 +44,9 @@ function get_cdef_item_name($cdef_item_id) 	{
 /* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDTool 'graph'
      string. this name will be resolved recursively if necessary
    @param $cdef_id - the id of the cdef to resolve
+   @param $display - render the cdef output for display and not rrdtool
    @returns - a text-based representation of the cdef */
-function get_cdef($cdef_id) {
+function get_cdef($cdef_id, $display = false) {
 	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$cdef_id order by sequence");
 
 	$i = 0; $cdef_string = "";
@@ -53,7 +54,7 @@ function get_cdef($cdef_id) {
 	if (sizeof($cdef_items) > 0) {
 	foreach ($cdef_items as $cdef_item) {
 		if ($i > 0) {
-			$cdef_string .= ",";
+			$cdef_string .= ($display ? ", ":",");
 		}
 
 		if ($cdef_item["type"] == 5) {

@@ -568,6 +568,12 @@ th a {
 	background: #1f2328 url('../images/rowSubHeader.png') repeat-x scroll top left;
 }
 
+.rowSubHeader th {
+	padding: 5px 3px 2px 3px;
+	text-align: left;
+	font-size: 11px;
+}
+
 .rowSubHeader td span {
 	color: #ffffff;
 	font-weight: bold;
@@ -591,7 +597,7 @@ th a {
 }
 
 .rowAlternate1 td {
-	padding: 0px 3px;
+	padding: 3px 3px 0px 3px;
 }
 
 .rowAlternate2 {
@@ -600,7 +606,7 @@ th a {
 }
 
 .rowAlternate2 td {
-	padding: 0px 3px;
+	padding: 3px 3px 0px 3px;
 }
 
 .rowSelected {
@@ -609,7 +615,7 @@ th a {
 }
 
 .rowSelected td {
-	padding: 0px 3px;
+	padding: 3px 3px 0px 3px;
 }
 
 /* text styles */
