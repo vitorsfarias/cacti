@@ -152,7 +152,7 @@ function form_end_row() {
 
 /** form_end_table - properly ends a table and starts the next navigation */
 function form_end_table() {
-	print "</table>\n";
+	print "</tbody></table>\n";
 	print "<table cellspacing='0' cellpadding='0' width='100%'>\n";
 }
 
