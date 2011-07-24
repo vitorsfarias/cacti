@@ -41,8 +41,6 @@ function draw_edit_form($array) {
 		}
 	}
 
-	echo "<tr><td><table class='striped' width='100%' cellpadding='0' cellspacing='0' border='0'>";
-
 	$i = 0;
 	if (sizeof($fields_array) > 0) {
 		while (list($field_name, $field_array) = each($fields_array)) {
@@ -57,7 +55,9 @@ function draw_edit_form($array) {
 			}elseif ($field_array["method"] == "hidden_zero") {
 				form_hidden_box($field_name, $field_array["value"], "0");
 			}elseif ($field_array["method"] == "spacer") {
-				print "<tr id='row_$field_name'><td colspan='2' class='textRowSubHeaderDark'>" . $field_array["friendly_name"] . "</td></tr>\n";
+				print ($i > 0 ? "</tbody></table>":"<tr><td>");
+				print "<table class='striped wp100' cellpadding='0' cellspacing='0' border='0'>";
+				print "<thead><tr id='row_$field_name'><th colspan='2' class='left textRowSubHeaderDark'>" . $field_array["friendly_name"] . "</th></tr></thead><tbody>\n";
 			}else{
 				if (isset($config_array["force_row_color"])) {
 					print "<tr id='row_$field_name' bgcolor='#" . $config_array["force_row_color"] . "'>";
@@ -67,7 +67,7 @@ function draw_edit_form($array) {
 
 				if (isset($field_array["sub_checkbox"])) {
 					/* print description as a hover */
-					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : "");
+					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : "width=50%");
 					print "<td" . $width . " class='template_checkbox'>\n";
 					print "<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
 
@@ -86,7 +86,7 @@ function draw_edit_form($array) {
 						((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
 					print "</td>\n";
 				} else {
-					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : "");
+					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : " width='50%'");
 					print "<td" . $width . ">\n";
 					print "<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
 					print ((isset($field_array["description"])) ? $field_array["description"] : "");
@@ -104,7 +104,7 @@ function draw_edit_form($array) {
 		}
 	}
 
-	echo "</table></td></tr>";
+	echo "</tbody></table></td></tr>";
 
 }
 
