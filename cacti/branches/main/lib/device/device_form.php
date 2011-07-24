@@ -1032,8 +1032,8 @@ function device_display_general($device, $device_text) {
 		selectedIndex = document.getElementById('availability_method').selectedIndex;
 
 		/* debugging uncomment as required */
-		alert("setAvailability The selectedIndex is '" + selectedIndex + "'");
-		alert("The array length is '" + am.length + "'");
+		//alert("setAvailability The selectedIndex is '" + selectedIndex + "'");
+		//alert("The array length is '" + am.length + "'");
 
 		switch(type) {
 		case "NoSNMP":
