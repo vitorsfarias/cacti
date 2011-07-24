@@ -703,7 +703,15 @@ $().ready(function() {
 	/* restore column widths */
 	initResizableColumns();
 
-	/* restore the page visibility */
+	/* stripe tables and add hovering */
+	$(".hover tbody tr").mouseover(function() {
+		$(this).addClass("rowSelected"); 
+	}).mouseout(function() { 
+		$(this).removeClass("rowSelected");
+	});
+	$(".striped tbody tr:even").addClass("rowAlternate2").removeClass("rowAlternate1");
+
+	/* restore the page visibility */	
 	transitionPage();
 });
 
