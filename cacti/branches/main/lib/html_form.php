@@ -41,6 +41,8 @@ function draw_edit_form($array) {
 		}
 	}
 
+	echo "<tr><td><table class='striped' width='100%' cellpadding='0' cellspacing='0' border='0'>";
+
 	$i = 0;
 	if (sizeof($fields_array) > 0) {
 		while (list($field_name, $field_array) = each($fields_array)) {
@@ -101,6 +103,9 @@ function draw_edit_form($array) {
 			$i++;
 		}
 	}
+
+	echo "</table></td></tr>";
+
 }
 
 /** draw_edit_control - draws a single control to be used on an html edit form
