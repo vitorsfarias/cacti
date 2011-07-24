@@ -93,35 +93,15 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
 
 	if (strlen($row_class)) $row_class = " " . $row_class;
 
-	if ($class_int == 1) {
-		$class = "rowAlternate1" . $row_class;
-	}else{
-		$class = "rowAlternate2" . $row_class;
-	}
-
-	$class_hover = "rowSelected" . $row_class;
-
-	$class_int = ($class_int + 1) % 2;
+	$class = "rowAlternate1" . $row_class;
 
 	if (is_numeric($row_id)) {
-		if ($hover) {
-			print "<tr id='row_$row_id' class='$class' onMouseOver='(this.className=\"$class_hover\")' onMouseOut='(this.className=\"$class\")'>\n";
-		}else{
-			print "<tr id='row_$row_id' class='$class'>\n";
-		}
+		print "<tr id='row_$row_id' class='$class'>\n";
 	}else{
 		if (strlen($row_id)) {
-			if ($hover) {
-				print "<tr id='$row_id' class='$class' onMouseOver='(this.className=\"$class_hover\")' onMouseOut='(this.className=\"$class\")'>\n";
-			}else{
-				print "<tr id='$row_id' class='$class'>\n";
-			}
+			print "<tr id='$row_id' class='$class'>\n";
 		}else{
-			if ($hover) {
-				print "<tr id='row_$alt_row_id' class='$class' onmouseover='this.className=\"$class_hover\"' onmouseout='(this.className=\"$class\")'>\n";
-			}else{
-				print "<tr id='row_$alt_row_id' class='$class'>\n";
-			}
+			print "<tr id='row_$alt_row_id' class='$class'>\n";
 
 			$alt_row_id++;
 		}

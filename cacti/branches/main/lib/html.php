@@ -471,7 +471,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$selected_sort_class = "sort_desc";
 	}
 
-	print "\t\t<table cellpadding=0 cellspacing=0 class='resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
+	print "\t\t<table cellpadding=0 cellspacing=0 class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
@@ -544,7 +544,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
 
 	print "<form name='chk' method='post' action='$form_action'>\n";	# properly place form outside table
-	print "\t<table $table_id class='resizable startBoxHeader startBox3'>\n";
+	print "\t<table $table_id class='hover striped resizable startBoxHeader startBox3'>\n";
 	print "\t\t<thead><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
@@ -609,9 +609,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
 
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}
 
 	$i = 0;
@@ -654,9 +654,9 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
-		print "\t\t<table cellpadding=0 cellspacing=1 class='resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=1 class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=1 class='startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=1 class='hover striped startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}
 
 	$i = 0;
