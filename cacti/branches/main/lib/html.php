@@ -471,7 +471,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$selected_sort_class = "sort_desc";
 	}
 
-	print "\t\t<table cellpadding=0 cellspacing=0 class='resizable startBoxHeader startBox3'><tr class='rowSubHeader'>\n";
+	print "\t\t<table cellpadding=0 cellspacing=0 class='resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
@@ -512,7 +512,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 	}
 
-	print "\t\t</tr>\n";
+	print "\t\t</tr></thead><tbody>\n";
 }
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
@@ -545,7 +545,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	print "<form name='chk' method='post' action='$form_action'>\n";	# properly place form outside table
 	print "\t<table $table_id class='resizable startBoxHeader startBox3'>\n";
-	print "\t\t<tr class='rowSubHeader'>\n";
+	print "\t\t<thead><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
 	if (sizeof($header_items)) {
@@ -589,7 +589,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
-	print "\t\t</tr>\n";
+	print "\t\t</tr></thead><tbody>\n";
 }
 
 /* html_header - draws a header row suitable for display inside of a box element
@@ -609,9 +609,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
 
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='resizable startBoxHeader startBox3 $tclass'><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='startBoxHeader startBox3 $tclass'><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}
 
 	$i = 0;
@@ -634,7 +634,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 		$i++;
 	}
 
-	print "\t\t</tr>\n";
+	print "\t\t</tr></thead><tbody>\n";
 }
 
 /* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
@@ -654,9 +654,9 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
-		print "\t\t<table cellpadding=0 cellspacing=1 class='resizable startBox0 $tclass'><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=1 class='resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=1 class='startBox0 $tclass'><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=1 class='startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}
 
 	$i = 0;
@@ -677,7 +677,7 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 	}
 
 	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
-	print "\t\t</tr>\n";
+	print "\t\t</tr></thead><tbody>\n";
 }
 
 class html_table {
@@ -754,7 +754,7 @@ class html_table {
 				html_header_checkbox($this->table_format);
 			}
 		}elseif ($this->sortable) {
-			html_header_sort($this->table_foramt, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
 		}else{
 			html_header($this->table_format);
 		}
