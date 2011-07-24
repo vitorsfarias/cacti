@@ -109,14 +109,14 @@ default:
 			"fields" => $form_array
 	));
 
+	form_hidden_box("tab", $current_tab, "");
+	# the id tag is required for our js code!
+	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
+
 	html_end_box();
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
-
-	form_hidden_box("tab", $current_tab, "");
-	# the id tag is required for our js code!
-	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 
 	form_save_button("", "save");
 
