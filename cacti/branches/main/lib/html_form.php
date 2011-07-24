@@ -50,6 +50,10 @@ function draw_edit_form($array) {
 				}
 			}
 
+			if ($i == 0 && $field_array["method"] != "spacer") {
+				print "<thead><tr id='row_generic'><th colspan='2' class='left textRowSubHeaderDark'>General</th></tr></thead><tbody>\n";
+			}
+
 			if ($field_array["method"] == "hidden") { /* TODO: input type=hidden is not allowed inside a <table> but outside e.g. a <td> */
 				form_hidden_box($field_name, $field_array["value"], ((isset($field_array["default"])) ? $field_array["default"] : ""));
 			}elseif ($field_array["method"] == "hidden_zero") {

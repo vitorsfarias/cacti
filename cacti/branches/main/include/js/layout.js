@@ -342,15 +342,15 @@ function doneColResize() {
 }
 
 function initResizableColumns() {
-	columns = document.getElementsByTagName("th");
+	columns = document.getElementsByTagName(".resizable tr th");
 
 	pathname = getBaseName();
 
-	$('th').mousemove(function(e) {
+	$('.resizable tr th').mousemove(function(e) {
 		doColResize(this,e);
 	});
 
-	$('th > a').mousedown(function(e) {
+	$('.resizable tr th a').mousedown(function(e) {
 		return false;
 	});
 
@@ -705,13 +705,13 @@ $().ready(function() {
 
 	/* stripe tables and add hovering */
 	$(".hover tbody tr").mouseover(function() {
-		$(this).addClass("rowSelected"); 
-	}).mouseout(function() { 
+		$(this).addClass("rowSelected");
+	}).mouseout(function() {
 		$(this).removeClass("rowSelected");
 	});
 	$(".striped tbody tr:even").addClass("rowAlternate2").removeClass("rowAlternate1");
 
-	/* restore the page visibility */	
+	/* restore the page visibility */
 	transitionPage();
 });
 

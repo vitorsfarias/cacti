@@ -440,6 +440,7 @@ function cdef_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='cdef_edit'>\n";
+
 	html_start_box("<strong>". __("CDEF's") . "</strong> $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
@@ -462,6 +463,7 @@ function cdef_edit() {
 		);
 
 		print "<tr><td>";
+
 		html_header($header_items, 2, false, 'cdef_item','left wp100');
 
 		$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=" . $_GET["id"] . " order by sequence");
@@ -481,25 +483,28 @@ function cdef_edit() {
 						<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php
+
 			form_end_row();
 			$i++;
 			}
 		}
+
 		print "</table></td></tr>";		/* end of html_header */
+
 		html_end_box();
 	}
 	form_save_button("cdef.php", "return");
-?>
-<script type="text/javascript">
-	$('#cdef_item').tableDnD({
-		onDrop: function(table, row) {
-			$.get('cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&'+$.tableDnD.serialize(), function(data) {$('#preview').html(data);
-		});
-		}
-	});
-</script>
-<?php
 
+	?>
+	<script type="text/javascript">
+		$('#cdef_item').tableDnD({
+			onDrop: function(table, row) {
+				$.get('cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&'+$.tableDnD.serialize(), function(data) {$('#preview').html(data);
+			});
+			}
+		});
+	</script>
+<?php
 }
 
 function cdef_filter() {
