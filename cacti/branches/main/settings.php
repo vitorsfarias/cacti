@@ -105,7 +105,7 @@ default:
 	}
 
 	draw_edit_form(array(
-			"config" => array("no_form_tag" => true),
+			"config" => array("no_form_tag" => true, "left_column_width" => "60%"),
 			"fields" => $form_array
 	));
 
