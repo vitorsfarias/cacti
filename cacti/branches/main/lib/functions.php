@@ -717,6 +717,91 @@ function display_auth_realms($realm) {
 	return $auth_realms[$realm];
 }
 
+function display_plugin_ordering($plugin_name, $include_ordering, $last_plugin) {
+	static $first_plugin = true;
+
+	$field = "";
+	if ($include_ordering) {
+		if (!$first_plugin) {
+			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=moveup&id=" . $plugin_name) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
+		}else{
+			$field .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+		}
+		if (!$last_plugin) {
+			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=movedown&id=" . $plugin_name) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
+		}else{
+			$field .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+		}
+	}
+
+	return $field;
+}
+
+function display_plugin_directory($plugin_name, $website) {
+
+	return "<a href='" . htmlspecialchars($website) . "' target='_blank'><strong>" . ucfirst($plugin_name) . "</strong></a>";
+}
+
+function display_plugin_type($plugin_name, $status) {
+	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+
+	$system_plugin = (in_array($plugin_name, $plugins_system));
+
+	$field = ($system_plugin ? "System": ($status < 0 ? "Old PIA":"General"));
+
+	return $field;
+}
+
+function display_plugin_status($status) {
+	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+
+	return $plugin_status_names[$status];
+}
+
+function display_plugin_actions($plugin_name, $status) {
+	require_once(CACTI_BASE_PATH . "/include/plugins/plugin_constants.php");
+
+	$link = "";
+	switch ($status) {
+		case PLUGIN_STATUS_DISABLED: // Old PA Not Installed
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=installold&id=" . $plugin_name) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_ACTIVE_1:	// Old PA Currently Active
+			$oldplugins = read_config_option('oldplugins');
+			if (strlen(trim($oldplugins))) {
+				$oldplugins = explode(',', $oldplugins);
+			}else{
+				$oldplugins = array();
+			}
+			if (in_array($plugin_name, $oldplugins)) {
+				$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstallold&id=" . $plugin_name) . "' title='Uninstall Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			} else {
+				$link .= "<a href='#' title='Please Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
+			}
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_NOT_INSTALLED: // Not Installed
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=install&id=" . $plugin_name) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_ACTIVE_2:	// Currently Active
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin_name) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin_name) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
+			break;
+		case PLUGIN_STATUS_INSTALLED:	// Installed but not active
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin_name) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin_name) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/enable_icon.png'></a>";
+			break;
+		default: // Old PIA
+			$link .= "<a href='#' title='Please Install/Uninstall from config.php' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/install_icon_disabled.png'></a>";
+			$link .= "<a href='#' title='Enabling from the UI is not supported' class='linkEditMain'><img style='padding:1px;' align='absmiddle' border='0' src='images/enable_icon_disabled.png'></a>";
+			break;
+	}
+
+	return $link;
+}
+
 /**
  * clears the message cache */
 function clear_messages() {

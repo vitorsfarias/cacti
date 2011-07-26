@@ -155,13 +155,14 @@ session_start();
 
 /* include additional modules */
 include_once(CACTI_BASE_PATH . "/lib/functions.php");
-include_once(CACTI_BASE_PATH . "/lib/plugins.php");
 include_once(CACTI_BASE_PATH . "/include/global_constants.php");
 include_once(CACTI_BASE_PATH . "/include/global_language.php");
 include_once(CACTI_BASE_PATH . "/include/global_timezones.php");
 include_once(CACTI_BASE_PATH . "/lib/log/update.php");
 include_once(CACTI_BASE_PATH . "/include/global_arrays.php");
 include_once(CACTI_BASE_PATH . "/include/global_settings.php");
+include_once(CACTI_BASE_PATH . "/lib/plugins.php");
+include_once(CACTI_BASE_PATH . "/include/plugins.php");
 if(!$database_empty) {
 	// avoid running read_config_option against an empty DB - this isn't needed during the install process anyway
 	include_once(CACTI_BASE_PATH . "/include/global_form.php");
@@ -257,7 +258,7 @@ if ((bool)ini_get("register_globals")) {
 }
 
 
-/* colors - depercated */
+/* colors - deprecated */
 $colors["dark_outline"] = "454E53";
 $colors["dark_bar"] = "AEB4B7";
 $colors["panel"] = "E5E5E5";

@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+define("MAX_DISPLAY_PAGES", 21);
+
 include('./include/auth.php');
 
 /* tab information */
@@ -29,38 +31,75 @@ $ptabs = array(
 	'all'       => __('Plugins'),
 );
 
-$plugins = plugins_get_plugins_list();
-
-$ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
-
 /* set the default settings category */
 load_current_session_value('tab', 'sess_plugins_tab', 'all');
 $current_tab = $_REQUEST['tab'];
+$pluginslist = plugins_get_plugins_list();
 
-$modes = array('all', 'disable', 'enable', 'check');
+$ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
+
+/* Check to see if we are installing, etc... */
+$modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
-	input_validate_input_regex(get_request_var('id'), '/^([a-zA-Z0-9]+)$/');
+	input_validate_input_regex(get_request_var("id"), "/^([a-zA-Z0-9]+)$/");
 
 	$mode = $_GET['mode'];
-	$id = sanitize_search_string($_GET['id']);
+	$id   = sanitize_search_string($_GET['id']);
 
 	switch ($mode) {
+		case 'installold':
+			api_plugin_install_old($id);
+			header("Location: plugins.php");
+			exit;
+			break;
+		case 'uninstallold':
+			api_plugin_uninstall_old($id);
+			header("Location: plugins.php");
+			exit;
+			break;
+		case 'install':
+			api_plugin_install($id);
+			header("Location: plugins.php");
+			exit;
+			break;
+		case 'uninstall':
+			if (!in_array($id, $pluginslist)) break;
+			api_plugin_uninstall($id);
+			header("Location: plugins.php");
+			exit;
+			break;
 		case 'disable':
-			if (!isset($plugins[$id]))
-				break;
+			if (!in_array($id, $pluginslist)) break;
 			api_plugin_disable($id);
-			Header("Location: " . CACTI_URL_PATH . "plugins.php\n\n");
+			header("Location: plugins.php");
 			exit;
+			break;
 		case 'enable':
-			if (!isset($plugins[$id]))
-				break;
+			if (!in_array($id, $pluginslist)) break;
 			api_plugin_enable($id);
-			Header("Location: " . CACTI_URL_PATH . "plugins.php\n\n");
+			header("Location: plugins.php");
 			exit;
+			break;
+		case 'check':
+			if (!in_array($id, $pluginslist)) break;
+			break;
+		case 'moveup':
+			if (!in_array($id, $pluginslist)) break;
+			if (is_system_plugin($id)) break;
+			api_plugin_moveup($id);
+			header("Location: plugins.php");
+			exit;
+			break;
+		case 'movedown':
+			if (!in_array($id, $pluginslist)) break;
+			if (is_system_plugin($id)) break;
+			api_plugin_movedown($id);
+			header("Location: plugins.php");
+			exit;
+			break;
 	}
 }
-
 include(CACTI_BASE_PATH . "/include/top_header.php");
 
 plugins_draw_tabs($ptabs, $current_tab);
@@ -82,15 +121,24 @@ html_end_box();
 
 include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
+
+
+
 function plugins_get_plugins_list () {
-	$info  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
-	$plugins = array();
-	if (!empty($info)) {
-		foreach ($info as $p) {
-			$plugins[$p['directory']] = $p;
-		}
+#	$info  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
+#	$plugins = array();
+#	if (!empty($info)) {
+#		foreach ($info as $p) {
+#			$plugins[$p['directory']] = $p;
+#		}
+#	}
+#	return $plugins;
+	$pluginslist = array();
+	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
+	foreach ($temp as $t) {
+		$pluginslist[] = $t['directory'];
 	}
-	return $plugins;
+	return $pluginslist;
 }
 
 function plugins_draw_tabs ($tabs, $current_tab) {
@@ -105,64 +153,255 @@ function plugins_draw_tabs ($tabs, $current_tab) {
 	print "</div></td></tr></table>\n";
 }
 
-function plugins_show($status = 'all') {
-	global $plugins, $config, $status_names;
+function plugins_temp_table_exists($table) {
+	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
+}
 
-	$display_text = array(
-		"name" => array(
-			"name" => __(" "),
-			"order" => "ASC"
+function plugins_load_temp_table() {
+	global $config, $plugins;
+
+	$pluginslist = plugins_get_plugins_list();
+
+	if (isset($_SESSION["plugin_temp_table"])) {
+		$table = $_SESSION["plugin_temp_table"];
+	}else{
+		$table = "plugin_temp_table_" . rand();
+	}
+	$x = 0;
+	while ($x < 30) {
+		if (!plugins_temp_table_exists($table)) {
+			$_SESSION["plugin_temp_table"] = $table;
+			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
+			db_execute("TRUNCATE $table");
+			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
+			break;
+		}else{
+			$table = "plugin_temp_table_" . rand();
+		}
+		$x++;
+	}
+
+	$path = CACTI_BASE_PATH . '/plugins/';
+
+	$dh = opendir($path);
+	while (($file = readdir($dh)) !== false) {
+		if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!in_array($file, $pluginslist))) {
+			# a setup file exists and this is a new plgin (not known in pluginlist)
+			include_once("$path/$file/setup.php");
+			if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
+				# version function exists but install function does not ==> this is an old plugin
+				# get version info
+				$function = $file . '_version';
+				$cinfo[$file] = $function();
+				if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
+				if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+				if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
+				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
+				
+				# compute status
+				$cinfo[$file]['status'] = -2;
+				if (in_array($file, $plugins)) {
+					$cinfo[$file]['status'] = -1;
+				}
+				
+				# register new plugin into temp table for display
+				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+					VALUES ('" .
+						$file . "', '" .
+						$cinfo[$file]['longname'] . "', '" .
+						$cinfo[$file]['status']   . "', '" .
+						$cinfo[$file]['author']   . "', '" .
+						$cinfo[$file]['homepage'] . "', '" .
+						$cinfo[$file]['version']  . "')");
+				
+				# add this plugin to pluginlist
+				$pluginslist[] = $file;
+				
+				
+			} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
+				# version function exists AND install function exists ==> this is a new plugin
+				# get version info
+				$function               = $file . '_version';
+				$cinfo[$file]           = $function();
+				
+				# status for new plugin is 
+				$cinfo[$file]['status'] = 0;
+				if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = 'Unknown';
+				if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = 'Not Stated';
+				if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
+				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
+
+				/* see if it's been installed as old, if so, remove from oldplugins array and session */
+				$oldplugins = read_config_option("oldplugins");
+				if (substr_count($oldplugins, $file)) {
+					$oldplugins = str_replace($file, "", $oldplugins);
+					$oldplugins = str_replace(",,", ",", $oldplugins);
+					$oldplugins = trim($oldplugins, ",");
+					set_config_option('oldplugins', $oldplugins);
+					$_SESSION['sess_config_array']['oldplugins'] = $oldplugins;
+				}
+
+				# register new plugin into temp table for display
+				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+					VALUES ('" .
+						$file . "', '" .
+						$cinfo[$file]['longname'] . "', '" .
+						$cinfo[$file]['status'] . "', '" .
+						$cinfo[$file]['author'] . "', '" .
+						$cinfo[$file]['homepage'] . "', '" .
+						$cinfo[$file]['version'] . "')");
+
+				# add this plugin to pluginlist
+				$pluginslist[] = $file;
+			}
+		}
+	}
+	closedir($dh);
+
+	return $table;
+}
+
+function get_plugin_records(&$total_rows, &$rowspp) {
+
+	/* get all currently known plugins by reading the plugins directory */
+	$table = plugins_load_temp_table();
+
+	/* form the 'where' clause for our main sql query */
+	if (strlen(html_get_page_variable("filter"))) {
+		$sql_where = "WHERE ($table.name LIKE '%%" . get_request_var_request("filter") . "%%')";
+	}else{
+		$sql_where = "";
+	}
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_device");
+	}else{
+		$rowspp = html_get_page_variable("rows");
+	}
+
+	$sortby = html_get_page_variable("sort_column");
+	if ($sortby == "version") {
+		$sortby = "version+0";
+	}
+
+	$sort_direction = html_get_page_variable("sort_direction");
+	if ($sort_direction == "id") {
+		$sort_direction = "ASC";
+	}
+
+	$total_rows = db_fetch_cell("select
+		COUNT(id)
+		from $table
+		$sql_where");
+
+	$sql_query = "SELECT *
+		FROM $table
+		$sql_where
+		ORDER BY " . $sortby . " " . $sort_direction . "
+		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+
+	$plugins = db_fetch_assoc($sql_query);
+
+	db_execute("DROP TABLE $table");
+	
+	if (sizeof($plugins)) {
+		foreach ($plugins as $key => $value) {
+			# provide actions available
+			$plugins[$key]['actions'] = '';
+			# provide include_ordering
+			$plugins[$key]['include_ordering'] = '';
+			# provide last_plugin
+			$plugins[$key]['last_plugin'] = false;
+			# provide type
+			$plugins[$key]['type'] = '';
+		}
+	}
+
+	return $plugins;
+}
+
+function plugins_show($status = 'all', $refresh = true) {
+	global $item_rows, $colors;
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+#		"tab"            => array("type" => "string",  "method" => "request", "default" => "", "nosession" => true),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+	$table->table_format = array(
+		"actions" => array(
+			"name" => __("Actions"),
+			"function" => "display_plugin_actions",
+			"params" => array("directory", "status"),
+			"order" => "nosort"
 		),
 		"directory" => array(
-			"name" => __("Plugin"),
-			"order" => "ASC"
-		),
-		"longname" => array(
 			"name" => __("Name"),
+			"function" => "display_plugin_directory",
+			"params" => array("directory", "webpage"),
+			"filter" => true,
 			"order" => "ASC"
 		),
 		"version" => array(
 			"name" => __("Version"),
 			"order" => "ASC"
 		),
-		"author" => array(
-			"name" => __("Author"),
+		"id" => array(
+			"name" => __("Load Order"),
+			"function" => "display_plugin_ordering",
+			"params" => array("directory", "include_ordering", "last_plugin"),
 			"order" => "ASC"
 		),
-		"webpage" => array(
-			"name" => __("Webpage"),
+		"name" => array(
+			"name" => __("Description"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"type" => array(
+			"name" => __("Type"),
+			"function" => "display_plugin_type",
+			"params" => array("directory", "status"),
+			"order" => "ASC"
+		),
+		"status" => array(
+			"name" => __("Status"),
+			"function" => "display_plugin_status",
+			"params" => array("status"),
+			"order" => "ASC"
+		),
+		"author" => array(
+			"name" => __("Author"),
 			"order" => "ASC"
 		)
 	);
 
-	html_header_sort($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "plugins.php";
+	$table->session_prefix = "sess_plugins";
+	$table->filter_func    = "plugins_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->sortable       = true;
+#	$table->actions        = $plugin_actions;
 
-	if (count($plugins)) {
-		foreach ($plugins as $plugin) {
-				form_alternate_row_color('line' . $plugin['id'], true);
-				$link = '';
-				switch ($plugin['status']) {
-					case 1:	// Currently Active
-						$link = "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin['directory']) . "' class='linkEditMain'><img border=0 src=images/disable_icon.png></a>";
-						break;
-					case 4:	// Installed but not active
-						$link = "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin['directory']) . "' class='linkEditMain'><img border=0 src=images/enable_icon.png></a>";
-						break;
-				}
-				form_selectable_cell($link, $plugin['directory']);
-				form_selectable_cell($plugin['directory'], $plugin['directory']);
-				form_selectable_cell((isset($plugin['name']) ? $plugin['name'] : $plugin['directory']), $plugin['directory']);
-				form_selectable_cell((isset($plugin['version']) ? $plugin['version'] : ''), $plugin['directory']);
-				form_selectable_cell((isset($plugin['author']) ? $plugin['author'] : ''), $plugin['directory']);
-				form_selectable_cell((isset($plugin['webpage']) ? $plugin['webpage'] : ''), $plugin['directory']);
-				form_end_row();
-		}
-	} else {
-		form_alternate_row_color('line0', true);
-		print '<td colspan=6><center>' . __("There are no installed Plugins") . '</center></td>';
-		form_end_row();
-	}
+	/* we must validate table variables */
+	$table->process_page_variables();
 
-	print '</table>';
+	/* get the records */
+	$table->rows = get_plugin_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
+
+	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	echo "<tr><td colspan=10><strong>" . __('NOTE:') . "</strong> " . __("Please sort by 'Load Order' to change plugin load ordering.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be ordered.") . "</td></tr>";
+	html_end_box();
+
 }
 

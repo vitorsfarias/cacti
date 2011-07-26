@@ -126,6 +126,7 @@ function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=
 
 function api_plugin_db_changes_remove ($plugin) {
 	// Example: api_plugin_db_changes_remove ('thold');
+cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 
 	$tables = db_fetch_assoc("SELECT `table` FROM plugin_db_changes WHERE plugin = '$plugin' AND method ='create'", false);
 	if (count($tables)) {
@@ -203,6 +204,7 @@ function api_plugin_install ($plugin) {
 
 function api_plugin_uninstall ($plugin) {
 	global $config;
+cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	// Run the Plugin's Uninstall Function first
 	$function = 'plugin_' . $plugin . '_uninstall';
@@ -258,6 +260,7 @@ function api_plugin_register_hook ($plugin, $hook, $function, $file) {
 }
 
 function api_plugin_remove_hooks ($plugin) {
+cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	db_execute("DELETE FROM plugin_hooks WHERE name = '$plugin'");
 }
 
@@ -289,6 +292,7 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 }
 
 function api_plugin_remove_realms ($plugin) {
+cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
