@@ -459,8 +459,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
    @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1) {
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = '') {
 	static $rand_id = 0;
+
+	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
 
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
@@ -471,7 +473,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$selected_sort_class = "sort_desc";
 	}
 
-	print "\t\t<table cellpadding=0 cellspacing=0 class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
+	print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
@@ -646,15 +648,17 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
    @param $trclass - optional class extension for table row
    @param $thclass - optional class extension for table header cell
  */
-function html_header_checkbox($header_items, $form_action = "", $resizable = false, $tclass = '', $trclass= '', $thclass = '') {
+function html_header_checkbox($header_items, $form_action = "", $resizable = false, $table_id = '', $tclass = '', $trclass= '', $thclass = '') {
 	static $rand_id = 0;
+
+	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
 
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
-		print "\t\t<table cellpadding=0 cellspacing=1 class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding=0 cellspacing=1 $table_id class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}else{
 		print "\t\t<table cellpadding=0 cellspacing=1 class='hover striped startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}
@@ -697,6 +701,7 @@ class html_table {
 		$this->filter_func    = "";
 		$this->filter_html    = "";
 		$this->session_prefix = "";
+		$this->table_id       = "";
 	}
 
 	function process_page_variables() {
@@ -749,14 +754,14 @@ class html_table {
 		/* draw the header */
 		if ($this->checkbox) {
 			if ($this->sortable) {
-				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), "", $this->table_id);
 			}else{
-				html_header_checkbox($this->table_format);
+				html_header_checkbox($this->table_format, "", false, $this->table_id);
 			}
 		}elseif ($this->sortable) {
-			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), 1, $this->table_id);
 		}else{
-			html_header($this->table_format);
+			html_header($this->table_format, 1, false, $this->table_id);
 		}
 
 		/* drow the rows */
@@ -889,7 +894,7 @@ class html_table {
    @param $sort_columns - The current sort column array
    @param $sort_directions - The current sort order array */
 function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $page, $key_field = "id", $href = "",
-	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_directions = "") {
+	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_directions = "", $table_id = "") {
 
 	/* generate page list navigation */
 	if ($checkbox) {
@@ -911,15 +916,15 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	/* draw the header */
 	if ($checkbox) {
 		if ($sortable) {
-			html_header_sort_checkbox($table_format, $sort_columns, $sort_directions);
+			html_header_sort_checkbox($table_format, $sort_columns, $sort_directions, "", $table_id);
 		}else{
-			html_header_checkbox($table_format);
+			html_header_checkbox($table_format, "", false, $table_id);
 		}
 	}else{
 		if ($sortable) {
-			html_header_sort($table_format, $sort_columns, $sort_directions);
+			html_header_sort($table_format, $sort_columns, $sort_directions, 1, $table_id);
 		}else{
-			html_header($table_format);
+			html_header($table_format, 1, false, $table_id);
 		}
 	}
 
