@@ -39,7 +39,8 @@ $pluginslist = plugins_get_plugins_list();
 $ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
 
 /* Check to see if we are installing, etc... */
-$modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
+$modes = array('plugins_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
+cacti_log(__FUNCTION__ . " REQUEST: " . serialize($_REQUEST), false, "TEST");
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
 	input_validate_input_regex(get_request_var("id"), "/^([a-zA-Z0-9]+)$/");
@@ -48,6 +49,9 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 	$id   = sanitize_search_string($_GET['id']);
 
 	switch ($mode) {
+		case 'ajaxdnd':
+			plugins_dnd();
+			break;
 		case 'installold':
 			api_plugin_install_old($id);
 			header("Location: plugins.php");
@@ -123,6 +127,40 @@ include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 
 
+
+function plugins_dnd(){
+cacti_log(__FUNCTION__ . " items: " . serialize($_REQUEST['Plugins_Plugins']), false, "TEST");
+
+	if(!isset($_REQUEST['Plugins_Plugins']) || !is_array($_REQUEST['Plugins_Plugins'])) exit;
+	/* cdef table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['Plugins_Plugins'][0]);
+
+	/* delivered cdef ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['Plugins_Plugins'];
+
+#	$sql = "SELECT id, sequence FROM cdef_items WHERE cdef_id = " . $_GET['id'];
+#	$cdef_items = db_fetch_assoc($sql);
+
+#	if(sizeof($cdef_items)>0) {
+#		foreach($cdef_items as $item) {
+#			$old_order[$item['sequence']] = $item['id'];
+#		}
+#	}else {
+#		exit;
+#	}
+
+	# compute difference of arrays
+	$diff = array_diff_assoc($new_order, $old_order);
+	# nothing to do?
+	if(sizeof($diff) == 0) exit;
+	/* ==================================================== */
+
+#	foreach($diff as $sequence => $cdef_id) {
+#		$sql = "UPDATE cdef_items SET sequence = $sequence WHERE id = $cdef_id";
+#		db_execute($sql);
+#	}
+}
 
 function plugins_get_plugins_list () {
 #	$info  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
@@ -388,6 +426,7 @@ function plugins_show($status = 'all', $refresh = true) {
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->sortable       = true;
+	$table->table_id       = "plugins_list";
 #	$table->actions        = $plugin_actions;
 
 	/* we must validate table variables */
@@ -403,5 +442,15 @@ function plugins_show($status = 'all', $refresh = true) {
 	echo "<tr><td colspan=10><strong>" . __('NOTE:') . "</strong> " . __("Please sort by 'Load Order' to change plugin load ordering.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be ordered.") . "</td></tr>";
 	html_end_box();
 
+	?>
+	<script type="text/javascript">
+		$('#plugins_list').tableDnD({
+			onDrop: function(table, row) {
+				alert($.tableDnD.serialize());
+				$.get("plugins.php?action=plugins_dnd&id=0&"+$.tableDnD.serialize());
+			}
+		});
+	</script>
+	<?php
 }
 
