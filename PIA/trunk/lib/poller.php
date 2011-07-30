@@ -41,7 +41,7 @@ function exec_poll($command) {
 			return "U";
 		}
 
-		$output = fgets($fp, 4096);
+		$output = fgets($fp, 8192);
 
 		pclose($fp);
 	}else{
@@ -73,7 +73,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
 
-			$output = fgets($pipes[1], 4096);
+			$output = fgets($pipes[1], 8192);
 
 			if (substr_count($output, "ERROR") > 0) {
 				$output = "U";
@@ -97,7 +97,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				return "U";
 			}
 
-			$output = fgets($fp, 4096);
+			$output = fgets($fp, 8192);
 
 			pclose($fp);
 		}else{
@@ -333,6 +333,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	$results = db_fetch_assoc("select
 		poller_output.output,
 		poller_output.time,
+		UNIX_TIMESTAMP(poller_output.time) as unix_time,
 		poller_output.local_data_id,
 		poller_item.rrd_path,
 		poller_item.rrd_name,
@@ -346,7 +347,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
 			$value = trim($item["output"], " \r\n\t\x0B\0\"'");
-			$unix_time = strtotime($item["time"]);
+			$unix_time = $item["unix_time"];
 
 			$rrd_update_array{$item["rrd_path"]}["local_data_id"] = $item["local_data_id"];
 
@@ -410,7 +411,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$k = 0;
 		$data_ids = array();
 		foreach ($results as $item) {
-			$unix_time = strtotime($item["time"]);
+			$unix_time = $item["unix_time"];
 
 			if (isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
 				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
