@@ -167,9 +167,9 @@ int ping_snmp(device_t *device, ping_t *ping) {
 			begin_time = get_time_as_double();
 
 			if (num_oids_checked == 0) {
-				poll_result = snmp_getnext(host, oid);
+				poll_result = snmp_getnext(device, oid);
 			} else {
-				poll_result = snmp_get(host, oid);
+				poll_result = snmp_get(device, oid);
 			}
 
 
