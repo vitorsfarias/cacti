@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $colors, $config;
+global $colors, $config, $refresh;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode != OPER_MODE_RESKIN) {
@@ -39,8 +39,13 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
-	<?php if (isset($refresh)) {
-	print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">";
+	<?php
+	if (isset($refresh)) {
+		if (is_array($refresh)) {
+			print "<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">\r\n";
+		}else{
+			print "<meta http-equiv=refresh content='" . $refresh . "'>\r\n";
+		}
 	}
 	api_plugin_hook('page_head'); ?>
 </head>
