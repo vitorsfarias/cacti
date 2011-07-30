@@ -177,11 +177,11 @@ function update_reindex_cache($device_id, $data_query_id) {
 			 * the script parameters are usually enclosed in single tics: '
 			 * so we have to enclose the whole list of parameters in double tics: "
 			 * */
-			 
+
 			/* the assert_value counts the number of distinct indexes currently available device_snmp_cache
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
-			 */ 
+			 */
 			$assert_value = sizeof(db_fetch_assoc("select snmp_index from device_snmp_cache where device_id=$device_id and snmp_query_id=$data_query_id group by snmp_index"));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
@@ -402,25 +402,30 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 		/* make sure each .rrd file has complete data */
 		reset($results);
-		$sql_wheres = array();
+		$k = 0;
+		$data_ids = array();
 		foreach ($results as $item) {
 			$unix_time = strtotime($item["time"]);
 
 			if (isset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
 				if ($item["rrd_num"] <= sizeof($rrd_update_array{$item["rrd_path"]}["times"][$unix_time])) {
-					$sql_wheres[] = " ( local_data_id='{$item['local_data_id']}' AND rrd_name='{$item['rrd_name']}' AND time='{$item['time']}' ) ";
-					if (count($sql_wheres) > 100) {
-						db_execute("DELETE FROM poller_output WHERE " . implode(" OR ", $sql_wheres));
-						$sql_wheres = array();
+					$data_ids[] = $item["local_data_id"];
+					$k++;
+					if ($k % 10000 == 0) {
+						db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $data_ids) . ")");
+						$k = 0;
+						$data_ids = array();
 					}
 				}else{
 					unset($rrd_update_array{$item["rrd_path"]}["times"][$unix_time]);
 				}
 			}
 		}
-		if (count($sql_wheres) > 100) {
-			db_execute("DELETE FROM poller_output WHERE " . implode(" OR ", $sql_wheres));
+
+		if ($k > 0) {
+			db_execute("DELETE FROM poller_output WHERE local_data_id IN (" . implode(",", $data_ids) . ")");
 		}
+
 		api_plugin_hook_function('poller_output', $rrd_update_array);
 
 		if (api_plugin_hook_function('poller_on_demand', $results)) {
