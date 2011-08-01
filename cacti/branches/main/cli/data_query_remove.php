@@ -127,7 +127,7 @@ if (sizeof($parms)) {
 
 	if (isset($dq["snmp_query_id"])) {
 		foreach ($devices as $device) {
-			api_device_dq_remove($device["id"], $dq["snmp_query_id"]);
+			device_dq_remove($device["id"], $dq["snmp_query_id"]);
 			echo __("Data Query (%s) removed from Device (%s: %s)", $dq["snmp_query_id"], $device["id"], $device["hostname"]) . "\n";
 		}
 	}

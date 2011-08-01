@@ -41,9 +41,9 @@ function api_device_remove($device_id) {
 	db_execute("update graph_local set device_id=0 where device_id=$device_id");
 }
 
-/** api_device_remove_multi - removes multiple devices in one call
+/** device_remove_multi - removes multiple devices in one call
    @param $device_ids - an array of device id's to remove */
-function api_device_remove_multi($device_ids) {
+function device_remove_multi($device_ids) {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
 	$devices_to_delete = "";
@@ -81,23 +81,23 @@ function api_device_remove_multi($device_ids) {
 	}
 }
 
-/** api_device_dq_remove - removes a device->data query mapping
+/** device_dq_remove - removes a device->data query mapping
    @param $device_id - the id of the device which contains the mapping
    @param $data_query_id - the id of the data query to remove the mapping for */
-function api_device_dq_remove($device_id, $data_query_id) {
+function device_dq_remove($device_id, $data_query_id) {
 	db_execute("delete from device_snmp_cache where snmp_query_id=$data_query_id and device_id=$device_id");
 	db_execute("delete from device_snmp_query where snmp_query_id=$data_query_id and device_id=$device_id");
 	db_execute("delete from poller_reindex where data_query_id=$data_query_id and device_id=$device_id");
 }
 
-/** api_device_gt_remove - removes a device->graph template mapping
+/** device_gt_remove - removes a device->graph template mapping
    @param $device_id - the id of the device which contains the mapping
    @param $graph_template_id - the id of the graph template to remove the mapping for */
-function api_device_gt_remove($device_id, $graph_template_id) {
+function device_gt_remove($device_id, $graph_template_id) {
 	db_execute("delete from device_graph where graph_template_id=$graph_template_id and device_id=$device_id");
 }
 
-/** api_device_save - save a device to the database
+/** device_save - save a device to the database
  *
  * @param int $id
  * @param int $site_id
@@ -127,7 +127,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
  * @param string $template_enabled
  * @return unknown_type
  */
-function api_device_save($id, $site_id, $poller_id, $device_template_id, $description, $hostname, $snmp_community, $snmp_version,
+function device_save($id, $site_id, $poller_id, $device_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, $template_enabled) {
@@ -182,7 +182,7 @@ function api_device_save($id, $site_id, $poller_id, $device_template_id, $descri
 	$save["max_oids"]            = form_input_validate($max_oids, "max_oids", "^[0-9]+$", true, 3);
 	$save["device_threads"]      = form_input_validate($device_threads, "device_threads", "^[0-9]+$", true, 3);
 
-	$save = api_plugin_hook_function('api_device_save', $save);
+	$save = api_plugin_hook_function('device_save', $save);
 
 	$device_id = 0;
 
