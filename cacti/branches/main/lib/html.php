@@ -473,7 +473,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$selected_sort_class = "sort_desc";
 	}
 
-	print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader'>\n";
+	print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader nodrag nodrop'>\n";
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
@@ -502,13 +502,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
 
-			print "\t\t\t<th style='display:block;' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>" . $display_text . "</th>\n";
+			print "\t\t\t<th style='display:block;' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>" . $display_text . "</th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark'>";
+			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
@@ -547,7 +547,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	print "<form name='chk' method='post' action='$form_action'>\n";	# properly place form outside table
 	print "\t<table $table_id class='hover striped resizable startBoxHeader startBox3'>\n";
-	print "\t\t<thead><tr class='rowSubHeader'>\n";
+	print "\t\t<thead><tr class='rowSubHeader nodrag nodrop'>\n";
 
 	$pathname = html_get_php_pathname();
 	if (sizeof($header_items)) {
@@ -577,20 +577,20 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
-			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width' $align><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
+			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width nodrag nodrop' $align><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width' $align>";
+			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width nodrag nodrop' $align>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
 	}
 
-	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
+	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 nodrag nodrop'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
 	print "\t\t</tr></thead><tbody>\n";
 }
 
