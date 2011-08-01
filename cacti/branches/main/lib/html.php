@@ -770,7 +770,6 @@ class html_table {
 				$row = api_plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);
 
 				/* check to see if this row requires special treatment via a row-level callback function */
-cacti_log(__FUNCTION__ . " row function: " . $this->row_function, false, "TEST");
 				if (!isset($this->row_function) || $this->row_function == '') {
 					$row_classes = "";		# don't pass any additional class
 				}elseif (!isset($this->row_params)) {
@@ -781,7 +780,6 @@ cacti_log(__FUNCTION__ . " row function: " . $this->row_function, false, "TEST")
 					$passarray = array();
 					if (sizeof($this->row_params)) {
 					foreach($this->row_params as $param) {
-cacti_log(__FUNCTION__ . " row param: " . $param, false, "TEST");
 						if (isset($row[$param])) {
 							$passarray[] = $row[$param];
 						}
