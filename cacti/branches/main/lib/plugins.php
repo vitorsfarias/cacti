@@ -21,7 +21,6 @@ function api_user_realm_auth ($filename = '') {
  */
 function api_plugin_hook ($name) {
 	global $config, $plugin_hooks;
-cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
 	$data = func_get_args();
 	$ret = '';
 	$p = array();
@@ -38,14 +37,12 @@ cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
 		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
-		ORDER BY sequence ASC", true);
-cacti_log(__FUNCTION__ . " hook: " . $name . " plugin hook: " . serialize($result), false, "TEST");
+		ORDER BY ptype ASC, sequence ASC", true);
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
-cacti_log(__FUNCTION__ . " plugin hook: " . serialize($hdata), false, "TEST");
 			$p[] = $hdata['name'];
 			if (file_exists(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 				include_once(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
@@ -64,7 +61,7 @@ cacti_log(__FUNCTION__ . " plugin hook: " . serialize($hdata), false, "TEST");
 
 function api_plugin_hook_function ($name, $parm=NULL) {
 	global $config, $plugin_hooks;
-cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
+
 	$data = func_get_args();
 	$ret    = $parm;
 	$p = array();
@@ -81,23 +78,19 @@ cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
-		WHERE ph.status = 1 AND hook = '$name'
+		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
 		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
-		ORDER BY sequence ASC", true);
-cacti_log(__FUNCTION__ . " hook: " . $name . " plugin hook: " . serialize($result), false, "TEST");
+		ORDER BY ptype ASC, sequence ASC", true);
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
-cacti_log(__FUNCTION__ . " plugin hook: " . serialize($hdata), false, "TEST");
 			$p[] = $hdata['name'];
 			if (file_exists(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 				include_once(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 			}
 			$function = $hdata['function'];
 			if (function_exists($function)) {
-cacti_log(__FUNCTION__ . " plugin function: " . $function, false, "TEST");
 				$ret = $function($ret);
-cacti_log(__FUNCTION__ . " nav: " . serialize($ret), false, "TEST");
 			}
 		}
 	}
@@ -166,7 +159,6 @@ function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=
 
 function api_plugin_db_changes_remove ($plugin) {
 	// Example: api_plugin_db_changes_remove ('thold');
-cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 
 	$tables = db_fetch_assoc("SELECT `table` FROM plugin_db_changes WHERE plugin = '$plugin' AND method ='create'", false);
 	if (count($tables)) {
@@ -248,7 +240,6 @@ function api_plugin_install ($plugin) {
 
 function api_plugin_uninstall ($plugin) {
 	global $config;
-cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	// Run the Plugin's Uninstall Function first
 	$function = 'plugin_' . $plugin . '_uninstall';
@@ -335,7 +326,6 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 }
 
 function api_plugin_remove_realms ($plugin) {
-cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;

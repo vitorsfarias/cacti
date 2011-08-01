@@ -290,7 +290,7 @@ $user_auth_realm_categories = array(
 	"templates" => array(__("Templates"), array(12, 10, 11)),
 	"presets" => array(__("Presets"), array(14, 9)),
 	"impexp" => array(__("Import/Export"), array(17,16)),
-	"system" => array(__("System"), array(1, 15)));
+	"system" => array(__("System"), array(1, 15, 101)));
 
 $user_auth_realms = array(
 	7    => __("View Graphs"),
