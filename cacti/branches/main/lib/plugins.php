@@ -218,7 +218,8 @@ function api_plugin_install($plugin) {
 		$version = $info['version'];
 	}
 
-	$sequence = db_fetch_cell("SELECT MAX(sequence)+1 FROM plugin_config");
+	$sequence = db_fetch_cell("SELECT MAX(sequence) FROM plugin_config");
+	$sequence++;
 	db_execute("INSERT INTO plugin_config " .
 				"(directory, name, author, webpage, version, sequence) " . 
 				"VALUES " . 
