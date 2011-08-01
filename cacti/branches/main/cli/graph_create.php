@@ -38,7 +38,7 @@ include_once(CACTI_BASE_PATH."/lib/data_query.php");
 include_once(CACTI_BASE_PATH."/lib/utility.php");
 include_once(CACTI_BASE_PATH."/lib/sort.php");
 include_once(CACTI_BASE_PATH."/lib/template.php");
-include_once(CACTI_BASE_PATH."/lib/api_data_source.php");
+include_once(CACTI_BASE_PATH."/lib/data_source.php");
 include_once(CACTI_BASE_PATH."/lib/api_graph.php");
 include_once(CACTI_BASE_PATH."/lib/snmp.php");
 include_once(CACTI_BASE_PATH."/lib/data_query.php");

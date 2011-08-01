@@ -454,7 +454,7 @@ function data_source_template_edit() {
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_data_source.php");
+			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/template.php");
 			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
 			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
@@ -479,7 +479,7 @@ function data_source_template_edit() {
 }
 
 function data_source_template_display_general($data_template, $header_label) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 	require_once(CACTI_BASE_PATH . "/lib/data_template/data_template_info.php");
 
 	# fetch all settings for this graph template

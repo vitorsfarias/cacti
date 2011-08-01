@@ -285,7 +285,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	/* import into: data_template */
 	$_data_template_id = db_fetch_cell("select id from data_template where hash='$hash'");

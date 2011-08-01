@@ -146,7 +146,7 @@ function graph_template_to_xml($graph_template_id) {
 function data_template_to_xml($data_template_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	$hash["data_template"] = get_hash_version("data_template") . get_hash_data_template($data_template_id);
 	$xml_text = "";

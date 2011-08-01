@@ -206,7 +206,7 @@ function push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_i
 	children
    @param int $data_template_rrd_id - the id of the data template item to push out values for */
 function push_out_data_source_item($data_template_rrd_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	/* get information about this data template */
 	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
@@ -228,7 +228,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 /** push_out_data_source - pushes out templated data template fields to all matching children
    @param int $data_template_data_id - the id of the data template to push out values for */
 function push_out_data_source($data_template_data_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	/* get information about this data template */
 	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
@@ -257,7 +257,7 @@ function push_out_data_source($data_template_data_id) {
    @param int $local_data_id 	- the id of the data source to change the data template for
    @param int $data_template_id - id the of the data template to change to. specify '0' for no data template */
 function change_data_template($local_data_id, $data_template_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	/* always update tables to new data template (or no data template) */
 	db_execute("UPDATE data_local SET data_template_id=$data_template_id WHERE id=$local_data_id");

@@ -585,7 +585,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");

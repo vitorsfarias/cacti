@@ -132,7 +132,7 @@ function data_sources_item_remove() {
  * data_sources_item_edit	- edit a data template item (aka data source in rrdtool lingo)
  */
 function data_sources_item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_source/data_source_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
