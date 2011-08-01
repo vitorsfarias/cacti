@@ -447,7 +447,7 @@ function plugins_show($status = 'all', $refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"type" => array(
+		"ptype" => array(
 			"name" => __("Type"),
 			"function" => "display_plugin_type",
 			"params" => array("directory", "status"),
@@ -473,6 +473,8 @@ function plugins_show($status = 'all', $refresh = true) {
 	$table->resizable      = true;
 	$table->sortable       = true;
 	$table->table_id       = "plugins_list";
+	$table->row_function   = "row_plugin_class";
+	$table->row_params     = array("ptype");
 #	$table->actions        = $plugin_actions;
 
 	/* we must validate table variables */

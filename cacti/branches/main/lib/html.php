@@ -769,7 +769,27 @@ class html_table {
 			foreach ($this->rows as $row) {
 				$row = api_plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);
 
-				form_alternate_row_color('line' . $row[$this->key_field], true);
+				/* check to see if this row requires special treatment via a row-level callback function */
+cacti_log(__FUNCTION__ . " row function: " . $this->row_function, false, "TEST");
+				if (!isset($this->row_function) || $this->row_function == '') {
+					$row_classes = "";		# don't pass any additional class
+				}elseif (!isset($this->row_params)) {
+					/* call a row-level function that returns additional row level classes */
+					$row_classes = call_user_func($this->row_function, $row[$this->key_field]);
+				}else{
+					/* call a row-level function like above, but provide parameters to it */
+					$passarray = array();
+					if (sizeof($this->row_params)) {
+					foreach($this->row_params as $param) {
+cacti_log(__FUNCTION__ . " row param: " . $param, false, "TEST");
+						if (isset($row[$param])) {
+							$passarray[] = $row[$param];
+						}
+					}
+					}
+					$row_classes = call_user_func_array($this->row_function, $passarray);
+				}
+				form_alternate_row_color('line' . $row[$this->key_field], true, $row_classes);
 
 				$checkbox_title = "";
 				foreach($this->table_format as $column => $data) {
