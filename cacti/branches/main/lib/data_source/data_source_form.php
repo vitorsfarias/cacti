@@ -318,18 +318,18 @@ function data_source_form_actions() {
 			}
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_ENABLE) { /* data source enable */
 			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_enable($selected_items[$i]);
+				data_source_enable($selected_items[$i]);
 			}
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_DISABLE) { /* data source disable */
 			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_disable($selected_items[$i]);
+				data_source_disable($selected_items[$i]);
 			}
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_REAPPLY_SUGGESTED_NAMES) { /* reapply suggested data source naming */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-				api_reapply_suggested_data_source_title($selected_items[$i]);
+				reapply_suggested_data_source_title($selected_items[$i]);
 				update_data_source_title_cache($selected_items[$i]);
 			}
 		}
@@ -519,10 +519,10 @@ function data_source_toggle_status() {
 	/* ==================================================== */
 
 	if (get_request_var("newstate") == 1) {
-		api_data_source_enable(get_request_var("id"));
+		data_source_enable(get_request_var("id"));
 	}else{
 		cacti_log("Disabling Bad DS");
-		api_data_source_disable(get_request_var("id"));
+		data_source_disable(get_request_var("id"));
 	}
 
 	header("Location: " . $_SERVER["HTTP_REFERER"]);

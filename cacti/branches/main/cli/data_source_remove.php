@@ -176,7 +176,7 @@ function remove_data_source($data_source_id, $dry_run) {
 		printf(__("Data Source: %d"), $data_source_id);
 	} else {
 		printf(__("Delete Data Source: %d", $data_source_id));
-		api_data_source_remove($data_source_id);
+		data_source_remove($data_source_id);
 	}
 
 	if (is_error_message()) {

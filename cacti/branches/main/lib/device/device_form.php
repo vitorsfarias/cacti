@@ -342,7 +342,7 @@ function api_device_form_actions() {
 
 			switch (get_request_var_post("delete_type")) {
 				case '1': /* leave graphs and data_sources in place, but disable the data sources */
-					api_data_source_disable_multi($data_sources_to_act_on);
+					data_source_disable_multi($data_sources_to_act_on);
 
 					break;
 				case '2': /* delete graphs/data sources tied to this device */
