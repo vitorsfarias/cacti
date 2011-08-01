@@ -618,7 +618,7 @@ function display_languages() {
 	$supported_languages["cacti"] = substr($supported_languages["cacti"], 0, -2);
 
 	/* ... and do the same for all installed plugins */
-	$plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config`");
+	$plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config` ORDER BY sequence ASC");
 
 	if(sizeof($plugins)>0) {
 		foreach($plugins as $plugin) {

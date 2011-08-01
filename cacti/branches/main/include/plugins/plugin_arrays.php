@@ -35,9 +35,9 @@ $plugin_actions = array(
 	
 $plugin_status_names = array(
 	PLUGIN_STATUS_DISABLED 					=> __('Disabled'),
-	PLUGIN_STATUS_ACTIVE_1 					=> __('Active'),
+	PLUGIN_STATUS_ACTIVE_OLD 					=> __('Active'),
 	PLUGIN_STATUS_NOT_INSTALLED 			=> __('Not Installed'),
-	PLUGIN_STATUS_ACTIVE_2 					=> __('Active'),
+	PLUGIN_STATUS_ACTIVE_NEW 					=> __('Active'),
 	PLUGIN_STATUS_AWAITING_CONFIGURATION 	=> __('Awaiting Configuration'),
 	PLUGIN_STATUS_AWAITING_UPGRADE 			=> __('Awaiting Upgrade'),
 	PLUGIN_STATUS_INSTALLED 				=> __('Installed')
@@ -48,4 +48,9 @@ if (!isset($plugins) || !is_array($plugins)) {
 }
 $plugin_hooks = array();
 $plugins_system = array('settings', 'boost', 'dsstats');
+
+$plugin_architecture = array(
+	'version' => '3.0'
+	);
+
 	

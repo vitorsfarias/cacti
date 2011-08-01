@@ -510,7 +510,7 @@ function ajax_get_languages() {
 
 	/* in strict mode we have display languages only supported by Cacti and all installed plugins */
 	if (read_config_option('i18n_language_support') == 2) {
-		$plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config`");
+		$plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config` ORDER BY sequence ASC");
 
 		if(sizeof($plugins)>0) {
 			foreach($plugins as $plugin) {

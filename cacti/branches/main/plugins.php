@@ -40,7 +40,6 @@ $ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
 
 /* Check to see if we are installing, etc... */
 $modes = array('plugins_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
-cacti_log(__FUNCTION__ . " REQUEST: " . serialize($_REQUEST), false, "TEST");
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
 	input_validate_input_regex(get_request_var("id"), "/^([a-zA-Z0-9]+)$/");
@@ -49,7 +48,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 	$id   = sanitize_search_string($_GET['id']);
 
 	switch ($mode) {
-		case 'ajaxdnd':
+		case 'plugins_dnd':
 			plugins_dnd();
 			break;
 		case 'installold':
@@ -88,29 +87,13 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 		case 'check':
 			if (!in_array($id, $pluginslist)) break;
 			break;
-		case 'moveup':
-			if (!in_array($id, $pluginslist)) break;
-			if (is_system_plugin($id)) break;
-			api_plugin_moveup($id);
-			header("Location: plugins.php");
-			exit;
-			break;
-		case 'movedown':
-			if (!in_array($id, $pluginslist)) break;
-			if (is_system_plugin($id)) break;
-			api_plugin_movedown($id);
-			header("Location: plugins.php");
-			exit;
-			break;
 	}
 }
 include(CACTI_BASE_PATH . "/include/top_header.php");
 
-plugins_draw_tabs($ptabs, $current_tab);
-
-html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
-
-print "<tr><td>";
+#plugins_draw_tabs($ptabs, $current_tab);
+#html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
+#print "<tr><td>";
 
 switch ($current_tab) {
 	case 'all':
@@ -120,8 +103,8 @@ switch ($current_tab) {
 		api_plugin_hook_function('plugin_management_tab_content', $current_tab);
 }
 
-print "</td></tr>";
-html_end_box();
+#print "</td></tr>";
+#html_end_box();
 
 include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
@@ -129,26 +112,35 @@ include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 
 function plugins_dnd(){
-cacti_log(__FUNCTION__ . " items: " . serialize($_REQUEST['Plugins_Plugins']), false, "TEST");
+	#todo: exclude system plugins from being sorted
 
-	if(!isset($_REQUEST['Plugins_Plugins']) || !is_array($_REQUEST['Plugins_Plugins'])) exit;
-	/* cdef table contains one row defined as "nodrag&nodrop" */
-	unset($_REQUEST['Plugins_Plugins'][0]);
+	if(!isset($_REQUEST['plugins_list']) || !is_array($_REQUEST['plugins_list'])) exit;
+	/* plugins table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['plugins_list'][0]);
 
-	/* delivered cdef ids has to be exactly the same like we have stored */
+	/* delivered plugin ids are in new order */
 	$old_order = array();
-	$new_order = $_REQUEST['Plugins_Plugins'];
+	$new_order = array();
 
-#	$sql = "SELECT id, sequence FROM cdef_items WHERE cdef_id = " . $_GET['id'];
-#	$cdef_items = db_fetch_assoc($sql);
+	# id's are passed in new sequence order, but each item is preceeded by 'line'
+	if(sizeof($_REQUEST['plugins_list'])>0) {
+		foreach($_REQUEST['plugins_list'] as $item) {
+			$new_order[] = str_replace('line', '', $item);
+		}
+	}else {
+		exit;
+	}
 
-#	if(sizeof($cdef_items)>0) {
-#		foreach($cdef_items as $item) {
-#			$old_order[$item['sequence']] = $item['id'];
-#		}
-#	}else {
-#		exit;
-#	}
+	$sql = "SELECT id, sequence FROM plugin_config ORDER BY sequence ASC";
+	$plugins = db_fetch_assoc($sql);
+
+	if(sizeof($plugins)>0) {
+		foreach($plugins as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
 
 	# compute difference of arrays
 	$diff = array_diff_assoc($new_order, $old_order);
@@ -156,23 +148,16 @@ cacti_log(__FUNCTION__ . " items: " . serialize($_REQUEST['Plugins_Plugins']), f
 	if(sizeof($diff) == 0) exit;
 	/* ==================================================== */
 
-#	foreach($diff as $sequence => $cdef_id) {
-#		$sql = "UPDATE cdef_items SET sequence = $sequence WHERE id = $cdef_id";
-#		db_execute($sql);
-#	}
+	foreach($diff as $sequence => $plugins_id) {
+		$sql = "UPDATE plugin_config SET sequence = $sequence WHERE id = $plugins_id";
+		db_execute($sql);
+	}
 }
 
 function plugins_get_plugins_list () {
-#	$info  = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY directory');
-#	$plugins = array();
-#	if (!empty($info)) {
-#		foreach ($info as $p) {
-#			$plugins[$p['directory']] = $p;
-#		}
-#	}
-#	return $plugins;
+
 	$pluginslist = array();
-	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
+	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY sequence ASC');
 	foreach ($temp as $t) {
 		$pluginslist[] = $t['directory'];
 	}
@@ -323,7 +308,7 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 	}
 
 	$sort_direction = html_get_page_variable("sort_direction");
-	if ($sort_direction == "id") {
+	if ($sortby == "sequence") {
 		$sort_direction = "ASC";
 	}
 
@@ -332,11 +317,11 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 		from $table
 		$sql_where");
 
-	$sql_query = "SELECT *
-		FROM $table
-		$sql_where
-		ORDER BY " . $sortby . " " . $sort_direction . "
-		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+	$sql_query = "SELECT * " .
+		"FROM $table " . 
+		"$sql_where " . 
+		"ORDER BY " . $sortby . " " . $sort_direction . " " .
+		"LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
 
 	$plugins = db_fetch_assoc($sql_query);
 
@@ -346,16 +331,77 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 		foreach ($plugins as $key => $value) {
 			# provide actions available
 			$plugins[$key]['actions'] = '';
-			# provide include_ordering
-			$plugins[$key]['include_ordering'] = '';
-			# provide last_plugin
-			$plugins[$key]['last_plugin'] = false;
 			# provide type
 			$plugins[$key]['type'] = '';
 		}
 	}
 
 	return $plugins;
+}
+
+function plugins_filter() {
+	global $item_rows, $config, $colors;
+	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+
+	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . CACTI_VERSION .
+		(isset($plugin_architecture['version']) ? ", Plugin Architecture Version: " . $plugin_architecture['version']:"") .
+		")", "100", "3", "center", "", true);
+	?>
+	<tr class='rowAlternate2'>
+		<td>
+			<form action="plugins.php" name="form_plugins" method="post">
+			<table cellpadding="0" cellspacing="3">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw120">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearPluginFilterChange(document.form_plugins)">
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyPluginFilterChange(document.form_plugins)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+	?>
+	<script type="text/javascript">
+	<!--
+	function clearPluginFilterChange(objForm) {
+		strURL = strURL + '?filter=';
+		strURL = strURL + '&rows=-1';
+		document.location = strURL;
+	}
+
+	function applyPluginFilterChange(objForm) {
+		strURL = '?filter=' + objForm.filter.value;
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
+	<?php
 }
 
 function plugins_show($status = 'all', $refresh = true) {
@@ -368,7 +414,7 @@ function plugins_show($status = 'all', $refresh = true) {
 		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
 		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
 #		"tab"            => array("type" => "string",  "method" => "request", "default" => "", "nosession" => true),
-		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "sequence"),
 		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
 	);
 
@@ -390,10 +436,10 @@ function plugins_show($status = 'all', $refresh = true) {
 			"name" => __("Version"),
 			"order" => "ASC"
 		),
-		"id" => array(
+		"sequence" => array(
 			"name" => __("Load Order"),
-			"function" => "display_plugin_ordering",
-			"params" => array("directory", "include_ordering", "last_plugin"),
+#			"function" => "display_plugin_ordering",
+#			"params" => array("directory", "sequence"),
 			"order" => "ASC"
 		),
 		"name" => array(
@@ -439,15 +485,15 @@ function plugins_show($status = 'all', $refresh = true) {
 	$table->draw_table();
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
-	echo "<tr><td colspan=10><strong>" . __('NOTE:') . "</strong> " . __("Please sort by 'Load Order' to change plugin load ordering.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be ordered.") . "</td></tr>";
+	echo "<tr><td colspan=10><strong>" . __('NOTE:') . "</strong> " . __("Change 'Load Order' by dragging and dropping.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be reordered.") . "</td></tr>";
 	html_end_box();
 
 	?>
 	<script type="text/javascript">
 		$('#plugins_list').tableDnD({
 			onDrop: function(table, row) {
-				alert($.tableDnD.serialize());
-				$.get("plugins.php?action=plugins_dnd&id=0&"+$.tableDnD.serialize());
+				//alert($.tableDnD.serialize());
+				$.get("plugins.php?mode=plugins_dnd&id=0&"+$.tableDnD.serialize());
 			}
 		});
 	</script>

@@ -20,13 +20,32 @@ function api_user_realm_auth ($filename = '') {
  * @return mixed $data
  */
 function api_plugin_hook ($name) {
-	global $config;
-
+	global $config, $plugin_hooks;
+cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
 	$data = func_get_args();
+	$ret = '';
+	$p = array();
 
-	$result = db_fetch_assoc("SELECT name, file, function FROM plugin_hooks WHERE status = 1 AND hook = '$name'", false);
+	/* order the plugin functions by system first, then followed by order */
+	$result = db_fetch_assoc("SELECT 1 AS id, ph.name, ph.file, ph.function, pc.sequence
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory=ph.name
+		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
+		AND ph.ptype = " . PLUGIN_TYPE_SYSTEM . "
+		UNION
+		SELECT pc.id, ph.name, ph.file, ph.function, pc.sequence
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory=ph.name
+		WHERE ph.status = 1 AND hook = '$name'
+		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
+		ORDER BY sequence ASC", true);
+cacti_log(__FUNCTION__ . " hook: " . $name . " plugin hook: " . serialize($result), false, "TEST");
+
 	if (count($result)) {
 		foreach ($result as $hdata) {
+cacti_log(__FUNCTION__ . " plugin hook: " . serialize($hdata), false, "TEST");
 			$p[] = $hdata['name'];
 			if (file_exists(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 				include_once(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
@@ -44,20 +63,41 @@ function api_plugin_hook ($name) {
 }
 
 function api_plugin_hook_function ($name, $parm=NULL) {
-	global $config;
-
+	global $config, $plugin_hooks;
+cacti_log(__FUNCTION__ . " hook: " . $name, false, "TEST");
+	$data = func_get_args();
 	$ret    = $parm;
-	$result = db_fetch_assoc("SELECT name, file, function FROM plugin_hooks WHERE status = 1 AND hook = '$name'", false);
+	$p = array();
+
+	/* order the plugin functions by system first, then followed by order */
+	$result = db_fetch_assoc("SELECT 1 AS id, ph.name, ph.file, ph.function, pc.sequence
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory=ph.name
+		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
+		AND ph.ptype = " . PLUGIN_TYPE_SYSTEM . "
+		UNION
+		SELECT pc.id, ph.name, ph.file, ph.function, pc.sequence
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory=ph.name
+		WHERE ph.status = 1 AND hook = '$name'
+		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
+		ORDER BY sequence ASC", true);
+cacti_log(__FUNCTION__ . " hook: " . $name . " plugin hook: " . serialize($result), false, "TEST");
 
 	if (count($result)) {
 		foreach ($result as $hdata) {
+cacti_log(__FUNCTION__ . " plugin hook: " . serialize($hdata), false, "TEST");
 			$p[] = $hdata['name'];
 			if (file_exists(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 				include_once(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 			}
 			$function = $hdata['function'];
 			if (function_exists($function)) {
+cacti_log(__FUNCTION__ . " plugin function: " . $function, false, "TEST");
 				$ret = $function($ret);
+cacti_log(__FUNCTION__ . " nav: " . serialize($ret), false, "TEST");
 			}
 		}
 	}
@@ -186,7 +226,11 @@ function api_plugin_install ($plugin) {
 		$version = $info['version'];
 	}
 
-	db_execute("INSERT INTO plugin_config (directory, name, author, webpage, version) VALUES ('$plugin', '$name', '$author', '$webpage', '$version')");
+	$sequence = db_fetch_cell("SELECT MAX(sequence)+1 FROM plugin_config");
+	db_execute("INSERT INTO plugin_config " .
+				"(directory, name, author, webpage, version, sequence) " . 
+				"VALUES " . 
+				"('$plugin', '$name', '$author', '$webpage', '$version', '$sequence')");
 
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
@@ -194,10 +238,10 @@ function api_plugin_install ($plugin) {
 		$ready = api_plugin_check_config ($plugin);
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
-			db_execute("UPDATE plugin_config SET status = 4 WHERE directory = '$plugin'");
+			db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_INSTALLED . " WHERE directory = '$plugin'");
 		} else {
 			// Set the plugin as "needs configuration"
-			db_execute("UPDATE plugin_config SET status = 2 WHERE directory = '$plugin'");
+			db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_AWAITING_CONFIGURATION . " WHERE directory = '$plugin'");
 		}
 	}
 }
@@ -231,7 +275,7 @@ function api_plugin_enable ($plugin) {
 	$ready = api_plugin_check_config ($plugin);
 	if ($ready) {
 		api_plugin_enable_hooks ($plugin);
-		db_execute("UPDATE plugin_config SET status = 1 WHERE directory = '$plugin'");
+		db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_ACTIVE_NEW . " WHERE directory = '$plugin'");
 	}
 }
 
@@ -244,7 +288,7 @@ function api_plugin_is_enabled ($plugin) {
 
 function api_plugin_disable ($plugin) {
 	api_plugin_disable_hooks ($plugin);
-	db_execute("UPDATE plugin_config SET status = 4 WHERE directory = '$plugin'");
+	db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_INSTALLED . " WHERE directory = '$plugin'");
 }
 
 function api_plugin_register_hook ($plugin, $hook, $function, $file) {
@@ -260,16 +304,15 @@ function api_plugin_register_hook ($plugin, $hook, $function, $file) {
 }
 
 function api_plugin_remove_hooks ($plugin) {
-cacti_log(__FUNCTION__ . " plugin: $plugin", false, "TEST");	
 	db_execute("DELETE FROM plugin_hooks WHERE name = '$plugin'");
 }
 
 function api_plugin_enable_hooks ($plugin) {
-	db_execute("UPDATE plugin_hooks SET status = 1 WHERE name = '$plugin'");
+	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_ACTIVE_NEW . " WHERE name = '$plugin'");
 }
 
 function api_plugin_disable_hooks ($plugin) {
-	db_execute("UPDATE plugin_hooks SET status = 0 WHERE name = '$plugin' AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'");
+	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_NOT_INSTALLED . " WHERE name = '$plugin' AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'");
 }
 
 function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
@@ -334,8 +377,7 @@ function api_plugin_user_realm_auth ($filename = '') {
 }
 
 function plugin_config_arrays () {
-	plugin_menu_item_add('configuration', array('plugins.php' => __('Plugin Management')));
-	api_plugin_load_realms ();
+	/* empty, cause PIA is now part of core code */
 }
 
 /**
@@ -364,7 +406,7 @@ function plugin_menu_item_add ($menu_id, $menu_items) {
 }
 
 function plugin_draw_navigation_text ($nav) {
-	$nav["plugins.php:"] = array("title" => __("Plugin Management"), "mapping" => "index.php:", "url" => "plugins.php", "level" => "1");
+	/* nav text moved to functions.php */
 	return $nav;
 }
 
@@ -645,7 +687,7 @@ function plugin_db_check_columns($result, $columns, $drop_columns=false) {
 				} else if (isset($c['Extra']) && $c['Extra'] == 'auto_increment' && !isset($column['auto_increment'])) {
 					$ok = FALSE;
 				}
-				if (isset($column['unsigned']) && $column['unsigned'] != $c['unsigned']) {
+				if (isset($column['unsigned']) && $column['unsigned'] != $c['unsigned']) {   #todo: undefined index: unsigned
 					$ok = FALSE;
 				}
 				if (isset($column['default']) && $column['default'] != $c['Default']) {

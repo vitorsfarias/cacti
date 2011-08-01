@@ -213,7 +213,8 @@ $menu = array(
 	"configuration"  => array(
 		"description"	=> __("Configuration"),
 		"items"			=> array(
-			"settings.php" => __("Settings"),
+			"settings.php" 	=> __("Settings"),
+			"plugins.php" 	=> __("Plugin Management"),
 			),
 		),
 	"utilities" => array(
@@ -309,7 +310,8 @@ $user_auth_realms = array(
 	16   => __("Export Data"),
 	17   => __("Import Data"),
 	1    => __("User Administration"),
-	15   => __("Global Settings")
+	15   => __("Global Settings"),
+	101  => __("Plugin Management")		# todo: verify, if 101 is correct (this should be the realm used for PIA in pre088 releases)
 	);
 
 $user_auth_realm_filenames = array(
@@ -340,6 +342,7 @@ $user_auth_realm_filenames = array(
 	"graphs_new.php" => 5,
 	"index.php" => 8,
 	"logout.php" => 7,
+	"plugins.php" => 101,
 	"pollers.php" => 3,
 	"rra.php" => 9,
 	"settings.php" => 15,
