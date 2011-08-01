@@ -24,7 +24,9 @@
 
 function upgrade_to_0_8_8() {
 	require_once("../lib/import.php");
+	require("../include/plugins/plugin_arrays.php");
 	require_once("../lib/plugins.php");
+	require_once("../lib/poller.php");
 	
 	$show_output = true;
 	$drop_items = true;
@@ -147,6 +149,8 @@ function upgrade_to_0_8_8() {
 	$data['columns'][] = array('name' => 'author', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'webpage', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'version', 'type' => 'varchar(8)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'ptype', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
+	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['keys'][] = array('name' => 'status', 'columns' => 'status');
 	$data['keys'][] = array('name' => 'directory', 'columns' => 'directory');
@@ -679,10 +683,23 @@ function upgrade_to_0_8_8() {
 
 	db_install_execute("0.8.8", "UPDATE `device_template_snmp_query` SET `reindex_method` = '1'");
 		
+	/* plugins */
+	/* get all plugins */
+	$plugins = db_fetch_assoc("SELECT * FROM plugin_config");
+	if (sizeof($plugins)) {
+		$i = 0;
+		foreach($plugins AS $item) {
+			if (in_array($item["directory"], $plugins_system)) {
+				$ptype = PLUGIN_TYPE_SYSTEM;
+			} else {
+				$ptype = PLUGIN_TYPE_GENERAL;
+			}
+			db_install_execute("0.8.8", "UPDATE `plugin_config` SET sequence=" . $i++ . ", ptype= " . $ptype . " WHERE id=" . $item["id"]);			
+		}
+	}
+	
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1)");
-
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
-		
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 
 	/* wrong lower limit for generic OID graph template */
@@ -947,10 +964,10 @@ function upgrade_to_0_8_8() {
 	
 	
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
-	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
-	if (sizeof($host_snmp_query) > 0) {
-		foreach ($host_snmp_query as $item) {
-			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
+	$device_snmp_query = db_fetch_assoc("select device_id,snmp_query_id from device_snmp_query");
+	if (sizeof($device_snmp_query) > 0) {
+		foreach ($device_snmp_query as $item) {
+			update_reindex_cache($item["device_id"], $item["snmp_query_id"]);
 		}
 	}
 	

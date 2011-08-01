@@ -717,22 +717,22 @@ function display_auth_realms($realm) {
 	return $auth_realms[$realm];
 }
 
-function display_plugin_ordering($plugin_name, $include_ordering, $last_plugin) {
+function display_plugin_ordering($plugin_name, $sequence) {
 	static $first_plugin = true;
 
 	$field = "";
-	if ($include_ordering) {
-		if (!$first_plugin) {
-			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=moveup&id=" . $plugin_name) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
-		}else{
-			$field .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
-		}
-		if (!$last_plugin) {
-			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=movedown&id=" . $plugin_name) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
-		}else{
-			$field .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
-		}
-	}
+#	if ($include_ordering) {
+#		if (!$first_plugin) {
+#			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=moveup&id=" . $plugin_name) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
+#		}else{
+#			$field .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+#		}
+#		if (!$last_plugin) {
+#			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=movedown&id=" . $plugin_name) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
+#		}else{
+#			$field .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
+#		}
+#	}
 
 	return $field;
 }
@@ -767,7 +767,7 @@ function display_plugin_actions($plugin_name, $status) {
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=installold&id=" . $plugin_name) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case PLUGIN_STATUS_ACTIVE_1:	// Old PA Currently Active
+		case PLUGIN_STATUS_ACTIVE_OLD:	// Old PA Currently Active
 			$oldplugins = read_config_option('oldplugins');
 			if (strlen(trim($oldplugins))) {
 				$oldplugins = explode(',', $oldplugins);
@@ -785,7 +785,7 @@ function display_plugin_actions($plugin_name, $status) {
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=install&id=" . $plugin_name) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case PLUGIN_STATUS_ACTIVE_2:	// Currently Active
+		case PLUGIN_STATUS_ACTIVE_NEW:	// Currently Active
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin_name) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin_name) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
 			break;
@@ -2230,6 +2230,7 @@ function draw_navigation_text($type = "url") {
 		"devices.php:save" => array("title" => __("Devices"), "mapping" => "index.php:", "url" => "devices.php", "level" => "1"),
 		"devices.php:edit" => array("title" => __("(Edit)"), "mapping" => "index.php:,devices.php:", "url" => "", "level" => "2"),
 		"devices.php:create" => array("title" => __("Devices"), "mapping" => "index.php:", "url" => "devices.php", "level" => "1"),
+		"plugins.php:" => array("title" => __("Plugin Management"), "mapping" => "index.php:", "url" => "plugins.php", "level" => "1"),
 		"pollers.php:actions" => array("title" => __("Actions"), "mapping" => "index.php:,pollers.php:", "url" => "", "level" => "2"),
 		"pollers.php:" => array("title" => __("Pollers"), "mapping" => "index.php:", "url" => "pollers.php", "level" => "1"),
 		"pollers.php:edit" => array("title" => __("(Edit)"), "mapping" => "index.php:,pollers.php:", "url" => "", "level" => "2"),

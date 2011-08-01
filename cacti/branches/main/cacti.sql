@@ -2355,6 +2355,7 @@ CREATE TABLE `plugin_config` (
   `author` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `webpage` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `version` varchar(8) NOT NULL default '',
+  `sequence` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
