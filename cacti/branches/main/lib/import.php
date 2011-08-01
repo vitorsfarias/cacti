@@ -862,7 +862,7 @@ function xml_to_xaxis($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit = data_input_field_form_list() + data_input_field1_form_list();

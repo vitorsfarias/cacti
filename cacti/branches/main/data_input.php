@@ -301,7 +301,7 @@ function field_remove() {
 
 function field_edit() {
 	global $registered_cacti_names;
-	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -398,7 +398,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
