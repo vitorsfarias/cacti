@@ -32,7 +32,7 @@ define("RRD_FILE_VERSION3", "0003");
  * @param bool $debug		- debug mode
  * returns mixed			- success (bool) or error message (array)
  */
-function api_rrd_datasource_add($file_array, $ds_array, $debug) {
+function rrd_datasource_add($file_array, $ds_array, $debug) {
 	require_once (CACTI_BASE_PATH . "/lib/rrd.php");
 	require (CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
@@ -106,7 +106,7 @@ function api_rrd_datasource_add($file_array, $ds_array, $debug) {
  * @param bool $debug		- debug mode
  * returns mixed			- success (bool) or error message (array)
  */
-function api_rrd_rra_delete($file_array, $rra_array, $debug) {
+function rrd_rra_delete($file_array, $rra_array, $debug) {
 	require_once (CACTI_BASE_PATH . "/lib/rrd.php");
 	$rrdtool_pipe = '';
 
@@ -164,7 +164,7 @@ function api_rrd_rra_delete($file_array, $rra_array, $debug) {
  * @param bool $debug		- debug mode
  * returns mixed			- success (bool) or error message (array)
  */
-function api_rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
+function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	require_once (CACTI_BASE_PATH . "/lib/rrd.php");
 	$rrdtool_pipe = '';
 

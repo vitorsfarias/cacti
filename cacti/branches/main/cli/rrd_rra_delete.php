@@ -157,7 +157,7 @@ if (sizeof($parms)) {
 		}
 	}
 
-	$rc= api_rrd_rra_delete($file_array, $rra_array, $debug);
+	$rc= rrd_rra_delete($file_array, $rra_array, $debug);
 	if (isset($rc["err_msg"])) {
 		print $rc["err_msg"] . "\n\n";
 		display_help($me);
