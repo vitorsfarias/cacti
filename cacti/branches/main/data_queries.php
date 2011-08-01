@@ -434,7 +434,7 @@ function data_query_item_edit() {
 		$header_items = array(
 			array("name" => __("Data Source Name")),
 			array("name" => __("Associated XML Field")),
-			array("name" => __("Use this Field"))
+			array("name" => __("Use this Field"), "align" => "right")
 		);
 
 		print "<tr><td>";
@@ -494,7 +494,7 @@ function data_query_item_edit() {
 						}
 
 						form_dropdown("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_snmp_field_output",$xml_outputs,"","",$data_template_rrd["snmp_field_name"],"","");
-						print "</td>\n<td align='right'>";
+						print "</td>\n<td style='text-align:right;'>";
 						form_checkbox("dsdt_" . $data_template["id"] . "_" . $data_template_rrd["id"] . "_check", $old_value, "", "", "", get_request_var("id")); print "<br>";
 						print "</td>\n";
 						form_end_row();
@@ -558,7 +558,7 @@ function data_query_item_edit() {
 					<td>
 						<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="30">
 					</td>
-					<td align="right">
+					<td style="text-align:right;">
 						<input type="submit" value="<?php print __("Add");?>" name="svds_<?php print $data_template["id"];?>_x">
 					</td>
 				<?php
@@ -626,7 +626,7 @@ function data_query_item_edit() {
 			<td>
 				<input type="text" name="svg_text" size="30">
 			</td>
-			<td align="right">
+			<td style="text-align:right;">
 				<input type="submit" value="<?php print __("Add");?>" name="svg_x">
 			</td>
 		<?php
