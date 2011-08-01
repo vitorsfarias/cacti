@@ -721,7 +721,7 @@ function get_graph_preview_content () {
 	?>
 	<script type='text/javascript'>
 	<!--
-	$(".graphimage").ZoomGraph({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+	//$(".graphimage").ZoomGraph({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
 	function pageChange(page) {
 		strURL = '?action=ajax_preview&page=' + page;
 		$.get("graph_view.php" + strURL, function (data) {
