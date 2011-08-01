@@ -764,7 +764,7 @@ class html_table {
 			html_header($this->table_format, 1, false, $this->table_id);
 		}
 
-		/* drow the rows */
+		/* draw the rows */
 		if (sizeof($this->rows)) {
 			foreach ($this->rows as $row) {
 				$row = api_plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);

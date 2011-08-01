@@ -684,8 +684,8 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE `device_template_snmp_query` SET `reindex_method` = '1'");
 		
 	/* plugins */
-	/* get all plugins */
-	$plugins = db_fetch_assoc("SELECT * FROM plugin_config");
+	/* get all plugins, pre088 code guarantees that SYSTEM plugins come first */
+	$plugins = db_fetch_assoc("SELECT * FROM plugin_config ORDER BY id ASC");
 	if (sizeof($plugins)) {
 		$i = 0;
 		foreach($plugins AS $item) {
