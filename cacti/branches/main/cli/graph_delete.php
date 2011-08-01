@@ -173,7 +173,7 @@ function graph_remove($id, $delete_ds) {
 		echo __("Removing graph and all resources for graph id ") . $id;
 		if (sizeof($data_sources) > 0) {
 			foreach ($data_sources as $data_source) {
-				api_data_source_remove($data_source["local_data_id"]);
+				data_source_remove($data_source["local_data_id"]);
 			}
 		}
 	} else {

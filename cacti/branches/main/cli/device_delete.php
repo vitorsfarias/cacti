@@ -143,14 +143,14 @@ if (sizeof($parms)) {
 			}
 			/* delete graphs/data sources tied to this device */
 			if (!$debug) {
-				api_data_source_remove_multi($data_sources_to_act_on);
+				data_source_remove_multi($data_sources_to_act_on);
 				api_graph_remove_multi($graphs_to_act_on);
 			}
 			echo __("Removing device and all resources for device id ") . $item["id"];
 		} else {
 			/* leave graphs and data_sources in place, but disable the data sources */
 			if (!$debug) {
-				api_data_source_disable_multi($data_sources_to_act_on);
+				data_source_disable_multi($data_sources_to_act_on);
 			}
 			echo __("Removing device but keeping resources for device id ") . $item["id"];
 		}
