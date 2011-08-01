@@ -2355,6 +2355,7 @@ CREATE TABLE `plugin_config` (
   `author` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `webpage` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   `version` varchar(8) NOT NULL default '',
+  `ptype` int(11) unsigned NOT NULL default '1',
   `sequence` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
@@ -2382,7 +2383,6 @@ CREATE TABLE `plugin_db_changes` (
 
 CREATE TABLE `plugin_hooks` (
   `id` int(8) NOT NULL auto_increment,
-  `ptype` int(11) unsigned NOT NULL default '1',
   `name` varchar(32) NOT NULL default '',
   `hook` varchar(64) NOT NULL default '',
   `file` varchar(255) NOT NULL default '',
