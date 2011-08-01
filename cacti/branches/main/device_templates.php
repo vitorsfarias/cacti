@@ -970,12 +970,12 @@ function device_template_display_general($device_template, $header_label) {
 		toggleAvailabilityAndSnmp(document.getElementById('override_defaults').checked);
 
 		/* Hide options when override is turned off */
-		$("#override_defaults").change(function () {
+		$("#override_defaults").change(function() {
 			toggleAvailabilityAndSnmp(this.checked);
 		});
 
 		/* Hide "Uptime Goes Backwards" if snmp_version has been set to "None" */
-		$("#snmp_version").change(function () {
+		$("#snmp_version").change(function() {
 				/* get PHP constants into javascript namespace */
 				var reindex_none = <?php print DATA_QUERY_AUTOINDEX_NONE;?>;
 				var reindex_reboot = <?php print DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;?>;

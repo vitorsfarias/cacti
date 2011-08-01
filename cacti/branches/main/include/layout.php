@@ -29,7 +29,7 @@ $(document).ready(function(){
 
 	// Ajax request for language menu
 	$('#menu_languages').click(
-	function () {
+	function() {
 		$.ajax({
 			method: "get",url: "<?php print CACTI_URL_PATH;?>layout.php?action=ajax_get_languages",
 			beforeSend: function(){$("#loading").fadeIn(0);},
@@ -47,7 +47,7 @@ $(document).ready(function(){
 
 	// Ajax request for timezone menu
 	$('#menu_timezones').click(
-	function () {
+	function() {
 		$.ajax({
 			method: "get",url: "<?php print CACTI_URL_PATH;?>layout.php?action=ajax_get_timezones",
 			beforeSend: function(){$("#loading").fadeIn(0);},
@@ -67,7 +67,7 @@ $(document).ready(function(){
 
 	// Ajax request for generic menus used in combination with a html_start_box
 	$('.html_start_box').click(
-		function () {
+		function() {
 			var menu_id = '#' + this.id;
 			var menu_title = this.name;
 			$.ajax({

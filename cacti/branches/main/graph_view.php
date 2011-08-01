@@ -122,7 +122,7 @@ case 'tree':
 	<script type="text/javascript">
 	<!--
 
-	$(function () {
+	$(function() {
 		Panel = {};
 
 		Panel.jsTree = $.tree.create();
@@ -159,7 +159,7 @@ case 'tree':
 
 		// Functions
 		Panel.loadContent = function(id) {
-			$.get("graph_view.php?action=ajax_get_tree_content&id=" + id, function (data) {
+			$.get("graph_view.php?action=ajax_get_tree_content&id=" + id, function(data) {
 				$("#graphs").html(data);
 			});
 		}
@@ -173,7 +173,7 @@ case 'tree':
 		}
 		$tree_id = "tree_" . $tree_id . "_leaf_0";
 		?>
-		$.get("graph_view.php?action=ajax_get_tree_content&id=<?php print $tree_id;?>", function (data) {
+		$.get("graph_view.php?action=ajax_get_tree_content&id=<?php print $tree_id;?>", function(data) {
 			$("#graphs").html(data);
 		});
 	});
@@ -210,7 +210,7 @@ case 'preview':
 	<script type='text/javascript'>
 	<!--
 	$().ready(function() {
-		$.get("graph_view.php?action=ajax_preview", function (data) {
+		$.get("graph_view.php?action=ajax_preview", function(data) {
 			$("#graph_content").html(data);
 		});
 
@@ -228,7 +228,7 @@ case 'list':
 	<!--
 
 	$().ready(function() {
-		$.get("graph_view.php?action=ajax_list", function (data) {
+		$.get("graph_view.php?action=ajax_list", function(data) {
 			$("#graph_content").html(data);
 			setSelections();
 		});
