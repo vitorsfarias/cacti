@@ -37,7 +37,7 @@ require_once(CACTI_BASE_PATH . "/include/log/arrays.php");
  * @param array $filter_array filter array, field => value elements
  * @return int total number of records
  */
-function log_get_total ($filter_array = "") {
+function log_get_total($filter_array = "") {
 
 	$sql_where = "";
 	/* validation and setup for the WHERE clause */
@@ -89,7 +89,7 @@ function log_get_total ($filter_array = "") {
  * @param array $filter_array filter array, field => value elements
  * @return array log records
  */
-function log_list ($filter_array,$limit = -1,$offset = -1) {
+function log_list($filter_array,$limit = -1,$offset = -1) {
 
 	$sql_where = "";
 	/* validation and setup for the WHERE clause */
@@ -162,7 +162,7 @@ function log_list ($filter_array,$limit = -1,$offset = -1) {
  * @param $log_field_name_format replacement variable
  * @return array error array if any
  */
-function log_validate (&$_fields_log, $log_field_name_format = "|field|") {
+function log_validate(&$_fields_log, $log_field_name_format = "|field|") {
 
 	if (sizeof($_fields_log) == 0) {
 
@@ -196,7 +196,7 @@ function log_validate (&$_fields_log, $log_field_name_format = "|field|") {
  *
  * @return array record array
  */
-function log_list_username () {
+function log_list_username() {
 
 	$user = array();
 	$users = db_fetch_assoc("select username from user_auth order by username");
@@ -218,7 +218,7 @@ function log_list_username () {
  *
  * @return array record array
  */
-function log_list_plugin () {
+function log_list_plugin() {
 
 	$plugin = array();
 
@@ -242,7 +242,7 @@ function log_list_plugin () {
  *
  * @return array record array
  */
-function logi_list_poller () {
+function logi_list_poller() {
 
 	$poller = array();
 
@@ -265,7 +265,7 @@ function logi_list_poller () {
  *
  * @return array record array
  */
-function log_list_device () {
+function log_list_device() {
 
 	$device = array();
 
@@ -288,7 +288,7 @@ function log_list_device () {
  *
  * @return array record array
  */
-function log_list_facility () {
+function log_list_facility() {
 
 	$facility = array();
 	$facility[CACTI_LOG_FAC_CMDPHP] = "CMDPHP";
@@ -311,7 +311,7 @@ function log_list_facility () {
  *
  * @return array record array
  */
-function log_list_severity () {
+function log_list_severity() {
 
 	$severity = array();
 	$severity[CACTI_LOG_SEV_EMERGENCY] = "EMERGENCY";
@@ -384,7 +384,7 @@ function log_get_html_css_class($severity) {
  * @param int $facility the facility you would like to log in, check logging constants for values. Default = CACTI_LOG_FAC_SYSTEM
  * @return bool true
  */
-function log_insert ($message, $severity = CACTI_LOG_SEV_INFO, $facility = CACTI_LOG_FAC_SYSTEM, $parameters = array() ) {
+function log_insert($message, $severity = CACTI_LOG_SEV_INFO, $facility = CACTI_LOG_FAC_SYSTEM, $parameters = array() ) {
 	global $cnn_id;
 
 	/* setup parameters array */
@@ -478,7 +478,7 @@ function log_insert ($message, $severity = CACTI_LOG_SEV_INFO, $facility = CACTI
  * @param bool $print_data_to_stdout display log message to stdout
  * @return bool true
  */
-function log_maintain ($print_data_to_stdout) {
+function log_maintain($print_data_to_stdout) {
 	/* read current configuration options */
 	$syslog_size = read_config_option("log_size");
 	$syslog_control = read_config_option("log_control");
@@ -530,7 +530,7 @@ function log_maintain ($print_data_to_stdout) {
  *
  * @return bool true
  */
-function log_clear () {
+function log_clear() {
 	db_execute("TRUNCATE TABLE log");
 	db_execute("REPLACE INTO settings (name,value) VALUES('log_status','active')");
 	log_save("Log truncated", CACTI_LOG_SEV_NOTICE, CACTI_LOG_FAC_INTERFACE);
@@ -553,7 +553,7 @@ function log_clear () {
  * @param string $config_name configuration variable to retrieve value
  * @return bool true
  */
-function log_read_config_option ($config_name) {
+function log_read_config_option($config_name) {
 	global $cnn_id, $log_config_options;
 
 	if (isset($log_config_options[$config_name])) {
@@ -603,7 +603,7 @@ function log_read_config_option ($config_name) {
  * @param int $severity cacti severity level
  * @return int php syslog severity level
  */
-function log_get_system_severity ($severity) {
+function log_get_system_severity($severity) {
 	if (CACTI_SERVER_OS == "win32") {
 		return LOG_WARNING;
 	} else {
@@ -640,7 +640,7 @@ function log_get_system_severity ($severity) {
  * @param int $facility cacti facility constant
  * @return string cacti facility in human readable text
  */
-function log_get_facility ($facility) {
+function log_get_facility($facility) {
 
 	//FIXME: Update to use list function to get array
 
@@ -684,7 +684,7 @@ function log_get_facility ($facility) {
  * @param int $severity cacti severity constant
  * @return string cacti severity in human readable text
  */
-function log_get_severity ($severity) {
+function log_get_severity($severity) {
 
 	//FIXME: Update to use list function to get array
 
@@ -731,7 +731,7 @@ function log_get_severity ($severity) {
  * @param int $severity cacti severity constant
  * @return int syslog severity value
  */
-function log_get_severity_syslog ($severity) {
+function log_get_severity_syslog($severity) {
 
 	//FIXME: Update to use list function to get array
 
@@ -771,7 +771,7 @@ function log_get_severity_syslog ($severity) {
  * @param string $syslog_message message to send to syslog server
  * @return bool true on sent, false on error
  */
-function log_save_syslog ($syslog_server, $syslog_server_port, $syslog_facility, $syslog_severity, $syslog_message) {
+function log_save_syslog($syslog_server, $syslog_server_port, $syslog_facility, $syslog_severity, $syslog_message) {
 	global $cnn_id;
 
 	/* Set syslog tag */
@@ -849,7 +849,7 @@ function log_save_syslog ($syslog_server, $syslog_server_port, $syslog_facility,
  *
  * @return string the function name from the call stack
  */
-function log_get_last_function () {
+function log_get_last_function() {
 	$backtrace = debug_backtrace();
 	if (sizeof($backtrace) < 3) {
 		return $backtrace[1]["function"];

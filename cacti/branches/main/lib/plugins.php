@@ -262,6 +262,7 @@ function api_plugin_check_config($plugin) {
 	return TRUE;
 }
 
+function api_plugin_enable($plugin) {
 	$ready = api_plugin_check_config ($plugin);
 	if ($ready) {
 		api_plugin_enable_hooks ($plugin);
