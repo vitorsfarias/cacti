@@ -487,7 +487,7 @@ function plugins_show($status = 'all', $refresh = true) {
 	$table->draw_table();
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
-	echo "<tr><td colspan=10><strong>" . __('NOTE:') . "</strong> " . __("Change 'Load Order' by dragging and dropping.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be reordered.") . "</td></tr>";
+	echo "<tr><td colspan=8><strong>" . __('NOTE:') . "</strong> " . __("Change 'Load Order' by dragging and dropping.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be reordered.") . "</td></tr>";
 	html_end_box();
 
 	?>
