@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/** api_poller_cache_item_add - add an item to the poller cache
+/** poller_cache_item_add - add an item to the poller cache
  *
  * @param int $device_id
  * @param string $device_field_override
@@ -36,7 +36,7 @@
  * @param string $arg3
  * @return unknown_type
  */
-function api_poller_cache_item_add($device_id, $device_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
+function poller_cache_item_add($device_id, $device_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
 	static $devices = array();
 
 	if (!isset($devices[$device_id])) {
@@ -100,7 +100,7 @@ function api_poller_cache_item_add($device_id, $device_field_override, $local_da
 			}
 		}
 
-		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
+		$rrd_next_step = poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
 		return "($local_data_id, " . $device["poller_id"] . ", " . $device["id"] . ", $poller_action_id,'" . $device["hostname"] . "',
 			'" . $device["snmp_community"]       . "', '" . $device["snmp_version"]       . "', '" . $device["snmp_timeout"] . "',
@@ -111,13 +111,13 @@ function api_poller_cache_item_add($device_id, $device_field_override, $local_da
 	}
 }
 
-/** api_poller_get_rrd_next_step
+/** poller_get_rrd_next_step
  *
  * @param int $rrd_step
  * @param int $num_rrd_items
  * @return unknown_type
  */
-function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
+function poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 	global $config;
 
 	$poller_interval = read_config_option("poller_interval");
