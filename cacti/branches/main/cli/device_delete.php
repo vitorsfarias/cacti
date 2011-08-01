@@ -144,7 +144,7 @@ if (sizeof($parms)) {
 			/* delete graphs/data sources tied to this device */
 			if (!$debug) {
 				data_source_remove_multi($data_sources_to_act_on);
-				api_graph_remove_multi($graphs_to_act_on);
+				graph_remove_multi($graphs_to_act_on);
 			}
 			echo __("Removing device and all resources for device id ") . $item["id"];
 		} else {

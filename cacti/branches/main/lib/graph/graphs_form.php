@@ -272,7 +272,7 @@ function graph_form_actions() {
 					break;
 			}
 
-			api_graph_remove_multi($selected_items);
+			graph_remove_multi($selected_items);
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_TEMPLATE) { /* change graph template */
 			input_validate_input_number(get_request_var_post("graph_template_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -324,7 +324,7 @@ function graph_form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				api_reapply_suggested_graph_title($selected_items[$i]);
+				reapply_suggested_graph_title($selected_items[$i]);
 				update_graph_title_cache($selected_items[$i]);
 			}
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_RESIZE) { /* resize graphs */
@@ -335,7 +335,7 @@ function graph_form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				api_resize_graphs($selected_items[$i], get_request_var_post('graph_width'), get_request_var_post('graph_height'));
+				resize_graphs($selected_items[$i], get_request_var_post('graph_width'), get_request_var_post('graph_height'));
 			}
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_ENABLE_EXPORT) { /* enable graph export */
 			for ($i=0;($i<count($selected_items));$i++) {

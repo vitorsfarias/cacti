@@ -41,12 +41,12 @@ function api_graph_remove($local_graph_id) {
 	db_execute("delete from graph_local where id=$local_graph_id");
 }
 
-/** api_graph_remove_multi - remove multiple graphs
+/** graph_remove_multi - remove multiple graphs
  *
  * @param array $local_graph_ids
  * @return unknown_type
  */
-function api_graph_remove_multi($local_graph_ids) {
+function graph_remove_multi($local_graph_ids) {
 	/* initialize variables */
 	$ids_to_delete = "";
 	$i = 0;
@@ -82,22 +82,22 @@ function api_graph_remove_multi($local_graph_ids) {
 	}
 }
 
-/** api_resize_graphs - resizes the selected graph, overriding the template value
+/** resize_graphs - resizes the selected graph, overriding the template value
    @param $graph_templates_graph_id - the id of the graph to resize
    @param $graph_width - the width of the resized graph
    @param $graph_height - the height of the resized graph
   */
-function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
+function resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	global $config;
 
 	/* get graphs template id */
 	db_execute("UPDATE graph_templates_graph SET width=" . $graph_width . ", height=" . $graph_height . " WHERE local_graph_id=" . $local_graph_id);
 }
 
-/** api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
+/** reapply_suggested_graph_title - reapplies the suggested name to a graph title
    @param int $graph_templates_graph_id - the id of the graph to reapply the name to
 */
-function api_reapply_suggested_graph_title($local_graph_id) {
+function reapply_suggested_graph_title($local_graph_id) {
 	global $config;
 
 	/* get graphs template id */
@@ -162,11 +162,11 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	}
 }
 
-/** api_get_graphs_from_datasource - get's all graphs related to a data source
+/** get_graphs_from_datasource - get's all graphs related to a data source
    @param $local_data_id - the id of the data source
    @returns - array($id => $name_cache) returns the graph id's and names of the graphs
   */
-function api_get_graphs_from_datasource($local_data_id) {
+function get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc("SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name
 		FROM (graph_templates_graph
