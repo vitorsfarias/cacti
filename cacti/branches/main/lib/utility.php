@@ -735,7 +735,7 @@ function duplicate_device_template($_device_template_id, $device_template_title)
 }
 
 function duplicate_data_query($data_query_id, $data_query_name) {
-	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	$_data_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
 

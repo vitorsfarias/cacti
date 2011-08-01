@@ -659,7 +659,7 @@ function device_template_to_xml($device_template_id) {
 function data_query_to_xml($data_query_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	$hash["data_query"] = get_hash_version("data_query") . get_hash_data_query($data_query_id);
 	$xml_text = "";

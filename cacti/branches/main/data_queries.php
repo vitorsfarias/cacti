@@ -401,7 +401,7 @@ function data_query_item_remove() {
 }
 
 function data_query_item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -804,7 +804,7 @@ function data_query_remove($id) {
 
 function data_query_edit() {
 	global $config;
-	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

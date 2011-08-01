@@ -424,7 +424,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_r
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/data_query/data_query_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* import into: snmp_query */
 	$_data_query_id = db_fetch_cell("select id from snmp_query where hash='$hash'");
