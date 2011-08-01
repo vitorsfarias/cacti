@@ -477,13 +477,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
-		$align = "align='left'";
+		$align = "text-align:left;";
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
 		if ($sort_column == $column) {
 			$direction    = $new_sort_direction;
 			$display_text = $item["name"];
 			if (isset($item["align"])) {
-				$align = "align='" . $item["align"] . "'";
+				$align = "text-align:" . $item["align"] . ";";
 			}
 			$sort_class   = $selected_sort_class;
 		}else{
@@ -494,7 +494,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 				$direction = "ASC";
 			}
 			if (isset($item["align"])) {
-				$align = "align='" . $item["align"] . "'";
+				$align = "text-align:" . $item["align"] . ";";
 			}
 			$sort_class   = "";
 		}
@@ -502,13 +502,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
 
-			print "\t\t\t<th style='display:block;' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>" . $display_text . "</th>\n";
+			print "\t\t\t<th style='display:block;$align' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>" . $display_text . "</th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>";
+			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;$align' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
@@ -554,12 +554,12 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	foreach($header_items as $column => $item) {
 		/* by default, you will always sort ascending, with the exception of an already sorted column */
-		$align = "align='left'";
+		$align = "text-align:left;";
 		if ($sort_column == $column) {
 			$direction    = $new_sort_direction;
 			$display_text = $item["name"];
 			if (isset($item["align"])) {
-				$align = "align='" . $item["align"] . "'";
+				$align = "text-align:" . $item["align"] . ";";
 			}
 			$sort_class   = $selected_sort_class;
 		}else{
@@ -568,7 +568,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 				$direction    = $item["order"];
 			}
 			if (isset($item["align"])) {
-				$align = "align='" . $item["align"] . "'";
+				$align = "text-align:" . $item["align"] . ";";
 			}
 			$sort_class   = "";
 		}
@@ -577,13 +577,13 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
-			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width nodrag nodrop' $align><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
+			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width nodrag nodrop' style='$align'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width nodrag nodrop' $align>";
+			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width nodrag nodrop' style='$align'>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
@@ -617,10 +617,10 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	}
 
 	$i = 0;
-	$align = "align='left'";
+	$align = "text-align:left;";
 	foreach($header_items as $item) {
 		if (isset($item["align"])) {
-			$align = "align='" . $item["align"] . "'";
+			$align = "text-align:" . $item["align"] . ";";
 		}else{
 			$align = "";
 		}
@@ -628,9 +628,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hh_$rand_id");
 
-			print "\t\t\t<th id='hh_$rand_id' $align style='width: $width;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hh_$rand_id' $align " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}
 		$rand_id++;
 		$i++;
@@ -666,16 +666,16 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 	$i = 0;
 	foreach($header_items as $item) {
 		if (isset($item["align"])) {
-			$align = "align='" . $item["align"] . "'";
+			$align = "text-align:" . $item["align"] . ";";
 		}else{
 			$align = "";
 		}
 
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hhc_$rand_id");
-			print "\t\t\t<th id='hhc_$rand_id' style='width: $width;' $align class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hhc_$rand_id' style='width: $width;$align' class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hhc_$rand_id' $align class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hhc_$rand_id' style='$align' class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
 		}
 		$rand_id++;
 	}
@@ -1612,7 +1612,7 @@ function draw_actions_dropdown($actions_array) {
  */
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = "left") { ?>
-		<td height="1" align="<?php print $align;?>" colspan="<?php print $column_span;?>">
+		<td height="1" style="text-align:<?php print $align;?>;" colspan="<?php print $column_span;?>">
 			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
 		</td>
 <?php
