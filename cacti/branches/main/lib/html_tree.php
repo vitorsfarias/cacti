@@ -1294,7 +1294,7 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 	<!--
 	function pageChange(page) {
 		strURL = '?action=ajax_tree_graphs&page=' + page;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 	}
