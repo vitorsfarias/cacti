@@ -1174,10 +1174,9 @@ function utilities_view_logfile() {
 	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
-		$new_item = "";
-		$new_item .= create_object_link("Host[", "]", $item, "devices.php?action=edit&id=");
-		$new_item .= create_object_link("DS[", "]", $item, "data_sources.php?action=edit&id=");
-		$new_item .= create_object_link("Graph[", "]", $item, "graphs.php?action=graph_edit&id=");
+		$new_item = create_object_link("Host[", "]", $item, "devices.php?action=edit&id=");
+		$new_item = create_object_link("DS[", "]", $new_item, "data_sources.php?action=edit&id=");
+		$new_item = create_object_link("Graph[", "]", $new_item, "graphs.php?action=graph_edit&id=");
 
 		/* TODO: allow for more objects here? Tree Items require parent tree id! Plugin Hook? */
 		/* e.g. Poller, Site, data Query, Data Input Method, ... */

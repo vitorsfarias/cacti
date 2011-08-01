@@ -2800,22 +2800,20 @@ function create_object_link($needle1, $needle2, $haystack, $url) {
 	$_length1 = strlen($needle1);
 
 	/* check input parameters */
-	if ($_length1 > 0 && strlen($needle2) > 0 && strlen($haystack) > 0 && strlen($url) > 0) {
-		if ($_start) {
+	if ($_start !== false && strlen($url)) {
+		while ($_start !== false) {
 			/* this is the end position of the id to be extracted */
-			$_end   	= strpos($haystack, $needle2, $_start);
+			$_end     = strpos($haystack, $needle2, $_start);
 			/* now get the id which is enclosed between $needle1 and $needle2 */
-			$_id    	= substr($haystack, $_start + $_length1, $_end-($_start + $_length1));
+			$_id      = substr($haystack, $_start + $_length1, $_end-($_start + $_length1));
 			/* let's build the new item up to the current matching position;
 			 * we're using the URL provided by the caller */
-			$new_item   = $new_item . substr($haystack, 0, $_start + $_length1) . "<a href='" . htmlspecialchars($url . $_id) . "'>" . substr($haystack, $_start + $_length1, $_end-($_start + $_length1)) . "</a>";
-			/* advance to end of current matching position */
-			$haystack	= substr($haystack, $_end);
+			$new_item .= substr($haystack, 0, $_start + $_length1) . "<a href='" . htmlspecialchars($url . $_id) . "'>" . substr($haystack, $_start + $_length1, $_end-($_start + $_length1)) . "</a>" . substr($haystack, $_end);
 			/* and try to find a possible next match in the same search string */
-			$_start 	= strpos($haystack, $needle1);
-
-			return $new_item;
+			$_start   = strpos($haystack, $needle1, $_end);
 		}
+
+		return $new_item;
 	}
 
 	return $haystack;
