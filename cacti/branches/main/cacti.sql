@@ -2382,6 +2382,7 @@ CREATE TABLE `plugin_db_changes` (
 
 CREATE TABLE `plugin_hooks` (
   `id` int(8) NOT NULL auto_increment,
+  `ptype` int(11) unsigned NOT NULL default '1',
   `name` varchar(32) NOT NULL default '',
   `hook` varchar(64) NOT NULL default '',
   `file` varchar(255) NOT NULL default '',
@@ -2396,8 +2397,8 @@ CREATE TABLE `plugin_hooks` (
 -- Dumping data for table `plugin_hooks`
 --
 
-INSERT INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
-INSERT INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1);
+INSERT INTO `plugin_hooks` VALUES (1, 0, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
+INSERT INTO `plugin_hooks` VALUES (2, 0, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1);
 
 --
 -- Table structure for table `plugin_realms`
