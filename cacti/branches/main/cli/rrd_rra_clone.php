@@ -164,7 +164,7 @@ if (sizeof($parms)) {
 		}
 	}
 
-	$rc= api_rrd_rra_clone($file_array, $cf, $rra_array, $debug);
+	$rc= rrd_rra_clone($file_array, $cf, $rra_array, $debug);
 	if (isset($rc["err_msg"])) {
 		print $rc["err_msg"] . "\n\n";
 		display_help($me);

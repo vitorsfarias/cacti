@@ -167,7 +167,7 @@ if (sizeof($parms)) {
 
 	#print_r($ds_array);
 
-	$rc= api_rrd_datasource_add($file_array, $ds_array, $debug);
+	$rc= rrd_datasource_add($file_array, $ds_array, $debug);
 	if (isset($rc["err_msg"])) {
 		print $rc["err_msg"] . "\n\n";
 		display_help($me);
