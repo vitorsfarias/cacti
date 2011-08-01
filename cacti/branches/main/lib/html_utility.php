@@ -114,13 +114,13 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
    @param $width - the width of the table element
    @param $class - the class to apply to the table element */
 function form_selectable_cell($contents, $id, $width="", $class="", $align="") {
-	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($align) ? " align='$align'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
+	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($align) ? " style='text-align:$align;'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
 }
 
 /** form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @param $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $checked = false) {
-	print "\t<td onClick='selectLine(\"$id\",true)' style='" . get_checkbox_style() . "' width='1%' align='center'>\n";
+	print "\t<td onClick='selectLine(\"$id\",true)' style='" . get_checkbox_style() . ";' width='1%' align='center'>\n";
 	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'" . ($checked ? " checked" : "") . ">\n";
 	print "\t</td>\n";
 }
