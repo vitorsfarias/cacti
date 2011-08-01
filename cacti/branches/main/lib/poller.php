@@ -436,3 +436,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 	return $rrds_processed;
 }
+
+function &poller_form_list() {
+	require(CACTI_BASE_PATH . "/include/poller/poller_forms.php");
+
+	return $fields_poller_edit;
+}
