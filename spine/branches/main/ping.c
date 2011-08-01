@@ -264,8 +264,10 @@ int ping_icmp(device_t *device, ping_t *ping) {
 	retry_count = 0;
 	while ( TRUE ) {
 		#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-		thread_mutex_lock(LOCK_SETEUID);
-		seteuid(0);
+		if (!hasCaps()) {
+			thread_mutex_lock(LOCK_SETEUID);
+			seteuid(0);
+		}
 		#endif
 
 		if ((icmp_socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1) {
@@ -277,8 +279,10 @@ int ping_icmp(device_t *device, ping_t *ping) {
 				snprintf(ping->ping_status, 50, "down");
 				free(new_hostname);
 				#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-				seteuid(getuid());
-				thread_mutex_unlock(LOCK_SETEUID);
+				if (!hasCaps()) {
+					seteuid(getuid());
+					thread_mutex_unlock(LOCK_SETEUID);
+				}
 				#endif
 				return DEVICE_DOWN;
 	
@@ -289,8 +293,10 @@ int ping_icmp(device_t *device, ping_t *ping) {
 		}
 	}
 	#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-	seteuid(getuid());
-	thread_mutex_unlock(LOCK_SETEUID);
+	if (!hasCaps()) {
+		seteuid(getuid());
+		thread_mutex_unlock(LOCK_SETEUID);
+	}
 	#endif
 
 	/* convert the device timeout to a double precision number in seconds */
@@ -401,13 +407,17 @@ int ping_icmp(device_t *device, ping_t *ping) {
 								free(new_hostname);
 								free(packet);
 								#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-								thread_mutex_lock(LOCK_SETEUID);
-								seteuid(0);
+								if (!hasCaps()) {
+									thread_mutex_lock(LOCK_SETEUID);
+									seteuid(0);
+								}
 								#endif
 								close(icmp_socket);
 								#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-								seteuid(getuid());
-								thread_mutex_unlock(LOCK_SETEUID);
+								if (!hasCaps()) {
+									seteuid(getuid());
+									thread_mutex_unlock(LOCK_SETEUID);
+								}
 								#endif
 
 								return DEVICE_UP;
@@ -439,15 +449,19 @@ int ping_icmp(device_t *device, ping_t *ping) {
 			free(new_hostname);
 			free(packet);
 			#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-			thread_mutex_lock(LOCK_SETEUID);
-			seteuid(0);
+			if (!hasCaps()) {
+				thread_mutex_lock(LOCK_SETEUID);
+				seteuid(0);
+			}
 			#endif
 			close(icmp_socket);
 			#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-			seteuid(getuid());
-			thread_mutex_unlock(LOCK_SETEUID);
+			if (!hasCaps()) {
+				seteuid(getuid());
+				thread_mutex_unlock(LOCK_SETEUID);
+			}
 			#endif
-			return DEVICE_DOWN;
+			return HOST_DOWN;
 		}
 	}else{
 		snprintf(ping->ping_response, SMALL_BUFSIZE, "ICMP: Destination address not specified");
@@ -456,13 +470,17 @@ int ping_icmp(device_t *device, ping_t *ping) {
 		free(packet);
 		if (icmp_socket != -1) {
 			#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-			thread_mutex_lock(LOCK_SETEUID);
-			seteuid(0);
+			if (!hasCaps()) {
+				thread_mutex_lock(LOCK_SETEUID);
+				seteuid(0);
+			}
 			#endif
 			close(icmp_socket);
 			#if !(defined(__CYGWIN__) && !defined(SOLAR_PRIV))
-			seteuid(getuid());
-			thread_mutex_unlock(LOCK_SETEUID);
+			if (!hasCaps()) {
+				seteuid(getuid());
+				thread_mutex_unlock(LOCK_SETEUID);
+			}
 			#endif
 		}
 	}
