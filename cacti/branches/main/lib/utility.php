@@ -119,7 +119,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				$data_source_item_name = "";
 			}
 
-			$poller_items[] = api_poller_cache_item_add($data_source["device_id"], array(), $local_data_id, $data_input["rrd_step"], $action, $data_source_item_name, 1, addslashes($script_path));
+			$poller_items[] = poller_cache_item_add($data_source["device_id"], array(), $local_data_id, $data_input["rrd_step"], $action, $data_source_item_name, 1, addslashes($script_path));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 			/* get the device override fields */
 			$data_template_id = db_fetch_cell("SELECT data_template_id FROM data_template_data WHERE local_data_id=$local_data_id");
@@ -158,7 +158,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			$poller_items[] = api_poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($device_fields["snmp_oid"]) ? $device_fields["snmp_oid"] : ""));
+			$poller_items[] = poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($device_fields["snmp_oid"]) ? $device_fields["snmp_oid"] : ""));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 			$snmp_queries = get_data_query_array($data_source["snmp_query_id"]);
 
@@ -221,7 +221,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				}
 
 				if (!empty($oid)) {
-					$poller_items[] = api_poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
+					$poller_items[] = poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
 				}
 			}
 			}
@@ -282,7 +282,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 					}
 
 					if (isset($script_path)) {
-						$poller_items[] = api_poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
+						$poller_items[] = poller_cache_item_add($data_source["device_id"], $device_fields, $local_data_id, $data_input["rrd_step"], $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
 					}
 				}
 			}
