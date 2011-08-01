@@ -65,6 +65,11 @@ if (isset($config['memory_limit']) && $config['memory_limit'] != '') {
 	ini_set('memory_limit', '512M');
 }
 
+/* environment variables */
+if(strstr(PHP_OS, "WIN")) {
+	putenv("cygwin=nodosfilewarning");
+}
+
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
 	"add_device.php",
