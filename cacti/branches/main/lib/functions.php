@@ -2783,17 +2783,16 @@ function cacti_escapeshellarg($string, $quote=true) {
  * returns string 			the reference url
  */
 function create_object_link($needle1, $needle2, $haystack, $url) {
-	
 	$new_item = "";
+
 	/* search needle */
 	$_start = strpos($haystack, $needle1);
 	/* determine string offset for id following the search string */
 	$_length1 = strlen($needle1);
-	
+
 	/* check input parameters */
 	if ($_length1 > 0 && strlen($needle2) > 0 && strlen($haystack) > 0 && strlen($url) > 0) {
-		
-		while ($_start) {
+		if ($_start) {
 			/* this is the end position of the id to be extracted */
 			$_end   	= strpos($haystack, $needle2, $_start);
 			/* now get the id which is enclosed between $needle1 and $needle2 */
@@ -2805,8 +2804,10 @@ function create_object_link($needle1, $needle2, $haystack, $url) {
 			$haystack	= substr($haystack, $_end);
 			/* and try to find a possible next match in the same search string */
 			$_start 	= strpos($haystack, $needle1);
+
+			return $new_item;
 		}
 	}
-	
-	return $new_item;
+
+	return $haystack;
 }
