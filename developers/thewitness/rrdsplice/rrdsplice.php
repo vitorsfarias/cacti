@@ -37,6 +37,8 @@ ini_set("display_errors", "On");
 /* setup defaults */
 $debug     = FALSE;
 $dryrun    = FALSE;
+$backup    = FALSE;
+$overwrite = FALSE;
 $oldrrd    = "";
 $newrrd    = "";
 $finrrd    = "";
@@ -86,6 +88,16 @@ foreach($parms as $parameter) {
 		}
 
 		break;
+	case "-B":
+	case "--backup":
+		$backup = TRUE;
+
+		break;
+	case "-O":
+	case "--overwrite":
+		$overwrite = TRUE;
+
+		break;
 	case "-d":
 	case "--debug":
 		$debug = TRUE;
@@ -118,6 +130,16 @@ if ($oldrrd == "") {
 
 if ($newrrd == "") {
 	echo "FATAL: You must specify a New RRDfile!\n\n";
+	display_help();
+	exit(-2);
+}
+
+if ($overwrite && $finrrd == "") {
+	$finrrd = $newrrd;
+}
+
+if ($finrrd == "") {
+	echo "FATAL: You must specify a New RRDfile or use the overwrite option!\n\n";
 	display_help();
 	exit(-2);
 }
@@ -187,11 +209,13 @@ $new_rrd    = processXML($new_output);
 #print_r($new_rrd);
 
 spliceRRDs($new_rrd, $old_rrd);
-$new_xml    = recreateXML($new_rrd);
+$new_xml = recreateXML($new_rrd);
 file_put_contents($newxmlfile, $new_xml);
 
 /* finally update the file XML file and Reprocess the RRDfile */
-createRRDFileFromXML($newxmlfile, $finrrd);
+if (!$dryrun) {
+	createRRDFileFromXML($newxmlfile, $finrrd);
+}
 
 /* remove the temp file */
 unlink($newxmlfile);
@@ -267,7 +291,7 @@ function getOldRRDValue(&$old_rrd, $dsname, $cf, $pdp, $time) {
 }
 
 function recreateXML($new_rrd) {
-/* 
+/*
 	Read all the XML into an array. The format of the array will be as show below.  This
 	way it can be processed reverted back to array format at the end of the merge process.
 
@@ -357,17 +381,17 @@ function recreateXML($new_rrd) {
 
 function memoryUsage() {
 	$mem_usage = memory_get_usage(true);
-       
+
 	if ($mem_usage < 1024)
 		echo $mem_usage . " B\n";
 	elseif ($mem_usage < 1048576)
 		echo round($mem_usage/1024,2) . " KB\n";
 	else
 		echo round($mem_usage/1048576,2) . " MB\n";
-} 
+}
 
 function processXML($output) {
-/* 
+/*
 	Read all the XML into an array. The format of the array will be as show below.  This
 	way it can be processed reverted back to array format at the end of the merge process.
 
