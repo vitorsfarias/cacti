@@ -150,7 +150,7 @@ if (db_fetch_cell("SELECT id FROM device_template WHERE id=$template") > 0) {
 
 
 /*	display_help - displays the usage of the function */
-function display_help ($me) {
+function display_help($me) {
 	echo "Cacti Device Template Update Script 1.0" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("usage: ") . $me . " -device-id=[device-id|All] [--device-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
 	echo "   --device-id        " . __("the numerical ID of the device") . "\n";

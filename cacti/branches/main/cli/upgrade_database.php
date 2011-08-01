@@ -118,7 +118,7 @@ db_execute("INSERT INTO version (cacti) values ('" . $config['cacti_version'] . 
 
 
 
-function db_install_errors ($cacti_version) {
+function db_install_errors($cacti_version) {
 	if (isset($_SESSION["sess_sql_install_cache"])) {
 		foreach ($_SESSION["sess_sql_install_cache"] as $sc) {
 			if (isset($sc[$cacti_version])) {

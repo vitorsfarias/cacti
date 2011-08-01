@@ -165,7 +165,7 @@ if (sizeof($parms)) {
 }
 
 
-function graph_update ($id, $graphTitle) {
+function graph_update($id, $graphTitle) {
 	if ($graphTitle != "") {
 		db_execute("UPDATE graph_templates_graph
 					SET title=\"$graphTitle\"

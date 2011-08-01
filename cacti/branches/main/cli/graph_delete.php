@@ -157,7 +157,7 @@ if (sizeof($parms)) {
 }
 
 
-function graph_remove ($id, $delete_ds) {
+function graph_remove($id, $delete_ds) {
 
 	# get the data sources and graphs to act on
 	if ($delete_ds) {
