@@ -719,7 +719,6 @@ function display_auth_realms($realm) {
 
 function row_plugin_class($plugin_type) {
 	require_once(CACTI_BASE_PATH . "/include/plugins/plugin_constants.php");
-cacti_log(__FUNCTION__ . " plugin_type: " . $plugin_type, false, "TEST");
 	if ($plugin_type == PLUGIN_TYPE_SYSTEM) {
 		return "nodrag nodrop";
 	} else {
@@ -2712,7 +2711,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '~', '+', '[', ']', '{', '}', ';', '!');
 	static $drop_char_replace = array( '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '',  '',  '');
 
-	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));	
+	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));
 }
 
 /**
