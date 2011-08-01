@@ -267,7 +267,7 @@ function data_template_to_xml($data_template_id) {
 function data_input_method_to_xml($data_input_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_input/data_input_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit = data_input_field_form_list() + data_input_field1_form_list();
