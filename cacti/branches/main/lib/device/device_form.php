@@ -353,7 +353,7 @@ function api_device_form_actions() {
 					break;
 			}
 
-			api_device_remove_multi($devices_to_act_on);
+			device_remove_multi($devices_to_act_on);
 		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -615,7 +615,7 @@ function device_remove_query() {
 	input_validate_input_number(get_request_var("device_id"));
 	/* ==================================================== */
 
-	api_device_dq_remove(get_request_var("device_id"), get_request_var("id"));
+	device_dq_remove(get_request_var("device_id"), get_request_var("id"));
 }
 
 function device_remove_gt() {
@@ -624,7 +624,7 @@ function device_remove_gt() {
 	input_validate_input_number(get_request_var("device_id"));
 	/* ==================================================== */
 
-	api_device_gt_remove(get_request_var("device_id"), get_request_var("id"));
+	device_gt_remove(get_request_var("device_id"), get_request_var("id"));
 }
 
 /* ---------------------
