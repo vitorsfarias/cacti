@@ -4,6 +4,7 @@ SVN
 -feature: Clean up directory, update bootstrap
 -feature#0001550: Record the polling time for each host to optimize polling times
 -feature#0001852: Another 10% speedup in spine 
+-feature#0001878: Add Linux Capabilities to Spine
 -feature: Implement new file based datetime format in the spine log function
 -bug#0001669: Problems with getting data from script using SPINE on Windows Server 2003 x32 
 -bug#0001829: Wrong string numerical value got from Spine SNMP poller 
