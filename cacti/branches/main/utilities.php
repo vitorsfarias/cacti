@@ -1178,6 +1178,7 @@ function utilities_view_logfile() {
 		$new_item .= create_object_link("Host[", "]", $item, "devices.php?action=edit&id=");
 		$new_item .= create_object_link("DS[", "]", $item, "data_sources.php?action=edit&id=");
 		$new_item .= create_object_link("Graph[", "]", $item, "graphs.php?action=graph_edit&id=");
+
 		/* TODO: allow for more objects here? Tree Items require parent tree id! Plugin Hook? */
 		/* e.g. Poller, Site, data Query, Data Input Method, ... */
 
