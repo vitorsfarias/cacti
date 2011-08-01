@@ -239,7 +239,7 @@ function form_actions() {
    --------------------- */
 
 function poller_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/poller/poller_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/poller.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
