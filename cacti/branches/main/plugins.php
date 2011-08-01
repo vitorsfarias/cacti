@@ -36,7 +36,7 @@ load_current_session_value('tab', 'sess_plugins_tab', 'all');
 $current_tab = $_REQUEST['tab'];
 $pluginslist = plugins_get_plugins_list();
 
-$ptabs = api_plugin_hook_function ('plugin_management_tabs', $ptabs);
+$ptabs = api_plugin_hook_function('plugin_management_tabs', $ptabs);
 
 /* Check to see if we are installing, etc... */
 $modes = array('plugins_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
@@ -154,7 +154,7 @@ function plugins_dnd(){
 	}
 }
 
-function plugins_get_plugins_list () {
+function plugins_get_plugins_list() {
 
 	$pluginslist = array();
 	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY sequence ASC');
@@ -164,7 +164,7 @@ function plugins_get_plugins_list () {
 	return $pluginslist;
 }
 
-function plugins_draw_tabs ($tabs, $current_tab) {
+function plugins_draw_tabs($tabs, $current_tab) {
 	/* draw the categories tabs on the top of the page */
 	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>\n";
 	print "<td><div class='tabs'>";

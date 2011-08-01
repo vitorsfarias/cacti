@@ -329,7 +329,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$extra_args .= " --poller=$poller_id";
 		}
 
-		$extra_args = api_plugin_hook_function ('poller_command_args', $extra_args);
+		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_devices as $item) {

@@ -5,7 +5,7 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  */
 
-function use_plugin ($name) {
+function use_plugin($name) {
 	global $config;
 	if (file_exists(CACTI_BASE_PATH . "/plugins/$name/setup.php")) {
 		include_once(CACTI_BASE_PATH . "/plugins/$name/setup.php");
