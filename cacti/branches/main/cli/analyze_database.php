@@ -74,7 +74,7 @@ if (sizeof($tables)) {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	print "Cacti Database Analyze Tool v1.0, Copyright 2004-2011 - The Cacti Group\n\n";
 	print "usage: analyze_database.php [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
 	print "-d | --debug     - Display verbose output during execution\n";
