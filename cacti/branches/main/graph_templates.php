@@ -645,7 +645,7 @@ function graph_template_display_items() {
 		//drag and drop for graph items
 		$('#graph_item').tableDnD({
 			onDrop: function(table, row) {
-				$('#AjaxResult').load("graph_templates.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
+				$.get("graph_templates.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
 			}
 		});
 	});

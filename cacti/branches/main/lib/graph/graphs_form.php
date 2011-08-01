@@ -1010,7 +1010,6 @@ function graph_edit() {
 
 	html_end_box();
 
-
 #	print "<form method='post' action='graphs.php'>\n";
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
@@ -1106,15 +1105,15 @@ function graph_edit() {
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
 
-?>
-<script type="text/javascript">
+	?>
+	<script type="text/javascript">
 	$('#graph_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("graphs.php?action=ajax_graph_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print "";?>&"+$.tableDnD.serialize());
+			$.get("graphs.php?action=ajax_graph_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print "";?>&"+$.tableDnD.serialize());
 //			location.reload();
 		}
 	});
-</script>
+ 	</script>
 <?php
 }
 
