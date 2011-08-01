@@ -733,7 +733,7 @@ switch (get_request_var_request("step")) {
 function install_page_header() {
 	print '<html><head><title>cacti</title><meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	    <link type="text/css" href="../include/main.css" rel="stylesheet"></head><body>';
-	print '<form name="installform" method="post" action="index-jimmy.php">';
+	print '<form name="installform" method="post" action="index.php">';
 	print '<div style="align:center;margin:20px 100px 20px 100px;">';
 	print '<table align="center" cellpadding="1" cellspacing="0" border="0">';
 	print '	<tr>
