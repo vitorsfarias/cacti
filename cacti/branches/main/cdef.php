@@ -499,7 +499,10 @@ function cdef_edit() {
 	<script type="text/javascript">
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				$.get('cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&'+$.tableDnD.serialize(), function(data) {$('#preview').html(data);
+				$.get('cdef.php?action=ajaxdnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print 0;?>&'+$.tableDnD.serialize(), function(data) {
+					if (data) {
+						$('#preview').html(data);
+					}
 			});
 			}
 		});
