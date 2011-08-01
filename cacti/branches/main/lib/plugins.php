@@ -1,16 +1,16 @@
 <?php
 
-function do_hook ($name) {
+function do_hook($name) {
 	$data = func_get_args();
-	$data = api_plugin_hook ($name, $data);
+	$data = api_plugin_hook($name, $data);
 	return $data;
 }
 
 function do_hook_function($name,$parm=NULL) {
-	return api_plugin_hook_function ($name, $parm);
+	return api_plugin_hook_function($name, $parm);
 }
 
-function api_user_realm_auth ($filename = '') {
+function api_user_realm_auth($filename = '') {
 	return api_plugin_user_realm_auth ($filename);
 }
 
@@ -19,7 +19,7 @@ function api_user_realm_auth ($filename = '') {
  * @param string $name Name of hook to fire
  * @return mixed $data
  */
-function api_plugin_hook ($name) {
+function api_plugin_hook($name) {
 	global $config, $plugin_hooks;
 	$data = func_get_args();
 	$ret = '';
@@ -59,7 +59,7 @@ function api_plugin_hook ($name) {
 	return $data;
 }
 
-function api_plugin_hook_function ($name, $parm=NULL) {
+function api_plugin_hook_function($name, $parm=NULL) {
 	global $config, $plugin_hooks;
 
 	$data = func_get_args();
@@ -100,7 +100,7 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	return $ret;
 }
 
-function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=false) {
+function api_plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false) {
 	global $config, $database_default;
 	include_once(CACTI_BASE_PATH . "/lib/database.php");
 
@@ -157,7 +157,7 @@ function api_plugin_db_table_create ($plugin, $table, $data, $sql_install_cache=
 	}
 }
 
-function api_plugin_db_changes_remove ($plugin) {
+function api_plugin_db_changes_remove($plugin) {
 	// Example: api_plugin_db_changes_remove ('thold');
 
 	$tables = db_fetch_assoc("SELECT `table` FROM plugin_db_changes WHERE plugin = '$plugin' AND method ='create'", false);
@@ -176,7 +176,7 @@ function api_plugin_db_changes_remove ($plugin) {
 	}
 }
 
-function api_plugin_db_add_column ($plugin, $table, $column, $sql_install_cache=false) {
+function api_plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false) {
 	// Example: api_plugin_db_add_column ('thold', 'plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
 	global $config, $database_default;
@@ -199,7 +199,7 @@ function api_plugin_db_add_column ($plugin, $table, $column, $sql_install_cache=
 	}
 }
 
-function api_plugin_install ($plugin) {
+function api_plugin_install($plugin) {
 	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 
@@ -238,7 +238,7 @@ function api_plugin_install ($plugin) {
 	}
 }
 
-function api_plugin_uninstall ($plugin) {
+function api_plugin_uninstall($plugin) {
 	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	// Run the Plugin's Uninstall Function first
@@ -252,7 +252,7 @@ function api_plugin_uninstall ($plugin) {
 	api_plugin_db_changes_remove ($plugin);
 }
 
-function api_plugin_check_config ($plugin) {
+function api_plugin_check_config($plugin) {
 	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	$function = 'plugin_' . $plugin . '_check_config';
@@ -262,7 +262,6 @@ function api_plugin_check_config ($plugin) {
 	return TRUE;
 }
 
-function api_plugin_enable ($plugin) {
 	$ready = api_plugin_check_config ($plugin);
 	if ($ready) {
 		api_plugin_enable_hooks ($plugin);
@@ -270,19 +269,19 @@ function api_plugin_enable ($plugin) {
 	}
 }
 
-function api_plugin_is_enabled ($plugin) {
+function api_plugin_is_enabled($plugin) {
 	$status = db_fetch_cell("SELECT status FROM plugin_config WHERE directory = '$plugin'", false);
 	if ($status == '1')
 		return true;
 	return false;
 }
 
-function api_plugin_disable ($plugin) {
+function api_plugin_disable($plugin) {
 	api_plugin_disable_hooks ($plugin);
 	db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_INSTALLED . " WHERE directory = '$plugin'");
 }
 
-function api_plugin_register_hook ($plugin, $hook, $function, $file) {
+function api_plugin_register_hook($plugin, $hook, $function, $file) {
 	$exists = db_fetch_assoc("SELECT id FROM plugin_hooks WHERE name = '$plugin' AND hook = '$hook'", false);
 	if (!count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
@@ -294,19 +293,19 @@ function api_plugin_register_hook ($plugin, $hook, $function, $file) {
 	}
 }
 
-function api_plugin_remove_hooks ($plugin) {
+function api_plugin_remove_hooks($plugin) {
 	db_execute("DELETE FROM plugin_hooks WHERE name = '$plugin'");
 }
 
-function api_plugin_enable_hooks ($plugin) {
+function api_plugin_enable_hooks($plugin) {
 	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_ACTIVE_NEW . " WHERE name = '$plugin'");
 }
 
-function api_plugin_disable_hooks ($plugin) {
+function api_plugin_disable_hooks($plugin) {
 	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_NOT_INSTALLED . " WHERE name = '$plugin' AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'");
 }
 
-function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
+function api_plugin_register_realm($plugin, $file, $display, $admin = false) {
 	$exists = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin' AND file = '$file'", false);
 	if (!count($exists)) {
 		db_execute("INSERT INTO plugin_realms (plugin, file, display) VALUES ('$plugin', '$file', '$display')");
@@ -325,7 +324,7 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 	}
 }
 
-function api_plugin_remove_realms ($plugin) {
+function api_plugin_remove_realms($plugin) {
 	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
@@ -334,7 +333,7 @@ function api_plugin_remove_realms ($plugin) {
 	db_execute("DELETE FROM plugin_realms WHERE plugin = '$plugin'");
 }
 
-function api_plugin_load_realms () {
+function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 	$plugin_realms = db_fetch_assoc("SELECT * FROM plugin_realms ORDER BY plugin, display", false);
 	if (count($plugin_realms)) {
@@ -348,7 +347,7 @@ function api_plugin_load_realms () {
 	}
 }
 
-function api_plugin_user_realm_auth ($filename = '') {
+function api_plugin_user_realm_auth($filename = '') {
 	global $user_realms, $user_auth_realms, $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
 	if (!isset($user_realms)) {
@@ -366,7 +365,7 @@ function api_plugin_user_realm_auth ($filename = '') {
 	return FALSE;
 }
 
-function plugin_config_arrays () {
+function plugin_config_arrays() {
 	/* empty, cause PIA is now part of core code */
 }
 
@@ -375,7 +374,7 @@ function plugin_config_arrays () {
  * @param string $menu_id		- id for the div of the menu entry	
  * @param string $menue_header	- translated header description
  */
-function plugin_menu_add ($menu_id, $menu_header) {
+function plugin_menu_add($menu_id, $menu_header) {
 	global $menu;
 	$menu[$menu_id]["name"] = $menu_header;	
 }
@@ -390,12 +389,12 @@ function plugin_menu_add ($menu_id, $menu_header) {
  * 										...
  * 									)
  */
-function plugin_menu_item_add ($menu_id, $menu_items) {
+function plugin_menu_item_add($menu_id, $menu_items) {
 	global $menu;
 	$menu[$menu_id]["items"] += $menu_items;	
 }
 
-function plugin_draw_navigation_text ($nav) {
+function plugin_draw_navigation_text($nav) {
 	/* nav text moved to functions.php */
 	return $nav;
 }
@@ -425,7 +424,7 @@ function plugin_draw_navigation_text ($nav) {
 	$data['comment'] = 'Authorization Control';
 
  */
-function api_plugin_upgrade_table ($plugin, $table, $data, $sql_install_cache=false, $drop_items=false) {
+function api_plugin_upgrade_table($plugin, $table, $data, $sql_install_cache=false, $drop_items=false) {
 	global $database_default;
 	include_once(CACTI_BASE_PATH . '/lib/database.php');
 	
@@ -590,7 +589,7 @@ function api_plugin_upgrade_comment($plugin, $table, $comment, $sql_install_cach
  * @param string $new_table			- requested new name for table
  * @param bool $sql_install_cache	- when using install_cache, the results will be presented to the user
  */
-function api_plugin_rename_table ($plugin, $old_table, $new_table, $sql_install_cache=false) {
+function api_plugin_rename_table($plugin, $old_table, $new_table, $sql_install_cache=false) {
 	global $database_default;
 	include_once(CACTI_BASE_PATH . '/lib/database.php');
 	

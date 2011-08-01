@@ -26,7 +26,7 @@
     The Save Function
    -------------------------- */
 
-function device_ajax_actions () {
+function device_ajax_actions() {
 	/* ================= input validation ================= */
 	$jaction = sanitize_search_string(get_request_var("jaction"));
 	/* ================= input validation ================= */
@@ -1274,7 +1274,7 @@ function device_display_general($device, $device_text) {
 		toggleAvailabilityAndSnmp($('#template_enabled').checked);
 
 		/* Hide options when override is turned off */
-		$("#template_enabled").change(function () {
+		$("#template_enabled").change(function() {
 			toggleAvailabilityAndSnmp(this.checked);
 		});
 

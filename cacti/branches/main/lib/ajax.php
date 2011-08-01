@@ -22,7 +22,7 @@
    +-------------------------------------------------------------------------+
 */
 
-function ajax_get_data_dd_menus () {
+function ajax_get_data_dd_menus() {
 	if (!isset($_GET['cacti_dd_menu'])) {
 		$_GET['cacti_dd_menu'] = '';
 	}

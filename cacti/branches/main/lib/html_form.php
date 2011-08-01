@@ -1233,7 +1233,7 @@ function html_simple_decode($string) {
  * @param string $edit_data
  * @param string $use_template
  */
-function draw_template_edit_form ($table_id, $edit_struct, $edit_data, $use_template=false) {
+function draw_template_edit_form($table_id, $edit_struct, $edit_data, $use_template=false) {
 
 	$form_array = array();
 

@@ -685,7 +685,7 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 }
 
 class html_table {
-	function html_table () {
+	public function html_table() {
 		$this->resizable      = true;
 		$this->checkbox       = false;
 		$this->sortable       = true;

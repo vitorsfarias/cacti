@@ -46,14 +46,14 @@ function graph_view_filter_table($mode = "mode") {
 		strURL = '?action=ajax_tree_graphs&device_id=' + objForm.device_id.value;
 		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
 		strURL = '?action=ajax_preview&device_id=' + objForm.device_id.value;
 		strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 		<?php } ;?>
@@ -62,12 +62,12 @@ function graph_view_filter_table($mode = "mode") {
 	function clearGraphFilter(objForm) {
 		<?php if ($mode == 'tree') { ?>
 		strURL = '?action=ajax_tree_graphs&clear_filter=true';
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
 		strURL = '?action=ajax_preview&clear_filter=true';
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 		<?php } ;?>
@@ -278,7 +278,7 @@ function get_graph_list_content() {
 				strURL = strURL + '&filter=' + objForm.filter.value;
 				strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
 				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
-				$.get("graph_view.php" + strURL, function (data) {
+				$.get("graph_view.php" + strURL, function(data) {
 					$("#graph_content").html(data);
 					setSelections();
 				});
@@ -286,7 +286,7 @@ function get_graph_list_content() {
 
 			function clearFilter(objForm) {
 				strURL = '?clear_x=true';
-				$.get("graph_view.php?action=ajax_list" + strURL, function (data) {
+				$.get("graph_view.php?action=ajax_list" + strURL, function(data) {
 					$("#graph_content").html(data);
 				});
 			}
@@ -321,7 +321,7 @@ function get_graph_list_content() {
 				strURL = '?action=ajax_preview&list=true';
 				strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
 				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
-				$.get("graph_view.php" + strURL, function (data) {
+				$.get("graph_view.php" + strURL, function(data) {
 					$("#graph_content").html(data);
 				});
 			}
@@ -553,7 +553,7 @@ function get_graph_list_content() {
 	</form><?php
 }
 
-function get_graph_preview_content () {
+function get_graph_preview_content() {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
 	/* Make sure nothing is cached */
@@ -724,7 +724,7 @@ function get_graph_preview_content () {
 	//$(".graphimage").ZoomGraph({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
 	function pageChange(page) {
 		strURL = '?action=ajax_preview&page=' + page;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 	}
@@ -1038,7 +1038,7 @@ function graph_view_timespan_selector($mode = "tree") {
 			strURL = '?action=ajax_tree_graphs&date1=' + objForm.date1.value;
 			strURL = strURL + '&date2=' + objForm.date2.value;
 		}
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
@@ -1048,7 +1048,7 @@ function graph_view_timespan_selector($mode = "tree") {
 			strURL = '?action=ajax_preview&date1=' + objForm.date1.value;
 			strURL = strURL + '&date2=' + objForm.date2.value;
 		}
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 		<?php } ;?>
@@ -1057,12 +1057,12 @@ function graph_view_timespan_selector($mode = "tree") {
 	function clearTimespanFilter(objForm) {
 		<?php if ($mode == 'tree') { ?>
 		strURL = '?action=ajax_tree_graphs&button_clear_x=true';
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
 		strURL = '?action=ajax_preview&button_clear_x=true';
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 		<?php } ;?>
@@ -1074,7 +1074,7 @@ function graph_view_timespan_selector($mode = "tree") {
 		strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 		strURL = strURL + '&date1=' + objForm.date1.value;
 		strURL = strURL + '&date2=' + objForm.date2.value;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
@@ -1082,7 +1082,7 @@ function graph_view_timespan_selector($mode = "tree") {
 		strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
 		strURL = strURL + '&date1=' + objForm.date1.value;
 		strURL = strURL + '&date2=' + objForm.date2.value;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
 		<?php } ;?>
@@ -1224,14 +1224,14 @@ function graph_view_search_filter() {
 		strURL = '?action=ajax_tree_graphs&filter=' + objForm.filter.value;
 		strURL = strURL + '&graphs=' + objForm.graphs.value;
 		strURL = strURL + '&thumbnails=' + objForm.thumbnails.checked;
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 	}
 
 	function clearFilter(objForm) {
 		strURL = '?action=ajax_tree_graphs&clear_filter=true';
-		$.get("graph_view.php" + strURL, function (data) {
+		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 	}
