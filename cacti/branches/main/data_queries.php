@@ -571,10 +571,10 @@ function data_query_item_edit() {
 		/* we need a new javascript for each table */
 		if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				print("	<script type='text/javascript'>
+				print("<script type='text/javascript'>
 						$('#data_template_suggested_values_" . $data_template["id"] . "').tableDnD({
 								onDrop: function(table, row) {
-								$('#AjaxResult').load(\"data_queries?action=ajax_dt_save&dt_id=" . $data_template["id"] . "&gt_id=" . $_GET["id"] . "&\"+$.tableDnD.serialize());
+									$.get(\"data_queries.php?action=ajax_dt_save&dt_id=" . $data_template["id"] . "&gt_id=" . $_GET["id"] . "&\"+$.tableDnD.serialize());
 								}
 							});
 						</script>\n");
@@ -635,14 +635,13 @@ function data_query_item_edit() {
 		html_end_box();
 	}
 	?>
-<script type="text/javascript">
+	<script type="text/javascript">
 	$('#graph_template_suggested_values_<?php print get_request_var("id");?>').tableDnD({
 		onDrop: function(table, row) {
-			alert("data_queries.php?action=ajax_gt_save&gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
-			$('#AjaxResult').load("data_queries.php?action=ajax_gt_save&gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
+			$.get("data_queries.php?action=ajax_gt_save&gt_id=<?php print $_GET["id"];?>&"+$.tableDnD.serialize());
 		}
 	});
-</script>
+	</script>
 	<?php
 
 	form_save_button_alt("path!data_queries.php|action!edit|id!" . get_request_var("snmp_query_id"));
