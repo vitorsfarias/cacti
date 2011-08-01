@@ -876,7 +876,7 @@ class html_table {
 
 			print $nav;
 		}else{
-			print "<tr><td><em>" . __("No Rows Found") . "</em></td></tr>\n";
+			print "<tr><td colspan='$columns'><em>" . __("No Rows Found") . "</em></td></tr>\n";
 		}
 
 		print "</table>\n";	# end table of html_header_sort_checkbox
