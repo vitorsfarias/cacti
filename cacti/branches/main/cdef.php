@@ -74,10 +74,6 @@ switch (get_request_var_request("action")) {
 		cdef_dnd();
 
 		break;
-	case 'ajaxpreview':
-		draw_cdef_preview(get_request_var("cdef_id"));
-
-		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -331,7 +327,7 @@ function item_edit() {
 		$values[$current_type] = $cdef["value"];
 	}
 
-	echo "<table id='preview' class='left startBox1'>";
+	echo "<table id='preview' class='left startBox1 wp100'>";
 	draw_cdef_preview(get_request_var("cdef_id"));
 	echo "</table><br>";
 

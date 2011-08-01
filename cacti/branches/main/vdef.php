@@ -87,14 +87,8 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function draw_vdef_preview($vdef_id) {
-	?>
-	<tr>
-		<td>
-			<pre>vdef=<?php print get_vdef($vdef_id, true);?></pre>
-		</td>
-	</tr>
-<?php }
-
+	print "<tr><td><pre style='white-space:pre-wrap;'>vdef=" . get_vdef($vdef_id, true) . "</pre></td></tr>";
+}
 
 /* --------------------------
     The Save Function
@@ -292,9 +286,9 @@ function item_edit() {
 		$values[$current_type] = $vdef["value"];
 	}
 
-	html_start_box("", "100", "3", "center", "");
+	echo "<table id='preview' class='left startBox1 wp100'>";
 	draw_vdef_preview(get_request_var("vdef_id"));
-	html_end_box();
+	echo "</table><br>";
 
 	if (!empty($_GET["vdef_id"])) {
 		$header_label = "[edit: " . db_fetch_cell("select name from vdef where id=" . get_request_var("vdef_id")) . "]";
@@ -423,6 +417,8 @@ function vdef_item_dnd() {
 		$sql = "UPDATE vdef_items SET sequence = $sequence WHERE id = $vdef_id";
 		db_execute($sql);
 	}
+
+	draw_vdef_preview(get_request_var("id"));
 }
 
 function vdef_edit() {
@@ -453,9 +449,9 @@ function vdef_edit() {
 	form_hidden_box("save_component_vdef", "1", "");
 
 	if (!empty($_GET["id"])) {
-		html_start_box("", "100", "3", "center", "");
+		echo "<table id='preview' class='left startBox1 wp100'>";
 		draw_vdef_preview(get_request_var("id"));
-		html_end_box();
+		echo "</table><br>";
 
 		html_start_box("<strong>" . __("VDEF Items") . "</strong>", "100", 0, "center", "vdef.php?action=item_edit&vdef_id=" . $vdef["id"], false, "vdef");
 		$header_items = array(
@@ -494,7 +490,11 @@ function vdef_edit() {
 <script type="text/javascript">
 	$('#vdef_item').tableDnD({
 		onDrop: function(table, row) {
-			$('#AjaxResult').load("vdef.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&"+$.tableDnD.serialize());
+			$.get('vdef.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&'+$.tableDnD.serialize(), function(data) {
+				if (data) {
+					$('#preview').html(data);
+				}
+			});
 		}
 	});
 </script>
