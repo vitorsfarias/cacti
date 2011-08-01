@@ -26,19 +26,19 @@ function api_plugin_hook ($name) {
 	$p = array();
 
 	/* order the plugin functions by system first, then followed by order */
-	$result = db_fetch_assoc("SELECT 1 AS id, ph.ptype, ph.name, ph.file, ph.function, pc.sequence
+	$result = db_fetch_assoc("SELECT 1 AS id, pc.ptype, ph.name, ph.file, ph.function, pc.sequence
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
 		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
-		AND ph.ptype = " . PLUGIN_TYPE_SYSTEM . "
+		AND pc.ptype = " . PLUGIN_TYPE_SYSTEM . "
 		UNION
-		SELECT pc.id, ph.ptype, ph.name, ph.file, ph.function, pc.sequence
+		SELECT pc.id, pc.ptype, ph.name, ph.file, ph.function, pc.sequence
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
 		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
-		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
+		AND pc.ptype <> " . PLUGIN_TYPE_SYSTEM . "
 		ORDER BY ptype ASC, sequence ASC", true);
 
 	if (count($result)) {
@@ -67,19 +67,19 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	$p = array();
 
 	/* order the plugin functions by system first, then followed by order */
-	$result = db_fetch_assoc("SELECT 1 AS id, ph.ptype, ph.name, ph.file, ph.function, pc.sequence
+	$result = db_fetch_assoc("SELECT 1 AS id, pc.ptype, ph.name, ph.file, ph.function, pc.sequence
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
 		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
-		AND ph.ptype = " . PLUGIN_TYPE_SYSTEM . "
+		AND pc.ptype = " . PLUGIN_TYPE_SYSTEM . "
 		UNION
-		SELECT pc.id, ph.ptype, ph.name, ph.file, ph.function, pc.sequence
+		SELECT pc.id, pc.ptype, ph.name, ph.file, ph.function, pc.sequence
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory=ph.name
 		WHERE ph.status = " . PLUGIN_STATUS_ACTIVE_NEW . " AND hook = '$name'
-		AND ph.ptype <> " . PLUGIN_TYPE_SYSTEM . "
+		AND pc.ptype <> " . PLUGIN_TYPE_SYSTEM . "
 		ORDER BY ptype ASC, sequence ASC", true);
 
 	if (count($result)) {

@@ -717,6 +717,16 @@ function display_auth_realms($realm) {
 	return $auth_realms[$realm];
 }
 
+function row_plugin_class($plugin_type) {
+	require_once(CACTI_BASE_PATH . "/include/plugins/plugin_constants.php");
+cacti_log(__FUNCTION__ . " plugin_type: " . $plugin_type, false, "TEST");
+	if ($plugin_type == PLUGIN_TYPE_SYSTEM) {
+		return "nodrag nodrop";
+	} else {
+		return '';
+	}
+}
+
 function display_plugin_ordering($plugin_name, $sequence) {
 	static $first_plugin = true;
 
