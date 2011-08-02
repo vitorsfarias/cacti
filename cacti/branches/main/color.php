@@ -558,12 +558,6 @@ function color() {
 			<form name="form_color" method="get" action="color.php">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
-					</td>
 					<td class="nw30">
 						&nbsp;<?php print __("Red:");?>&nbsp;
 					</td>
@@ -594,6 +588,14 @@ function color() {
 							<option value="d"<?php if (get_request_var_request("border") == "d") {?> selected<?php }?>><?php print __("Descending");?></option>
 						</select>
 					</td>
+				</tr>
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="20" value="<?php print $_REQUEST["filter"];?>">
+					</td>
 					<td class="nw30">
 						&nbsp;<?php print __("Columns:");?>&nbsp;
 					</td>
@@ -609,8 +611,10 @@ function color() {
 							<option value="10"<?php if (get_request_var_request("columns") == "10") {?> selected<?php }?>>10 Columns</option>
 						</select>
 					</td>
-					<td class="nw120">
+					<td class="w1">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+					</td>
+					<td class="w1">
 						<input type="submit" Value="<?php print __("Import");?>" name="import_x" align="middle">
 						<input type="submit" Value="<?php print __("Export");?>" name="export_x" align="middle">
 						<input type="hidden" id="selectedColors" name="selectedColors">
@@ -704,7 +708,7 @@ function color() {
 
 		/* check for completion of odd number second column */
 		if ($j == 1) {
-			print "<td colspan=" . ($_REQUEST["columns"] * 3) . "</td>";
+			print "<td colspan=" . ($_REQUEST["columns"] * 3) . "></td>";
 			form_end_row();
 		}
 	}
