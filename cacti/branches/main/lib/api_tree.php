@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/** api_tree_add_tree_names_to_actions_array - build an array to add tree names to the action dropdown list
+/** tree_add_tree_names_to_actions_array - build an array to add tree names to the action dropdown list
  *
  * @return array - tree names as entries to an array
  */
-function api_tree_add_tree_names_to_actions_array() {
+function tree_add_tree_names_to_actions_array() {
 	/* add a list of tree names to the actions dropdown */
 	$actions = array();
 	$trees = db_fetch_assoc("select id,name from graph_tree order by name");
@@ -40,7 +40,7 @@ function api_tree_add_tree_names_to_actions_array() {
 	return $actions;
 }
 
-/** api_tree_item_save - add a tree item to the database
+/** tree_item_save - add a tree item to the database
  *
  * @param int $id
  * @param int $tree_id
@@ -55,7 +55,7 @@ function api_tree_add_tree_names_to_actions_array() {
  * @param string $propagate_changes
  * @return unknown_type
  */
-function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
+function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
 	$device_id, $device_grouping_type, $sort_children_type, $propagate_changes) {
 	global $config;
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
