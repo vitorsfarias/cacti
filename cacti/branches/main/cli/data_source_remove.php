@@ -165,7 +165,7 @@ function remove_data_source($data_source_id, $dry_run) {
 				printf(__("Graph: %d"), $graph["local_graph_id"]);
 			} else {
 				echo $graph["local_graph_id"] . " ";
-				api_graph_remove($graph["local_graph_id"]);
+				graph_remove($graph["local_graph_id"]);
 			}
 		}
 		echo "\n";
