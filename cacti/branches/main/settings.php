@@ -55,6 +55,10 @@ case 'save':
 
 	header("Location: settings.php?tab=" . $_POST["tab"]);
 	break;
+case 'emailtest':
+	include(CACTI_BASE_PATH . "/lib/mail.php");
+	test_mail();
+	break;
 default:
 	include(CACTI_BASE_PATH . "/include/top_header.php");
 

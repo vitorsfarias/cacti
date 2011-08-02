@@ -2397,9 +2397,6 @@ CREATE TABLE `plugin_hooks` (
 -- Dumping data for table `plugin_hooks`
 --
 
-INSERT INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
-INSERT INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1);
-
 --
 -- Table structure for table `plugin_realms`
 --
