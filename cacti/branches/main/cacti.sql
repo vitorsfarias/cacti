@@ -2429,6 +2429,10 @@ CREATE TABLE poller (
   disabled char(2) default '',
   description varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   hostname varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  total_time integer(11) unsigned NOT NULL default '0',
+  snmp mediumint(8) unsigned NOT NULL default '0',
+  script mediumint(8) unsigned NOT NULL default '0',
+  server mediumint(8) unsigned NOT NULL default '0',
   last_update datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM AUTO_INCREMENT=2;
@@ -2436,8 +2440,7 @@ CREATE TABLE poller (
 --
 -- Dumping data for table `poller`
 --
-INSERT INTO `poller` VALUES (1,'','Main Poller','localhost','0000-00-00 00:00:00');
-
+INSERT INTO `poller` VALUES (1,'','Main Poller','localhost','0','0','0','0','0000-00-00 00:00:00');
 
 --
 -- Table structure for table `poller_command`

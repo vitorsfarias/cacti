@@ -303,13 +303,12 @@ function upgrade_to_0_8_8() {
 	plugin_rename_column('0.8.8', 'device_template_graph', 'host_template_id', $column, $show_output);
 	plugin_rename_column('0.8.8', 'device_template_snmp_query', 'host_template_id', $column, $show_output);
 	
-	
 	$column = array('name' => 'policy_devices', 'type' => 'tinyint(1)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
 	plugin_rename_column('0.8.8', 'user_auth', 'policy_hosts', $column, $show_output);
 	
-	
+	$column = array('name' => 'total_time', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
+	plugin_rename_column('0.8.8', 'poller', 'ip_address', $column, $show_output);
 
-	
 	/*
 	 * add new columns to existing tables
 	 */
@@ -480,6 +479,9 @@ function upgrade_to_0_8_8() {
 	unset($columns);
 	$columns[] = array('name' => 'disabled', 'type' => 'char(2)', 'default' => '', 'after' => 'id');
 	$columns[] = array('name' => 'description', 'type' => 'varchar(45)', 'NULL' => false, 'default' => '', 'after' => 'disabled');
+	$columns[] = array('name' => 'snmp', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'total_time');
+	$columns[] = array('name' => 'script', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'snmp');
+	$columns[] = array('name' => 'server', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'script');
 	plugin_upgrade_columns('0.8.8', 'poller', $columns, $show_output, $no_drop_items);
 	
 	unset($columns);
