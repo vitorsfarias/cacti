@@ -697,9 +697,9 @@ function upgrade_to_0_8_8() {
 			db_install_execute("0.8.8", "UPDATE `plugin_config` SET sequence=" . $i++ . ", ptype= " . $ptype . " WHERE id=" . $item["id"]);			
 		}
 	}
-	
-	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1)");
-	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
+
+	/* we don't need the internal hooks anymore; they're now part of the code base */	
+	db_install_execute("0.8.8", "DELETE FROM `plugin_hooks` WHERE `plugin_hooks`.`name` = 'internal'");
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 
 	/* wrong lower limit for generic OID graph template */

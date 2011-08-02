@@ -655,76 +655,77 @@ switch (get_request_var_request("step")) {
 			$i++;
 		}
 
-		print '<p><strong><font color="#FF0000">' . __("NOTE:") . '</font></strong>' . __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.') . '</p>';
+		print '<p><strong><font color="#FF0000">' . __("NOTE: ") . '</font></strong>' . __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.') . '</p>';
 		install_page_footer();
 
 
 
 		break;
 	case "8":
-				?>
-
-						<p><?php echo __("Upgrade results:"); ?></p>
-
-						<?php
-						$current_version  = "";
-						$upgrade_results = "";
-						$failed_sql_query = false;
-
-						$fail_text    = "<span class=\"warning\">[" . __("Fail") ."]</span>&nbsp;";
-						$success_text = "<span class=\"success\">[" . __("Success") . "]</span>&nbsp;";
-						$fail_message = "<span class=\"warning\">[" . __("Message") . "]</span>&nbsp;";
-
-						if (isset($_SESSION["sess_sql_install_cache"])) {
-							while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
-								while (list($version, $arr2) = each($arr1)) {
-									while (list($status, $sql) = each($arr2)) {
-										if ($current_version != $version) {
-											$version_index = array_search($version, $cacti_versions);
-											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
-										}
-
-										$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
-
-										/* if there are one or more failures, make a note because we are going to print
-										out a warning to the user later on */
-										if ($status == 0) {
-											$failed_sql_query = true;
-										}
-
-										$current_version = $version;
-									}
-								}
-							}
-
-							kill_session_var("sess_sql_install_cache");
-						} else{
-							print "<em>" . __("No SQL queries have been executed.") . "</em>";
+		?>
+		<p><?php echo __("Upgrade results:"); ?></p>
+		<?php
+		$current_version = "";
+		$upgrade_results = "";
+		$failed_sql_query = false;
+		
+		$fail_text = "<span class=\"warning\">[" . __("Fail") . "]</span>&nbsp;";
+		$success_text = "<span class=\"success\">[" . __("Success") . "]</span>&nbsp;";
+		$fail_message = "<span class=\"warning\">[" . __("Message") . "]</span>&nbsp;";
+		
+		if (isset ($_SESSION["sess_sql_install_cache"])) {
+			while (list ($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
+				while (list ($version, $arr2) = each($arr1)) {
+					while (list ($status, $sql) = each($arr2)) {
+						if ($current_version != $version) {
+							$version_index = array_search($version, $cacti_versions);
+							$upgrade_results .= "<p><strong>" . $cacti_versions {
+								$version_index -1 }
+							 . " -> " . $cacti_versions {
+								$version_index }
+							 . "</strong></p>\n";
 						}
-
-						if ($failed_sql_query == true) {
-							print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>permissions. For each query that failed, you should evaluate the error message returned and take appropriate action.") . "</p>\n";
+		
+						$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
+		
+						/* if there are one or more failures, make a note because we are going to print
+						out a warning to the user later on */
+						if ($status == 0) {
+							$failed_sql_query = true;
 						}
+		
+						$current_version = $version;
+					}
+				}
+			}
+		
+			kill_session_var("sess_sql_install_cache");
+		} else {
+			print "<em>" . __("No SQL queries have been executed.") . "</em>";
+		}
+		
+		if ($failed_sql_query == true) {
+			print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>permissions. For each query that failed, you should evaluate the error message returned and take appropriate action.") . "</p>\n";
+		}
+		
+		print $upgrade_results;
+		install_page_footer();
+		?>
 
-						print $upgrade_results;
-						?>
+		<?php
 
-				<?php
-						break;
-					case "9":
-				?>
+		break;
+	case "9" :
+		?>
+			<p style='font-size: 16px; font-weight: bold; color: red;'><?php echo __("Important Upgrade Notice"); ?></p>
+			<p><?php echo __("Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>."); ?></p>
+			<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
+			<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
+			<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
+		<?php
+		install_page_footer();
 
-						<p style='font-size: 16px; font-weight: bold; color: red;'><?php echo __("Important Upgrade Notice"); ?></p>
-
-						<p><?php echo __("Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>."); ?></p>
-
-						<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
-
-						<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
-
-						<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
-
-					<?php }
+	}
 
 
 
