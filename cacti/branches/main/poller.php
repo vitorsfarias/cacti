@@ -533,7 +533,18 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	}
 
 	/* update the poller status */
-	db_execute("UPDATE poller SET last_update=NOW() WHERE id=$poller_id");
+	$stats = array_rekey(db_fetch_assoc("SELECT action, count(*) AS total 
+		FROM poller_item 
+		WHERE poller_id=$poller_id" . ($poller_id == 1 ? " OR poller_id=0":"") . " 
+		GROUP BY action"), "action", "total");
+
+	db_execute("UPDATE poller 
+		SET last_update=NOW(), 
+		snmp=" . (isset($stats["0"]) ? $stats["0"]:"0") . ",
+		script=" . (isset($stats["1"]) ? $stats["1"]:"0") . ", 
+		server=" . (isset($stats["2"]) ? $stats["2"]:"0") . ",
+		total_time=" . round($loop_end-$loop_start,4) . "
+		WHERE id=$poller_id");
 }
 
 function display_help() {
