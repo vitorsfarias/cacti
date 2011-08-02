@@ -480,7 +480,7 @@ function data_source_template_edit() {
 
 function data_source_template_display_general($data_template, $header_label) {
 	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
-	require_once(CACTI_BASE_PATH . "/lib/data_template/data_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/data_template.php");
 
 	# fetch all settings for this graph template
 	if (isset($data_template["id"])) {
