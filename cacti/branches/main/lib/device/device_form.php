@@ -142,7 +142,7 @@ function device_form_save() {
 
 		$device_template["notes"]    = ""; /* no support for notes in a device template */
 		$device_template["disabled"] = ""; /* no support for disabling in a device template */
-		$device_id = api_device_save($_POST["id"], $_POST["site_id"], $_POST["poller_id"], $_POST["device_template_id"], $_POST["description"],
+		$device_id = device_save($_POST["id"], $_POST["site_id"], $_POST["poller_id"], $_POST["device_template_id"], $_POST["description"],
 			get_request_var_post("hostname"), $device_template["snmp_community"], $device_template["snmp_version"],
 			$device_template["snmp_username"], $device_template["snmp_password"],
 			$device_template["snmp_port"], $device_template["snmp_timeout"],
