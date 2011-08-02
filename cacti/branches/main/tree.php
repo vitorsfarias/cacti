@@ -120,7 +120,7 @@ function form_save() {
 		}
 		exit;
 	}elseif (isset($_POST["save_component_tree_item"])) {
-		$tree_item_id = api_tree_item_save($_POST["id"], $_POST["graph_tree_id"], $_POST["type"], $_POST["parent_item_id"],
+		$tree_item_id = tree_item_save($_POST["id"], $_POST["graph_tree_id"], $_POST["type"], $_POST["parent_item_id"],
 			(isset($_POST["title"]) ? $_POST["title"] : ""),
 			(isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"),
 			(isset($_POST["rra_id"]) ? $_POST["rra_id"] : "0"),
