@@ -218,12 +218,17 @@ function api_plugin_install($plugin) {
 		$version = $info['version'];
 	}
 
+	# compute sequence for next item to be installed
 	$sequence = db_fetch_cell("SELECT MAX(sequence) FROM plugin_config");
 	$sequence++;
+
+	# plugin type
+	$ptype = plugin_is_system_plugin($plugin);
+
 	db_execute("INSERT INTO plugin_config " .
-				"(directory, name, author, webpage, version, sequence) " . 
+				"(directory, name, author, webpage, version, ptype, sequence) " . 
 				"VALUES " . 
-				"('$plugin', '$name', '$author', '$webpage', '$version', '$sequence')");
+				"('$plugin', '$name', '$author', '$webpage', '$version', '$ptype', '$sequence')");
 
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
@@ -399,6 +404,22 @@ function plugin_menu_item_add($menu_id, $menu_items) {
 function plugin_draw_navigation_text($nav) {
 	/* nav text moved to functions.php */
 	return $nav;
+}
+
+function plugin_is_system_plugin($plugin) {
+	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+
+	$system_plugin = (in_array($plugin, $plugins_system));
+cacti_log(__FUNCTION__ . " plugin: $plugin result: $system_plugin", false, "TEST");	
+	switch ($system_plugin) {
+		case true:
+			$plugin_type = PLUGIN_TYPE_SYSTEM;
+			break;
+		default:
+			$plugin_type = PLUGIN_TYPE_GENERAL;
+	}
+cacti_log(__FUNCTION__ . " result: $plugin_type", false, "TEST");	
+	return $plugin_type;
 }
 
 /**

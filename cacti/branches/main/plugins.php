@@ -32,14 +32,14 @@ $ptabs = array(
 );
 
 /* set the default settings category */
-load_current_session_value('tab', 'sess_plugins_tab', 'all');
+load_current_session_value('tab', 'sess_plugin_tab', 'all');
 $current_tab = $_REQUEST['tab'];
-$pluginslist = plugins_get_plugins_list();
+$pluginslist = plugin_get_plugins_list();
 
 $ptabs = api_plugin_hook_function('plugin_management_tabs', $ptabs);
 
 /* Check to see if we are installing, etc... */
-$modes = array('plugins_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
+$modes = array('plugin_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
 	input_validate_input_regex(get_request_var("id"), "/^([a-zA-Z0-9]+)$/");
@@ -48,8 +48,8 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 	$id   = sanitize_search_string($_GET['id']);
 
 	switch ($mode) {
-		case 'plugins_dnd':
-			plugins_dnd();
+		case 'plugin_dnd':
+			plugin_dnd();
 			break;
 		case 'installold':
 			api_plugin_install_old($id);
@@ -91,13 +91,13 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 }
 include(CACTI_BASE_PATH . "/include/top_header.php");
 
-#plugins_draw_tabs($ptabs, $current_tab);
+#plugin_draw_tabs($ptabs, $current_tab);
 #html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
 #print "<tr><td>";
 
 switch ($current_tab) {
 	case 'all':
-		plugins_show();
+		plugin_show();
 		break;
 	default:
 		api_plugin_hook_function('plugin_management_tab_content', $current_tab);
@@ -111,20 +111,20 @@ include(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 
 
-function plugins_dnd(){
+function plugin_dnd(){
 	#todo: exclude system plugins from being sorted
 
-	if(!isset($_REQUEST['plugins_list']) || !is_array($_REQUEST['plugins_list'])) exit;
+	if(!isset($_REQUEST['plugin_list']) || !is_array($_REQUEST['plugin_list'])) exit;
 	/* plugins table contains one row defined as "nodrag&nodrop" */
-	unset($_REQUEST['plugins_list'][0]);
+	unset($_REQUEST['plugin_list'][0]);
 
 	/* delivered plugin ids are in new order */
 	$old_order = array();
 	$new_order = array();
 
 	# id's are passed in new sequence order, but each item is preceeded by 'line'
-	if(sizeof($_REQUEST['plugins_list'])>0) {
-		foreach($_REQUEST['plugins_list'] as $item) {
+	if(sizeof($_REQUEST['plugin_list'])>0) {
+		foreach($_REQUEST['plugin_list'] as $item) {
 			$new_order[] = str_replace('line', '', $item);
 		}
 	}else {
@@ -148,13 +148,13 @@ function plugins_dnd(){
 	if(sizeof($diff) == 0) exit;
 	/* ==================================================== */
 
-	foreach($diff as $sequence => $plugins_id) {
-		$sql = "UPDATE plugin_config SET sequence = $sequence WHERE id = $plugins_id";
+	foreach($diff as $sequence => $plugin_id) {
+		$sql = "UPDATE plugin_config SET sequence = $sequence WHERE id = $plugin_id";
 		db_execute($sql);
 	}
 }
 
-function plugins_get_plugins_list() {
+function plugin_get_plugins_list() {
 
 	$pluginslist = array();
 	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY sequence ASC');
@@ -164,7 +164,7 @@ function plugins_get_plugins_list() {
 	return $pluginslist;
 }
 
-function plugins_draw_tabs($tabs, $current_tab) {
+function plugin_draw_tabs($tabs, $current_tab) {
 	/* draw the categories tabs on the top of the page */
 	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>\n";
 	print "<td><div class='tabs'>";
@@ -176,14 +176,14 @@ function plugins_draw_tabs($tabs, $current_tab) {
 	print "</div></td></tr></table>\n";
 }
 
-function plugins_temp_table_exists($table) {
+function plugin_temp_table_exists($table) {
 	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
-function plugins_load_temp_table() {
+function plugin_load_temp_table() {
 	global $config, $plugins;
 
-	$pluginslist = plugins_get_plugins_list();
+	$pluginslist = plugin_get_plugins_list();
 
 	if (isset($_SESSION["plugin_temp_table"])) {
 		$table = $_SESSION["plugin_temp_table"];
@@ -192,7 +192,7 @@ function plugins_load_temp_table() {
 	}
 	$x = 0;
 	while ($x < 30) {
-		if (!plugins_temp_table_exists($table)) {
+		if (!plugin_temp_table_exists($table)) {
 			$_SESSION["plugin_temp_table"] = $table;
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
 			db_execute("TRUNCATE $table");
@@ -203,13 +203,15 @@ function plugins_load_temp_table() {
 		}
 		$x++;
 	}
+	$sequence = db_fetch_cell("SELECT MAX(sequence) FROM plugin_config");
+	$sequence++;
 
 	$path = CACTI_BASE_PATH . '/plugins/';
 
 	$dh = opendir($path);
 	while (($file = readdir($dh)) !== false) {
 		if ((is_dir("$path/$file")) && (file_exists("$path/$file/setup.php")) && (!in_array($file, $pluginslist))) {
-			# a setup file exists and this is a new plgin (not known in pluginlist)
+			# a setup file exists and this is a new plugin (not known in pluginlist)
 			include_once("$path/$file/setup.php");
 			if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
 				# version function exists but install function does not ==> this is an old plugin
@@ -226,19 +228,25 @@ function plugins_load_temp_table() {
 				if (in_array($file, $plugins)) {
 					$cinfo[$file]['status'] = -1;
 				}
+
+				# plugin type
+				$ptype = plugin_is_system_plugin($file);
 				
 				# register new plugin into temp table for display
-				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version, ptype, sequence)
 					VALUES ('" .
 						$file . "', '" .
 						$cinfo[$file]['longname'] . "', '" .
 						$cinfo[$file]['status']   . "', '" .
 						$cinfo[$file]['author']   . "', '" .
 						$cinfo[$file]['homepage'] . "', '" .
-						$cinfo[$file]['version']  . "')");
+						$cinfo[$file]['version']  . "', '" .
+						$ptype					  . "', '" .
+						$sequence				  . "')");
 				
 				# add this plugin to pluginlist
 				$pluginslist[] = $file;
+				$sequence++;
 				
 				
 			} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
@@ -254,6 +262,9 @@ function plugins_load_temp_table() {
 				if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
 
+				# plugin type
+				$ptype = plugin_is_system_plugin($file);
+
 				/* see if it's been installed as old, if so, remove from oldplugins array and session */
 				$oldplugins = read_config_option("oldplugins");
 				if (substr_count($oldplugins, $file)) {
@@ -265,17 +276,20 @@ function plugins_load_temp_table() {
 				}
 
 				# register new plugin into temp table for display
-				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
+				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version, ptype, sequence)
 					VALUES ('" .
 						$file . "', '" .
 						$cinfo[$file]['longname'] . "', '" .
-						$cinfo[$file]['status'] . "', '" .
-						$cinfo[$file]['author'] . "', '" .
+						$cinfo[$file]['status']   . "', '" .
+						$cinfo[$file]['author']   . "', '" .
 						$cinfo[$file]['homepage'] . "', '" .
-						$cinfo[$file]['version'] . "')");
+						$cinfo[$file]['version']  . "', '" .
+						$ptype					  . "', '" .
+						$sequence				  . "')");
 
 				# add this plugin to pluginlist
 				$pluginslist[] = $file;
+				$sequence++;
 			}
 		}
 	}
@@ -287,7 +301,7 @@ function plugins_load_temp_table() {
 function get_plugin_records(&$total_rows, &$rowspp) {
 
 	/* get all currently known plugins by reading the plugins directory */
-	$table = plugins_load_temp_table();
+	$table = plugin_load_temp_table();
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
@@ -327,19 +341,19 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 
 	db_execute("DROP TABLE $table");
 	
-	if (sizeof($plugins)) {
-		foreach ($plugins as $key => $value) {
-			# provide actions available
-			$plugins[$key]['actions'] = '';
-			# provide type
-			$plugins[$key]['type'] = '';
-		}
-	}
+#	if (sizeof($plugins)) {
+#		foreach ($plugins as $key => $value) {
+#			# provide actions available
+#			$plugins[$key]['actions'] = '';
+#			# provide type
+#			$plugins[$key]['type'] = '';
+#		}
+#	}
 
 	return $plugins;
 }
 
-function plugins_filter() {
+function plugin_filter() {
 	global $item_rows, $config, $colors;
 	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
 
@@ -404,7 +418,7 @@ function plugins_filter() {
 	<?php
 }
 
-function plugins_show($status = 'all', $refresh = true) {
+function plugin_show($status = 'all', $refresh = true) {
 	global $item_rows, $colors;
 
 	$table = New html_table;
@@ -468,11 +482,11 @@ function plugins_show($status = 'all', $refresh = true) {
 	/* initialize page behavior */
 	$table->href           = "plugins.php";
 	$table->session_prefix = "sess_plugins";
-	$table->filter_func    = "plugins_filter";
+	$table->filter_func    = "plugin_filter";
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->sortable       = true;
-	$table->table_id       = "plugins_list";
+	$table->table_id       = "plugin_list";
 	$table->row_function   = "row_plugin_class";
 	$table->row_params     = array("ptype");
 #	$table->actions        = $plugin_actions;
@@ -487,15 +501,18 @@ function plugins_show($status = 'all', $refresh = true) {
 	$table->draw_table();
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
-	echo "<tr><td colspan=8><strong>" . __('NOTE:') . "</strong> " . __("Change 'Load Order' by dragging and dropping.") . "<br><strong>" . __('NOTE:') . "</strong> " . __("SYSTEM plugins can not be reordered.") . "</td></tr>";
+	echo "<tr><td colspan=8><strong>" . __('NOTE:') . 
+		"</strong> " . __("Change 'Load Order' by dragging and dropping.") . 
+		"<br><strong>" . __('NOTE for SYSTEM plugins:') . 
+		"</strong> " . __("SYSTEM plugins can not be reordered. Load order for them is determined by order of installation.") . "</td></tr>";
 	html_end_box();
 
 	?>
 	<script type="text/javascript">
-		$('#plugins_list').tableDnD({
+		$('#plugin_list').tableDnD({
 			onDrop: function(table, row) {
 				//alert($.tableDnD.serialize());
-				$.get("plugins.php?mode=plugins_dnd&id=0&"+$.tableDnD.serialize());
+				$.get("plugins.php?mode=plugin_dnd&id=0&"+$.tableDnD.serialize());
 			}
 		});
 	</script>
