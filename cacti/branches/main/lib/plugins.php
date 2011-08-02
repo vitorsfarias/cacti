@@ -1,19 +1,5 @@
 <?php
 
-function do_hook($name) {
-	$data = func_get_args();
-	$data = api_plugin_hook($name, $data);
-	return $data;
-}
-
-function do_hook_function($name,$parm=NULL) {
-	return api_plugin_hook_function($name, $parm);
-}
-
-function api_user_realm_auth($filename = '') {
-	return api_plugin_user_realm_auth ($filename);
-}
-
 /**
  * This function executes a hook.
  * @param string $name Name of hook to fire
