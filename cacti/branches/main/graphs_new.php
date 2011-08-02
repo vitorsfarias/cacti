@@ -41,7 +41,7 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'query_reload':
-		api_graphs_new_reload_query();
+		graphs_new_reload_query();
 
 		header("Location: graphs_new.php?device_id=" . $_GET["device_id"]);
 		break;

@@ -89,7 +89,7 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
     Data Query Functions
    ------------------- */
 
-function api_graphs_new_reload_query() {
+function graphs_new_reload_query() {
 	run_data_query(get_request_var("device_id"), get_request_var("id"));
 }
 
