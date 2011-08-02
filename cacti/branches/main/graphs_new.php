@@ -37,7 +37,7 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch (get_request_var_request("action")) {
 	case 'save':
-		api_graphs_new_form_save();
+		graphs_new_form_save();
 
 		break;
 	case 'query_reload':
