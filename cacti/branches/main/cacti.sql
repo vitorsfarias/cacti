@@ -3207,9 +3207,9 @@ INSERT INTO `graph_templates_xaxis_items` VALUES(4, '33ac10e60fd855e74736bee43bd
 --
 
 CREATE TABLE IF NOT EXISTS `i18n_time_zones` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `olson_tz_string` varchar(255) NOT NULL,
-  `posix_tz_string` varchar(255) NOT NULL,
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `olson_tz_string` varchar(255) NOT NULL default '',
+  `posix_tz_string` varchar(255) NOT NULL default '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
