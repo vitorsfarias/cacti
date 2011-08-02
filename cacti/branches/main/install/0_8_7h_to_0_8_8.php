@@ -626,7 +626,6 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'user_id', 'columns' => 'user_id');
 	plugin_upgrade_keys('0.8.8', 'user_log', $key, $show_output, $drop_items);
 
-	
 	/*
 	 * now it's time to change values
 	 * 
@@ -640,6 +639,7 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE graph_templates_graph SET vertical_label=REPLACE(vertical_label,'|host_','|device_') WHERE vertical_label like '%%|host_%%'");
 	db_install_execute("0.8.8", "UPDATE snmp_query_graph_rrd_sv SET `text`=REPLACE(`text`,'|host_','|device_') WHERE `text` like '%%|host_%%'");
 	db_install_execute("0.8.8", "UPDATE snmp_query_graph_sv SET `text`=REPLACE(`text`,'|host_','|device_') WHERE `text` like '%%|host_%%'");
+	db_install_execute("0.8.8", "UPDATE device SET poller_id=1 WHERE poller_id=0");
 	
 	/*
 	 * now update current entries of table device_template
