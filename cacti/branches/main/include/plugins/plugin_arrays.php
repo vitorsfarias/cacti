@@ -48,6 +48,9 @@ if (!isset($plugins) || !is_array($plugins)) {
 }
 $plugin_hooks = array();
 $plugins_system = array('settings', 'boost', 'dsstats');
+/* name all plugins, that have been included into core code
+ * we use this to avoid any install action */
+$plugins_deprecated = array('settings');
 
 $plugin_architecture = array(
 	'version' => '3.0'
