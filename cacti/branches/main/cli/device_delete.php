@@ -155,7 +155,7 @@ if (sizeof($parms)) {
 			echo __("Removing device but keeping resources for device id ") . $item["id"];
 		}
 
-		api_device_remove($item["id"]);
+		device_remove($item["id"]);
 
 		if (is_error_message()) {
 			echo __(". ERROR: Failed to remove this device") . "\n";

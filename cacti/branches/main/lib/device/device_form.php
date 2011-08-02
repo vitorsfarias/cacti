@@ -631,25 +631,6 @@ function device_remove_gt() {
     Host Functions
    --------------------- */
 
-function device_remove() {
-	global $config;
-
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
-
-	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
-		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the device") . " <strong>'" . db_fetch_cell("select description from device where id=" . $_GET["id"]) . "'</strong>?", "devices.php", "devices.php?action=remove&id=" . $_GET["id"]);
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		exit;
-	}
-
-	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		api_device_remove(get_request_var("id"));
-	}
-}
-
 function device_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

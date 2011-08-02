@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-/** api_device_remove - removes a device
+/** device_remove - removes a device
    @param $device_id - the id of the device to remove */
-function api_device_remove($device_id) {
+function device_remove($device_id) {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
 	db_execute("delete from device             where id=$device_id");
