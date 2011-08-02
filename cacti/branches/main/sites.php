@@ -69,7 +69,7 @@ switch (get_request_var_request("action")) {
 
 function form_save() {
 	if ((isset($_POST["save_component_site"])) && (empty($_POST["add_dq_y"]))) {
-		$id = api_site_save($_POST["id"], $_POST["name"], $_POST["alternate_id"], $_POST["address1"],
+		$id = site_save($_POST["id"], $_POST["name"], $_POST["alternate_id"], $_POST["address1"],
 		get_request_var_post("address2"), get_request_var_post("city"), get_request_var_post("state"), get_request_var_post("postal_code"),
 		get_request_var_post("country"), get_request_var_post("notes"));
 
@@ -237,7 +237,7 @@ function site_export() {
 	}
 }
 
-function api_site_save($id, $name, $alternate_id, $address1, $address2, $city, $state, $postal_code, $country, $notes) {
+function site_save($id, $name, $alternate_id, $address1, $address2, $city, $state, $postal_code, $country, $notes) {
 	$save["id"]           = $id;
 	$save["name"]         = form_input_validate($name,         $_POST["name"],         "", false, 3);
 	$save["alternate_id"] = form_input_validate($alternate_id, $_POST["alternate_id"], "", true, 3);
