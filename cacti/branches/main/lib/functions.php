@@ -726,26 +726,6 @@ function row_plugin_class($plugin_type) {
 	}
 }
 
-function display_plugin_ordering($plugin_name, $sequence) {
-	static $first_plugin = true;
-
-	$field = "";
-#	if ($include_ordering) {
-#		if (!$first_plugin) {
-#			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=moveup&id=" . $plugin_name) . "' title='Order Before Prevous Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_up.gif'></a>";
-#		}else{
-#			$field .= "<a href='#' title='Can NOT Reduce Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
-#		}
-#		if (!$last_plugin) {
-#			$field .= "<a href='" . htmlspecialchars("plugins.php?mode=movedown&id=" . $plugin_name) . "' title='Order After Next Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/move_down.gif'></a>";
-#		}else{
-#			$field .= "<a href='#' title='Can Increase Load Order' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'></a>";
-#		}
-#	}
-
-	return $field;
-}
-
 function display_plugin_directory($plugin_name, $website) {
 
 	return "<a href='" . htmlspecialchars($website) . "' target='_blank'><strong>" . ucfirst($plugin_name) . "</strong></a>";
@@ -756,7 +736,11 @@ function display_plugin_type($plugin_name, $status) {
 
 	$system_plugin = (in_array($plugin_name, $plugins_system));
 
-	$field = ($system_plugin ? "System": ($status < 0 ? "Old PIA":"General"));
+	$field = ($system_plugin ? __("System"): ($status < 0 ? __("Old PIA"):__("General")));
+
+	if (in_array($plugin_name, $plugins_deprecated)){
+		$field = "<span class='textError'>" . $field . " " . __("deprecated") . "</span>";
+	}
 
 	return $field;
 }

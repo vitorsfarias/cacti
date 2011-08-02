@@ -45,6 +45,12 @@ function plugin_hook($name) {
 	return $data;
 }
 
+/**
+ * This function executes a hook and provides function parameters
+ * @param string $name	name of hook to fire
+ * @param mixed $parm	parameters
+ * @return mixed $data
+ */
 function plugin_hook_function($name, $parm=NULL) {
 	global $config, $plugin_hooks;
 
@@ -86,6 +92,13 @@ function plugin_hook_function($name, $parm=NULL) {
 	return $ret;
 }
 
+/**
+ * creates a new table
+ * @param string $plugin	name of the plugin
+ * @param string $table		name of the new table
+ * @param array $data		array defining the properties of the table
+ * @param bool $sql_install_cache	use the install cache
+ */
 function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false) {
 	global $config, $database_default;
 	include_once(CACTI_BASE_PATH . "/lib/database.php");
@@ -143,6 +156,10 @@ function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false
 	}
 }
 
+/**
+ * remove all plugin database changes
+ * @param string $plugin	name of the plugin
+ */
 function plugin_db_changes_remove($plugin) {
 	// Example: plugin_db_changes_remove ('thold');
 
@@ -162,6 +179,13 @@ function plugin_db_changes_remove($plugin) {
 	}
 }
 
+/**
+ * add a new column to a table
+ * @param string $plugin			plugin
+ * @param string $table				table
+ * @param string $column 			column name
+ * @param bool $sql_install_cache	use the install cache
+ */
 function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false) {
 	// Example: plugin_db_add_column ('thold', 'plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
@@ -185,15 +209,28 @@ function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false
 	}
 }
 
+/**
+ * install a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_install($plugin) {
-	global $config;
+	global $config, $plugins_deprecated;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 
 	$exists = db_fetch_assoc("SELECT id FROM plugin_config WHERE directory = '$plugin'", false);
 	if (!count($exists)) {
+		/* make sure that there's no old stuff left from this plugin */
 		db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+		plugin_remove_hooks($plugin);
+		plugin_remove_realms($plugin);
 	}
 
+	/* in case this is a deprecated plugin */
+	if (plugin_is_deprecated($plugin)) {
+		/* do NOT process install operation */
+		return;
+	}
+		
 	$name = $author = $webpage = $version = '';
 	$function = 'plugin_' . $plugin . '_version';
 	if (function_exists($function)){
@@ -209,7 +246,7 @@ function plugin_install($plugin) {
 	$sequence++;
 
 	# plugin type
-	$ptype = plugin_is_system_plugin($plugin);
+	$ptype = plugin_is_system($plugin);
 
 	db_execute("INSERT INTO plugin_config " .
 				"(directory, name, author, webpage, version, ptype, sequence) " . 
@@ -219,7 +256,7 @@ function plugin_install($plugin) {
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
 		$function();
-		$ready = plugin_check_config ($plugin);
+		$ready = plugin_check_config($plugin);
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
 			db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_INSTALLED . " WHERE directory = '$plugin'");
@@ -230,6 +267,10 @@ function plugin_install($plugin) {
 	}
 }
 
+/**
+ * uninstall a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_uninstall($plugin) {
 	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
@@ -244,6 +285,10 @@ function plugin_uninstall($plugin) {
 	plugin_db_changes_remove ($plugin);
 }
 
+/**
+ * check a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_check_config($plugin) {
 	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
@@ -254,6 +299,10 @@ function plugin_check_config($plugin) {
 	return TRUE;
 }
 
+/**
+ * enable a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_enable($plugin) {
 	$ready = plugin_check_config ($plugin);
 	if ($ready) {
@@ -262,6 +311,10 @@ function plugin_enable($plugin) {
 	}
 }
 
+/**
+ * check, whether a plugin is already enabled
+ * @param string $plugin	plugin name
+ */
 function plugin_is_enabled($plugin) {
 	$status = db_fetch_cell("SELECT status FROM plugin_config WHERE directory = '$plugin'", false);
 	if ($status == '1')
@@ -269,11 +322,22 @@ function plugin_is_enabled($plugin) {
 	return false;
 }
 
+/**
+ * disable a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_disable($plugin) {
 	plugin_disable_hooks ($plugin);
 	db_execute("UPDATE plugin_config SET status = " . PLUGIN_STATUS_INSTALLED . " WHERE directory = '$plugin'");
 }
 
+/**
+ * register a hook for a plugin
+ * @param string $plugin	plugin name
+ * @param string $hook		hook
+ * @param string $function	hook function to be called
+ * @param string $file		file, where the hook function resides
+ */
 function plugin_register_hook($plugin, $hook, $function, $file) {
 	$exists = db_fetch_assoc("SELECT id FROM plugin_hooks WHERE name = '$plugin' AND hook = '$hook'", false);
 	if (!count($exists)) {
@@ -286,18 +350,37 @@ function plugin_register_hook($plugin, $hook, $function, $file) {
 	}
 }
 
+/**
+ * remove all hooks for a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_remove_hooks($plugin) {
 	db_execute("DELETE FROM plugin_hooks WHERE name = '$plugin'");
 }
 
+/**
+ * enable all hooks for a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_enable_hooks($plugin) {
 	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_ACTIVE_NEW . " WHERE name = '$plugin'");
 }
 
+/**
+ * disable all hooks for a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_disable_hooks($plugin) {
 	db_execute("UPDATE plugin_hooks SET status = " . PLUGIN_STATUS_NOT_INSTALLED . " WHERE name = '$plugin' AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'");
 }
 
+/**
+ * register a realm for a plugin
+ * @param string $plugin	plugin name
+ * @param string $file		file, for which the realm has to be registered
+ * @param string $display	description for the plugin to be displayed in realm management
+ * @param bool $admin		this is the admin user; provide default realm to him
+ */
 function plugin_register_realm($plugin, $file, $display, $admin = false) {
 	$exists = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin' AND file = '$file'", false);
 	if (!count($exists)) {
@@ -317,6 +400,10 @@ function plugin_register_realm($plugin, $file, $display, $admin = false) {
 	}
 }
 
+/**
+ * remove all realms for a plugin
+ * @param string $plugin	plugin name
+ */
 function plugin_remove_realms($plugin) {
 	$realms = db_fetch_assoc("SELECT id FROM plugin_realms WHERE plugin = '$plugin'", false);
 	foreach ($realms as $realm) {
@@ -326,6 +413,9 @@ function plugin_remove_realms($plugin) {
 	db_execute("DELETE FROM plugin_realms WHERE plugin = '$plugin'");
 }
 
+/**
+ * load realms into a global variable
+ */
 function plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 	$plugin_realms = db_fetch_assoc("SELECT * FROM plugin_realms ORDER BY plugin, display", false);
@@ -340,6 +430,10 @@ function plugin_load_realms() {
 	}
 }
 
+/**
+ * evaluate if user has access to a file
+ * @param string $filename	filename, for which the realm has to be evaluated
+ */
 function plugin_user_realm_auth($filename = '') {
 	global $user_realms, $user_auth_realms, $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
@@ -356,10 +450,6 @@ function plugin_user_realm_auth($filename = '') {
 			return TRUE;
 	}
 	return FALSE;
-}
-
-function plugin_config_arrays() {
-	/* empty, cause PIA is now part of core code */
 }
 
 /**
@@ -387,16 +477,16 @@ function plugin_menu_item_add($menu_id, $menu_items) {
 	$menu[$menu_id]["items"] += $menu_items;	
 }
 
-function plugin_draw_navigation_text($nav) {
-	/* nav text moved to functions.php */
-	return $nav;
-}
-
-function plugin_is_system_plugin($plugin) {
+/**
+ * determines, if a plugin is a system plugin
+ * @param string $plugin	plugin name
+ * @return int				encoded plugin type
+ */
+function plugin_is_system($plugin) {
 	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
 
 	$system_plugin = (in_array($plugin, $plugins_system));
-cacti_log(__FUNCTION__ . " plugin: $plugin result: $system_plugin", false, "TEST");	
+
 	switch ($system_plugin) {
 		case true:
 			$plugin_type = PLUGIN_TYPE_SYSTEM;
@@ -404,8 +494,20 @@ cacti_log(__FUNCTION__ . " plugin: $plugin result: $system_plugin", false, "TEST
 		default:
 			$plugin_type = PLUGIN_TYPE_GENERAL;
 	}
-cacti_log(__FUNCTION__ . " result: $plugin_type", false, "TEST");	
+
 	return $plugin_type;
+}
+
+
+/**
+ * determines, if a plugin is a deprecated plugin
+ * @param string $plugin	plugin name
+ * @return bool				true, if deprecated
+ */
+function plugin_is_deprecated($plugin) {
+	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+
+	return (in_array($plugin, $plugins_deprecated));
 }
 
 /**

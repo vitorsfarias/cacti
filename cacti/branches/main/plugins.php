@@ -230,7 +230,7 @@ function plugin_load_temp_table() {
 				}
 
 				# plugin type
-				$ptype = plugin_is_system_plugin($file);
+				$ptype = plugin_is_system($file);
 				
 				# register new plugin into temp table for display
 				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version, ptype, sequence)
@@ -263,7 +263,7 @@ function plugin_load_temp_table() {
 				if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['homepage'] = ucfirst($file);
 
 				# plugin type
-				$ptype = plugin_is_system_plugin($file);
+				$ptype = plugin_is_system($file);
 
 				/* see if it's been installed as old, if so, remove from oldplugins array and session */
 				$oldplugins = read_config_option("oldplugins");
