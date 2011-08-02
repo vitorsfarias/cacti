@@ -266,7 +266,7 @@ function graph_form_actions() {
 						AND data_template_data.local_data_id > 0"), "local_data_id", "local_data_id");
 
 					if (sizeof($data_sources)) {
-						api_data_source_remove_multi($data_sources);
+						data_source_remove_multi($data_sources);
 					}
 
 					break;
