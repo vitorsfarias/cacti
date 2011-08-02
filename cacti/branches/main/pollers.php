@@ -360,7 +360,7 @@ function get_poller_records(&$total_rows, &$rowspp) {
 		$sql_where");
 
 	return db_fetch_assoc("SELECT p.*,
-		sum(CASE WHEN h.poller_id IS NOT NULL THEN 1 ELSE NULL END) AS total_devices
+		count(*) AS total_devices
 		FROM poller AS p
 		LEFT JOIN device AS h ON h.poller_id=p.id
 		$sql_where
@@ -392,26 +392,43 @@ function poller($refresh = true) {
 			"name" => __("ID"),
 			"order" => "ASC"
 		),
-		"total_devices" => array(
-			"name" => __("Devices"),
-			"order" => "DESC"
-		),
-		"nosort" => array(
-			"name" => __("Poller Items"),
-			"sort" => false,
-			"function" => "display_poller_poller_items",
-			"order" => "DESC"
+		"nosort1" => array(
+			"name" => __("Status"),
+			"function" => "get_colored_poller_status",
+			"align" => "center",
+			"params" => array("disabled", "last_update"),
+			"sort" => false
 		),
 		"hostname" => array(
 			"name" => __("Hostname"),
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"nosort1" => array(
-			"name" => __("Status"),
-			"function" => "get_colored_poller_status",
-			"params" => array("disabled", "last_update"),
-			"sort" => false
+		"total_devices" => array(
+			"name" => __("Devices"),
+			"align" => "right",
+			"order" => "DESC"
+		),
+		"snmp" => array(
+			"name" => __("SNMP Items"),
+			"align" => "right",
+			"order" => "DESC"
+		),
+		"script" => array(
+			"name" => __("Script Items"),
+			"align" => "right",
+			"order" => "DESC"
+		),
+		"server" => array(
+			"name" => __("Server Items"),
+			"align" => "right",
+			"order" => "DESC"
+		),
+		"total_time" => array(
+			"name" => __("Last Runtime"),
+			"format" => "round,2",
+			"align" => "right",
+			"order" => "DESC"
 		),
 		"last_update" => array(
 			"name" => __("Last Updated"),
