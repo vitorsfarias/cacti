@@ -122,7 +122,7 @@ function form_actions() {
 
 			if (isset($site_ids)) {
 			foreach($site_ids as $id) {
-				api_site_remove($id);
+				site_remove($id);
 			}
 			}
 		}
@@ -263,7 +263,7 @@ function site_save($id, $name, $alternate_id, $address1, $address2, $city, $stat
 	return $id;
 }
 
-function api_site_remove($id) {
+function site_remove($id) {
 	$devices = db_fetch_cell("SELECT COUNT(*) FROM device WHERE site_id='" . $id . "'");
 
 	if ($devices == 0) {
@@ -277,7 +277,7 @@ function api_site_remove($id) {
     Site Functions
    --------------------- */
 
-function site_remove() {
+function site_remove_confirm() {
 	global $config;
 
 	/* ================= input validation ================= */
@@ -295,7 +295,7 @@ function site_remove() {
 		}
 
 		if ((read_config_option("remove_verification") == "") || (isset($_GET["confirm"]))) {
-			api_site_remove(get_request_var("id"));
+			site_remove(get_request_var("id"));
 		}
 	}else{
 		display_custom_error_message(__("You can not delete this site while there are devices associated with it."));
