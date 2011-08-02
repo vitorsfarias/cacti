@@ -162,11 +162,3 @@ function display_help($me) {
 	echo __("List Options:") . "\n\n";
 	echo "   --list-device-templates " . __("Lists all available Device Templates") . "\n\n";
 }
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print("DEBUG: " . $message . "\n");
-	}
-}

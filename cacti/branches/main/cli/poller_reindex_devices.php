@@ -111,15 +111,15 @@ if (strlen($device_descr)) {
 
 /* issue warnings and start message if applicable */
 echo __("WARNING: Do not interrupt this script.  Reindexing can take quite some time") . "\n";
-debug("There are '" . sizeof($data_queries) . "' data queries to run");
+print_debug("There are '" . sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
 if (sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) print ".";
-		debug("Data query number '" . $i . "' device: '".$data_query["device_id"]."' SNMP Query Id: '".$data_query["snmp_query_id"]."' starting");
+		print_debug("Data query number '" . $i . "' device: '".$data_query["device_id"]."' SNMP Query Id: '".$data_query["snmp_query_id"]."' starting");
 		run_data_query($data_query["device_id"], $data_query["snmp_query_id"]);
-		debug("Data query number '" . $i . "' device: '".$data_query["device_id"]."' SNMP Query Id: '".$data_query["snmp_query_id"]."' ending");
+		print_debug("Data query number '" . $i . "' device: '".$data_query["device_id"]."' SNMP Query Id: '".$data_query["snmp_query_id"]."' ending");
 		$i++;
 	}
 }
@@ -135,12 +135,4 @@ function display_help($me) {
 	echo "   --debug       " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version  " . __("Display this help message") . "\n";
 	echo "   -h --help     " . __("Display this help message") . "\n";
-}
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print("DEBUG: " . $message . "\n");
-	}
 }

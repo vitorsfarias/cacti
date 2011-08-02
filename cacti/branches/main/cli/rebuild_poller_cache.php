@@ -94,7 +94,7 @@ $poller_items   = array();
 
 /* issue warnings and start message if applicable */
 echo __("WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time") . "\n";
-debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
+print_debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
 
 /* start rebuilding the poller cache */
 if (sizeof($poller_data) > 0) {
@@ -102,7 +102,7 @@ if (sizeof($poller_data) > 0) {
 		if (!$debug) print ".";
 		$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
 
-		debug("Data Source Item '$current_ds' of '$total_ds' updated");
+		print_debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
 	}
 
@@ -120,12 +120,4 @@ function display_help($me) {
 	echo "   -d            " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version  " . __("Display this help message") . "\n";
 	echo "   -h --help     " . __("Display this help message") . "\n";
-}
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print("DEBUG: " . $message . "") . "\n";
-	}
 }
