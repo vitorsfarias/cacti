@@ -246,7 +246,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$change_proc = false;
 
 	/* initialize file and device count pointers */
-	$process_number = 0;
+	$started_processes = 0;
 	$first_device   = 0;
 	$last_device    = 0;
 
@@ -365,7 +365,7 @@ while ($poller_runs_completed < $poller_runs) {
 				$first_device   = 0;
 				$last_device    = 0;
 
-				$process_number++;
+				$started_processes++;
 			} /* end change_process */
 		} /* end for each */
 
@@ -376,7 +376,7 @@ while ($poller_runs_completed < $poller_runs) {
 			exec_background($command_string, "$extra_args --first=$first_device --last=$last_device" . ($debug ? " --debug":""));
 			usleep(100000);
 
-			$process_number++;
+			$started_processes++;
 		}
 
 		/* insert the current date/time for graphs */
@@ -403,8 +403,8 @@ while ($poller_runs_completed < $poller_runs) {
 
 				break;
 			}else {
-				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM) {
-					print "Waiting on " . ($process_number - sizeof($polling_items)) . "/$process_number pollers.\n";
+				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_MEDIUM || $debug) {
+					print "Waiting on " . ($started_processes - $finished_processes) . " of " . $started_processes . " processes.\n";
 				}
 
 				$mtb = microtime(TRUE);
