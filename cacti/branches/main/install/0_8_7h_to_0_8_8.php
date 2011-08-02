@@ -27,12 +27,12 @@ function upgrade_to_0_8_8() {
 	require("../include/plugins/plugin_arrays.php");
 	require_once("../lib/plugins.php");
 	require_once("../lib/poller.php");
-	
+
 	$show_output = true;
 	$drop_items = true;
 	$no_drop_items = false;
-	/* 
-	 * Create new tables 
+	/*
+	 * Create new tables
 	 */
 
 	/* Authenication System upgrade */
@@ -53,7 +53,7 @@ function upgrade_to_0_8_8() {
 	$data['type'] = 'MyISAM';
 	$data['comment'] = 'Authorization Control';
 	plugin_upgrade_table('0.8.8', 'auth_control', $data, $show_output, $no_drop_items);
-	
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'control_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
@@ -72,7 +72,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'category', 'columns' => 'category');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'auth_data', $data, $show_output, $no_drop_items);
-	
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'item_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
@@ -84,7 +84,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'control_id', 'columns' => 'control_id');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'auth_graph_perms', $data, $show_output, $no_drop_items);
-		
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'control_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
@@ -94,7 +94,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'parent_id', 'columns' => 'parent_id');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'auth_link', $data, $show_output, $no_drop_items);
-		
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(100)', 'NULL' => false, 'default' => '');
@@ -107,7 +107,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'category', 'columns' => 'category');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'auth_perm', $data, $show_output, $no_drop_items);
-		
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'control_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
@@ -117,7 +117,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'perm_id', 'columns' => 'perm_id');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'auth_perm_link', $data, $show_output, $no_drop_items);
-	
+
 	/* create a sites table */
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -156,7 +156,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'directory', 'columns' => 'directory');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'plugin_config', $data, $show_output, $no_drop_items);
-		
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'plugin', 'type' => 'varchar(16)', 'NULL' => false, 'default' => '');
@@ -168,7 +168,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'method', 'columns' => 'method');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'plugin_db_changes', $data, $show_output, $no_drop_items);
-		
+
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
@@ -191,7 +191,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'plugin', 'columns' => 'plugin');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'plugin_realms', $data, $show_output, $no_drop_items);
-	
+
 	# create new table graph_templates_xaxis
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true, 'comment' => 'Unique Table Id');
@@ -269,12 +269,21 @@ function upgrade_to_0_8_8() {
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'vdef_items', $data, $show_output, $no_drop_items);
 
-	
+	/* create new table I18N_TIME_ZONES */
+	unset($data);
+	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'olson_tz_string', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'posix_tz_string', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['type'] = 'MyISAM';
+	plugin_upgrade_table('0.8.8', 'i18n_time_zones', $data, $show_output, $no_drop_items);
 
-	/* 
+
+
+	/*
 	 * rename host -> device for tables and columns
 	 * we have some updates to those tables in this file already
-	 * so please take care not to change sequence 
+	 * so please take care not to change sequence
 	 */
 	plugin_rename_table('0.8.8', 'host', 						'device', $show_output);
 	plugin_rename_table('0.8.8', 'host_graph', 					'device_graph', $show_output);
@@ -283,7 +292,7 @@ function upgrade_to_0_8_8() {
 	plugin_rename_table('0.8.8', 'host_template', 				'device_template', $show_output);
 	plugin_rename_table('0.8.8', 'host_template_graph', 		'device_template_graph', $show_output);
 	plugin_rename_table('0.8.8', 'host_template_snmp_query', 	'device_template_snmp_query', $show_output);
-	
+
 	/* change column names */
 	$column = array('name' => 'device_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
 	plugin_rename_column('0.8.8', 'device_graph', 'host_id', $column, $show_output);
@@ -297,22 +306,22 @@ function upgrade_to_0_8_8() {
 
 	$column = array('name' => 'device_grouping_type', 'type' => 'tinyint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
 	plugin_rename_column('0.8.8', 'graph_tree_items', 'host_grouping_type', $column, $show_output);
-	
+
 	$column = array('name' => 'device_template_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
 	plugin_rename_column('0.8.8', 'device', 'host_template_id', $column, $show_output);
 	plugin_rename_column('0.8.8', 'device_template_graph', 'host_template_id', $column, $show_output);
 	plugin_rename_column('0.8.8', 'device_template_snmp_query', 'host_template_id', $column, $show_output);
-	
+
 	$column = array('name' => 'policy_devices', 'type' => 'tinyint(1)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
 	plugin_rename_column('0.8.8', 'user_auth', 'policy_hosts', $column, $show_output);
-	
+
 	$column = array('name' => 'total_time', 'type' => 'double', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	plugin_rename_column('0.8.8', 'poller', 'ip_address', $column, $show_output);
 
 	/*
 	 * add new columns to existing tables
 	 */
-	
+
 	/* add image storage to graph templates, data queries, and device templates */
 	$columns = array();
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
@@ -323,12 +332,12 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 't_rrd_compute_rpn', 'type' => 'char(2)', 'default' => NULL, 'after' => 'rrd_minimum');
 	$columns[] = array('name' => 'rrd_compute_rpn', 'type' => 'varchar(150)', 'default' => '', 'after' => 't_rrd_compute_rpn');
 	plugin_upgrade_columns('0.8.8', 'data_template_rrd', $columns, $show_output, $no_drop_items);
-	
+
 	/* add a site column to the device table */
 	unset($columns);
 	$columns[] = array('name' => 'site_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
 	/* add the poller id for hosts to allow for multiple pollers */
-	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'site_id');		
+	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'site_id');
 	$columns[] = array('name' => 'template_enabled', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'device_template_id');
 	/* implement per device threads setting for spine */
 	$columns[] = array('name' => 'device_threads', 'type' => 'tinyint(2)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids');
@@ -340,7 +349,7 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'oid');
 	#, ADD INDEX present USING BTREE (present));
 	plugin_upgrade_columns('0.8.8', 'device_snmp_cache', $columns, $show_output, $no_drop_items);
-	
+
 	/* add some fields required for devices to table device_template */
 	unset($columns);
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
@@ -367,7 +376,7 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'max_oids', 'type' => 'int(12)', 'unsigned' => 'unsigned', 'default' => '10', 'after' => 'ping_retries');
 	$columns[] = array('name' => 'device_threads', 'type' => 'tinyint(2)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids');
 	plugin_upgrade_columns('0.8.8', 'device_template', $columns, $show_output, $no_drop_items);
-		
+
 	/* add reindexing to device_template_snmp_query */
 	unset($columns);
 	$columns[] = array('name' => 'reindex_method', 'type' => 'tinyint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'snmp_query_id');
@@ -377,7 +386,7 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
 	$columns[] = array('name' => 'image', 'type' => 'varchar(64)', 'NULL' => false, 'after' => 'description');
 	plugin_upgrade_columns('0.8.8', 'graph_templates', $columns, $show_output, $no_drop_items);
-	
+
 	/* new columns for graph_templates_graph */
 	unset($columns);
 	$columns[] = array('name' => 't_right_axis', 'type' => 'char(2)', 'default' => '0');
@@ -449,7 +458,7 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'lower_limit', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '0');
 	$columns[] = array('name' => 'border', 'type' => 'char(2)', 'default' => NULL);
 	plugin_upgrade_columns('0.8.8', 'graph_templates_graph', $columns, $show_output, $no_drop_items);
-			
+
 	/* changes to insert VDEF into table graph_templates_item just behind CDEF */
 	unset($columns);
 	$columns[] = array('name' => 'vdef_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0, 'after' => 'cdef_id');
@@ -463,18 +472,18 @@ function upgrade_to_0_8_8() {
 	# add SHIFT
 	$columns[] = array('name' => 'shift', 'type' => 'char(2)', 'default' => NULL, 'after' => 'vdef_id');
 	plugin_upgrade_columns('0.8.8', 'graph_templates_item', $columns, $show_output, $no_drop_items);
-	
+
 	/* make tree's a per user object.  System tree's have a user_id of 0 */
 	unset($columns);
 	$columns[] = array('name' => 'user_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
 	plugin_upgrade_columns('0.8.8', 'graph_tree', $columns, $show_output, $no_drop_items);
-	
+
 	/* upgrade to the graph tree items */
 	unset($columns);
 	$columns[] = array('name' => 'parent_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
 	$columns[] = array('name' => 'site_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'title');
 	plugin_upgrade_columns('0.8.8', 'graph_tree_items', $columns, $show_output, $no_drop_items);
-	
+
 	/* add the poller id for devices to allow for multiple pollers */
 	unset($columns);
 	$columns[] = array('name' => 'disabled', 'type' => 'char(2)', 'default' => '', 'after' => 'id');
@@ -483,16 +492,16 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'script', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'snmp');
 	$columns[] = array('name' => 'server', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'script');
 	plugin_upgrade_columns('0.8.8', 'poller', $columns, $show_output, $no_drop_items);
-	
+
 	unset($columns);
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'action');
 	plugin_upgrade_columns('0.8.8', 'poller_item', $columns, $show_output, $no_drop_items);
-	
+
 	/* add the poller id for poller_output to allow for multiple pollers */
 	unset($columns);
 	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'time');
 	plugin_upgrade_columns('0.8.8', 'poller_output', $columns, $show_output, $no_drop_items);
-	
+
 	unset($columns);
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'action');
 	#, ADD INDEX present USING BTREE (present));
@@ -502,15 +511,15 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'image', 'type' => 'varchar(64)', 'NULL' => false, 'after' => 'description');
 	plugin_upgrade_columns('0.8.8', 'snmp_query', $columns, $show_output, $no_drop_items);
 
-	
-	/* 
-	 * install ALL required keys ($drop_items=true) 
+
+	/*
+	 * install ALL required keys ($drop_items=true)
 	 * Take ALL keys from cacti.sql and feed them to the plugin_upgrade_keys
 	 * This procedure will take care of
 	 * - new keys
 	 * - keys that require a change (drop,add sequence)
 	 * - keys to be removed
-	 * This way, we avoid a difference between cacti.sql and upgraded keys 
+	 * This way, we avoid a difference between cacti.sql and upgraded keys
 	 */
 	$key = array();
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'data_input_field_id,data_template_data_id', 'primary' => true);
@@ -530,7 +539,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'data_template_id', 'columns' => 'data_template_id');
 	$key[] = array('name' => 'data_source_path', 'columns' => 'data_source_path');
 	plugin_upgrade_keys('0.8.8', 'data_template_data', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'local_data_id', 'columns' => 'local_data_id');
@@ -538,14 +547,14 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'local_data_template_rrd_id', 'columns' => 'local_data_template_rrd_id');
 	$key[] = array('name' => 'local_data_id_data_source_name', 'columns' => 'local_data_id,data_source_name');
 	plugin_upgrade_keys('0.8.8', 'data_template_rrd', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'disabled', 'columns' => 'disabled');
 	$key[] = array('name' => 'poller_id', 'columns' => 'poller_id');
 	$key[] = array('name' => 'site_id', 'columns' => 'site_id');
 	plugin_upgrade_keys('0.8.8', 'device', $key, true);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_id,snmp_query_id,field_name,snmp_index', 'primary' => true);
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id,field_name');
@@ -572,7 +581,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_template_id,snmp_query_id', 'primary' => true);
 	$key[] = array('name' => 'device_template_id', 'columns' => 'device_template_id');
 	plugin_upgrade_keys('0.8.8', 'device_template_snmp_query', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id');
@@ -580,7 +589,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'snmp_query_id', 'columns' => 'snmp_query_id');
 	$key[] = array('name' => 'snmp_index', 'columns' => 'snmp_index');
 	plugin_upgrade_keys('0.8.8', 'graph_local', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'graph_template_id', 'columns' => 'graph_template_id');
@@ -590,12 +599,12 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'local_graph_template_item_id', 'columns' => 'local_graph_template_item_id');
 	$key[] = array('name' => 'local_graph_id_sequence', 'columns' => 'local_graph_id,sequence');
 	plugin_upgrade_keys('0.8.8', 'graph_templates_item', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'user_id', 'columns' => 'user_id');
 	plugin_upgrade_keys('0.8.8', 'graph_tree', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'graph_tree_id', 'columns' => 'graph_tree_id');
@@ -619,7 +628,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'local_data_id,rrd_name,time', 'primary' => true);
 	$key[] = array('name' => 'poller_id', 'columns' => 'poller_id');
 	plugin_upgrade_keys('0.8.8', 'poller_output', $key, $show_output, $drop_items);
-	
+
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'username,user_id,time', 'primary' => true);
 	$key[] = array('name' => 'username', 'columns' => 'username');
@@ -628,7 +637,7 @@ function upgrade_to_0_8_8() {
 
 	/*
 	 * now it's time to change values
-	 * 
+	 *
 	 * first, tackle rename for host -> device
 	 * table value updates using REPLACE
 	 */
@@ -640,7 +649,7 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE snmp_query_graph_rrd_sv SET `text`=REPLACE(`text`,'|host_','|device_') WHERE `text` like '%%|host_%%'");
 	db_install_execute("0.8.8", "UPDATE snmp_query_graph_sv SET `text`=REPLACE(`text`,'|host_','|device_') WHERE `text` like '%%|host_%%'");
 	db_install_execute("0.8.8", "UPDATE device SET poller_id=1 WHERE poller_id=0");
-	
+
 	/*
 	 * now update current entries of table device_template
 	 * make sure to use current global default settings in order not to change
@@ -682,7 +691,7 @@ function upgrade_to_0_8_8() {
 				" `max_oids` = $max_oids");
 
 	db_install_execute("0.8.8", "UPDATE `device_template_snmp_query` SET `reindex_method` = '1'");
-		
+
 	/* plugins */
 	/* get all plugins, pre088 code guarantees that SYSTEM plugins come first */
 	$plugins = db_fetch_assoc("SELECT * FROM plugin_config ORDER BY id ASC");
@@ -694,11 +703,11 @@ function upgrade_to_0_8_8() {
 			} else {
 				$ptype = PLUGIN_TYPE_GENERAL;
 			}
-			db_install_execute("0.8.8", "UPDATE `plugin_config` SET sequence=" . $i++ . ", ptype= " . $ptype . " WHERE id=" . $item["id"]);			
+			db_install_execute("0.8.8", "UPDATE `plugin_config` SET sequence=" . $i++ . ", ptype= " . $ptype . " WHERE id=" . $item["id"]);
 		}
 	}
 
-	/* we don't need the internal hooks anymore; they're now part of the code base */	
+	/* we don't need the internal hooks anymore; they're now part of the code base */
 	db_install_execute("0.8.8", "DELETE FROM `plugin_hooks` WHERE `plugin_hooks`.`name` = 'internal'");
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 
@@ -748,7 +757,7 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "UPDATE snmp_query SET name='Linux Localhost - df - Hard Drive Space' where name='Unix - Get Mounted Partitions'");
 	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESOURCES - hrStorageTable - Hard Drive Space' where name='SNMP - Get Mounted Partitions'");
 	db_install_execute("0.8.8", "UPDATE snmp_query SET name='HOST-RESOURCES - hrProcessorTable - CPU Utilization' where name='SNMP - Get Processor Information'");
-	
+
 	/* Add SNMPv3 Context to SNMP Input Methods */
 	/* first we must see if the user was smart enough to add it themselves */
 	$context1 = db_fetch_row("SELECT id FROM data_input_fields WHERE data_input_id=1 AND data_name='snmp_context' AND input_output='in' AND type_code='snmp_context'");
@@ -765,14 +774,14 @@ function upgrade_to_0_8_8() {
 	}
 
 	db_install_execute("0.8.8", "UPDATE data_input_fields SET name='SNMP Authentication Protocol (v3)' WHERE name='SNMP Authenticaion Protocol (v3)'");
-		
+
 	db_install_execute("0.8.8", "REPLACE INTO `graph_templates_xaxis` VALUES(1, 'a09c5cab07a6e10face1710cec45e82f', 'Default')");
-		
+
 	db_install_execute("0.8.8", "REPLACE INTO `graph_templates_xaxis_items` VALUES(1, '60c2066a1c45fab021d32fe72cbf4f49', 'Day', 1, 86400, 'HOUR', 4, 'HOUR', 2, 'HOUR', 2, 23200, '%H')");
 	db_install_execute("0.8.8", "REPLACE INTO `graph_templates_xaxis_items` VALUES(2, 'd867f8fc2730af212d0fd6708385cf89', 'Week', 1, 604800, 'DAY', 1, 'DAY', 1, 'DAY', 1, 259200, '%d')");
 	db_install_execute("0.8.8", "REPLACE INTO `graph_templates_xaxis_items` VALUES(3, '06304a1840da88f3e0438ac147219003', 'Month', 1, 2678400, 'WEEK', 1, 'WEEK', 1, 'WEEK', 1, 1296000, '%W')");
 	db_install_execute("0.8.8", "REPLACE INTO `graph_templates_xaxis_items` VALUES(4, '33ac10e60fd855e74736bee43bda4134', 'Year', 1, 31622400, 'MONTH', 2, 'MONTH', 1, 'MONTH', 2, 15811200, '%m')");
-	
+
 	/* get all nodes whose parent_id is not 0 */
 	$tree_items = db_fetch_assoc("SELECT * FROM graph_tree_items WHERE order_key NOT LIKE '___000%'");
 	if (sizeof($tree_items)) {
@@ -801,7 +810,7 @@ function upgrade_to_0_8_8() {
 
 	/* update the poller_items table to set the default poller_id */
 	db_install_execute("0.8.8", "UPDATE poller_item SET poller_id=1 WHERE poller_id=0");
-		
+
 	/* fill table VDEF */
 	db_install_execute("0.8.8", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("0.8.8", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
@@ -811,8 +820,8 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO `vdef` VALUES (6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source');");
 	db_install_execute("0.8.8", "REPLACE INTO `vdef` VALUES (7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source');");
 
-		
-  		
+
+
 	/* fill table VDEF */
 	db_install_execute("0.8.8", "REPLACE INTO `vdef_items` VALUES (1, '88d33bf9271ac2bdf490cf1784a342c1', 1, 1, 4, 'CURRENT_DATA_SOURCE');");
 	db_install_execute("0.8.8", "REPLACE INTO `vdef_items` VALUES (2, 'a307afab0c9b1779580039e3f7c4f6e5', 1, 2, 1, '1');");
@@ -829,12 +838,12 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO `vdef_items` VALUES (13, 'f1bf2ecf54ca0565cf39c9c3f7e5394b', 7, 1, 4, 'CURRENT_DATA_SOURCE');");
 	db_install_execute("0.8.8", "REPLACE INTO `vdef_items` VALUES (14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95');");
 	db_install_execute("0.8.8", "REPLACE INTO `vdef_items` VALUES (15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');");
-	
+
 	# graph_templates_items: set line_width of x
 	db_install_execute("0.8.8", "UPDATE graph_templates_item SET `line_width`=1 WHERE `graph_type_id`=4"); # LINE1
 	db_install_execute("0.8.8", "UPDATE graph_templates_item SET `line_width`=2 WHERE `graph_type_id`=5"); # LINE2
 	db_install_execute("0.8.8", "UPDATE graph_templates_item SET `line_width`=3 WHERE `graph_type_id`=6"); # LINE3
-	
+
 	/* new cdef's for background colorization */
 	$cdef_id = 	db_fetch_cell("SELECT id FROM cdef WHERE hash='2544acefc5fef30366c71336166ed141';");
 	if ($cdef_id == 0) {
@@ -961,8 +970,8 @@ function upgrade_to_0_8_8() {
 			db_install_execute("0.8.8", "UPDATE settings_graphs SET `value`='' WHERE  name IN ('title_size','title_font','legend_size','legend_font','axis_size','axis_font','unit_size','unit_font') AND `user_id`=" . $user['user_id']);
 		}
 	}
-	
-	
+
+
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
 	$device_snmp_query = db_fetch_assoc("select device_id,snmp_query_id from device_snmp_query");
 	if (sizeof($device_snmp_query) > 0) {
@@ -970,6 +979,410 @@ function upgrade_to_0_8_8() {
 			update_reindex_cache($item["device_id"], $item["snmp_query_id"]);
 		}
 	}
-	
+
+	/* fill table I18N_TIME_ZONES */
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(1, 'Africa/Abidjan', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(2, 'Africa/Accra', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(3, 'Africa/Addis_Ababa', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(4, 'Africa/Algiers', 'CET-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(5, 'Africa/Asmara', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(7, 'Africa/Bamako', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(8, 'Africa/Bangui', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(9, 'Africa/Banjul', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(10, 'Africa/Bissau', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(11, 'Africa/Blantyre', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(12, 'Africa/Brazzaville', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(13, 'Africa/Bujumbura', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(14, 'Africa/Cairo', 'EET-2EEST,M4.5.5/01:00,M9.5.5/03:00');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(15, 'Africa/Casablanca', 'WET0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(16, 'Africa/Ceuta', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(17, 'Africa/Conakry', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(18, 'Africa/Dakar', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(19, 'Africa/Dar_es_Salaam', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(20, 'Africa/Djibouti', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(21, 'Africa/Douala', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(22, 'Africa/El_Aaiun', 'WET0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(23, 'Africa/Freetown', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(24, 'Africa/Gaborone', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(25, 'Africa/Harare', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(26, 'Africa/Johannesburg', 'SAST-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(27, 'Africa/Kampala', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(28, 'Africa/Khartoum', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(29, 'Africa/Kigali', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(30, 'Africa/Kinshasa', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(31, 'Africa/Lagos', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(32, 'Africa/Libreville', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(33, 'Africa/Lome', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(34, 'Africa/Luanda', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(35, 'Africa/Lubumbashi', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(36, 'Africa/Lusaka', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(37, 'Africa/Malabo', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(38, 'Africa/Maputo', 'CAT-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(39, 'Africa/Maseru', 'SAST-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(40, 'Africa/Mbabane', 'SAST-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(41, 'Africa/Mogadishu', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(42, 'Africa/Monrovia', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(43, 'Africa/Nairobi', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(44, 'Africa/Ndjamena', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(45, 'Africa/Niamey', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(46, 'Africa/Nouakchott', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(47, 'Africa/Ouagadougou', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(48, 'Africa/Porto-Novo', 'WAT-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(49, 'Africa/Sao_Tome', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(51, 'Africa/Tripoli', 'EET-2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(52, 'Africa/Tunis', 'CET-1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(53, 'Africa/Windhoek', 'WAT-1WAST,M9.1.0,M4.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(54, 'America/Adak', 'HAST10HADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(55, 'America/Anchorage', 'AKST9AKDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(56, 'America/Anguilla', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(57, 'America/Antigua', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(58, 'America/Araguaina', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(59, 'America/Aruba', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(60, 'America/Asuncion', 'PYT4PYST,M10.1.0/0,M4.2.0/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(61, 'America/Atikokan', 'EST5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(63, 'America/Bahia', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(65, 'America/Barbados', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(66, 'America/Belem', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(67, 'America/Belize', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(68, 'America/Blanc-Sablon', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(69, 'America/Boa_Vista', 'AMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(70, 'America/Bogota', 'COT5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(71, 'America/Boise', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(73, 'America/Cambridge_Bay', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(74, 'America/Campo_Grande', 'AMT4AMST,M10.3.0/0,M2.3.0/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(75, 'America/Cancun', 'CST6CDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(76, 'America/Caracas', 'VET4:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(78, 'America/Cayenne', 'GFT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(79, 'America/Cayman', 'EST5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(80, 'America/Chicago', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(81, 'America/Chihuahua', 'MST7MDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(84, 'America/Costa_Rica', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(85, 'America/Cuiaba', 'AMT4AMST,M10.3.0/0,M2.3.0/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(86, 'America/Curacao', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(87, 'America/Danmarkshavn', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(88, 'America/Dawson', 'PST8PDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(89, 'America/Dawson_Creek', 'MST7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(90, 'America/Denver', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(91, 'America/Detroit', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(92, 'America/Dominica', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(93, 'America/Edmonton', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(94, 'America/Eirunepe', 'AMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(95, 'America/El_Salvador', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(97, 'America/Fortaleza', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(99, 'America/Glace_Bay', 'AST4ADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(100, 'America/Godthab', 'WGT-3WGST,M3.5.0/1,M10.5.0/1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(101, 'America/Goose_Bay', 'AST4ADT,M3.2.0/0:01,M11.1.0/0:01');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(102, 'America/Grand_Turk', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(103, 'America/Grenada', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(104, 'America/Guadeloupe', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(105, 'America/Guatemala', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(106, 'America/Guayaquil', 'ECT5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(107, 'America/Guyana', 'GYT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(108, 'America/Halifax', 'AST4ADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(109, 'America/Havana', 'CST5CDT,M3.2.0/0,M10.5.0/1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(110, 'America/Hermosillo', 'MST7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(112, 'America/Inuvik', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(113, 'America/Iqaluit', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(114, 'America/Jamaica', 'EST5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(116, 'America/Juneau', 'AKST9AKDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(118, 'America/La_Paz', 'BOT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(119, 'America/Lima', 'PET5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(120, 'America/Los_Angeles', 'PST8PDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(122, 'America/Maceio', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(123, 'America/Managua', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(124, 'America/Manaus', 'AMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(125, 'America/Marigot', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(126, 'America/Martinique', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(128, 'America/Mazatlan', 'MST7MDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(130, 'America/Menominee', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(131, 'America/Merida', 'CST6CDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(132, 'America/Mexico_City', 'CST6CDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(133, 'America/Miquelon', 'PMST3PMDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(134, 'America/Moncton', 'AST4ADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(135, 'America/Monterrey', 'CST6CDT,M4.1.0,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(136, 'America/Montevideo', 'UYT3UYST,M10.1.0,M3.2.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(137, 'America/Montreal', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(138, 'America/Montserrat', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(139, 'America/Nassau', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(140, 'America/New_York', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(141, 'America/Nipigon', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(142, 'America/Nome', 'AKST9AKDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(143, 'America/Noronha', 'FNT2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(145, 'America/Panama', 'EST5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(146, 'America/Pangnirtung', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(147, 'America/Paramaribo', 'SRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(148, 'America/Phoenix', 'MST7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(149, 'America/Port-au-Prince', 'EST5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(151, 'America/Porto_Velho', 'AMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(152, 'America/Port_of_Spain', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(153, 'America/Puerto_Rico', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(154, 'America/Rainy_River', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(155, 'America/Rankin_Inlet', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(156, 'America/Recife', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(157, 'America/Regina', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(158, 'America/Resolute', 'CST5CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(159, 'America/Rio_Branco', 'AMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(161, 'America/Santarem', 'BRT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(163, 'America/Santiago', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(164, 'America/Santo_Domingo', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(165, 'America/Sao_Paulo', 'BRT3BRST,M10.3.0/0,M2.3.0/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(166, 'America/Scoresbysund', 'EGT1EGST,M3.5.0/0,M10.5.0/1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(167, 'America/Shiprock', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(168, 'America/St_Barthelemy', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(169, 'America/St_Johns', 'NST3:30NDT,M3.2.0/0:01,M11.1.0/0:01');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(170, 'America/St_Kitts', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(171, 'America/St_Lucia', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(172, 'America/St_Thomas', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(173, 'America/St_Vincent', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(174, 'America/Swift_Current', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(175, 'America/Tegucigalpa', 'CST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(176, 'America/Thule', 'AST4ADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(177, 'America/Thunder_Bay', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(178, 'America/Tijuana', 'PST8PDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(179, 'America/Toronto', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(180, 'America/Tortola', 'AST4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(181, 'America/Vancouver', 'PST8PDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(183, 'America/Whitehorse', 'PST8PDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(184, 'America/Winnipeg', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(185, 'America/Yakutat', 'AKST9AKDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(186, 'America/Yellowknife', 'MST7MDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(187, 'America/Argentina/Buenos_Aires', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(188, 'America/Argentina/Catamarca', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(190, 'America/Argentina/Cordoba', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(191, 'America/Argentina/Jujuy', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(192, 'America/Argentina/La_Rioja', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(193, 'America/Argentina/Mendoza', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(194, 'America/Argentina/Rio_Gallegos', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(195, 'America/Argentina/Salta', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(196, 'America/Argentina/San_Juan', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(197, 'America/Argentina/San_Luis', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(198, 'America/Argentina/Tucuman', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(199, 'America/Argentina/Ushuaia', 'ART3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(200, 'America/Indiana/Indianapolis', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(201, 'America/Indiana/Knox', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(202, 'America/Indiana/Marengo', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(203, 'America/Indiana/Petersburg', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(204, 'America/Indiana/Tell_City', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(205, 'America/Indiana/Vevay', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(206, 'America/Indiana/Vincennes', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(207, 'America/Indiana/Winamac', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(208, 'America/Kentucky/Louisville', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(209, 'America/Kentucky/Monticello', 'EST5EDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(210, 'America/North_Dakota/Center', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(211, 'America/North_Dakota/New_Salem', 'CST6CDT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(212, 'Antarctica/Casey', 'WST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(213, 'Antarctica/Davis', 'DAVT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(214, 'Antarctica/DumontDUrville', 'DDUT-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(216, 'Antarctica/Mawson', 'MAWT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(217, 'Antarctica/McMurdo', 'NZST-12NZDT,M9.5.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(218, 'Antarctica/Palmer', 'GMT4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(219, 'Antarctica/Rothera', 'ROTT3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(220, 'Antarctica/South_Pole', 'NZST-12NZDT,M9.5.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(221, 'Antarctica/Syowa', 'SYOT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(222, 'Antarctica/Vostok', 'VOST-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(223, 'Arctic/Longyearbyen', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(224, 'Asia/Aden', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(225, 'Asia/Almaty', 'ALMT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(226, 'Asia/Amman', 'EET-2EEST,M3.5.4/0,M10.5.5/1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(227, 'Asia/Anadyr', 'ANAT-11ANAST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(228, 'Asia/Aqtau', 'AQTT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(229, 'Asia/Aqtobe', 'AQTT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(230, 'Asia/Ashgabat', 'TMT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(232, 'Asia/Baghdad', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(233, 'Asia/Bahrain', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(234, 'Asia/Baku', 'AZT-4AZST,M3.5.0/4,M10.5.0/5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(235, 'Asia/Bangkok', 'ICT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(236, 'Asia/Beirut', 'EET-2EEST,M3.5.0/0,M10.5.0/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(237, 'Asia/Bishkek', 'KGT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(238, 'Asia/Brunei', 'BNT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(240, 'Asia/Choibalsan', 'CHOT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(241, 'Asia/Chongqing', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(243, 'Asia/Colombo', 'IST-5:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(245, 'Asia/Damascus', 'EET-2EEST,M4.1.5/0,M10.5.5/0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(246, 'Asia/Dhaka', 'BDT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(247, 'Asia/Dili', 'TLT-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(248, 'Asia/Dubai', 'GST-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(249, 'Asia/Dushanbe', 'TJT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(250, 'Asia/Gaza', 'EET-2EEST,M3.5.6/0:01,M9.1.5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(251, 'Asia/Harbin', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(252, 'Asia/Hong_Kong', 'HKT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(253, 'Asia/Hovd', 'HOVT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(254, 'Asia/Ho_Chi_Minh', 'ICT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(255, 'Asia/Irkutsk', 'IRKT-8IRKST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(257, 'Asia/Jakarta', 'WIT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(258, 'Asia/Jayapura', 'EIT-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(259, 'Asia/Jerusalem', 'IST-2IDT,M4.1.5,M10.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(260, 'Asia/Kabul', 'AFT-4:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(261, 'Asia/Kamchatka', 'PETT-11PETST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(262, 'Asia/Karachi', 'PKT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(263, 'Asia/Kashgar', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(265, 'Asia/Katmandu', 'NPT-5:45');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(266, 'Asia/Kolkata', 'IST-5:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(267, 'Asia/Krasnoyarsk', 'KRAT-7KRAST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(268, 'Asia/Kuala_Lumpur', 'MYT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(269, 'Asia/Kuching', 'MYT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(270, 'Asia/Kuwait', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(272, 'Asia/Macau', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(273, 'Asia/Magadan', 'MAGT-11MAGST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(274, 'Asia/Makassar', 'CIT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(275, 'Asia/Manila', 'PHT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(276, 'Asia/Muscat', 'GST-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(277, 'Asia/Nicosia', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(279, 'Asia/Novosibirsk', 'NOVT-6NOVST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(280, 'Asia/Omsk', 'OMST-6OMSST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(281, 'Asia/Oral', 'ORAT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(282, 'Asia/Phnom_Penh', 'ICT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(283, 'Asia/Pontianak', 'WIT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(284, 'Asia/Pyongyang', 'KST-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(285, 'Asia/Qatar', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(286, 'Asia/Qyzylorda', 'QYZT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(287, 'Asia/Rangoon', 'MMT-6:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(288, 'Asia/Riyadh', 'AST-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(293, 'Asia/Sakhalin', 'SAKT-10SAKST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(294, 'Asia/Samarkand', 'UZT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(295, 'Asia/Seoul', 'KST-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(296, 'Asia/Shanghai', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(297, 'Asia/Singapore', 'SGT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(298, 'Asia/Taipei', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(299, 'Asia/Tashkent', 'UZT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(300, 'Asia/Tbilisi', 'GET-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(301, 'Asia/Tehran', 'IRST-3:30IRDT,M3.4.2,M9.5.4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(304, 'Asia/Thimphu', 'BTT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(305, 'Asia/Tokyo', 'JST-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(307, 'Asia/Ulaanbaatar', 'ULAT-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(309, 'Asia/Urumqi', 'CST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(310, 'Asia/Vientiane', 'ICT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(311, 'Asia/Vladivostok', 'VLAT-10VLAST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(312, 'Asia/Yakutsk', 'YAKT-9YAKST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(313, 'Asia/Yekaterinburg', 'YEKT-5YEKST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(314, 'Asia/Yerevan', 'AMT-4AMST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(315, 'Atlantic/Azores', 'AZOT1AZOST,M3.5.0/0,M10.5.0/1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(316, 'Atlantic/Bermuda', 'AST4ADT,M3.2.0,M11.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(317, 'Atlantic/Canary', 'WET0WEST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(318, 'Atlantic/Cape_Verde', 'CVT1');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(320, 'Atlantic/Faroe', 'WET0WEST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(322, 'Atlantic/Madeira', 'WET0WEST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(323, 'Atlantic/Reykjavik', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(324, 'Atlantic/South_Georgia', 'GST2');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(325, 'Atlantic/Stanley', 'FKT4FKST,M9.1.0,M4.3.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(326, 'Atlantic/St_Helena', 'GMT0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(327, 'Europe/Amsterdam', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(328, 'Europe/Andorra', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(329, 'Europe/Athens', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(331, 'Europe/Belgrade', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(332, 'Europe/Berlin', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(333, 'Europe/Bratislava', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(334, 'Europe/Brussels', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(335, 'Europe/Bucharest', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(336, 'Europe/Budapest', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(337, 'Europe/Chisinau', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(338, 'Europe/Copenhagen', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(339, 'Europe/Dublin', 'GMT0IST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(340, 'Europe/Gibraltar', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(341, 'Europe/Guernsey', 'GMT0BST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(342, 'Europe/Helsinki', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(343, 'Europe/Isle_of_Man', 'GMT0BST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(344, 'Europe/Istanbul', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(345, 'Europe/Jersey', 'GMT0BST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(346, 'Europe/Kaliningrad', 'EET-2EEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(347, 'Europe/Kiev', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(348, 'Europe/Lisbon', 'WET0WEST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(349, 'Europe/Ljubljana', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(350, 'Europe/London', 'GMT0BST,M3.5.0/1,M10.5.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(351, 'Europe/Luxembourg', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(352, 'Europe/Madrid', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(353, 'Europe/Malta', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(354, 'Europe/Mariehamn', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(355, 'Europe/Minsk', 'EET-2EEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(356, 'Europe/Monaco', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(357, 'Europe/Moscow', 'MSK-3MSD,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(359, 'Europe/Oslo', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(360, 'Europe/Paris', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(361, 'Europe/Podgorica', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(362, 'Europe/Prague', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(363, 'Europe/Riga', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(364, 'Europe/Rome', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(365, 'Europe/Samara', 'SAMT-3SAMST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(366, 'Europe/San_Marino', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(367, 'Europe/Sarajevo', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(368, 'Europe/Simferopol', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(369, 'Europe/Skopje', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(370, 'Europe/Sofia', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(371, 'Europe/Stockholm', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(372, 'Europe/Tallinn', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(373, 'Europe/Tirane', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(375, 'Europe/Uzhgorod', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(376, 'Europe/Vaduz', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(377, 'Europe/Vatican', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(378, 'Europe/Vienna', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(379, 'Europe/Vilnius', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(380, 'Europe/Volgograd', 'VOLT-3VOLST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(381, 'Europe/Warsaw', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(382, 'Europe/Zagreb', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(383, 'Europe/Zaporozhye', 'EET-2EEST,M3.5.0/3,M10.5.0/4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(384, 'Europe/Zurich', 'CET-1CEST,M3.5.0,M10.5.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(385, 'Indian/Antananarivo', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(386, 'Indian/Chagos', 'IOT-6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(387, 'Indian/Christmas', 'CXT-7');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(388, 'Indian/Cocos', 'CCT-6:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(389, 'Indian/Comoro', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(390, 'Indian/Kerguelen', 'TFT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(391, 'Indian/Mahe', 'SCT-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(392, 'Indian/Maldives', 'MVT-5');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(393, 'Indian/Mauritius', 'MUT-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(394, 'Indian/Mayotte', 'EAT-3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(395, 'Indian/Reunion', 'RET-4');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(396, 'Pacific/Apia', 'WST11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(397, 'Pacific/Auckland', 'NZST-12NZDT,M9.5.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(398, 'Pacific/Chatham', 'CHAST-12:45CHADT,M9.5.0/2:45,M4.1.0/3:45');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(399, 'Pacific/Easter', 'EAST6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(400, 'Pacific/Efate', 'VUT-11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(401, 'Pacific/Enderbury', 'PHOT-13');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(402, 'Pacific/Fakaofo', 'TKT10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(403, 'Pacific/Fiji', 'FJT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(404, 'Pacific/Funafuti', 'TVT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(405, 'Pacific/Galapagos', 'GALT6');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(406, 'Pacific/Gambier', 'GAMT9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(407, 'Pacific/Guadalcanal', 'SBT-11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(408, 'Pacific/Guam', 'ChST-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(409, 'Pacific/Honolulu', 'HST10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(410, 'Pacific/Johnston', 'HST10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(411, 'Pacific/Kiritimati', 'LINT-14');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(412, 'Pacific/Kosrae', 'KOST-11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(413, 'Pacific/Kwajalein', 'MHT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(414, 'Pacific/Majuro', 'MHT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(415, 'Pacific/Marquesas', 'MART9:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(416, 'Pacific/Midway', 'SST11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(417, 'Pacific/Nauru', 'NRT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(418, 'Pacific/Niue', 'NUT11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(419, 'Pacific/Norfolk', 'NFT-11:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(420, 'Pacific/Noumea', 'NCT-11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(421, 'Pacific/Pago_Pago', 'SST11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(422, 'Pacific/Palau', 'PWT-9');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(423, 'Pacific/Pitcairn', 'PST8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(424, 'Pacific/Ponape', 'PONT-11');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(425, 'Pacific/Port_Moresby', 'PGT-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(426, 'Pacific/Rarotonga', 'CKT10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(427, 'Pacific/Saipan', 'ChST-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(429, 'Pacific/Tahiti', 'TAHT10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(430, 'Pacific/Tarawa', 'GILT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(431, 'Pacific/Tongatapu', 'TOT-13');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(432, 'Pacific/Truk', 'TRUT-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(433, 'Pacific/Wake', 'WAKT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(434, 'Pacific/Wallis', 'WFT-12');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(437, 'Australia/Adelaide', 'CST-9:30CST,M10.1.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(438, 'Australia/Brisbane', 'EST-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(439, 'Australia/Broken_Hill', 'CST-9:30CST,M10.1.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(441, 'Australia/Currie', 'EST-10EST,M10.1.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(442, 'Australia/Darwin', 'CST-9:30');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(443, 'Australia/Eucla', 'CWST-8:45');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(444, 'Australia/Hobart', 'EST-10EST,M10.1.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(446, 'Australia/Lindeman', 'EST-10');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(447, 'Australia/Lord_Howe', 'LHST-10:30LHST-11,M10.1.0,M4.1.0');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(448, 'Australia/Melbourne', 'EST-10EST,M10.1.0,M4.1.0/3');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(451, 'Australia/Perth', 'WST-8');");
+	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(454, 'Australia/Sydney', 'EST-10EST,M10.1.0,M4.1.0/3');");
+
+
 	/* TODO: Upgrade current users and permissions */
 }
