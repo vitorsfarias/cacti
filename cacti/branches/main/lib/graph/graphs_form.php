@@ -916,18 +916,21 @@ function graph_edit() {
 			$("input").attr("disabled","disabled");
 			$("select").attr("disabled","disabled");
 			$("#cancel").removeAttr("disabled");
+			$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
 		});
 
 		function changeGraphState() {
 			if (disabled) {
 				$("input").removeAttr("disabled");
 				$("select").removeAttr("disabled");
+				$(".lock").html("<?php print __("Template is unlocked");?>");
 				disabled = false;
 				rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
 			}else{
 				$("input").attr("disabled","disabled");
 				$("select").attr("disabled","disabled");
 				$("#cancel").removeAttr("disabled");
+				$(".lock").html("<?php print __("Template is locked");?>");
 				disabled = true;
 			}
 		}
