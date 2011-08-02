@@ -306,7 +306,7 @@ function graph_form_actions() {
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
 
-				api_tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_GRAPH, get_request_var_post("tree_item_id"), "", $selected_items[$i], read_graph_config_option("default_rra_id"), 0, 0, 0, false);
+				tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_GRAPH, get_request_var_post("tree_item_id"), "", $selected_items[$i], read_graph_config_option("default_rra_id"), 0, 0, 0, false);
 			}
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_HOST) { /* change device */
 			input_validate_input_number(get_request_var_post("device_id"));
@@ -377,7 +377,7 @@ function graph_form_actions() {
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
 	/* add a list of tree names to the actions dropdown */
-	$graph_actions = array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array());
+	$graph_actions = array_merge(graph_actions_list(), tree_add_tree_names_to_actions_array());
 
 	$graph_actions[ACTION_NONE] = __("None");
 
@@ -1379,7 +1379,7 @@ function graph($refresh = true) {
 	$table->resizable      = true;
 	$table->checkbox       = true;
 	$table->sortable       = true;
-	$table->actions        = array_merge(graph_actions_list(), api_tree_add_tree_names_to_actions_array());
+	$table->actions        = array_merge(graph_actions_list(), tree_add_tree_names_to_actions_array());
 
 	/* we must validate table variables */
 	$table->process_page_variables();

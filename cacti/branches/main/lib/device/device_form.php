@@ -362,7 +362,7 @@ function api_device_form_actions() {
 				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
-				api_tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_DEVICE, get_request_var_post("tree_item_id"), "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
+				tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_DEVICE, get_request_var_post("tree_item_id"), "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
 		} else {
 			api_plugin_hook_function('device_action_execute', get_request_var_post('drp_action'));
@@ -391,9 +391,9 @@ function api_device_form_actions() {
 
 	/* add a list of tree names to the actions dropdown */
 	if (isset($device_actions)) {
-		$device_actions = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
+		$device_actions = array_merge($device_actions, tree_add_tree_names_to_actions_array());
 	}else{
-		$device_actions = api_tree_add_tree_names_to_actions_array();
+		$device_actions = tree_add_tree_names_to_actions_array();
 	}
 
 	$device_actions[ACTION_NONE] = __("None");
@@ -1814,7 +1814,7 @@ function device($refresh = true) {
 	$table->resizable      = true;
 	$table->checkbox       = true;
 	$table->sortable       = true;
-	$table->actions        = array_merge($device_actions, api_tree_add_tree_names_to_actions_array());
+	$table->actions        = array_merge($device_actions, tree_add_tree_names_to_actions_array());
 
 	/* we must validate table variables */
 	$table->process_page_variables();

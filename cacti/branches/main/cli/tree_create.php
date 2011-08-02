@@ -193,7 +193,7 @@ if (sizeof($parms)) {
 				if (!isset($tree_item["device_grouping_type"])) 	$tree_item["device_grouping_type"] 	= TREE_DEVICE_GROUPING_GRAPH_TEMPLATE;
 
 				# $nodeId could be a Header Node, a Graph Node, or a Host node.
-				$nodeId = api_tree_item_save(0, $tree_item["graph_tree_id"], $itemType, $tree_item["parent_node"],
+				$nodeId = tree_item_save(0, $tree_item["graph_tree_id"], $itemType, $tree_item["parent_node"],
 											$tree_item["title"], $tree_item["local_graph_id"], $tree_item["rra_id"], $tree_item["device_id"],
 											$tree_item["device_grouping_type"], $tree_item["sort_children_type"], false);
 
