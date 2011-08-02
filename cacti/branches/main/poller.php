@@ -357,7 +357,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$device_count ++;
 
 			if ($change_proc) {
-				exec_background($command_string, "$extra_args --first=$first_device --last=$last_device");
+				exec_background($command_string, "$extra_args --first=$first_device --last=$last_device" . ($debug ? " --debug":""));
 				usleep(100000);
 
 				$device_count   = 1;
@@ -373,7 +373,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($device_count > 1) {
 			$last_device = $item["id"];
 
-			exec_background($command_string, "$extra_args --first=$first_device --last=$last_device");
+			exec_background($command_string, "$extra_args --first=$first_device --last=$last_device" . ($debug ? " --debug":""));
 			usleep(100000);
 
 			$process_number++;
@@ -431,7 +431,7 @@ while ($poller_runs_completed < $poller_runs) {
 		/* process poller commands */
 		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command WHERE poller_id=$poller_id ") > 0) {
 			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
-			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php --poller=$poller_id ";
+			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php --poller=$poller_id " . ($debug ? " --debug":"");
 			exec_background($command_string, "$extra_args");
 		} else {
 			/* no re-index or Rechache present on this run
@@ -449,7 +449,7 @@ while ($poller_runs_completed < $poller_runs) {
 			if ((read_config_option("export_type") != "disabled") &&
 				(read_config_option("export_timing") != "disabled")) {
 				$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
-				$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_export.php\"";
+				$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_export.php\"" . ($debug ? " --debug":"");
 				exec_background($command_string, "$extra_args");
 			}
 		}

@@ -480,8 +480,6 @@ function upgrade_to_0_8_8() {
 	unset($columns);
 	$columns[] = array('name' => 'disabled', 'type' => 'char(2)', 'default' => '', 'after' => 'id');
 	$columns[] = array('name' => 'description', 'type' => 'varchar(45)', 'NULL' => false, 'default' => '', 'after' => 'disabled');
-	/* make the poller's ip address varchar() */
-	$columns[] = array('name' => 'ip_address', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '');
 	plugin_upgrade_columns('0.8.8', 'poller', $columns, $show_output, $no_drop_items);
 	
 	unset($columns);
