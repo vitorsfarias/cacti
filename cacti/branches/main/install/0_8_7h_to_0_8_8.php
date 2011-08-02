@@ -306,7 +306,7 @@ function upgrade_to_0_8_8() {
 	$column = array('name' => 'policy_devices', 'type' => 'tinyint(1)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
 	plugin_rename_column('0.8.8', 'user_auth', 'policy_hosts', $column, $show_output);
 	
-	$column = array('name' => 'total_time', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
+	$column = array('name' => 'total_time', 'type' => 'double', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	plugin_rename_column('0.8.8', 'poller', 'ip_address', $column, $show_output);
 
 	/*

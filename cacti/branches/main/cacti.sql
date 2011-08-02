@@ -2429,7 +2429,7 @@ CREATE TABLE poller (
   disabled char(2) default '',
   description varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
   hostname varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
-  total_time integer(11) unsigned NOT NULL default '0',
+  total_time double unsigned NOT NULL default '0',
   snmp mediumint(8) unsigned NOT NULL default '0',
   script mediumint(8) unsigned NOT NULL default '0',
   server mediumint(8) unsigned NOT NULL default '0',
