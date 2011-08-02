@@ -267,7 +267,7 @@ while ($poller_runs_completed < $poller_runs) {
 	db_execute("DELETE FROM poller_time WHERE poller_id=$poller_id");
 
 	$issues_limit = 20;
-	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output" . ($poller_id == 1 ? "" : " WHERE poller_id=$poller_id ") . " LIMIT " . ($issues_limit + 1));
+	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output WHERE poller_id=$poller_id LIMIT " . ($issues_limit + 1));
 	
 	if (sizeof($issues)) {
 		$issue_list = "";
@@ -325,10 +325,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* add the poller id for the various collectors */
-		if ($poller_id > 1) {
-			$extra_args .= " --poller=$poller_id";
-		}
-
+		$extra_args .= " --poller=$poller_id";
 		$extra_args = plugin_hook_function('poller_command_args', $extra_args);
 
 		/* Populate each execution file with appropriate information */
@@ -432,9 +429,9 @@ while ($poller_runs_completed < $poller_runs) {
 		rrd_close($rrdtool_pipe);
 
 		/* process poller commands */
-		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command" . ($poller_id == 1 ? "" : " WHERE poller_id=$poller_id ")) > 0) {
+		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command WHERE poller_id=$poller_id ") > 0) {
 			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
-			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php\"" . ($poller_id == 1 ? "" : " --poller=$poller_id ");
+			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php --poller=$poller_id ";
 			exec_background($command_string, "$extra_args");
 		} else {
 			/* no re-index or Rechache present on this run
