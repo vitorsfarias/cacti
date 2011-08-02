@@ -81,7 +81,7 @@ if (($_REQUEST["action"] == "tree") &&
 	}
 }
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -95,7 +95,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	}else if (isset($_SESSION["action"]) && $_SESSION["action"] == 'zoom') {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
 	}else{
-		$refresh = api_plugin_hook_function('top_graph_refresh', '0');
+		$refresh = plugin_hook_function('top_graph_refresh', '0');
 
 		if ($refresh > 0) {
 			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
@@ -129,7 +129,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar-setup.js'></script>
-	<?php initializeCookieVariable(); api_plugin_hook('page_head'); ?>
+	<?php initializeCookieVariable(); plugin_hook('page_head'); ?>
 </head>
 <body id='body'>
 <script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/wztooltip/wz_tooltip.js'></script>
@@ -140,7 +140,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			<ul>
 				<?php echo draw_header_tab("console", __("Console"), CACTI_URL_PATH . "index.php");?>
 				<?php echo draw_header_tab("graphs", __("Graphs"), CACTI_URL_PATH . "graph_view.php");?>
-				<?php api_plugin_hook('top_graph_header_tabs');?>
+				<?php plugin_hook('top_graph_header_tabs');?>
 			</ul>
 		</div>
 		<div id='navbar_r'>
@@ -150,7 +150,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 				<?php echo draw_header_tab("tree", __("Tree"), CACTI_URL_PATH . "graph_view.php?action=tree", CACTI_URL_PATH . "images/tab_mode_tree_new.gif");?>
 				<?php echo draw_header_tab("list", __("List"), CACTI_URL_PATH . "graph_view.php?action=list", CACTI_URL_PATH . "images/tab_mode_list_new.gif");?>
 				<?php echo draw_header_tab("preview", __("Preview"), CACTI_URL_PATH . "graph_view.php?action=preview", CACTI_URL_PATH . "images/tab_mode_preview_new.gif");?>
-				<?php }else{ api_plugin_hook('top_graph_header_tabs_right'); }?>
+				<?php }else{ plugin_hook('top_graph_header_tabs_right'); }?>
 			</ul>
 		</div>
 	</div>

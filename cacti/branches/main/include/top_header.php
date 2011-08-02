@@ -26,7 +26,7 @@ include_once(CACTI_BASE_PATH . "/lib/time.php");
 
 global $config, $lang2locale;
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 
 /* store the current tab */
 load_current_session_value("toptab", "sess_cacti_toptab", "console");
@@ -64,7 +64,7 @@ if (isset($refresh)) {
 	print "\t<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">\n";
 }
 initializeCookieVariable();
-api_plugin_hook('page_head');
+plugin_hook('page_head');
 ?>
 </head>
 <body id='body'>
@@ -76,7 +76,7 @@ api_plugin_hook('page_head');
 			<ul>
 				<?php echo draw_header_tab("console", __("Console"), CACTI_URL_PATH . "index.php");?>
 				<?php echo draw_header_tab("graphs", __("Graphs"), CACTI_URL_PATH . "graph_view.php");?>
-				<?php api_plugin_hook('top_header_tabs'); ?>
+				<?php plugin_hook('top_header_tabs'); ?>
 			</ul>
 		</div>
 	</div>

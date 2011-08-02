@@ -74,6 +74,10 @@ switch (get_request_var_request("action")) {
 		data_source_toggle_status();
 
 		break;
+	case 'ajaxlist':
+		data_source();
+
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
