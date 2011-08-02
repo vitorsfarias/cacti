@@ -122,49 +122,59 @@ case 'tree':
 	<script type="text/javascript">
 	<!--
 
-	$(function() {
-		Panel = {};
+    $("#graph_tree").jstree({
+        "json_data" : {
+            "ajax" : {
+                "url" : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>",
+                "data" : function (n) {
+                    return { id : n.attr ? n.attr("id") : 0 };
+                }
+            }
+        },
+        "plugins" : [ "themes", "json_data" ]
+    });
 
-		Panel.jsTree = $.tree.create();
-		Panel.jsTree.init($("#graph_tree .tree"),{
-			data : { type : "json", async : true,
-				opts : {
-					method : "GET",
-					url : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>" }
-				},
-			languages : [ "en" ],
-			callback : {
-				onselect : function(node, tree) {
-					Panel.loadContent(node.id);
-				}
-			},
-			types : {
-				"default" : {
-					clickable    : true,
-					renameable   : false,
-					deletable    : false,
-					creatable    : false,
-					draggable    : false,
-					max_children : -1,
-					max_depth    : -1,
-					valid_children	: "all",
-					icon : {
-						image : false,
-						position : false
-					}
-				}
-			}
-		});
-		Panel.creating = 0;
+//	$(function() {
+//		Panel = {};
+
+//		Panel.jsTree = $.tree.create();
+//		Panel.jsTree.init($("#graph_tree .tree"),{
+//			data : { type : "json", async : true,
+//				opts : {
+//					method : "GET",
+//					url : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>" }
+//				},
+//			languages : [ "en" ],
+//			callback : {
+//				onselect : function(node, tree) {
+//					Panel.loadContent(node.id);
+//				}
+//			},
+//			types : {
+//				"default" : {
+//					clickable    : true,
+//					renameable   : false,
+//					deletable    : false,
+//					creatable    : false,
+//					draggable    : false,
+//					max_children : -1,
+//					max_depth    : -1,
+//					valid_children	: "all",
+//					icon : {
+//						image : false,
+//						position : false
+//					}
+//				}
+//			}
+//		});
+//		Panel.creating = 0;
 
 		// Functions
-		Panel.loadContent = function(id) {
+		$.ready(function(id) {
 			$.get("graph_view.php?action=ajax_get_tree_content&id=" + id, function(data) {
 				$("#graphs").html(data);
 			});
-		}
-
-		// Initial Page
+		});
 		<?php
 		if ($_REQUEST["tree_id"] <= 0) {
 			$tree_id = read_graph_config_option("default_tree_id");
