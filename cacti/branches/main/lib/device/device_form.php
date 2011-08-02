@@ -185,7 +185,7 @@ function device_form_save() {
     The "actions" function
    ------------------------ */
 
-function api_device_form_actions() {
+function device_form_actions() {
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");

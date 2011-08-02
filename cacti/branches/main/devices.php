@@ -57,7 +57,7 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'actions':
-		api_device_form_actions();
+		device_form_actions();
 
 		break;
 	case 'gt_remove':
