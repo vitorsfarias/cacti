@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function &graph_tree_form_list() {
+function graph_tree_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_forms.php");
 
 	return $fields_tree_edit;
