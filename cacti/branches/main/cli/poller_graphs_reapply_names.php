@@ -130,15 +130,15 @@ $graph_list = db_fetch_assoc("SELECT
 
 /* issue warnings and start message if applicable */
 echo __("WARNING: Do not interrupt this script.  Interrupting during rename can cause issues") . "\n";
-debug("There are '" . sizeof($graph_list) . "' Graphs to rename");
+print_debug("There are '" . sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
 foreach ($graph_list as $graph) {
 	if (!$debug) print ".";
-	debug("Graph Name '" . $graph["title_cache"] . "' starting");
+	print_debug("Graph Name '" . $graph["title_cache"] . "' starting");
 	reapply_suggested_graph_title($graph["local_graph_id"]);
 	update_graph_title_cache($graph["local_graph_id"]);
-	debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
+	print_debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
 	$i++;
 }
 
@@ -152,12 +152,4 @@ function display_help($me) {
 	echo "   -d            " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version  " . __("Display this help message") . "\n";
 	echo "   -h --help     " . __("Display this help message") . "\n";
-}
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print("DEBUG: " . $message . "") . "\n";
-	}
 }

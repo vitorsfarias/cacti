@@ -2802,3 +2802,16 @@ function create_object_link($needle1, $needle2, $haystack, $url) {
 
 	return $haystack;
 }
+/**
+ * @param string $message - debug message
+ *
+ * prints message
+*/
+
+function print_debug($message) {
+	global $debug;
+
+	if ($debug) {
+		print("DEBUG: " . $message . "\n");
+	}
+}

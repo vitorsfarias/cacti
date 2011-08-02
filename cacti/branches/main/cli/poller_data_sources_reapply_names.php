@@ -135,16 +135,16 @@ $data_source_list = db_fetch_assoc("SELECT
 
 /* issue warnings and start message if applicable */
 echo __("WARNING: Do not interrupt this script.  Interrupting during rename can cause issues") . "\n";
-debug("There are '" . sizeof($data_source_list) . "' Data Sources to rename");
+print_debug("There are '" . sizeof($data_source_list) . "' Data Sources to rename");
 
 $i = 1;
 foreach ($data_source_list as $data_source) {
 	if (!$debug)
 		print ".";
-	debug("Data Source Name '" . $data_source["name_cache"] . "' starting");
+	print_debug("Data Source Name '" . $data_source["name_cache"] . "' starting");
 	reapply_suggested_data_source_title($data_source["local_data_id"]);
 	update_data_source_title_cache($data_source["local_data_id"]);
-	debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source["local_data_id"])) . "'");
+	print_debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source["local_data_id"])) . "'");
 	$i++;
 }
 
@@ -158,12 +158,4 @@ function display_help($me) {
 	echo "   --debug       " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version  " . __("Display this help message") . "\n";
 	echo "   -h --help     " . __("Display this help message") . "\n";
-}
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print ("DEBUG: " . $message . "") . "\n";
-	}
 }
