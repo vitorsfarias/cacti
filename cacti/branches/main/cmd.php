@@ -162,6 +162,9 @@ foreach($parms as $parameter) {
 	}
 }
 
+/* notify cacti processes that a poller is running */
+record_cmdphp_started($poller_id);
+
 /* check additional boundary conditions */
 if ($first > $last) {
 	cacti_log("ERROR: The first device id must be less than the second device id.", $stdout);
@@ -219,9 +222,6 @@ if (isset($polling_interval)) {
 		$sqld_where . " " .
 		"AND action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
 }
-
-/* notify cacti processes that a poller is running */
-record_cmdphp_started($poller_id);
 
 /* script server is required if either a script server script or a script server reindex is required */
 $script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
