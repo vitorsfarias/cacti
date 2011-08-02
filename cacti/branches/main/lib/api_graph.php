@@ -22,23 +22,51 @@
  +-------------------------------------------------------------------------+
 */
 
-/** api_graph_remove -  remove a graph
+/** graph_remove -  remove a graph
  *
  * @param int $local_graph_id
+ * @param bool $delete_ds
  * @return unknown_type
  */
-function api_graph_remove($local_graph_id) {
+function graph_remove($local_graph_id, $delete_ds) {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
-
+		
 	if (empty($local_graph_id)) {
 		return;
 	}
+	
+	if ($delete_ds) {
+                /* delete all data sources referenced by this graph */
+                $data_sources = db_fetch_assoc("SELECT
+                        data_template_data.local_data_id
+                        FROM (data_template_rrd,data_template_data,graph_templates_item)
+                        WHERE graph_templates_item.task_item_id=data_template_rrd.id
+                        AND data_template_rrd.local_data_id=data_template_data.local_data_id
+                        AND graph_templates_item.local_graph_id=" . $id . "
+                        AND data_template_data.local_data_id > 0");
+
+                echo __("Removing graph and all resources for graph id ") . $id;
+                if (sizeof($data_sources) > 0) {
+                        foreach ($data_sources as $data_source) {
+				data_source_remove($data_source["local_data_id"]);
+                        }
+                }
+        } else {
+                echo __("Removing graph but keeping resources for graph id ") . $id;
+        }
 
 	db_execute("delete from graph_templates_graph where local_graph_id=$local_graph_id");
 	db_execute("delete from graph_templates_item where local_graph_id=$local_graph_id");
 	db_execute("delete from graph_tree_items where local_graph_id=$local_graph_id");
 	db_execute("delete from user_auth_perms where item_id=$local_graph_id and type=" . PERM_GRAPHS);
 	db_execute("delete from graph_local where id=$local_graph_id");
+	
+	if (is_error_message()) {
+                echo __(". ERROR: Failed to remove this graph") . "\n";
+        } else {
+                echo __(". Success - removed graph-id: (%d)", $id) . "\n";
+        }
+
 }
 
 /** graph_remove_multi - remove multiple graphs

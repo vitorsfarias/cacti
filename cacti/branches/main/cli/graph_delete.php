@@ -156,41 +156,6 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
-
-function graph_remove($id, $delete_ds) {
-
-	# get the data sources and graphs to act on
-	if ($delete_ds) {
-		/* delete all data sources referenced by this graph */
-		$data_sources = db_fetch_assoc("SELECT
-			data_template_data.local_data_id
-			FROM (data_template_rrd,data_template_data,graph_templates_item)
-			WHERE graph_templates_item.task_item_id=data_template_rrd.id
-			AND data_template_rrd.local_data_id=data_template_data.local_data_id
-			AND graph_templates_item.local_graph_id=" . $id . "
-			AND data_template_data.local_data_id > 0");
-
-		echo __("Removing graph and all resources for graph id ") . $id;
-		if (sizeof($data_sources) > 0) {
-			foreach ($data_sources as $data_source) {
-				data_source_remove($data_source["local_data_id"]);
-			}
-		}
-	} else {
-		echo __("Removing graph but keeping resources for graph id ") . $id;
-	}
-
-	api_graph_remove($id);
-
-	if (is_error_message()) {
-		echo __(". ERROR: Failed to remove this graph") . "\n";
-	} else {
-		echo __(". Success - removed graph-id: (%d)", $id) . "\n";
-	}
-}
-
-
-
 function display_help($me) {
 	echo "Delete Graph Script 1.1" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to remove a graph from Cacti") . "\n\n";
