@@ -393,9 +393,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 		$rrds_processed = 0;
 		while (1) {
-			$polling_items = db_fetch_assoc("SELECT poller_id, end_time FROM poller_time WHERE poller_id=$poller_id");
+			$finished_processes = db_fetch_cell("SELECT count(*) FROM poller_time WHERE poller_id=$poller_id AND end_time>'0000-00-00 00:00:00'");
 
-			if (sizeof($polling_items) >= $process_number) {
+			if ($finished_processes >= $started_processes) {
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
