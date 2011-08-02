@@ -24,7 +24,7 @@
 
 include_once(CACTI_BASE_PATH . "/lib/time.php");
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 
 /* store the current tab */
 load_current_session_value("toptab", "sess_cacti_toptab", "general");
@@ -39,7 +39,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	if (isset($_SESSION["custom"])) {
 		print "<meta http-equiv=refresh content='99999'>\r\n";
 	}else{
-		$refresh = api_plugin_hook_function('top_general_refresh', '0');
+		$refresh = plugin_hook_function('top_general_refresh', '0');
 
 		if ($refresh > 0) {
 			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
@@ -67,7 +67,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
-	<?php initializeCookieVariable(); api_plugin_hook('page_head'); ?>
+	<?php initializeCookieVariable(); plugin_hook('page_head'); ?>
 </head>
 <body class='body'>
 <script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/wztooltip/wz_tooltip.js"></script>
@@ -78,7 +78,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 			<ul>
 				<?php echo draw_header_tab("console", __("Console"), CACTI_URL_PATH . "index.php");?>
 				<?php echo draw_header_tab("graphs", __("Graphs"), CACTI_URL_PATH . "graph_view.php");?>
-				<?php api_plugin_hook('top_header_tabs');?>
+				<?php plugin_hook('top_header_tabs');?>
 			</ul>
 		</div>
 	</div>

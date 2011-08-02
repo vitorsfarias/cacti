@@ -180,9 +180,9 @@ include_once(CACTI_BASE_PATH . "/lib/variables.php");
 include_once(CACTI_BASE_PATH . "/lib/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/ajax.php");
 
-api_plugin_hook('config_arrays');
-api_plugin_hook('config_settings');
-api_plugin_hook('config_form');
+plugin_hook('config_arrays');
+plugin_hook('config_settings');
+plugin_hook('config_form');
 
 if (read_config_option('require_ssl') == 'on') {
 	if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {

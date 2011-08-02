@@ -34,7 +34,7 @@ $xaxis_actions = array(
 	XAXIS_ACTION_DUPLICATE => __("Duplicate")
 	);
 
-$xaxis_actions = api_plugin_hook_function('xaxis_action_array', $xaxis_actions);
+$xaxis_actions = plugin_hook_function('xaxis_action_array', $xaxis_actions);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

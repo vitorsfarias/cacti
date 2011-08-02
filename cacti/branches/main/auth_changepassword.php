@@ -61,7 +61,7 @@ case 'changepassword':
 				case AUTH_LOGIN_OPT_GRAPH: /* default graph page */
 					header("Location: graph_view.php"); break;
 				default:
-					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
+					plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
 		}else{
 			header("Location: graph_view.php");

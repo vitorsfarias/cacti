@@ -352,7 +352,7 @@ function graph_form_actions() {
 				db_execute("UPDATE graph_templates_graph SET export='' WHERE local_graph_id=" . $selected_items[$i]);
 			}
 		} else {
-			api_plugin_hook_function('graphs_action_execute', get_request_var_post('drp_action'));
+			plugin_hook_function('graphs_action_execute', get_request_var_post('drp_action'));
 		}
 
 		header("Location: graphs.php");
@@ -525,7 +525,7 @@ function graph_form_actions() {
 			$save['graph_list'] = $graph_list;
 			$save['graph_array'] = $graph_array;
 			$save['title'] = "";
-			api_plugin_hook_function('graphs_action_prepare', $save);
+			plugin_hook_function('graphs_action_prepare', $save);
 
 			if (strlen($save['title'])) {
 				$title = $save['title'];

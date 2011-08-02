@@ -36,7 +36,7 @@ load_current_session_value('tab', 'sess_plugin_tab', 'all');
 $current_tab = $_REQUEST['tab'];
 $pluginslist = plugin_get_plugins_list();
 
-$ptabs = api_plugin_hook_function('plugin_management_tabs', $ptabs);
+$ptabs = plugin_hook_function('plugin_management_tabs', $ptabs);
 
 /* Check to see if we are installing, etc... */
 $modes = array('plugin_dnd', 'installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
@@ -52,35 +52,35 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			plugin_dnd();
 			break;
 		case 'installold':
-			api_plugin_install_old($id);
+			plugin_install_old($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'uninstallold':
-			api_plugin_uninstall_old($id);
+			plugin_uninstall_old($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'install':
-			api_plugin_install($id);
+			plugin_install($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'uninstall':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_uninstall($id);
+			plugin_uninstall($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'disable':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_disable($id);
+			plugin_disable($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'enable':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_enable($id);
+			plugin_enable($id);
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -100,7 +100,7 @@ switch ($current_tab) {
 		plugin_show();
 		break;
 	default:
-		api_plugin_hook_function('plugin_management_tab_content', $current_tab);
+		plugin_hook_function('plugin_management_tab_content', $current_tab);
 }
 
 #print "</td></tr>";

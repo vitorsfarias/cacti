@@ -398,7 +398,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 
 	/* update the rrd from boost if applicable */
-	api_plugin_hook_function('rrdtool_function_fetch_cache_check', $local_data_id);
+	plugin_hook_function('rrdtool_function_fetch_cache_check', $local_data_id);
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$cmd_line = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
@@ -511,7 +511,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		}
 	}
 
-	$data = api_plugin_hook_function('rrdtool_function_graph_cache_check', array('local_graph_id' => $local_graph_id,'rra_id' => $rra_id,'rrd_struc' => $rrdtool_pipe,'graph_data_array' => $graph_data_array, 'return' => false));
+	$data = plugin_hook_function('rrdtool_function_graph_cache_check', array('local_graph_id' => $local_graph_id,'rra_id' => $rra_id,'rrd_struc' => $rrdtool_pipe,'graph_data_array' => $graph_data_array, 'return' => false));
 	if (isset($data['return']) && $data['return'] != false)
 		return $data['return'];
 
@@ -1459,7 +1459,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	}
 	}
 
-	$graph_array = api_plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
+	$graph_array = plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
 	if (!empty($graph_array)) {
 
 		/* display the timespan for zoomed graphs,
@@ -1480,7 +1480,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 			return 0;
 		}else{
-			$graph_data_array = api_plugin_hook_function('prep_graph_array', $graph_data_array);
+			$graph_data_array = plugin_hook_function('prep_graph_array', $graph_data_array);
 
 			if (isset($graph_data_array["output_flag"])) {
 				$output_flag = $graph_data_array["output_flag"];
@@ -1489,7 +1489,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			}
 			$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
-			api_plugin_hook_function('rrdtool_function_graph_set_file', array('output' => $output, 'local_graph_id' => $local_graph_id, 'rra_id' => $rra_id));
+			plugin_hook_function('rrdtool_function_graph_set_file', array('output' => $output, 'local_graph_id' => $local_graph_id, 'rra_id' => $rra_id));
 
 			return $output;
 		}

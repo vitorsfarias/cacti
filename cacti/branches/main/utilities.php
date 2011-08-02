@@ -126,7 +126,7 @@ switch (get_request_var_request("action")) {
 		break;
 	default:
 
-		if (!api_plugin_hook_function('utilities_action', get_request_var_request('action'))) {
+		if (!plugin_hook_function('utilities_action', get_request_var_request('action'))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
 			utilities();
@@ -1891,7 +1891,7 @@ function utilities() {
 
 	print "</table></td></tr>";		/* end of html_header */
 
-	api_plugin_hook('utilities_list');
+	plugin_hook('utilities_list');
 
 	html_end_box();
 }

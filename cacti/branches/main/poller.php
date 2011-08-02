@@ -115,7 +115,7 @@ if (function_exists("pcntl_signal")) {
 	pcntl_signal(SIGINT, "sig_handler");
 }
 
-api_plugin_hook('poller_top');
+plugin_hook('poller_top');
 
 /* record the start time */
 list($micro,$seconds) = explode(" ", microtime());
@@ -329,7 +329,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$extra_args .= " --poller=$poller_id";
 		}
 
-		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
+		$extra_args = plugin_hook_function('poller_command_args', $extra_args);
 
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_devices as $item) {
@@ -488,9 +488,9 @@ while ($poller_runs_completed < $poller_runs) {
 		/* sleep the appripriate amount of time */
 		if ($poller_id == 0) {
 			if ($poller_runs_completed < $poller_runs) {
-				api_plugin_hook('poller_bottom');
+				plugin_hook('poller_bottom');
 				usleep($sleep_time * 1000000);
-				api_plugin_hook('poller_top');
+				plugin_hook('poller_top');
 			}
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {

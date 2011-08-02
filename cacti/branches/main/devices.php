@@ -40,7 +40,7 @@ include_once(CACTI_BASE_PATH . "/lib/template.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
-$device_actions = api_plugin_hook_function('device_action_array', $device_actions);
+$device_actions = plugin_hook_function('device_action_array', $device_actions);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

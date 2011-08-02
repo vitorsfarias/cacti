@@ -52,7 +52,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'object_type', 'columns' => 'object_type');
 	$data['type'] = 'MyISAM';
 	$data['comment'] = 'Authorization Control';
-	api_plugin_upgrade_table('0.8.8', 'auth_control', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_control', $data, $show_output, $no_drop_items);
 	
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -71,7 +71,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'plugin_id', 'columns' => 'plugin_id');
 	$data['keys'][] = array('name' => 'category', 'columns' => 'category');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'auth_data', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_data', $data, $show_output, $no_drop_items);
 	
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -83,7 +83,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'type', 'columns' => 'type');
 	$data['keys'][] = array('name' => 'control_id', 'columns' => 'control_id');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'auth_graph_perms', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_graph_perms', $data, $show_output, $no_drop_items);
 		
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -93,7 +93,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'control_id', 'columns' => 'control_id');
 	$data['keys'][] = array('name' => 'parent_id', 'columns' => 'parent_id');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'auth_link', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_link', $data, $show_output, $no_drop_items);
 		
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -106,7 +106,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'plugin_id', 'columns' => 'plugin_id');
 	$data['keys'][] = array('name' => 'category', 'columns' => 'category');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'auth_perm', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_perm', $data, $show_output, $no_drop_items);
 		
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -116,7 +116,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'control_id', 'columns' => 'control_id');
 	$data['keys'][] = array('name' => 'perm_id', 'columns' => 'perm_id');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'auth_perm_link', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'auth_perm_link', $data, $show_output, $no_drop_items);
 	
 	/* create a sites table */
 	unset($data);
@@ -139,7 +139,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'country', 'columns' => 'country');
 	$data['keys'][] = array('name' => 'alternate_id', 'columns' => 'alternate_id');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'sites', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'sites', $data, $show_output, $no_drop_items);
 	/* Plugin Architecture */
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
@@ -155,7 +155,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'status', 'columns' => 'status');
 	$data['keys'][] = array('name' => 'directory', 'columns' => 'directory');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'plugin_config', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'plugin_config', $data, $show_output, $no_drop_items);
 		
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true);
@@ -167,7 +167,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'plugin', 'columns' => 'plugin');
 	$data['keys'][] = array('name' => 'method', 'columns' => 'method');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'plugin_db_changes', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'plugin_db_changes', $data, $show_output, $no_drop_items);
 		
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
@@ -180,7 +180,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'hook', 'columns' => 'hook');
 	$data['keys'][] = array('name' => 'status', 'columns' => 'status');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'plugin_hooks', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'plugin_hooks', $data, $show_output, $no_drop_items);
 
 	unset($data);
 	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
@@ -190,7 +190,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['keys'][] = array('name' => 'plugin', 'columns' => 'plugin');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'plugin_realms', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'plugin_realms', $data, $show_output, $no_drop_items);
 	
 	# create new table graph_templates_xaxis
 	unset($data);
@@ -200,7 +200,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['type'] = 'MyISAM';
 	$data['comment'] = 'X-Axis Presets';
-	api_plugin_upgrade_table('0.8.8', 'graph_templates_xaxis', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'graph_templates_xaxis', $data, $show_output, $no_drop_items);
 
 	# create new table graph_templates_xaxis_items
 	unset($data);
@@ -220,7 +220,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['type'] = 'MyISAM';
 	$data['comment'] = 'Items for X-Axis Presets';
-	api_plugin_upgrade_table('0.8.8', 'graph_templates_xaxis_items', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'graph_templates_xaxis_items', $data, $show_output, $no_drop_items);
 
 	/* logging system */
 	unset($data);
@@ -245,7 +245,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'timestamp', 'columns' => 'timestamp');
 	$data['keys'][] = array('name' => 'plugin_name', 'columns' => 'plugin_name');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'log', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'log', $data, $show_output, $no_drop_items);
 
 	/* create new table VDEF */
 	unset($data);
@@ -254,7 +254,7 @@ function upgrade_to_0_8_8() {
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'vdef', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'vdef', $data, $show_output, $no_drop_items);
 
 	/* create new table VDEF_ITEMS */
 	unset($data);
@@ -267,7 +267,7 @@ function upgrade_to_0_8_8() {
 	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
 	$data['type'] = 'MyISAM';
-	api_plugin_upgrade_table('0.8.8', 'vdef_items', $data, $show_output, $no_drop_items);
+	plugin_upgrade_table('0.8.8', 'vdef_items', $data, $show_output, $no_drop_items);
 
 	
 
@@ -276,36 +276,36 @@ function upgrade_to_0_8_8() {
 	 * we have some updates to those tables in this file already
 	 * so please take care not to change sequence 
 	 */
-	api_plugin_rename_table('0.8.8', 'host', 						'device', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_graph', 					'device_graph', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_snmp_cache', 			'device_snmp_cache', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_snmp_query', 			'device_snmp_query', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_template', 				'device_template', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_template_graph', 		'device_template_graph', $show_output);
-	api_plugin_rename_table('0.8.8', 'host_template_snmp_query', 	'device_template_snmp_query', $show_output);
+	plugin_rename_table('0.8.8', 'host', 						'device', $show_output);
+	plugin_rename_table('0.8.8', 'host_graph', 					'device_graph', $show_output);
+	plugin_rename_table('0.8.8', 'host_snmp_cache', 			'device_snmp_cache', $show_output);
+	plugin_rename_table('0.8.8', 'host_snmp_query', 			'device_snmp_query', $show_output);
+	plugin_rename_table('0.8.8', 'host_template', 				'device_template', $show_output);
+	plugin_rename_table('0.8.8', 'host_template_graph', 		'device_template_graph', $show_output);
+	plugin_rename_table('0.8.8', 'host_template_snmp_query', 	'device_template_snmp_query', $show_output);
 	
 	/* change column names */
 	$column = array('name' => 'device_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
-	api_plugin_rename_column('0.8.8', 'device_graph', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'data_local', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'graph_local', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'graph_tree_items', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'device_snmp_cache', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'device_snmp_query', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'poller_item', 'host_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'poller_reindex', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device_graph', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'data_local', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'graph_local', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'graph_tree_items', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device_snmp_cache', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device_snmp_query', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'poller_item', 'host_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'poller_reindex', 'host_id', $column, $show_output);
 
 	$column = array('name' => 'device_grouping_type', 'type' => 'tinyint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
-	api_plugin_rename_column('0.8.8', 'graph_tree_items', 'host_grouping_type', $column, $show_output);
+	plugin_rename_column('0.8.8', 'graph_tree_items', 'host_grouping_type', $column, $show_output);
 	
 	$column = array('name' => 'device_template_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false);
-	api_plugin_rename_column('0.8.8', 'device', 'host_template_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'device_template_graph', 'host_template_id', $column, $show_output);
-	api_plugin_rename_column('0.8.8', 'device_template_snmp_query', 'host_template_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device', 'host_template_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device_template_graph', 'host_template_id', $column, $show_output);
+	plugin_rename_column('0.8.8', 'device_template_snmp_query', 'host_template_id', $column, $show_output);
 	
 	
 	$column = array('name' => 'policy_devices', 'type' => 'tinyint(1)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 1);
-	api_plugin_rename_column('0.8.8', 'user_auth', 'policy_hosts', $column, $show_output);
+	plugin_rename_column('0.8.8', 'user_auth', 'policy_hosts', $column, $show_output);
 	
 	
 
@@ -317,13 +317,13 @@ function upgrade_to_0_8_8() {
 	/* add image storage to graph templates, data queries, and device templates */
 	$columns = array();
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
-	api_plugin_upgrade_columns('0.8.8', 'data_template', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'data_template', $columns, $show_output, $no_drop_items);
 
 	/* add rrd_compute_rpn for data source items */
 	unset($columns);
 	$columns[] = array('name' => 't_rrd_compute_rpn', 'type' => 'char(2)', 'default' => NULL, 'after' => 'rrd_minimum');
 	$columns[] = array('name' => 'rrd_compute_rpn', 'type' => 'varchar(150)', 'default' => '', 'after' => 't_rrd_compute_rpn');
-	api_plugin_upgrade_columns('0.8.8', 'data_template_rrd', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'data_template_rrd', $columns, $show_output, $no_drop_items);
 	
 	/* add a site column to the device table */
 	unset($columns);
@@ -334,13 +334,13 @@ function upgrade_to_0_8_8() {
 	/* implement per device threads setting for spine */
 	$columns[] = array('name' => 'device_threads', 'type' => 'tinyint(2)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids');
 	$columns[] = array('name' => 'polling_time', 'type' => 'decimal(10,5)', 'NULL' => false, 'default' => '0.00000', 'after' => 'avg_time');
-	api_plugin_upgrade_columns('0.8.8', 'device', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'device', $columns, $show_output, $no_drop_items);
 
 	/* enable lossless reindexing in Cacti */
 	unset($columns);
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'oid');
 	#, ADD INDEX present USING BTREE (present));
-	api_plugin_upgrade_columns('0.8.8', 'device_snmp_cache', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'device_snmp_cache', $columns, $show_output, $no_drop_items);
 	
 	/* add some fields required for devices to table device_template */
 	unset($columns);
@@ -367,17 +367,17 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'ping_retries', 'type' => 'int(12)', 'unsigned' => 'unsigned', 'default' => '2', 'after' => 'ping_timeout');
 	$columns[] = array('name' => 'max_oids', 'type' => 'int(12)', 'unsigned' => 'unsigned', 'default' => '10', 'after' => 'ping_retries');
 	$columns[] = array('name' => 'device_threads', 'type' => 'tinyint(2)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids');
-	api_plugin_upgrade_columns('0.8.8', 'device_template', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'device_template', $columns, $show_output, $no_drop_items);
 		
 	/* add reindexing to device_template_snmp_query */
 	unset($columns);
 	$columns[] = array('name' => 'reindex_method', 'type' => 'tinyint(3)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'snmp_query_id');
-	api_plugin_upgrade_columns('0.8.8', 'device_template_snmp_query', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'device_template_snmp_query', $columns, $show_output, $no_drop_items);
 
 	unset($columns);
 	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
 	$columns[] = array('name' => 'image', 'type' => 'varchar(64)', 'NULL' => false, 'after' => 'description');
-	api_plugin_upgrade_columns('0.8.8', 'graph_templates', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'graph_templates', $columns, $show_output, $no_drop_items);
 	
 	/* new columns for graph_templates_graph */
 	unset($columns);
@@ -449,7 +449,7 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'upper_limit', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '0');
 	$columns[] = array('name' => 'lower_limit', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '0');
 	$columns[] = array('name' => 'border', 'type' => 'char(2)', 'default' => NULL);
-	api_plugin_upgrade_columns('0.8.8', 'graph_templates_graph', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'graph_templates_graph', $columns, $show_output, $no_drop_items);
 			
 	/* changes to insert VDEF into table graph_templates_item just behind CDEF */
 	unset($columns);
@@ -463,18 +463,18 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'textalign', 'type' => 'varchar(10)', 'default' => NULL, 'after' => 'consolidation_function_id');
 	# add SHIFT
 	$columns[] = array('name' => 'shift', 'type' => 'char(2)', 'default' => NULL, 'after' => 'vdef_id');
-	api_plugin_upgrade_columns('0.8.8', 'graph_templates_item', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'graph_templates_item', $columns, $show_output, $no_drop_items);
 	
 	/* make tree's a per user object.  System tree's have a user_id of 0 */
 	unset($columns);
 	$columns[] = array('name' => 'user_id', 'type' => 'int(10)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
-	api_plugin_upgrade_columns('0.8.8', 'graph_tree', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'graph_tree', $columns, $show_output, $no_drop_items);
 	
 	/* upgrade to the graph tree items */
 	unset($columns);
 	$columns[] = array('name' => 'parent_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
 	$columns[] = array('name' => 'site_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'title');
-	api_plugin_upgrade_columns('0.8.8', 'graph_tree_items', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'graph_tree_items', $columns, $show_output, $no_drop_items);
 	
 	/* add the poller id for devices to allow for multiple pollers */
 	unset($columns);
@@ -482,30 +482,30 @@ function upgrade_to_0_8_8() {
 	$columns[] = array('name' => 'description', 'type' => 'varchar(45)', 'NULL' => false, 'default' => '', 'after' => 'disabled');
 	/* make the poller's ip address varchar() */
 	$columns[] = array('name' => 'ip_address', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '');
-	api_plugin_upgrade_columns('0.8.8', 'poller', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'poller', $columns, $show_output, $no_drop_items);
 	
 	unset($columns);
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'action');
-	api_plugin_upgrade_columns('0.8.8', 'poller_item', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'poller_item', $columns, $show_output, $no_drop_items);
 	
 	/* add the poller id for poller_output to allow for multiple pollers */
 	unset($columns);
 	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'time');
-	api_plugin_upgrade_columns('0.8.8', 'poller_output', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'poller_output', $columns, $show_output, $no_drop_items);
 	
 	unset($columns);
 	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'action');
 	#, ADD INDEX present USING BTREE (present));
-	api_plugin_upgrade_columns('0.8.8', 'poller_reindex', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'poller_reindex', $columns, $show_output, $no_drop_items);
 
 	unset($columns);
 	$columns[] = array('name' => 'image', 'type' => 'varchar(64)', 'NULL' => false, 'after' => 'description');
-	api_plugin_upgrade_columns('0.8.8', 'snmp_query', $columns, $show_output, $no_drop_items);
+	plugin_upgrade_columns('0.8.8', 'snmp_query', $columns, $show_output, $no_drop_items);
 
 	
 	/* 
 	 * install ALL required keys ($drop_items=true) 
-	 * Take ALL keys from cacti.sql and feed them to the api_plugin_upgrade_keys
+	 * Take ALL keys from cacti.sql and feed them to the plugin_upgrade_keys
 	 * This procedure will take care of
 	 * - new keys
 	 * - keys that require a change (drop,add sequence)
@@ -516,20 +516,20 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'data_input_field_id,data_template_data_id', 'primary' => true);
 	$key[] = array('name' => 't_value', 'columns' => 't_value');
 	$key[] = array('name' => 'data_template_data_id', 'columns' => 'data_template_data_id');
-	api_plugin_upgrade_keys('0.8.8', 'data_input_data', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'data_input_data', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id');
 	$key[] = array('name' => 'device_id_snmp_query_id_snmp_index', 'columns' => 'device_id,snmp_query_id,snmp_index');
-	api_plugin_upgrade_keys('0.8.8', 'data_local', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'data_local', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'local_data_id', 'columns' => 'local_data_id');
 	$key[] = array('name' => 'data_template_id', 'columns' => 'data_template_id');
 	$key[] = array('name' => 'data_source_path', 'columns' => 'data_source_path');
-	api_plugin_upgrade_keys('0.8.8', 'data_template_data', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'data_template_data', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
@@ -537,14 +537,14 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'data_template_id', 'columns' => 'data_template_id');
 	$key[] = array('name' => 'local_data_template_rrd_id', 'columns' => 'local_data_template_rrd_id');
 	$key[] = array('name' => 'local_data_id_data_source_name', 'columns' => 'local_data_id,data_source_name');
-	api_plugin_upgrade_keys('0.8.8', 'data_template_rrd', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'data_template_rrd', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'disabled', 'columns' => 'disabled');
 	$key[] = array('name' => 'poller_id', 'columns' => 'poller_id');
 	$key[] = array('name' => 'site_id', 'columns' => 'site_id');
-	api_plugin_upgrade_keys('0.8.8', 'device', $key, true);
+	plugin_upgrade_keys('0.8.8', 'device', $key, true);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_id,snmp_query_id,field_name,snmp_index', 'primary' => true);
@@ -556,22 +556,22 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'device_id_snmp_query_id', 'columns' => 'device_id,snmp_query_id');
 	$key[] = array('name' => 'device_id_snmp_query_id_snmp_index', 'columns' => 'device_id,snmp_query_id,snmp_index');
 	$key[] = array('name' => 'present', 'columns' => 'present', 'type' => 'BTREE');
-	api_plugin_upgrade_keys('0.8.8', 'device_snmp_cache', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'device_snmp_cache', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_id,snmp_query_id', 'primary' => true);
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id');
-	api_plugin_upgrade_keys('0.8.8', 'device_snmp_query', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'device_snmp_query', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_template_id,graph_template_id', 'primary' => true);
 	$key[] = array('name' => 'device_template_id', 'columns' => 'device_template_id');
-	api_plugin_upgrade_keys('0.8.8', 'device_template_graph', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'device_template_graph', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'device_template_id,snmp_query_id', 'primary' => true);
 	$key[] = array('name' => 'device_template_id', 'columns' => 'device_template_id');
-	api_plugin_upgrade_keys('0.8.8', 'device_template_snmp_query', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'device_template_snmp_query', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
@@ -579,7 +579,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'graph_template_id', 'columns' => 'graph_template_id');
 	$key[] = array('name' => 'snmp_query_id', 'columns' => 'snmp_query_id');
 	$key[] = array('name' => 'snmp_index', 'columns' => 'snmp_index');
-	api_plugin_upgrade_keys('0.8.8', 'graph_local', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'graph_local', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
@@ -589,12 +589,12 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'graph_template_id_local_graph_id', 'columns' => 'graph_template_id,local_graph_id');
 	$key[] = array('name' => 'local_graph_template_item_id', 'columns' => 'local_graph_template_item_id');
 	$key[] = array('name' => 'local_graph_id_sequence', 'columns' => 'local_graph_id,sequence');
-	api_plugin_upgrade_keys('0.8.8', 'graph_templates_item', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'graph_templates_item', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'user_id', 'columns' => 'user_id');
-	api_plugin_upgrade_keys('0.8.8', 'graph_tree', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'graph_tree', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
@@ -602,7 +602,7 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id');
 	$key[] = array('name' => 'local_graph_id', 'columns' => 'local_graph_id');
 	$key[] = array('name' => 'order_key', 'columns' => 'order_key');
-	api_plugin_upgrade_keys('0.8.8', 'graph_tree_items', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'graph_tree_items', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'local_data_id,rrd_name', 'primary' => true);
@@ -613,18 +613,18 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'local_data_id_rrd_path', 'columns' => 'local_data_id,rrd_path');
 	$key[] = array('name' => 'device_id_rrd_next_step', 'columns' => 'device_id,rrd_next_step');
 	$key[] = array('name' => 'device_id_snmp_port', 'columns' => 'device_id,snmp_port');
-	api_plugin_upgrade_keys('0.8.8', 'poller_item', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'poller_item', $key, $show_output, $drop_items);
 
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'local_data_id,rrd_name,time', 'primary' => true);
 	$key[] = array('name' => 'poller_id', 'columns' => 'poller_id');
-	api_plugin_upgrade_keys('0.8.8', 'poller_output', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'poller_output', $key, $show_output, $drop_items);
 	
 	unset($key);
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'username,user_id,time', 'primary' => true);
 	$key[] = array('name' => 'username', 'columns' => 'username');
 	$key[] = array('name' => 'user_id', 'columns' => 'user_id');
-	api_plugin_upgrade_keys('0.8.8', 'user_log', $key, $show_output, $drop_items);
+	plugin_upgrade_keys('0.8.8', 'user_log', $key, $show_output, $drop_items);
 
 	
 	/*

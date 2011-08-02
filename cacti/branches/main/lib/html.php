@@ -767,7 +767,7 @@ class html_table {
 		/* draw the rows */
 		if (sizeof($this->rows)) {
 			foreach ($this->rows as $row) {
-				$row = api_plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);
+				$row = plugin_hook_function(str_replace(".php", "", $this->href) . '_table', $row);
 
 				/* check to see if this row requires special treatment via a row-level callback function */
 				if (!isset($this->row_function) || $this->row_function == '') {
@@ -949,7 +949,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	/* drow the rows */
 	if (sizeof($rows)) {
 		foreach ($rows as $row) {
-			$row = api_plugin_hook_function(str_replace(".php", "", $href) . '_table', $row);
+			$row = plugin_hook_function(str_replace(".php", "", $href) . '_table', $row);
 
 			form_alternate_row_color('line' . $row[$key_field], true);
 
@@ -1392,7 +1392,7 @@ function html_selected_tab($name, $location) {
 		return true;
 	}elseif (get_request_var_request("toptab") == "graphs" && get_request_var_request("action") == $name) {
 		return true;
-	}elseif (!api_plugin_hook_function('top_tab_selected', array($name, $location))) {
+	}elseif (!plugin_hook_function('top_tab_selected', array($name, $location))) {
 		return true;
 	}
 
