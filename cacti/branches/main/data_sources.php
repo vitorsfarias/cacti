@@ -344,7 +344,7 @@ function data_source_form_actions() {
 				/* ==================================================== */
 			}
 
-			api_data_source_remove_multi($selected_items);
+			data_source_remove_multi($selected_items);
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_CHANGE_TEMPLATE) { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
