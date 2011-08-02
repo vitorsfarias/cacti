@@ -43,7 +43,7 @@ function get_vdef_item_name($vdef_item_id) 	{
      string. this name will be resolved recursively if necessary
    @param $vdef_id - the id of the vdef to resolve
    @returns - a text-based representation of the vdef */
-function get_vdef($vdef_id) {
+function get_vdef($vdef_id, $display = false) {
 	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$vdef_id order by sequence");
 
 	$i = 0; $vdef_string = "";
@@ -51,12 +51,12 @@ function get_vdef($vdef_id) {
 	if (sizeof($vdef_items) > 0) {
 		foreach ($vdef_items as $vdef_item) {
 			if ($i > 0) {
-				$vdef_string .= ",";
+				$vdef_string .= ($display ? ", ":",");
 			}
 
 			if ($vdef_item["type"] == 5) {
 				$current_vdef_id = $vdef_item["value"];
-				$vdef_string .= get_vdef($current_vdef_id);
+				$vdef_string .= get_vdef($current_vdef_id, $display);
 			}else{
 				$vdef_string .= get_vdef_item_name($vdef_item["id"]);
 			}
