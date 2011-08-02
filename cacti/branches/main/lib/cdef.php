@@ -59,7 +59,7 @@ function get_cdef($cdef_id, $display = false) {
 
 		if ($cdef_item["type"] == 5) {
 			$current_cdef_id = $cdef_item["value"];
-			$cdef_string .= get_cdef($current_cdef_id);
+			$cdef_string .= get_cdef($current_cdef_id, $display);
 		}else{
 			$cdef_string .= get_cdef_item_name($cdef_item["id"]);
 		}
