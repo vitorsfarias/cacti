@@ -346,7 +346,7 @@ function device_form_actions() {
 
 					break;
 				case '2': /* delete graphs/data sources tied to this device */
-					api_data_source_remove_multi($data_sources_to_act_on);
+					data_source_remove_multi($data_sources_to_act_on);
 
 					graph_remove_multi($graphs_to_act_on);
 
