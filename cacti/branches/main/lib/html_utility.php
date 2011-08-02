@@ -373,7 +373,7 @@ function get_colored_device_status($disabled, $status) {
 	require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
 
 	if ($disabled) {
-		return "<span class=\"disabled\"" . __("Disabled") . "</span>";
+		return "<span class=\"disabled\">" . __("Disabled") . "</span>";
 	}else{
 		switch ($status) {
 			case DEVICE_DOWN:
