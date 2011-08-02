@@ -22,6 +22,37 @@
  +-------------------------------------------------------------------------+
 */
 
+/* tick use required as of PHP 4.3.0 to accomodate signal handling */
+declare(ticks = 1);
+
+function sig_handler($signo) {
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log("WARNING: Cacti Poller process terminated by user", TRUE);
+
+			/* record the process as having completed */
+			record_cmdphp_done();
+
+			exit;
+			break;
+		default:
+			/* ignore all other signals */
+	}
+}
+
+/* let the poller server know about cmd.php being finished */
+function record_cmdphp_done($pid = "") {
+	if ($pid == "") $pid = getmypid();
+
+	db_execute("UPDATE poller_time SET end_time=NOW() WHERE pid=" . $pid);
+}
+
+/* let cacti processes know that a poller has started */
+function record_cmdphp_started() {
+	db_execute("INSERT INTO poller_time (poller_id, pid, start_time, end_time) VALUES (0, " . getmypid() . ", NOW(), '0000-00-00 00:00:00')");
+}
+
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
@@ -30,6 +61,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $start = date("Y-n-d H:i:s"); // for runtime measurement
 
 ini_set("max_execution_time", "0");
+ini_set("memory_limit", "512M");
 
 $no_http_headers = true;
 
@@ -56,6 +88,12 @@ if (CACTI_SERVER_OS == "win32") {
 			exit("-1");
 		}
 	}
+}
+
+/* install signal handlers for UNIX only */
+if (function_exists("pcntl_signal")) {
+	pcntl_signal(SIGTERM, "sig_handler");
+	pcntl_signal(SIGINT, "sig_handler");
 }
 
 /* record the start time */
@@ -181,6 +219,9 @@ if (isset($polling_interval)) {
 		$sqld_where . " " .
 		"AND action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
 }
+
+/* notify cacti processes that a poller is running */
+record_cmdphp_started();
 
 /* script server is required if either a script server script or a script server reindex is required */
 $script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
@@ -585,14 +626,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHE
 }
 
 /* record the process as having completed */
-record_cmdphp_done($poller_id);
-
-function record_cmdphp_done($poller_id) {
-	global $start;
-
-	/* let the poller server know about cmd.php being finished */
-	db_execute("INSERT INTO poller_time (pid, poller_id, start_time, end_time) values (" . getmypid() . ", $poller_id, '$start', NOW())");
-}
+record_cmdphp_done();
 
 function display_help() {
 	echo "Cacti cmd.php Data Collector, Copyright 2007-2010 - The Cacti Group\n\n";
