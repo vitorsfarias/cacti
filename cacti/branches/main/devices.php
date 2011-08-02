@@ -52,7 +52,7 @@ switch (get_request_var_request("action")) {
 		if (isset($_REQUEST["save_component_graph"]) || isset($_REQUEST["save_component_new_graphs"])) {
 			api_graphs_new_form_save();
 		}else{
-			api_device_form_save();
+			device_form_save();
 		}
 
 		break;

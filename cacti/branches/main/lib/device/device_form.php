@@ -45,7 +45,7 @@ function device_ajax_actions() {
 	}
 }
 
-function api_device_form_save() {
+function device_form_save() {
 	/*
 	 * loop for all possible changes of reindex_method
 	 * post variable is build like this
