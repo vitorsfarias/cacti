@@ -258,7 +258,7 @@ if (sizeof($parms)) {
 	 * associated to the given device template id
 	 */
 	if ($debug) {
-		print("api_device_save(0, ".$device['site_id'].", ".$device['poller_id'].", ".$device['device_template_id'].", ".
+		print("device_save(0, ".$device['site_id'].", ".$device['poller_id'].", ".$device['device_template_id'].", ".
 		$device['description'].", ".$device['hostname'].", ".$device_template['snmp_community'].", ".
 		$device_template['snmp_version'].", ". $device_template['snmp_username'].", ".
 		$device_template['snmp_password'].", ".	$device_template['snmp_port'].", ".
@@ -269,7 +269,7 @@ if (sizeof($parms)) {
 		$device_template['snmp_auth_protocol'].", ". $device_template['snmp_priv_passphrase'].", ".
 		$device_template['snmp_priv_protocol'].", ". $device_template['snmp_context'].", ". $device_template['max_oids']. ", ". $device_template['device_threads'].")\n");
 	} else {
-		$device_id = api_device_save(0, $device["site_id"], $device["poller_id"], $device["device_template_id"],
+		$device_id = device_save(0, $device["site_id"], $device["poller_id"], $device["device_template_id"],
 		$device["description"], $device["hostname"],
 		$device_template["snmp_community"], $device_template["snmp_version"],
 		$device_template["snmp_username"], $device_template["snmp_password"],

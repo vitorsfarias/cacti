@@ -162,7 +162,7 @@ function device_form_save() {
 		if (get_request_var_post("snmp_version") == 3 && (get_request_var_post("snmp_password") != get_request_var_post("snmp_password_confirm"))) {
 			raise_message(4);
 		}else{
-			$device_id = api_device_save($_POST["id"], $_POST["site_id"], $_POST["poller_id"], $_POST["device_template_id"], $_POST["description"],
+			$device_id = device_save($_POST["id"], $_POST["site_id"], $_POST["poller_id"], $_POST["device_template_id"], $_POST["description"],
 				trim(get_request_var_post("hostname")), get_request_var_post("snmp_community"), get_request_var_post("snmp_version"),
 				get_request_var_post("snmp_username"), get_request_var_post("snmp_password"),
 				get_request_var_post("snmp_port"), get_request_var_post("snmp_timeout"),
