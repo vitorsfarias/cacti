@@ -531,6 +531,9 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	}else{
 		db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller_$poller_id','$cacti_stats')");
 	}
+
+	/* update the poller status */
+	db_execute("UPDATE poller SET last_update=NOW() WHERE id=$poller_id");
 }
 
 function display_help() {
