@@ -426,7 +426,7 @@ function ajax_get_graph_tree_items() {
 				}
 				if ($display) {
 					echo "{\n";
-					echo "\tattributes: {\n";
+					echo "\tattr: {\n";
 					echo "\t\tid :  '" . $node_id . "'\n";
 					echo "\t},\n";
 					if($children) echo "\tstate: 'closed', \n";

@@ -891,14 +891,12 @@ function get_graph_tree_items() {
 					default:
 				}
 				echo "{\n";
-				echo "\tattributes: {\n";
-				echo "\t\tid :  '" . $node_id . "'\n";
-				echo "\t},\n";
-				if($children) echo "\tstate: 'closed', \n";
-				echo "\tdata: {\n";
-				echo "\t\t'en' : { title : '".$item["name"] ."'" . ($icon != '' ? ", icon : '" . $icon . "'" : "") ." }";
-				echo "\n";
-				echo "\t}\n";
+				echo "\t\"data\": \"" . $item["name"] . "\",\n";
+				echo "\t\t\"attr\": { \"id\" : \"" . $node_id . "\" },\n";
+				if($children) echo "\t\"state\": \"closed\", \n";
+				//echo "\t\t\"title\" : \"".$item["name"] ."\"" . ($icon != '' ? ", \"icon\" : \"" . $icon . "\"" : "");
+				//echo "\n";
+				//echo "\t}\n";
 				echo "}";
 				if(++$i < $total_items) echo ",";
 				echo "\n";
@@ -1210,6 +1208,8 @@ function graph_view_tree_filter() {
 					</table>
 				</form>
 			</td>
+		</tr>
+		<tr id="tree_content">
 		</tr>
 	</table>
 	<?php

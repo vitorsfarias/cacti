@@ -51,7 +51,7 @@ switch(get_request_var_request("action")){
 		exit;
 
 		break;
-	case "ajax_get_tree_content":
+	case "ajax_tree_content":
 		ajax_get_graph_tree_content();
 
 		break;
@@ -99,8 +99,8 @@ if (!isset($_REQUEST["action"])) {
 		$_REQUEST["action"] = "preview";
 
 		break;
-	case 'ajax_get_tree_items':
-		ajax_get_graph_tree_items();
+	case 'ajax_tree_items':
+		get_graph_tree_items();
 
 		break;
 	}
@@ -115,75 +115,38 @@ case 'tree':
 	}
 
 	if (!isset($_REQUEST["tree_id"])) {
-		$_REQUEST["tree_id"] = "-2";
+		$_REQUEST["tree_id"] = "1";
 	}
 
 	?>
 	<script type="text/javascript">
 	<!--
 
-    $("#graph_tree").jstree({
-        "json_data" : {
-            "ajax" : {
-                "url" : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>",
-                "data" : function (n) {
-                    return { id : n.attr ? n.attr("id") : 0 };
-                }
-            }
-        },
-        "plugins" : [ "themes", "json_data" ]
-    });
-
-//	$(function() {
-//		Panel = {};
-
-//		Panel.jsTree = $.tree.create();
-//		Panel.jsTree.init($("#graph_tree .tree"),{
-//			data : { type : "json", async : true,
-//				opts : {
-//					method : "GET",
-//					url : "graph_view.php?action=ajax_get_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>" }
-//				},
-//			languages : [ "en" ],
-//			callback : {
-//				onselect : function(node, tree) {
-//					Panel.loadContent(node.id);
-//				}
-//			},
-//			types : {
-//				"default" : {
-//					clickable    : true,
-//					renameable   : false,
-//					deletable    : false,
-//					creatable    : false,
-//					draggable    : false,
-//					max_children : -1,
-//					max_depth    : -1,
-//					valid_children	: "all",
-//					icon : {
-//						image : false,
-//						position : false
-//					}
-//				}
-//			}
-//		});
-//		Panel.creating = 0;
-
-		// Functions
-		$.ready(function(id) {
-			$.get("graph_view.php?action=ajax_get_tree_content&id=" + id, function(data) {
-				$("#graphs").html(data);
-			});
+	$(function() {
+		$("#tree_content").jstree({
+			"json_data" : {
+				"ajax" : {
+					"url" : "graph_view.php?action=ajax_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>",
+					"data" : function (n) {
+						return { id : n.attr ? n.attr("id") : 0 };
+					}
+				}
+			},
+			"plugins" : [ "themes", "json_data" ]
 		});
+
 		<?php
-		if ($_REQUEST["tree_id"] <= 0) {
+		if (isset($_REQUEST["tree_id"]) || $_REQUEST["tree_id"] <= 0) {
 			$tree_id = read_graph_config_option("default_tree_id");
+			if ($tree_id == 0) {
+				$tree_id = db_fetch_cell("SELECT id FROM graph_tree LIMIT 1");
+			}
 		}else{
 			$tree_id = $_REQUEST["tree_id"];
 		}
-		$tree_id = "tree_" . $tree_id . "_leaf_0";
+
 		?>
-		$.get("graph_view.php?action=ajax_get_tree_content&id=<?php print $tree_id;?>", function(data) {
+		$.get("graph_view.php?action=ajax_tree_content&id=tree_<?php print $tree_id;?>", function(data) {
 			$("#graphs").html(data);
 		});
 	});
