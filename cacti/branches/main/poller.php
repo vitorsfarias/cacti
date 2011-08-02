@@ -70,7 +70,7 @@ include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 /* initialize some variables */
 $force     = FALSE;
 $debug     = FALSE;
-$poller_id = 0;
+$poller_id = 1;
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -126,7 +126,7 @@ $overhead_time = 0;
 $poller_interval = read_config_option("poller_interval");
 
 /* retreive the last time the poller ran */
-if ($poller_id == 0) {
+if ($poller_id == 1) {
 	$poller_lastrun = read_config_option('poller_lastrun');
 }else{
 	$poller_lastrun = read_config_option('poller_lastrun_$poller_id');
@@ -145,7 +145,7 @@ $process_leveling = read_config_option("process_leveling");
 /* retreive the number of concurrent process settings */
 $concurrent_processes = read_config_option("concurrent_processes");
 
-$sql_where = ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ");
+$sql_where = ($poller_id == 1 ? "" : " WHERE poller_id=$poller_id ");
 /* assume a scheduled task of either 60 or 300 seconds */
 if (isset($poller_interval)) {
 	$poller_runs       = $cron_interval / $poller_interval;
@@ -215,7 +215,7 @@ if ((($seconds - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun 
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller ID: '$poller_id', Poller Int: '$poller_interval' seconds, with a maximum of a '300' second $task_type, but " . ($seconds - $poller_lastrun) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-if ($poller_id == 0) {
+if ($poller_id == 1) {
 	db_execute("REPLACE INTO settings (name,value) VALUES ('poller_lastrun'," . $seconds . ')');
 }else{
 	db_execute("REPLACE INTO settings (name,value) VALUES ('poller_lastrun_$poller_id'," . $seconds . ')');
@@ -227,7 +227,7 @@ ini_set("memory_limit", "512M");
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
-$polling_devices       = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM device WHERE disabled = '' " . ($poller_id == 0 ? "" : "AND poller_id=$poller_id ") . " ORDER BY id"));
+$polling_devices       = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM device WHERE disabled = '' " . ($poller_id == 1 ? "" : "AND poller_id=$poller_id ") . " ORDER BY id"));
 
 while ($poller_runs_completed < $poller_runs) {
 	/* record the start time for this loop */
@@ -251,7 +251,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$last_device    = 0;
 
 	/* update web paths for the poller */
-	if ($poller_id == 0) {
+	if ($poller_id == 1) {
 		db_execute("REPLACE INTO settings (name,value) VALUES ('path_webroot','" . addslashes((CACTI_SERVER_OS == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
 	}
 
@@ -267,7 +267,7 @@ while ($poller_runs_completed < $poller_runs) {
 	db_execute("DELETE FROM poller_time WHERE poller_id=$poller_id");
 
 	$issues_limit = 20;
-	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ") . " LIMIT " . ($issues_limit + 1));
+	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output" . ($poller_id == 1 ? "" : " WHERE poller_id=$poller_id ") . " LIMIT " . ($issues_limit + 1));
 	
 	if (sizeof($issues)) {
 		$issue_list = "";
@@ -325,7 +325,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* add the poller id for the various collectors */
-		if ($poller_id > 0) {
+		if ($poller_id > 1) {
 			$extra_args .= " --poller=$poller_id";
 		}
 
@@ -383,7 +383,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* insert the current date/time for graphs */
-		if ($poller_id == 0) {
+		if ($poller_id == 1) {
 			db_execute("REPLACE INTO settings (name,value) VALUES ('date',NOW())");
 		}
 
@@ -432,15 +432,15 @@ while ($poller_runs_completed < $poller_runs) {
 		rrd_close($rrdtool_pipe);
 
 		/* process poller commands */
-		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command" . ($poller_id == 0 ? "" : " WHERE poller_id=$poller_id ")) > 0) {
+		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command" . ($poller_id == 1 ? "" : " WHERE poller_id=$poller_id ")) > 0) {
 			$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
-			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php\"" . ($poller_id == 0 ? "" : " --poller=$poller_id ");
+			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php\"" . ($poller_id == 1 ? "" : " --poller=$poller_id ");
 			exec_background($command_string, "$extra_args");
 		} else {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			if ($poller_id == 0) {
+			if ($poller_id == 1) {
 				db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache','RecacheTime:0.0 HostsRecached:0')");
 			}else{
 				db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache_$poller_id','RecacheTime:0.0 HostsRecached:0')");
@@ -448,7 +448,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* graph export */
-		if ($poller_id == 0) {
+		if ($poller_id == 1) {
 			if ((read_config_option("export_type") != "disabled") &&
 				(read_config_option("export_timing") != "disabled")) {
 				$command_string = cacti_escapeshellcmd(read_config_option("path_php_binary"));
@@ -486,7 +486,7 @@ while ($poller_runs_completed < $poller_runs) {
  		}
 
 		/* sleep the appripriate amount of time */
-		if ($poller_id == 0) {
+		if ($poller_id == 1) {
 			if ($poller_runs_completed < $poller_runs) {
 				plugin_hook('poller_bottom');
 				usleep($sleep_time * 1000000);
@@ -529,7 +529,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	cacti_log("STATS: " . $cacti_stats ,true,"SYSTEM");
 
 	/* insert poller stats into the settings table */
-	if ($poller_id == 0) {
+	if ($poller_id == 1) {
 		db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller','$cacti_stats')");
 	}else{
 		db_execute("REPLACE INTO settings (name,value) VALUES ('stats_poller_$poller_id','$cacti_stats')");

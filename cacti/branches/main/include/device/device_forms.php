@@ -51,7 +51,6 @@ $fields_device_edit = array(
 		"friendly_name" => __("Poller"),
 		"description" => __("Choose which poller will be the polling of this device."),
 		"value" => "|arg1:poller_id|",
-		"none_value" => __("System Default"),
 		"sql" => "select id,description as name from poller order by name",
 		),
 	"site_id" => array(
