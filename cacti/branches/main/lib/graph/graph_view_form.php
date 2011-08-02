@@ -39,6 +39,10 @@ function graph_view_filter_table($mode = "mode") {
 				$(this).parent().find("#device_id").val(0);
 			}
 		});
+
+		$('#navbar_r [id^="tab_"]').removeClass("selected");
+		$('#navbar_r [id^="tab_"]').addClass("notselected");
+		$('#tab_<?php print $mode;?>').removeClass("notselected").addClass("selected");
 	});
 
 	function applyGraphFilter(objForm) {
@@ -140,7 +144,7 @@ function graph_view_filter_table($mode = "mode") {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class='w1'>
-						<input type='text' name='filter' size='40' onChange='applyGraphFilter(document.form_graph_view)' value='<?php print $_REQUEST["filter"];?>'>
+						<input type='text' name='filter' size='30' onChange='applyGraphFilter(document.form_graph_view)' value='<?php print $_REQUEST["filter"];?>'>
 					</td>
 					<td class='w1'>
 						&nbsp;<input type='button' Value='<?php print __("Go");?>' name='go' onClick='applyGraphFilter(document.form_graph_view)'>
@@ -318,12 +322,10 @@ function get_graph_list_content() {
 
 			function showGraphs(objForm) {
 				form_graph(document.chk, document.form_graph_list)
-				strURL = '?action=ajax_preview&list=true';
+				strURL = '?action=preview';
 				strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
 				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
-				$.get("graph_view.php" + strURL, function(data) {
-					$("#graph_content").html(data);
-				});
+				document.location = "graph_view.php" + strURL;
 			}
 
 			//-->
@@ -403,7 +405,7 @@ function get_graph_list_content() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print $_REQUEST["filter"];?>">
+						<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td class="w1">
 						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
@@ -728,7 +730,7 @@ function get_graph_preview_content() {
 			$("#graph_content").html(data);
 		});
 	}
-	//-->
+	-->
 	</script>
 	<?php
 
@@ -1247,10 +1249,10 @@ function graph_view_search_filter() {
 			<form name="form_graph_view" method="get" action="graph_view.php">
 				<table cellspacing="0" cellpadding="0">
 					<tr>
-						<td class="nw50">
+						<td class="nw1">
 							&nbsp;<?php print __("Search:");?>&nbsp;
 						</td>
-						<td class="nw120">
+						<td class="nw1">
 							<input type='text' style='display:none;' name='workaround'>
 							<input size='30' style='width:100;' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>' onChange='applyFilter(document.form_graph_view)'>
 						</td>
