@@ -26,7 +26,7 @@
     The Save Function
    -------------------------- */
 
-function api_graphs_new_form_save() {
+function graphs_new_form_save() {
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
 		$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
 	}else{

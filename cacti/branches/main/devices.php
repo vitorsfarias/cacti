@@ -50,7 +50,7 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch (get_request_var_request("action")) {
 	case 'save':
 		if (isset($_REQUEST["save_component_graph"]) || isset($_REQUEST["save_component_new_graphs"])) {
-			api_graphs_new_form_save();
+			graphs_new_form_save();
 		}else{
 			device_form_save();
 		}
