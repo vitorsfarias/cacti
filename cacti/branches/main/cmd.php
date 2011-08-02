@@ -49,8 +49,8 @@ function record_cmdphp_done($pid = "") {
 }
 
 /* let cacti processes know that a poller has started */
-function record_cmdphp_started() {
-	db_execute("INSERT INTO poller_time (poller_id, pid, start_time, end_time) VALUES (0, " . getmypid() . ", NOW(), '0000-00-00 00:00:00')");
+function record_cmdphp_started($poller_id) {
+	db_execute("INSERT INTO poller_time (poller_id, pid, start_time, end_time) VALUES ($poller_id, " . getmypid() . ", NOW(), '0000-00-00 00:00:00')");
 }
 
 /* do NOT run this script through a web browser */
@@ -221,7 +221,7 @@ if (isset($polling_interval)) {
 }
 
 /* notify cacti processes that a poller is running */
-record_cmdphp_started();
+record_cmdphp_started($poller_id);
 
 /* script server is required if either a script server script or a script server reindex is required */
 $script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
