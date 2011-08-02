@@ -61,7 +61,7 @@ if ($image_format_id == IMAGE_TYPE_PNG) {
 /* flush the headers now */
 ob_end_clean();
 
-api_plugin_hook_function('graph_image');
+plugin_hook_function('graph_image');
 
 session_write_close();
 

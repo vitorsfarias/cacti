@@ -182,7 +182,7 @@ function device_save($id, $site_id, $poller_id, $device_template_id, $descriptio
 	$save["max_oids"]            = form_input_validate($max_oids, "max_oids", "^[0-9]+$", true, 3);
 	$save["device_threads"]      = form_input_validate($device_threads, "device_threads", "^[0-9]+$", true, 3);
 
-	$save = api_plugin_hook_function('device_save', $save);
+	$save = plugin_hook_function('device_save', $save);
 
 	$device_id = 0;
 
@@ -258,7 +258,7 @@ function device_save($id, $site_id, $poller_id, $device_template_id, $descriptio
 			if (sizeof($graph_templates) > 0) {
 			foreach ($graph_templates as $graph_template) {
 				db_execute("replace into device_graph (device_id,graph_template_id) values ($device_id," . $graph_template["graph_template_id"] . ")");
-				api_plugin_hook_function('add_graph_template_to_device', array("device_id" => $device_id, "graph_template_id" => $graph_template["graph_template_id"]));
+				plugin_hook_function('add_graph_template_to_device', array("device_id" => $device_id, "graph_template_id" => $graph_template["graph_template_id"]));
 			}
 			}
 		}

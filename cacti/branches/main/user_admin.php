@@ -65,7 +65,7 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		if (!api_plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
+		if (!plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
 			user();
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
@@ -420,7 +420,7 @@ function form_save() {
 		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("hidden_policy_graph_templates")), "policy_graph_templates", "", true, 3);
 		$save["realm"] = get_request_var_post("realm", 0);
 		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
-		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
+		$save = plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
 			$user_id = sql_save($save, "user_auth");
@@ -464,7 +464,7 @@ function form_save() {
 			policy_graph_templates = " . get_request_var_post("policy_graph_templates") . "
 			WHERE id = " . get_request_var_post("id"));
 	} else {
-		api_plugin_hook('user_admin_user_save');
+		plugin_hook('user_admin_user_save');
 	}
 
 	/* redirect to the appropriate page */
@@ -477,7 +477,7 @@ function form_save() {
 	}elseif (isset($_POST["save_component_user"])) {
 		header("Location: user_admin.php?action=edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id));
 	}else{
-		header(api_plugin_hook_function('user_admin_save_location', "Location: user_admin.php?action=edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id)));
+		header(plugin_hook_function('user_admin_save_location', "Location: user_admin.php?action=edit&id=" . (empty($user_id) ? $_POST["id"] : $user_id)));
 	}
 	exit;
 }
@@ -951,7 +951,7 @@ function user_edit() {
 		$header_label = __("[new]");
 	}
 
-	api_plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
+	plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
 
 	$user_tabs = array(
 		"user_edit" => array("name" => __("General Settings"), "title" => __("General Settings are common settings for all users.")),
@@ -997,7 +997,7 @@ function user_edit() {
 			break;
 
 		default:
-			if (!api_plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
+			if (!plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
 				user_realms_edit();
 			}
 

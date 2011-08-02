@@ -543,7 +543,7 @@ function data_source_form_actions() {
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
 			$save['title'] = '';
-			api_plugin_hook_function('data_source_action_prepare', $save);
+			plugin_hook_function('data_source_action_prepare', $save);
 
 			if (strlen($save['title'])) {
 				$title = $save['title'];

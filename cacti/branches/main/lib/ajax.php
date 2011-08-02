@@ -72,7 +72,7 @@ function ajax_get_data_dd_menus() {
 	}
 	print $output;
 
-	api_plugin_hook_function('start_box_menu', $_GET['cacti_dd_menu']);
+	plugin_hook_function('start_box_menu', $_GET['cacti_dd_menu']);
 }
 
 function ajax_get_data_templates() {

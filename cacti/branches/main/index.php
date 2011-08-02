@@ -25,7 +25,7 @@
 include("./include/auth.php");
 include(CACTI_BASE_PATH . "/include/top_header.php");
 
-api_plugin_hook('console_before');
+plugin_hook('console_before');
 
 ?>
 <table width="100%" align="center">
@@ -52,6 +52,6 @@ api_plugin_hook('console_before');
 
 <?php
 
-api_plugin_hook('console_after');
+plugin_hook('console_after');
 
 include(CACTI_BASE_PATH . "/include/bottom_footer.php");

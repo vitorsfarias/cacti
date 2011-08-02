@@ -217,7 +217,7 @@ if ($action == 'login') {
 			case AUTH_LOGIN_OPT_GRAPH: /* default graph page */
 				header("Location: graph_view.php"); break;
 			default:
-				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
+				plugin_hook_function('login_options_navigate', $user['login_opts']);
 		}
 		exit;
 
@@ -276,7 +276,7 @@ function auth_display_custom_error_message($message) {
 		<div id='authLogin'>
 			<form action="<?php print basename($_SERVER['PHP_SELF']);?>" name="login" method="post">
 			<input type="hidden" name="action" value="login">
-			<?php api_plugin_hook("login_before"); ?>
+			<?php plugin_hook("login_before"); ?>
 			<table align='center'>
 				<?php
 
@@ -328,7 +328,7 @@ function auth_display_custom_error_message($message) {
 					<td><input type="submit" value="<?php print __("Login");?>"></td>
 				</tr>
 			</table>
-			<?php api_plugin_hook("login_after"); ?>
+			<?php plugin_hook("login_after"); ?>
 
 			</form>
 		</div>

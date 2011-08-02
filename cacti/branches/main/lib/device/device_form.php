@@ -365,7 +365,7 @@ function api_device_form_actions() {
 				tree_item_save(0, get_request_var_post("tree_id"), TREE_ITEM_TYPE_DEVICE, get_request_var_post("tree_item_id"), "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
 		} else {
-			api_plugin_hook_function('device_action_execute', get_request_var_post('drp_action'));
+			plugin_hook_function('device_action_execute', get_request_var_post('drp_action'));
 		}
 
 		header("Location: devices.php");
@@ -569,7 +569,7 @@ function api_device_form_actions() {
 			$save['device_list'] = $device_list;
 			$save['device_array'] = (isset($device_array)? $device_array : array());
 			$save['title'] = '';
-			api_plugin_hook_function('device_action_prepare', $save);
+			plugin_hook_function('device_action_prepare', $save);
 
 			if (strlen($save['title'])) {
 				$title = $save['title'];

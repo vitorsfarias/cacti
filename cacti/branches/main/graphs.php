@@ -37,7 +37,7 @@ include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
-$graph_actions = api_plugin_hook_function('graphs_action_array', graph_actions_list());
+$graph_actions = plugin_hook_function('graphs_action_array', graph_actions_list());
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

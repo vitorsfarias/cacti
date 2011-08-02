@@ -179,7 +179,7 @@ function substitute_device_data($string, $l_escape_string, $r_escape_string, $de
 		$string = str_replace($l_escape_string . "device_" . $key . $r_escape_string, cacti_escapeshellarg($value, $quote), $string);
 	}
 
-	$temp = api_plugin_hook_function('substitute_device_data', array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'device_id' => $device_id));
+	$temp = plugin_hook_function('substitute_device_data', array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'device_id' => $device_id));
 	$string = $temp['string'];
 
 	return $string;

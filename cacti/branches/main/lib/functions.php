@@ -2293,7 +2293,7 @@ function draw_navigation_text($type = "url") {
 		"xaxis_presets.php:actions" => array("title" => __("Actions"), "mapping" => "index.php:,xaxis_presets.php:", "url" => "", "level" => "2"),
 	);
 
-	$nav = api_plugin_hook_function('draw_navigation_text', $nav);
+	$nav = plugin_hook_function('draw_navigation_text', $nav);
 
 	$current_page = basename($_SERVER["PHP_SELF"]);
 
