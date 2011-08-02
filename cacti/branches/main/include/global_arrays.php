@@ -147,17 +147,13 @@ $snmp_implementations = array(
 	"net-snmp" => __("NET-SNMP 5.x"),
 	);
 
-if (CACTI_SERVER_OS != "win32") {
-	$rrdtool_versions = array(
-		RRD_VERSION_1_0 => "RRDTool 1.0.x",
-		RRD_VERSION_1_2 => "RRDTool 1.2.x",
-		RRD_VERSION_1_3 => "RRDTool 1.3.x",
-		RRD_VERSION_1_4 => "RRDTool 1.4.x");
-}else{
-	$rrdtool_versions = array(
-		RRD_VERSION_1_0 => "RRDTool 1.0.x",
-		RRD_VERSION_1_2 => "RRDTool 1.2.x");
-}
+$rrdtool_versions = array(
+	RRD_VERSION_1_0 => "RRDTool 1.0.x",
+	RRD_VERSION_1_2 => "RRDTool 1.2.x",
+	RRD_VERSION_1_3 => "RRDTool 1.3.x",
+	RRD_VERSION_1_4 => "RRDTool 1.4.x"
+	);
+
 
 $i18n_modes = array(
 	0 => __("Disabled"),
