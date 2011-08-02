@@ -152,7 +152,7 @@ $fields_data_source = array(
 			),
 		"device_id" => array(
 			"method" => "autocomplete",
-			"callback_function" => "layout.php?action=ajax_get_device_detailed",
+			"callback_function" => "layout.php?action=ajax_get_devices_detailed",
 			"friendly_name" => __("Host"),
 			"description" => __("Choose the device that this graph belongs to."),
 			),

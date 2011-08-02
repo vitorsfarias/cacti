@@ -25,6 +25,7 @@
 $guest_account = true;
 
 include("./include/auth.php");
+include_once(CACTI_BASE_PATH . "/include/data_source/data_source_forms.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = "";
@@ -46,8 +47,8 @@ switch (get_request_var_request("action")) {
 		ajax_get_data_templates();
 
 		break;
-	case 'ajax_get_device_detailed':
-		ajax_get_device_detailed();
+	case 'ajax_get_devices_detailed':
+		ajax_get_devices_detailed();
 
 		break;
 	case 'ajax_get_devices_brief':
