@@ -71,7 +71,7 @@ function draw_edit_form($array) {
 
 				if (isset($field_array["sub_checkbox"])) {
 					/* print description as a hover */
-					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : "width=50%");
+					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : " width='50%'");
 					print "<td" . $width . " class='template_checkbox'>\n";
 					print "<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
 
