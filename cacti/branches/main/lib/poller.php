@@ -91,7 +91,7 @@ function exec_background($filename, $args = "") {
 		cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, "POLLER");
 	}
 
-	if (file_exists($filename)) {
+	if (file_exists(trim($filename,"\""))) {
 		if (CACTI_SERVER_OS == "win32") {
 			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, "r"));
 		}else{
