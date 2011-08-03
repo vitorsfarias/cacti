@@ -1169,7 +1169,7 @@ function export_is_tree_allowed($tree_id) {
 }
 
 function export_tree_graphs_and_graph_html($path, $tree_id) {
-	global $colors, $config;
+	global $config;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
@@ -1385,7 +1385,7 @@ function draw_html_left_tree($fp, $tree_id)  {
 }
 
 function grow_dhtml_trees_export($fp, $tree_id) {
-	global $colors, $config, $dhtml_trees;
+	global $config, $dhtml_trees;
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
@@ -1875,7 +1875,7 @@ define("HTML_HEADER_CLASSIC", "
 /* Traditional Graph Export Representation Graph Headers */
 define("HTML_GRAPH_HEADER_ONE_CLASSIC", "
 	<table width='100%' style='background-color: #f5f5f5; border: 1px solid #bbbbbb;' align='center'>
-		<tr bgcolor='#" . $colors["header_panel"] . "'>
+		<tr>
 			<td colspan='" . read_config_option("export_num_columns") . "'>
 				<table width='100%' cellspacing='0' cellpadding='3' border='0'>
 					<tr>

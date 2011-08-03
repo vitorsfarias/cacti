@@ -33,7 +33,6 @@
    @param $collapsing - tells wether or not the table collapses
    @param $table_id - the table id to make the table addressable by jQuery's table DND plugin */
 function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
-	global $config;
 	static $form_number = 0;
 	$form_number++;
 
@@ -181,8 +180,6 @@ function html_graph_end_box() {
    @param $extra_url_args - extra arguments to append to the url
    @param $header - html to use as a header */
 function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
-	global $config;
-
 	$i = 0;
 	if (sizeof($graph_array) > 0) {
 		if ($header != "") {
@@ -1206,7 +1203,6 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
      external url
    @param $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $colors, $config;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
@@ -1227,44 +1223,26 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	html_header($header_items, $last_item_colspan, false, 'graph_item');
 
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
-	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
 
 	$i = 0;
 	if (sizeof($item_list) > 0) {
 	foreach ($item_list as $item) {
 		/* graph grouping display logic */
-		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
+		$this_row_style = ""; $hard_return = "";
 
 		if ($item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_AVERAGE &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_LAST &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MAX &&
 			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MIN) {
-			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
-
-			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
-			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
-				$custom_row_color = "D2D6E7";
-			}
+			$this_row_style = "font-weight: bold;";
 
 			$group_counter++;
 		}
 
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 
-		/* alternating row color */
-		if ($use_custom_row_color == false) {
-#			form_alternate_row_color();
-			form_alternate_row_color($item["id"], true);
-		}else{
-#			print "<tr id='row_".$item["id"]."' bgcolor='#$custom_row_color'>";
-			form_alternate_row_color($item["id"], true);
-		}
+		form_alternate_row_color($item["id"], true);
 
 		print "<td>";
 		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") ."'>"; }
@@ -1330,7 +1308,6 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 }
 
 function draw_data_template_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $config;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	$header_items = array(
@@ -1380,7 +1357,6 @@ function draw_data_template_items_list($item_list, $filename, $url_data, $disabl
 
 
 function draw_header_tab($name, $title, $location, $image = "") {
-	global $config;
 	if ($image == "") {
 		return "<li id=\"tab_" . html_escape($name) . "\"" . (html_selected_tab($name, $location) ? " class=\"selected\"" : " class=\"notselected\"") . "><a href=\"javascript:navigation_select('" . html_escape($name) . "','" . htmlspecialchars($location) . "')\" title=\"" . html_escape($title) . "\">" . html_escape($title) . "</a></li>\n";
 	}else{
@@ -1453,7 +1429,7 @@ function html_read_cookie_element($name, $element) {
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $config, $user_auth_realms, $user_auth_realm_filenames, $menu;
+	global $user_auth_realms, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;
@@ -1589,7 +1565,7 @@ function draw_menu($user_menu = "") {
    @param $actions_array - an array that contains a list of possible actions. this array should
      be compatible with the form_dropdown() function */
 function draw_actions_dropdown($actions_array) {
-	global $config, $actions_none;
+	global $actions_none;
 	?>
 	<table class='saveBoxAction'>
 		<tr>
