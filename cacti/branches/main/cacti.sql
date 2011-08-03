@@ -35,7 +35,7 @@ CREATE TABLE `auth_data` (
   `plugin_id` mediumint(8) unsigned NOT NULL default '0',
   `category` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default 'SYSTEM',
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
-  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
+  `value` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   `enable_user_edit` int(1) unsigned NOT NULL default '0',
   `updated_when` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',

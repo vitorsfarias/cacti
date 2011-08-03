@@ -60,7 +60,7 @@ function upgrade_to_0_8_8() {
 	$data['columns'][] = array('name' => 'plugin_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'category', 'type' => 'varchar(25)', 'NULL' => false, 'default' => 'SYSTEM');
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(100)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(255)', 'default' => NULL);
+	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(1000)', 'default' => NULL);
 	$data['columns'][] = array('name' => 'enable_user_edit', 'type' => 'int(1)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 'updated_when', 'type' => 'datetime', 'NULL' => false, 'default' => '0000-00-00 00:00:00');
 	$data['columns'][] = array('name' => 'updated_by', 'type' => 'varchar(100)', 'NULL' => false, 'default' => '');
