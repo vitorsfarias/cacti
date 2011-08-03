@@ -118,14 +118,12 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/layout.php'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.jstree.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.cookie.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.autocomplete.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.bgiframe.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.ajaxQueue.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.tablednd.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.zoom.js'></script>
-	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.autocomplete.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/colorpicker.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.tablednd.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar-setup.js'></script>
