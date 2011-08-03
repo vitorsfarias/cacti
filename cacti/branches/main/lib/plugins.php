@@ -27,7 +27,7 @@ function plugin_hook($name) {
 		AND pc.ptype <> " . PLUGIN_TYPE_SYSTEM . "
 		ORDER BY ptype ASC, sequence ASC", true);
 
-	if (count($result)) {
+	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			$p[] = $hdata['name'];
 			if (file_exists(CACTI_BASE_PATH . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
