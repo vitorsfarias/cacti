@@ -759,7 +759,7 @@ function upgrade_to_0_8_8() {
 	}
 
 	/* insert the default poller into the database */
-	db_install_execute("0.8.8", "REPLACE INTO `poller` VALUES (1,'','Main Poller','localhost','127.0.0.1','0000-00-00 00:00:00');");
+	db_install_execute("0.8.8", "REPLACE INTO `poller` VALUES (1,'','Main Poller','localhost',0,0,0,0,'0000-00-00 00:00:00');");
 
 	/* update all devices to use poller 1, or the main poller */
 	db_install_execute("0.8.8", "UPDATE device SET poller_id=1 WHERE poller_id=0");
@@ -1339,6 +1339,13 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(451, 'Australia/Perth', 'WST-8');");
 	db_install_execute("0.8.8", "REPLACE INTO `i18n_time_zones` (`id`, `olson_tz_string`, `posix_tz_string`) VALUES(454, 'Australia/Sydney', 'EST-10EST,M10.1.0,M4.1.0/3');");
 
+	/* drop deprecated plugins */
+	if (sizeof($plugins_deprecated)) {
+		foreach($plugins_deprecated as $plugin) {
+			plugin_uninstall($plugin);
+			cacti_log(__FUNCTION__ . " plugin '$plugin' was uninstalled", false);
+		}
+	}
 
 	/* TODO: Upgrade current users and permissions */
 }
