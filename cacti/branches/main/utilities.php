@@ -387,7 +387,7 @@ function display_general() {
 		$spine_version = substr($spine_output, 6, 6);
 	}
 
-	print "</table></td></tr>";		/* end of html_header */
+	print "</tr></table></td></tr>";		/* end of html_header */
 	print "<tr><td>";
 	html_header(array(array("name" => __("Poller Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
@@ -1833,10 +1833,10 @@ function utilities() {
 	html_header(array(array("name" => __("Technical Support"))), 2, '', '', 'left wp100'); ?>
 
 	<tr class="rowAlternate1">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_tech&tab=general");?>'><?php print __("Technical Support");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.");?>
 		</td>
 	</tr>
@@ -1847,18 +1847,18 @@ function utilities() {
 	html_header(array(array("name" => __("Log Administration"))), 2,'','','left wp100');?>
 
 	<tr class="rowAlternate1">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'><?php print __("View Cacti Log File");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.");?>
 		</td>
 	</tr>
 	<tr class="rowAlternate2">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'><?php print __("View User Log");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("Allows Administrators to browse the user log.  Administrators can filter and export the log as well.");?>
 		</td>
 	</tr>
@@ -1869,26 +1869,26 @@ function utilities() {
 	html_header(array(array("name" => __("Poller Cache Administration"))), 2,'','','left wp100'); ?>
 
 	<tr class="rowAlternate1">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'><?php print __("View Poller Cache");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.");?>
 		</td>
 	</tr>
 	<tr class="rowAlternate2">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'><?php print __("View SNMP Cache");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled device.");?>
 		</td>
 	</tr>
 	<tr class="rowAlternate1">
-		<td width='15%' class="textAreaNotes">
+		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'><?php print __("Rebuild Poller Cache");?></a>
 		</td>
-		<td width='85%' class="textAreaNotes">
+		<td class="textAreaNotes v">
 			<?php print __("The poller cache will be cleared and re-generated if you select this option. Sometimes device/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.");?>
 		</td>
 	</tr>
