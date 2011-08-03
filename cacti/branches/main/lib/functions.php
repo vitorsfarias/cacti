@@ -2727,7 +2727,7 @@ function cacti_escapeshellcmd($string) {
 	if (CACTI_SERVER_OS == "unix") {
 		return escapeshellcmd($string);
 	}else{
-		$replacements = "#&;`|*?<>^()[]{}$\\";
+		$replacements = "#&;`|*?<>^()[]{}$";
 
 		for ($i=0; $i < strlen($replacements); $i++) {
 			$string = str_replace($replacements[$i], "", $string);
