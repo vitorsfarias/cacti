@@ -36,7 +36,6 @@ if (read_config_option("i18n_timezone_support") == 0) {
 if (isset($_GET['time_zone'])) {
 	if(init_time_zone($_GET['time_zone'])) {
 		set_user_config_option('time_zone', $_GET['time_zone']);
-		$_SESSION['sess_i18n_timezone'] = $_GET['time_zone'];
 	}
 
 /* time zone definition is stored in the SESSION */
@@ -45,9 +44,7 @@ if (isset($_GET['time_zone'])) {
 
 /* look up for user customized time zone stored in Cacti DB */
 }elseif ($time_zone = read_user_config_option('time_zone')) {
-	if(init_time_zone($time_zone)) {
-		$_SESSION['sess_i18n_timezone'] = $time_zone;
-	};
+	init_time_zone($time_zone);
 
 /* use the default time zone defined under "general" or fall back to sytsem time zone*/
 }else {
@@ -84,13 +81,15 @@ function set_time_zone($time_zone) {
 		if(defined('CACTI_CUSTOM_TIME_ZONE') & $time_zone != CACTI_SYSTEM_TIME_ZONE && $time_zone != CACTI_CUSTOM_TIME_ZONE) {
 			return false;
 		}else {
-			/* use date functions if possible (PHP>=5.1.0) */
 			if(function_exists('date_default_timezone_set')) {
-				return (@date_default_timezone_set($time_zone)) ? true : false;
-
-			/* try to setup time zone if safe mode is not enabled. */
+				if(@date_default_timezone_set($time_zone)) {
+					if(isset($_SESSION)) {
+						$_SESSION['sess_i18n_timezone'] = $time_zone;
+					}
+					return true;
+				}
 			}else {
-				return (@putenv("TZ=" . $time_zone)) ? true : false;
+				return false;
 			}
 		}
 	}
@@ -130,7 +129,7 @@ function get_list_of_timezones() {
 	$pacific = __("Pacific") . ": ";
 
 	$timezones = array(
-		"Africa/Abidjan	" => $africa . __("Abidja"),
+		"Africa/Abidjan" => $africa . __("Abidja"),
 		"Africa/Accra" => $africa . __("Accra"),
 		"Africa/Addis_Ababa" => $africa . __("Addis Ababa"),
 		"Africa/Algiers" => $africa . __("Algiers"),
