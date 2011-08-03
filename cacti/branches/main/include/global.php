@@ -167,7 +167,6 @@ include_once(CACTI_BASE_PATH . "/lib/log.php");
 include_once(CACTI_BASE_PATH . "/include/global_arrays.php");
 include_once(CACTI_BASE_PATH . "/include/global_settings.php");
 include_once(CACTI_BASE_PATH . "/lib/plugins.php");
-include_once(CACTI_BASE_PATH . "/include/plugins.php");
 if(!$database_empty) {
 	// avoid running read_config_option against an empty DB - this isn't needed during the install process anyway
 	include_once(CACTI_BASE_PATH . "/include/global_form.php");
