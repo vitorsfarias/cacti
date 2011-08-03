@@ -1372,7 +1372,7 @@ function device_display_general($device, $device_text) {
 			<td colspan="4">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<tr>
-					<td nowrap><?php print __("Add Graph Template:");?>&nbsp;
+					<td><?php print __("Add Graph Template:");?>&nbsp;
 						<?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
 					</td>
 					<td align="right">
@@ -1460,10 +1460,10 @@ function device_display_general($device, $device_text) {
 			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<tr>
-					<td nowrap><?php print __("Add Data Query:");?>&nbsp;
+					<td><?php print __("Add Data Query:");?>&nbsp;
 						<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
 					</td>
-					<td nowrap><?php print __("Re-Index Method:");?>&nbsp;
+					<td><?php print __("Re-Index Method:");?>&nbsp;
 						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
 					</td>
 					<td align="right">
