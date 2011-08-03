@@ -32,43 +32,39 @@
    @param $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($device, $user, $pass, $db_name, $db_type, $port = "3306", $db_ssl = false, $retries = 20) {
-	global $cnn_id;
+	global $database_sessions;
+
+	$flags = null;
+	if ($db_ssl && $db_type == "mysql") {
+		$flags = MYSQL_CLIENT_SSL;
+	}
 
 	$i = 0;
-	$dsn = "$db_type://$user:$pass@$device/$db_name?persist";
-
-	if ($db_ssl && $db_type == "mysql") {
-		$dsn .= "&clientflags=" . MYSQL_CLIENT_SSL;
-	}elseif ($db_ssl && $db_type == "mysqli") {
-		$dsn .= "&clientflags=" . MYSQLI_CLIENT_SSL;
-	}
-
+	$device = $device . ":" . $port;
 	while ($i <= $retries) {
-		$cnn_id = ADONewConnection($dsn);
+		$cnn_id = mysql_pconnect($device, $user, $pass, $flags);
 		if ($cnn_id) {
-			return($cnn_id);
+			mysql_select_db($db_name);
+			$database_sessions[$db_name] = $cnn_id;
+			return TRUE;
 		}
-
 		$i++;
-
 		usleep(40000);
 	}
-
 	die("FATAL: Cannot connect to MySQL server on '$device'. Please make sure you have specified a valid MySQL database name in 'include/config.php'\n");
-
-	return(0);
+	return FALSE;
 }
 
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
+	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		return $cnn_id->Close();
-	}else{
-		return $db_conn->Close();
+		$db_conn = $database_sessions[$database_default];
 	}
+	return mysql_close($db_conn);
 }
 
 /* db_execute - run an sql query and do not return any output
@@ -76,43 +72,43 @@ function db_close($db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
-	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Exec: \"" . $sql . "\"", FALSE);
 	}
-
 	$errors = 0;
 	while (1) {
-		$query = $db_conn->Execute($sql);
-
-		if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
-			return(1);
-		}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
-			print __("FATAL: Database or Table does not exist");
+		$query = mysql_query($sql, $db_conn);
+		$en = mysql_errno($db_conn);
+		if ($query) {
+			return TRUE;
+		} else if ($en == 1049 || $en == 1051) {
+			printf('FATAL: Database or Table does not exist');
 			exit;
-		}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-			if ((substr_count($db_conn->ErrorMsg(), "Deadlock")) || ($db_conn->ErrorNo() == 1213) || ($db_conn->ErrorNo() == 1205)) {
+		} else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+			if (substr_count(mysql_error($db_conn), 'Deadlock') || $en == 1213 || $en == 1205) {
 				$errors++;
 				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) ."'", TRUE);
-					return(0);
-				}else{
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) ."'", TRUE);
+					return FALSE;
+				} else {
 					usleep(500000);
 					continue;
 				}
-			}else{
-				cacti_log("ERROR: A DB Exec Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "'", FALSE);
-				return(0);
+			} else {
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE);
+				return FALSE;
 			}
 		}
 	}
+	return FALSE;
 }
 
 /* db_fetch_cell - run a 'select' sql query and return the first column of the
@@ -122,45 +118,39 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Cell: \"" . $sql . "\"", FALSE);
 	}
-
-	if ($col_name != '') {
-		$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-	}else{
-		$db_conn->SetFetchMode(ADODB_FETCH_NUM);
-	}
-
-	$query = $db_conn->Execute($sql);
-
-	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
-		if (!$query->EOF) {
-			if ($col_name != '') {
-				$column = $query->fields[$col_name];
-			}else{
-				$column = $query->fields[0];
-			}
-
-			$query->close();
-
-			return($column);
+	$query = mysql_query($sql, $db_conn);
+	$en = mysql_errno($db_conn);
+	if ($en == 0 || $en == 1032) {
+		$q = mysql_fetch_array($query);
+		if ($query) {
+			mysql_free_result($query);
 		}
-	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
-		print __("FATAL: Database or Table does not exist");
+		if ($q) {
+			if ($col_name != '') {
+				return $q[$col_name];
+			} else {
+				return $q[0];
+			}
+		}
+	}else if ($en == 1049 || $en == 1051) {
+		printf('FATAL: Database or Table does not exist');
 		exit;
-	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "\"", FALSE);
 	}
+	return FALSE;
 }
 
 /* db_fetch_row - run a 'select' sql query and return the first row found
@@ -168,36 +158,40 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
-	if (($log) && (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG)) {
+	if (($log) && (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG)) {
 		cacti_log("DEVEL: SQL Row: \"" . $sql . "\"", FALSE);
 	}
 
-	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-	$query = $db_conn->Execute($sql);
+	$query = mysql_query($sql, $db_conn);
+	$en = mysql_errno($db_conn);
 
-	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
-		if (!$query->EOF) {
-			$fields = $query->fields;
-
-			$query->close();
-
-			return($fields);
+	if ($en == 0 || $en == 1032) {
+		$q = mysql_fetch_assoc($query);
+		mysql_free_result($query);
+		if ($q) {
+			return $q;
+		} else {
+			return array();
 		}
-	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
-		print __("FATAL: Database or Table does not exist");
+	}else if ($en == 1049 || $en == 1051) {
+		printf('FATAL: Database or Table does not exist');
 		exit;
-	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Row Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"", FALSE);
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "\"", FALSE);
 	}
+	if ($query) {
+		mysql_free_result($query);
+	}
+	return array();
 }
 
 /* db_fetch_assoc - run a 'select' sql query and return all rows found
@@ -205,51 +199,52 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	$sql = str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql)));
+	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Assoc: \"" . $sql . "\"", FALSE);
 	}
 
 	$data = array();
-	$db_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-	$query = $db_conn->Execute($sql);
+	$query = mysql_query($sql, $db_conn);
+	$en = mysql_errno($db_conn);
 
-	if (($db_conn->ErrorNo() == 0) || ($db_conn->ErrorNo() == 1032)) {
-		while ((!$query->EOF) && ($query)) {
-			$data{sizeof($data)} = $query->fields;
-			$query->MoveNext();
+	if ($en == 0 || $en == 1032) {
+		$a = array();
+		while ($row = mysql_fetch_assoc($query)) {
+			$a[] = $row;
 		}
-
-		$query->close();
-
-		return($data);
-	}else if (($db_conn->ErrorNo() == 1049) || ($db_conn->ErrorNo() == 1051)) {
-		print __("FATAL: Database or Table does not exist");
+		mysql_free_result($query);
+		return $a;
+	}else if ($en == 1049 || $en == 1051) {
+		printf('FATAL: Database or Table does not exist');
 		exit;
-	}else if (($log) || (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG)) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:'" . $db_conn->ErrorNo() . "', SQL:\"" . str_replace("\n", "", str_replace("\r", "", str_replace("\t", " ", $sql))) . "\"");
+	}else if (($log) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG)) {
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "\"");
 	}
+	if ($query) {
+		mysql_free_result($query);
+	}
+	return array();
 }
 
 /* db_fetch_insert_id - get the last insert_id or auto incriment
    @returns - the id of the last auto incriment row that was created */
 function db_fetch_insert_id($db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
-
-	return $db_conn->Insert_ID();
+	return mysql_insert_id($db_conn);
 }
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
@@ -289,20 +284,61 @@ function array_to_sql_or($array, $sql_column) {
    @param $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
-	global $cnn_id;
+	global $database_sessions, $database_default;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
 
 	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
 		cacti_log("DEVEL: SQL Replace on table '$table_name': \"" . serialize($array_items) . "\"", FALSE);
 	}
 
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!$db_conn) {
-		$db_conn = $cnn_id;
+	_db_replace($db_conn, $table_name, $array_items, $keyCols);
+	return db_fetch_insert_id($db_conn);
+}
+
+
+// FIXME:  Need to Rename and cleanup a bit
+
+function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
+
+
+	if (!is_array($keyCol)) {
+		$keyCol = array($keyCol);
 	}
 
-	$db_conn->Replace($table_name, $array_items, $keyCols);
+	$sql = "INSERT INTO `$table` (";
+	$sql2 = '';
+	$sql3 = '';
 
-	return $db_conn->Insert_ID();
+	$first = true;
+	$first3 = true;
+	foreach($fieldArray as $k => $v) {
+		if (!$first) {
+			$sql .= ',';
+			$sql2 .= ',';
+		}
+		$sql .= "`$k`";
+		if (is_numeric($v)) {
+			$sql2 .= "$v";
+		} else {
+			$sql2 .= "$v";
+		}
+		$first = false;
+		if (in_array($k, $keyCol)) continue; // skip UPDATE if is key
+		if (!$first3) {
+			$sql3 .= ',';
+		}
+		$sql3 .= "`$k`=VALUES(`$k`)";
+		$first3 = false;
+
+
+	}
+	$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
+	db_execute($sql);
+	return db_fetch_insert_id();
 }
 
 /* sql_save - saves data to an sql table
@@ -311,40 +347,38 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, $db_conn = FALSE) {
-	global $cnn_id;
-
-	if (read_config_option("log_verbosity") == POLLER_VERBOSITY_DEVDBG) {
-		cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . "\"", FALSE);
-	}
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
+	}
+
+	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
+		cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . "\"", FALSE);
 	}
 
 	while (list($key, $value) = each($array_items)) {
 		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
-	$replace_result = $db_conn->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
+	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols, $autoinc);
 
 	if ($replace_result == 0) {
-		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . $cnn_id->ErrorMsg() . "'", false);
-
-		return 0;
+		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . mysql_error($db_conn) . "'", false);
+		return FALSE;
 	}
 
 	/* get the last AUTO_ID and return it */
-	if (($db_conn->Insert_ID() == "0") || ($replace_result == 1)) {
+	if ((db_fetch_insert_id($db_conn) == '0') || ($replace_result == 1)) {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
-				return str_replace("\"", "", $array_items[$key_cols]);
+				return str_replace("\"", '', $array_items[$key_cols]);
 			}
 		}
-
-		return 0;
-	}else{
-		return $db_conn->Insert_ID();
+		return FALSE;
+	} else {
+		return db_fetch_insert_id($db_conn);
 	}
 }
 
@@ -363,16 +397,17 @@ function sql_sanitize($value) {
    @param $column_name - column name
    @return true or false; */
 function sql_column_exists($table_name, $column_name, $db_conn = "") {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	$columns = $db_conn->MetaColumns($table_name, false);
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table_name`", false);
+
 	foreach ($columns as $column) {
-		if ($column_name === $column->name) {
+		if ($column_name === $column['name']) {
 			return true;
 		}
 	}
@@ -383,69 +418,73 @@ function sql_column_exists($table_name, $column_name, $db_conn = "") {
 /* sql_function_timestamp - abstracts timestamp function across databases
    @return - fixed value */
 function sql_function_timestamp($db_conn = "") {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	if (isset($db_conn->sysTimeStamp)) {
-		return $db_conn->sysTimeStamp;
-	}
+	return 'NOW()';
 
-	return "'".date('Y-m-d H:i:s')."'";
+	//if (isset($db_conn->sysTimeStamp)) {
+	//	return $db_conn->sysTimeStamp;
+	//}
+
+	//return "'".date('Y-m-d H:i:s')."'";
 }
 
 /* sql_function_substr - abstracts substring function across databases
    @return - fixed value */
 function sql_function_substr($db_conn = "") {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	if (isset($db_conn->substr)) {
-		return $db_conn->substr;
-	}
+	return 'substring';
 
-	switch($db_conn->databaseType) {
-		case 'oci805':
-		case 'oci8':
-		case 'oci8po':
-		case 'oracle':
-			return 'substr';
-			break;
-		case 'postgres64':
-		case 'postgres7':
-		case 'postgres':
-			return 'substr';
-			break;
-		case 'db2':
-		case 'fbsql':
-		case 'firebird':
-		case 'ibase':
-			default:
-			return 'substr';
-	}
+//	if (isset($db_conn->substr)) {
+//		return $db_conn->substr;
+//	}
+
+//	switch($db_conn->databaseType) {
+//		case 'oci805':
+//		case 'oci8':
+//		case 'oci8po':
+//		case 'oracle':
+//			return 'substr';
+//			break;
+//		case 'postgres64':
+//		case 'postgres7':
+//		case 'postgres':
+//			return 'substr';
+//			break;
+//		case 'db2':
+//		case 'fbsql':
+//		case 'firebird':
+//		case 'ibase':
+//			default:
+//			return 'substr';
+//	}
 }
 
 /* sql_function_concat - abstracts concatenation function across databases
    @return - fixed value */
 function sql_function_concat($db_conn = "") {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	if (method_exists($db_conn, 'Concat')) {
-		$args = func_get_args();
-		return call_user_func_array(array(&$db_conn, 'Concat'), $args);
-	}
+	//if (method_exists($db_conn, 'Concat')) {
+	//	$args = func_get_args();
+	//	return call_user_func_array(array(&$db_conn, 'Concat'), $args);
+	//}
 
 	return "concat('".implode("','", func_get_args())."')";
 }
@@ -453,58 +492,88 @@ function sql_function_concat($db_conn = "") {
 /* sql_function_replace - abstracts replace function across databases
    @return - fixed value */
 function sql_function_replace($db_conn = "") {
-	global $cnn_id;
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	switch($db_conn->databaseType) {
-		case 'mssql':
-		case 'mssqlpo':
-			return 'replace';
-			break;
-		case 'mysql':
-		case 'mysqli':
-		case 'mysqlt':
-			return 'replace';
-			break;
-		case 'oci805':
-		case 'oci8':
-		case 'oci8po':
-		case 'oracle':
-			return 'replace';
-			break;
-		case 'postgres64':
-		case 'postgres7':
-		case 'postgres':
-			return 'replace';
-			break;
-		case 'db2':
-		case 'firebird':
-		case 'ibase':
-		default:
-			return 'replace';
-	}
+	return 'replace';
+
+//	switch($db_conn->databaseType) {
+//		case 'mssql':
+//		case 'mssqlpo':
+//			return 'replace';
+//			break;
+//		case 'mysql':
+//		case 'mysqli':
+//		case 'mysqlt':
+//			return 'replace';
+//			break;
+//		case 'oci805':
+//		case 'oci8':
+//		case 'oci8po':
+//		case 'oracle':
+//			return 'replace';
+//			break;
+//		case 'postgres64':
+//		case 'postgres7':
+//		case 'postgres':
+//			return 'replace';
+//			break;
+//		case 'db2':
+//		case 'firebird':
+//		case 'ibase':
+//		default:
+//			return 'replace';
+//	}
 }
 
 /* sql_function_dateformat - abstracts dateformat function across databases
    @return - fixed value */
-function sql_function_dateformat($fmt, $col = false) {
-	global $cnn_id;
+function sql_function_dateformat($fmt, $col = false, $db_conn = "") {
+	global $database_sessions, $database_default;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!$db_conn) {
-		$db_conn = $cnn_id;
+		$db_conn = $database_sessions[$database_default];
 	}
 
-	if (method_exists($db_conn, 'SQLDate')) {
-		return call_user_func_array(array(&$db_conn, 'SQLDate'), array($fmt,$col));
-	}
+	return 'date_format';
 
-	switch($db_conn->databaseType) {
-		default:
-			return 'date_format';
-	}
+//	if (method_exists($db_conn, 'SQLDate')) {
+//		return call_user_func_array(array(&$db_conn, 'SQLDate'), array($fmt,$col));
+//	}
+//
+//	switch($db_conn->databaseType) {
+//		default:
+//			return 'date_format';
+//	}
 }
+
+function qstr($s, $db_conn = '') {
+	global $database_sessions, $database_default;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!$db_conn) {
+		$db_conn = $database_sessions[$database_default];
+	}
+
+	$replaceQuote = "\\'";
+
+	if (is_null($s)) return 'NULL';
+
+	if (is_resource($db_conn))
+		return "'" . mysql_real_escape_string($s, $db_conn) . "'";
+	if ($replaceQuote == '\\') {
+		$s = str_replace(array('\\', "\0"), array('\\\\', "\\\0"), $s);
+	}
+	return  "'" . str_replace("'",$replaceQuote, $s) . "'"; 
+}
+
+
+
+
+
+

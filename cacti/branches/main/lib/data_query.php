@@ -432,9 +432,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
  * @param string $oid
  */
 function data_query_format_record($device_id, $snmp_query_id, $field_name, $value, $snmp_index, $oid) {
-	global $cnn_id;
-
-	return "($device_id, $snmp_query_id, " . $cnn_id->qstr($field_name) . ", " . $cnn_id->qstr($value) . ", " . $cnn_id->qstr($snmp_index) . ", " . $cnn_id->qstr($oid) . ", 1)";
+	return "($device_id, $snmp_query_id, " . qstr($field_name) . ", " . qstr($value) . ", " . qstr($snmp_index) . ", " . qstr($oid) . ", 1)";
 }
 
 /**

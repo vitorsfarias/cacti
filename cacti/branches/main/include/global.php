@@ -135,7 +135,7 @@ define("CACTI_VERSION", "0.8.8");
 define('CACTI_WIKI_URL', "http://docs.cacti.net/reference:088:");
 
 /* include base modules */
-include(CACTI_BASE_PATH . "/lib/adodb/adodb.inc.php");
+//include(CACTI_BASE_PATH . "/lib/adodb/adodb.inc.php");
 include(CACTI_BASE_PATH . "/lib/database.php");
 
 /* check that the absolute necessary mysql PHP module is loaded  (install checks the rest), and report back if not */
@@ -148,7 +148,7 @@ db_connect_real($database_hostname, $database_username, $database_password, $dat
 
 /* Check that the database has tables in it - can't use db_fetch_assoc because that uses read_config_option! */
 $result = mysql_query("show tables from $database_default");
-if(mysql_num_rows($result) == 0) {
+if(!$result || mysql_num_rows($result) == 0) {
 	$database_empty = true;
 } else {
 	$database_empty = false;
