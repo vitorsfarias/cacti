@@ -795,119 +795,109 @@ function get_graph_tree_items() {
 	header("Pragma: no-cache");
 	header("Expires: ". gmdate("D, d M Y H:i:s", mktime(date("H"), date("i"), date("s"), date("m")-1, date("d"), date("Y")))." GMT");
 	header("Last-Modified: ". gmdate("D, d M Y H:i:s")." GMT");
+	header("Content-Type: application/json; charset=utf-8");
 
-	switch(get_request_var_request("type")) {
-	case "list":
-		/* parse the id string
-		 * prototypes:
-		 * tree_id, tree_id_leaf_id, tree_id_leaf_id_hgd_dq
-		 * tree_id_leaf_id_hgd_dqi, tree_id_leaf_id_hgd_gt
-		 */
-		$tree_id         = 0;
-		$leaf_id         = 0;
-		$device_group_type = array('na', 0);
+	/* parse the id string
+	 * prototypes:
+	 * tree_id, tree_id_leaf_id, tree_id_leaf_id_hgd_dq
+	 * tree_id_leaf_id_hgd_dqi, tree_id_leaf_id_hgd_gt
+	 */
+	$tree_id         = 0;
+	$leaf_id         = 0;
+	$device_group_type = array('na', 0);
 
-		if (isset($_REQUEST["id"])) {
-			$id_array = explode("_", $_REQUEST["id"]);
-			$type     = "";
+	if (isset($_REQUEST["id"])) {
+		$id_array = explode("_", $_REQUEST["id"]);
+		$type     = "";
 
-			if (sizeof($id_array)) {
-				foreach($id_array as $part) {
-					if (is_numeric($part)) {
-						switch($type) {
-							case "tree":
-								$tree_id = $part;
-								break;
-							case "leaf":
-								$leaf_id = $part;
-								break;
-							case "dqi":
-								$device_group_type = array("dqi", $part);
-								break;
-							case "dq":
-								$device_group_type = array("dq", $part);
-								break;
-							case "gt":
-								$device_group_type = array("gt", $part);
-								break;
-							default:
-								break;
-						}
-					}else{
-						$type = trim($part);
+		if (sizeof($id_array)) {
+			foreach($id_array as $part) {
+				if (is_numeric($part)) {
+					switch($type) {
+						case "tree":
+							$tree_id = $part;
+							break;
+						case "leaf":
+							$leaf_id = $part;
+							break;
+						case "dqi":
+							$device_group_type = array("dqi", $part);
+							break;
+						case "dq":
+							$device_group_type = array("dq", $part);
+							break;
+						case "gt":
+							$device_group_type = array("gt", $part);
+							break;
+						default:
+							break;
 					}
+				}else{
+					$type = trim($part);
 				}
 			}
 		}
+	}
 
-		//cacti_log("tree_id: '" . $tree_id . ", leaf_id: '" . $leaf_id . ", hgt: '" . $device_group_type[0] . "," . $device_group_type[1] . "'", false);
+	cacti_log("tree_id: '" . $tree_id . ", leaf_id: '" . $leaf_id . ", hgt: '" . $device_group_type[0] . "," . $device_group_type[1] . "'", false);
+
+	if (is_numeric($_REQUEST["id"]) || $tree_id <= 0) {
+		$tree_items = get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, true);
+	}else{
 		$tree_items = get_tree_leaf_items($tree_id, $leaf_id, $device_group_type);
+	}
 
-		if (sizeof($tree_items)) {
-			$total_items = sizeof($tree_items);
+	if (sizeof($tree_items)) {
+		$total_items = sizeof($tree_items);
 
-			$i = 0;
-			echo "[\n";
-			foreach($tree_items as $item) {
-				$node_id  = "tree_" . $item["tree_id"];
-				$node_id .= "_leaf_" . $item["leaf_id"];
-				switch ($item["type"]) {
-					case "tree":
+		$i = 0;
+		echo "[";
+		foreach($tree_items as $item) {
+			$node_id  = "tree_" . $item["tree_id"];
+			$node_id .= "_leaf_" . $item["leaf_id"];
+			switch ($item["type"]) {
+				case "tree":
+					$children = true;
+					$icon     = "";
+					break;
+				case "graph":
+					$children = false;
+					$icon     = CACTI_URL_PATH . "images/tree_icons/graph.gif";
+					break;
+				case "device":
+					if (read_graph_config_option("expand_devices") == CHECKED) {
 						$children = true;
-						$icon     = "";
-						break;
-					case "graph":
+					}else{
 						$children = false;
-						$icon     = CACTI_URL_PATH . "images/tree_icons/graph.gif";
-						break;
-					case "device":
-						if (read_graph_config_option("expand_devices") == CHECKED) {
-							$children = true;
-						}else{
-							$children = false;
-						}
-						$icon     = CACTI_URL_PATH . "images/tree_icons/device.gif";
-						break;
-					case "header":
-						$children = true;
-						$icon     = "";
-						break;
-					case "dq":
-						$children = true;
-						$icon     = "";
-						$node_id .= "_" . $item["type"] . "_" . $item["id"];
-						$icon     = CACTI_URL_PATH . "images/tree_icons/dataquery.png";
-						break;
-					case "dqi":
-						$children = false;
-						$icon     = "";
-						$node_id .= "_" . $item["type"] . "_" . $item["id"];
-						break;
-					case "gt":
-						$children = false;
-						$node_id .= "_" . $item["type"] . "_" . $item["id"];
-						$icon     = CACTI_URL_PATH . "images/tree_icons/template.png";
-						break;
-					default:
-				}
-				echo "{\n";
-				echo "\t\"data\": \"" . $item["name"] . "\",\n";
-				echo "\t\t\"attr\": { \"id\" : \"" . $node_id . "\" },\n";
-				if($children) echo "\t\"state\": \"closed\", \n";
-				//echo "\t\t\"title\" : \"".$item["name"] ."\"" . ($icon != '' ? ", \"icon\" : \"" . $icon . "\"" : "");
-				//echo "\n";
-				//echo "\t}\n";
-				echo "}";
-				if(++$i < $total_items) echo ",";
-				echo "\n";
+					}
+					$icon     = CACTI_URL_PATH . "images/tree_icons/device.gif";
+					break;
+				case "header":
+					$children = true;
+					$icon     = "";
+					break;
+				case "dq":
+					$children = true;
+					$icon     = "";
+					$node_id .= "_" . $item["type"] . "_" . $item["id"];
+					$icon     = CACTI_URL_PATH . "images/tree_icons/dataquery.png";
+					break;
+				case "dqi":
+					$children = false;
+					$icon     = "";
+					$node_id .= "_" . $item["type"] . "_" . $item["id"];
+					break;
+				case "gt":
+					$children = false;
+					$node_id .= "_" . $item["type"] . "_" . $item["id"];
+					$icon     = CACTI_URL_PATH . "images/tree_icons/template.png";
+					break;
+				default:
 			}
+			echo '{"attr":{"id":"' . $node_id . '","rel":"' . $item["type"] . '"},"data":"' . $item["name"] . '","state":' . ($children ? '"closed"':'""') . '}';
+			if(++$i < $total_items) echo ",\n";
 		}
-		echo "\n]";
-		break;
-	case "loadfile":
-		break;
-	case "savefile":
-		break;
+		echo "]";
 	}
 
 	exit();
@@ -939,6 +929,7 @@ function get_graph_tree_graphs() {
 		}
 	}
 
+	/* process the id information */
 	if (isset($_REQUEST["id"])) {
 		$_SESSION["sess_graph_navigation"] = $_REQUEST["id"];
 		$id_array = explode("_", $_REQUEST["id"]);
@@ -1209,7 +1200,10 @@ function graph_view_tree_filter() {
 				</form>
 			</td>
 		</tr>
-		<tr id="tree_content">
+		<tr>
+			<td>
+				<div id="tree_content"></div>
+			</td>
 		</tr>
 	</table>
 	<?php
