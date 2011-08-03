@@ -219,6 +219,11 @@ case 'tree':
 			},
 
 			"plugins" : [ "themes", "json_data", "ui", "crrm", "cookies", "dnd", "search", "types", "contextmenu" ]
+		})
+		.bind("select_node.jstree", function (event, data) {
+			$.get("graph_view.php?action=ajax_tree_content&id="+data.rslt.obj.attr('id'), function(data) {
+				$("#graphs").html(data);
+			});
 		});
 
 		<?php

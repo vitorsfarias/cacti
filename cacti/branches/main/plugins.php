@@ -500,7 +500,7 @@ function plugin_show($status = 'all', $refresh = true) {
 	/* display the table */
 	$table->draw_table();
 
-	html_start_box("", "100%", $colors["header"], "3", "center", "");
+	html_start_box("", "100", "3", "center", "");
 	echo "<tr><td colspan=8><strong>" . __('NOTE:') . 
 		"</strong> " . __("Change 'Load Order' by dragging and dropping.") . 
 		"<br><strong>" . __('NOTE for SYSTEM plugins:') . 
