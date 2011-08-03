@@ -2730,7 +2730,7 @@ function cacti_escapeshellcmd($string) {
 		$replacements = "#&;`|*?<>^()[]{}$\\";
 
 		for ($i=0; $i < strlen($replacements); $i++) {
-			$string = str_replace($replacements[$i], " ", $string);
+			$string = str_replace($replacements[$i], "", $string);
 		}
 		return '"' . $string . '"';
 	}
