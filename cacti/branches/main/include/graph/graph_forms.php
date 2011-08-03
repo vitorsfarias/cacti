@@ -524,7 +524,9 @@ $struct_graph_item = array(
 		"method" => "drop_array",
 		"array" => $graph_item_types,
 		"default" => "0",
-		"description" => __("How data for this item is represented visually on the graph."),
+		"description" => __("How data for this item is represented visually on the graph." . "<br>" .
+						"<strong>" . __("Note: ") . "</strong>" .
+						"To customize the 'Custom Legend' shortcut, see 'Settings -> Legend'"),
 		),
 	"line_width" => array(
 		"friendly_name" => __("Line Width (decimal)"),
