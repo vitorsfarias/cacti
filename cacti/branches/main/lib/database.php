@@ -42,16 +42,19 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type, $port = "330
 	$i = 0;
 	$device = $device . ":" . $port;
 	while ($i <= $retries) {
-		$cnn_id = mysql_pconnect($device, $user, $pass, $flags);
+		$cnn_id = @mysql_pconnect($device, $user, $pass, $flags);
 		if ($cnn_id) {
-			mysql_select_db($db_name);
-			$database_sessions[$db_name] = $cnn_id;
-			return TRUE;
+			if (mysql_select_db($db_name)) {
+				$database_sessions[$db_name] = $cnn_id;
+				return TRUE;
+			} else {
+				return FALSE;
+			}
 		}
 		$i++;
 		usleep(40000);
 	}
-	die("FATAL: Cannot connect to MySQL server on '$device'. Please make sure you have specified a valid MySQL database name in 'include/config.php'\n");
+	//die("FATAL: Cannot connect to MySQL server on '$device'. Please make sure you have specified a valid MySQL database name in 'include/config.php'\n");
 	return FALSE;
 }
 
@@ -64,6 +67,7 @@ function db_close($db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
+	if (!$db_conn) return FALSE;
 	return mysql_close($db_conn);
 }
 
@@ -78,6 +82,8 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
+	if (!$db_conn) return FALSE;
+
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
@@ -124,7 +130,7 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
-
+	if (!$db_conn) return FALSE;
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
 	if (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
@@ -164,6 +170,7 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
+	if (!$db_conn) return FALSE;
 
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
@@ -205,6 +212,7 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
+	if (!$db_conn) return FALSE;
 
 	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
 
@@ -244,7 +252,10 @@ function db_fetch_insert_id($db_conn = FALSE) {
 	if (!$db_conn) {
 		$db_conn = $database_sessions[$database_default];
 	}
-	return mysql_insert_id($db_conn);
+	if ($db_conn) {
+		return mysql_insert_id($db_conn);
+	}
+	return FALSE;
 }
 
 /* array_to_sql_or - loops through a single dimentional array and converts each

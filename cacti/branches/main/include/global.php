@@ -147,7 +147,7 @@ if (!function_exists('mysql_data_seek')) {
 db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
 /* Check that the database has tables in it - can't use db_fetch_assoc because that uses read_config_option! */
-$result = mysql_query("show tables from $database_default");
+$result = @mysql_query("show tables from $database_default");
 if(!$result || mysql_num_rows($result) == 0) {
 	$database_empty = true;
 } else {
