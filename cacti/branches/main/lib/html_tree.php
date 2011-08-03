@@ -805,8 +805,7 @@ function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_pa
 				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
 					WHERE graph_tree_id=$tree_id
-					AND id!=$leaf_id
-					AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
+					AND parent_id=$leaf_id");
 
 				if (sizeof($tree_items)) {
 					foreach($tree_items AS $item) {
@@ -829,8 +828,7 @@ function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_pa
 				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
 					WHERE graph_tree_id=$tree_id
-					AND id!=$leaf_id
-					AND order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'");
+					AND parent_id=$leaf_id");
 			}
 
 			if (sizeof($tree_items)) {

@@ -115,7 +115,7 @@ case 'tree':
 	}
 
 	if (!isset($_REQUEST["tree_id"])) {
-		$_REQUEST["tree_id"] = "1";
+		$_REQUEST["tree_id"] = "-2";
 	}
 
 	?>
@@ -124,15 +124,101 @@ case 'tree':
 
 	$(function() {
 		$("#tree_content").jstree({
+			"themes" : {
+				"theme" : "default",
+				"dots" : true,
+				"icons" : true
+			},
+
 			"json_data" : {
 				"ajax" : {
-					"url" : "graph_view.php?action=ajax_tree_items&type=list&tree_id=<?php print $_REQUEST["tree_id"];?>",
-					"data" : function (n) {
-						return { id : n.attr ? n.attr("id") : 0 };
+					"url" : "graph_view.php",
+					"data" : function (n) { 
+						// the result is fed to the AJAX request `data` option
+						return { 
+							"action" : "ajax_tree_items", 
+							"id" : n.attr ? n.attr("id") : <?php print '"tree_' . $_REQUEST["tree_id"] . '"';?> 
+						}; 
 					}
 				}
 			},
-			"plugins" : [ "themes", "json_data" ]
+
+			"types" : {
+				"types" : {
+					"default" : {
+						"valid_children" : "none",
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.png";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"graph" : {
+						"valid_children" : "none",
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/graph.gif";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"device" : {
+						"valid_children" : [ "graph", "dqi", "dq", "gt" ] ,
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/device.gif";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"header" : {
+						"valid_children" : [ "device", "graph" ],
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.png";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"dq" : {
+						"valid_children" : "dqi",
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/dataquery.gif";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"dqi" : {
+						"valid_children" : "graph",
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.gif";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+					"gt" : {
+						"valid_children" : "graph",
+						"icon" : {
+							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/template.gif";?>"
+						},
+						"start_drag" : false,
+						"move_node" : false,
+						"delete_node" : false,
+						"remove" : false
+					},
+				}
+			},
+
+			"plugins" : [ "themes", "json_data", "ui", "crrm", "cookies", "dnd", "search", "types", "contextmenu" ]
 		});
 
 		<?php
