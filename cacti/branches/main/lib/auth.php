@@ -322,3 +322,9 @@ function is_tree_allowed($tree_id) {
 		return false;
 	}
 }
+
+function &user_auth_form_list() {
+	require(CACTI_BASE_PATH . "/include/auth/auth_forms.php");
+
+	return $fields_user_user_edit_device;
+}
