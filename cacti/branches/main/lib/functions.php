@@ -712,9 +712,14 @@ function display_policy_graphs($policy) {
  * formats and displays user realm
  * @param $realm - id of realm
  */
-function display_auth_realms($realm) {
+function display_auth_realms($realm=NULL) {
 	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
-	return $auth_realms[$realm];
+
+	if (isset($auth_realms[$realm]))	{
+		return $auth_realms[$realm];
+	} else {
+		return __("None");
+	}
 }
 
 function row_plugin_class($plugin_type) {

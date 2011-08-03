@@ -74,7 +74,7 @@ if (read_config_option("auth_method") != 0) {
 			if (isset($_SERVER["HTTP_REFERER"])) {
 				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __("Return") . "</a> | <a href='" . CACTI_URL_PATH . "logout.php'>" . __("Login Again") . "</a> )</td>";
 			}else{
-				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . CACTI_URL_PATH . "logout.php'>" . __("Login Again") . "</a> )</td>";
+				$goBack = "<td class='textArea' colspan='2' align='center'>( <a href='" . CACTI_URL_PATH . "index.php'>" . __("Login Again") . "</a> )</td>";
 			}
 
 			?>
