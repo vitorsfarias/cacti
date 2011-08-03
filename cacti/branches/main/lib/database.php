@@ -44,8 +44,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type, $port = "330
 	while ($i <= $retries) {
 		$cnn_id = @mysql_pconnect($device, $user, $pass, $flags);
 		if ($cnn_id) {
+			$database_sessions[$db_name] = $cnn_id;
 			if (mysql_select_db($db_name)) {
-				$database_sessions[$db_name] = $cnn_id;
 				return TRUE;
 			} else {
 				return FALSE;
@@ -348,7 +348,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 
 	}
 	$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
-	db_execute($sql);
+	@db_execute($sql);
 	return db_fetch_insert_id();
 }
 
