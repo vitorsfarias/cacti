@@ -501,6 +501,19 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
 	}
 
+	if (read_config_option('i18n_timezone_support')) {
+		if(isset($_SESSION['sess_i18n_posix_tz_string'])) {
+			/* set TZ variable to the user defined time zone */
+			putenv('TZ=' . $_SESSION['sess_i18n_posix_tz_string']);
+		}elseif(isset($_SESSION['sess_config_array']['i18n_posix_tz_string'])) {
+			/* set TZ variable to the default (system) time zone */
+			putenv('TZ=' . $_SESSION['sess_config_array']['i18n_posix_tz_string']);
+		}else {
+			/* set TZ variable to the default (system) time zone before exporting graphs */
+			putenv('TZ=' . db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . $time_zone . "'"));
+		}
+	}
+
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
 	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (isset($_SESSION["sess_user_id"]))) {
@@ -2244,7 +2257,7 @@ function rrdtool_set_x_grid($xaxis_id, $start, $end) {
  */
 function rrd_substitute_device_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace device variables in graph elements */
-	if (empty($graph["device_id"])) { 
+	if (empty($graph["device_id"])) {
 		/* if graph has no associated device determine device_id from graph item data source */
 		if (!empty($graph_item["local_data_id"])) {
 			$device_id = db_fetch_cell("select device_id from data_local where id='" . $graph_item["local_data_id"] . "'");
