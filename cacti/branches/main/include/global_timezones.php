@@ -22,12 +22,25 @@
  +-------------------------------------------------------------------------+
 */
 
-/* detect system time zone */
-define("CACTI_SYSTEM_TIME_ZONE", date("e"));
+/* detect system's time zone */
+$system_return = @date("e");
+$system_config = ini_get("date.timezone");
+
+if($system_config == false) {
+	date_default_timezone_set($system_return);
+	cacti_log("ERROR: No time zone configuration detected. Please configure your PHP environment properly", false, "SYSTEM" );
+}elseif( $system_return != $system_config) {
+	date_default_timezone_set($system_return);
+	cacti_log("ERROR: Misspelled time zone configuration detected. Please configure your PHP environment properly", false, "SYSTEM" );
+}
+
+define("CACTI_SYSTEM_TIME_ZONE", $system_return);
+define("CACTI_SYSTEM_POSIX_TZ_STRING", get_posix_tz_string(CACTI_SYSTEM_TIME_ZONE));
 
 /* return to main if time zone support has been deactivated */
 if (read_config_option("i18n_timezone_support") == 0) {
 	define("CACTI_CUSTOM_TIME_ZONE", CACTI_SYSTEM_TIME_ZONE);
+	define("CACTI_CUSTOM_POSIX_TZ_STRING", CACTI_SYSTEM_POSIX_TZ_STRING);
 	return;
 }
 
@@ -49,7 +62,6 @@ if (isset($_GET['time_zone'])) {
 /* use the default time zone defined under "general" or fall back to sytsem time zone*/
 }else {
 	init_time_zone(read_config_option("i18n_default_timezone"), false);
-	$_SESSION["sess_config_array"]["i18n_posix_tz_string"] = db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . read_config_option("i18n_default_timezone") . "'");
 }
 
 
@@ -57,15 +69,17 @@ if (isset($_GET['time_zone'])) {
  * init_time_zone() - initialize the custom time zone
  *
  * @time_zone - custom time zone that has to be used (olson format)
- * @update_session_vars - update session values if true
+ * @update_session_var - update session values if true
  * @return - returns true (successful) or false (failed)
  */
-function init_time_zone($time_zone, $update_sess_vars = true){
-	if(set_time_zone($time_zone, $update_sess_vars)) {
+function init_time_zone($time_zone, $update_sess_var = true){
+	if(set_time_zone($time_zone, $update_sess_var)) {
 		@define("CACTI_CUSTOM_TIME_ZONE", $time_zone);
+		@define("CACTI_CUSTOM_POSIX_TZ_STRING", get_posix_tz_string($time_zone));
 		return true;
 	}else {
 		@define("CACTI_CUSTOM_TIME_ZONE", CACTI_SYSTEM_TIME_ZONE);
+		@define("CACTI_CUSTOM_POSIX_TZ_STRING", CACTI_SYSTEM_POSIX_TZ_STRING);
 		return false;
 	}
 }
@@ -77,7 +91,7 @@ function init_time_zone($time_zone, $update_sess_vars = true){
  * @update_session_vars - update session values if true
  * @return - returns true (successful) or false (failed)
  */
-function set_time_zone($time_zone, $update_session_vars) {
+function set_time_zone($time_zone, $update_session_var) {
 	/* lock this function if time zone support is disabled */
 	if(read_config_option("i18n_timezone_support")) {
 		/* if defined only system or custom time zone will be accepted. Avoid that plugins will setup another time zone. */
@@ -86,9 +100,8 @@ function set_time_zone($time_zone, $update_session_vars) {
 		}else {
 			if(function_exists('date_default_timezone_set')) {
 				if(@date_default_timezone_set($time_zone)) {
-					if($update_session_vars && isset($_SESSION) && (!isset($_SESSION['sess_i18n_timezone']) || $_SESSION['sess_i18n_timezone'] != $time_zone )) {
+					if($update_session_var && isset($_SESSION)) {
 						$_SESSION['sess_i18n_timezone'] = $time_zone;
-						$_SESSION['sess_i18n_posix_tz_string'] = db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . $time_zone . "'");
 					}
 					return true;
 				}
@@ -101,12 +114,22 @@ function set_time_zone($time_zone, $update_session_vars) {
 }
 
 /**
+ * get_posix_tz_string() - returns the posix string matching to the olson string
+ *
+ * @return - returns a posix string or false
+ */
+function get_posix_tz_string($olson_tz_string){
+	$posix_tz_string = db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . $olson_tz_string . "'");
+	return ($posix_tz_string) ? $posix_tz_string : false;
+}
+
+/**
  * disable_tmz_support() - fall back to system time zone
  *
  * @return - returns true (successful) or false (failed)
  */
 function disable_tmz_support() {
-	return (set_time_zone(CACTI_SYSTEM_TIME_ZONE)) ? true : false;
+	return (set_time_zone(CACTI_SYSTEM_TIME_ZONE, true)) ? true : false;
 }
 
 /**
@@ -115,9 +138,8 @@ function disable_tmz_support() {
  * @return - returns true (successful) or false (failed)
  */
 function enable_tmz_support() {
-	return (set_time_zone(CACTI_CUSTOM_TIME_ZONE)) ? true : false;
+	return (set_time_zone(CACTI_CUSTOM_TIME_ZONE, true)) ? true : false;
 }
-
 
 function get_list_of_timezones() {
 	/* define a human friendly array of timezones */
