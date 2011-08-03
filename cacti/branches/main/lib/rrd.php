@@ -501,18 +501,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
 	}
 
-	if (read_config_option('i18n_timezone_support')) {
-		if(isset($_SESSION['sess_i18n_posix_tz_string'])) {
-			/* set TZ variable to the user defined time zone */
-			putenv('TZ=' . $_SESSION['sess_i18n_posix_tz_string']);
-		}elseif(isset($_SESSION['sess_config_array']['i18n_posix_tz_string'])) {
-			/* set TZ variable to the default (system) time zone */
-			putenv('TZ=' . $_SESSION['sess_config_array']['i18n_posix_tz_string']);
-		}else {
-			/* set TZ variable to the default (system) time zone before exporting graphs */
-			putenv('TZ=' . db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . $time_zone . "'"));
-		}
-	}
+	/* set always the TZ variable to the user defined time zone. It doesn't matter if time zone support is enabled or not */
+	putenv('TZ=' . CACTI_CUSTOM_POSIX_TZ_STRING);
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
