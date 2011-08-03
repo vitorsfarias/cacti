@@ -946,7 +946,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 		}
 	}
 
-	/* drow the rows */
+	/* draw the rows */
 	if (sizeof($rows)) {
 		foreach ($rows as $row) {
 			$row = plugin_hook_function(str_replace(".php", "", $href) . '_table', $row);
@@ -988,10 +988,13 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 					foreach($data["params"] as $param) {
 						if (isset($row[$param])) {
 							$passarray[] = $row[$param];
+						} else {
+							/* an argument is expected but not provided by the row that was passed (uninitialized data)
+							 * so let's provide an empty array */
+							 $passarray[] = '';
 						}
 					}
 					}
-
 					$value = call_user_func_array($data["function"], $passarray);
 				}
 
