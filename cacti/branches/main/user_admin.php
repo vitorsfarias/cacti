@@ -1005,6 +1005,10 @@ function user_edit() {
 	form_save_button_alt("return!user_admin.php");
 }
 
+/**
+ * process page variables to govern table display
+ * e.g. page number we're on, total number of rows ...
+ */
 function user_process_page_variables() {
 	$page_variables = array(
 		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
@@ -1022,6 +1026,9 @@ function user_process_page_variables() {
 	html_verify_request_variables($page_variables, "sess_user_admin", $clear);
 }
 
+/**
+ * draw the filter(s) that are displayed on the page
+ */
 function user_filter() {
 	global $item_rows;
 
@@ -1077,6 +1084,12 @@ function user_filter() {
 	<?php
 }
 
+/**
+ * fetch all records that are required for displaying
+ * @param int $total_rows	number of rows available in the table, accepting the filter that was set
+ * 							this number is returned by the function
+ * @param int $rowspp		set the number of rows that shall be fetched and displayed
+ */
 function user_get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
@@ -1085,17 +1098,23 @@ function user_get_records(&$total_rows, &$rowspp) {
 		$sql_where = "";
 	}
 
+	/* initial value for rows per page */
 	if (html_get_page_variable("rows") == "-1") {
 		$rowspp = read_config_option("num_rows_device");
 	}else{
 		$rowspp = html_get_page_variable("rows");
 	}
 
+	/* fetch number of total rows available, honor the filter defined */
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(user_auth.id)
 		FROM user_auth
 		$sql_where");
 
+	/* return the rows, honoring
+	 *    the filter
+	 *    the number of rows for display
+	 */
 	return db_fetch_assoc("SELECT
 		id,
 		user_auth.username,
@@ -1113,6 +1132,10 @@ function user_get_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp * (html_get_page_variable("page") - 1)) . "," . $rowspp);
 }
 
+/**
+ * define the table layout
+ * e.g. columns, specific column formatting via callback functions, filtering and the like
+ */
 function user_get_table_format() {
 	return array(
 		"username" => array(
@@ -1147,12 +1170,16 @@ function user_get_table_format() {
 		"dtime" => array(
 			"name" => __("Last Login"),
 			"function" => "display_last_login",
+			"params" => array("dtime"),
 			"order" => "DESC",
 			"align" => "right"
 		)
 	);
 }
 
+/**
+ * display the user list
+ */
 function user() {
 	global $user_actions;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
