@@ -41,7 +41,7 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 switch (get_request_var_request("action")) {
 case 'changepassword':
 	if ((get_request_var_post("password") == get_request_var_post("confirm")) && (get_request_var_post("password") != "")) {
-		user_log_insert($user["id"], $user["username"], 3);
+		user_log_insert($user["id"], $user["username"], AUTH_LOGIN_RESULT_PASSWORD_CHANGE);
 		db_execute("update user_auth set must_change_password='',password='" . md5($_POST["password"]) . "' where id=" . $_SESSION["sess_user_id"]);
 
 		kill_session_var("sess_change_password");
@@ -70,6 +70,7 @@ case 'changepassword':
 
 	}else{
 		$bad_password = true;
+		user_log_insert($user["id"], $user["username"], AUTH_LOGIN_RESULT_BAD_PASSWORD);
 	}
 
 	break;

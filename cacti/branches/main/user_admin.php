@@ -516,7 +516,6 @@ function perm_remove() {
  * @param array $user	- user data
  */
 function user_global_edit($user){
-	require_once(CACTI_BASE_PATH . "/lib/auth/auth_info.php");
 
 	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
 

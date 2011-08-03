@@ -152,6 +152,7 @@ if ($action == 'login') {
 			exit;
 		}
 	}
+	/* now we have a valid $user, whatsoever */
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
@@ -172,7 +173,8 @@ if ($action == 'login') {
 	/* Process the user  */
 	if (sizeof($user) > 0) {
 		cacti_log("LOGIN: User '" . $user["username"] . "' Authenticated", false, "AUTH");
-		user_log_insert($user["id"], $username, 1);
+		/* log valid login */
+		user_log_insert($user["id"], $username, AUTH_LOGIN_RESULT_SUCCESS);
 		/* is user enabled */
 		$user_enabled = $user["enabled"];
 		if ($user_enabled != CHECKED) {
@@ -226,10 +228,11 @@ if ($action == 'login') {
 			/* No guest account defined */
 			auth_display_custom_error_message(__("Access Denied, please contact you Cacti Administrator."));
 			cacti_log("LOGIN: Access Denied, No guest enabled or template user to copy", false, "AUTH");
+			user_log_insert(0, $username, AUTH_LOGIN_RESULT_GUEST_LOGIN_DENIED); # access denied
 			exit;
 		}else{
 			/* BAD username/password builtin and LDAP */
-			user_log_insert(0, $username, 0);
+			user_log_insert(0, $username, AUTH_LOGIN_RESULT_USER_INVALID);
 		}
 	}
 }

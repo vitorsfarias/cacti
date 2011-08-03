@@ -81,6 +81,14 @@ if (function_exists("ldap_connect")) {
 	$auth_methods[AUTH_METHOD_LDAP] = __("LDAP Authentication");
 }
 
+$auth_log_messages = array(
+	AUTH_LOGIN_RESULT_USER_INVALID			=> __("User invalid"),
+	AUTH_LOGIN_RESULT_SUCCESS				=> __("Login successful"),
+	AUTH_LOGIN_RESULT_GUEST_LOGIN_DENIED	=> __("Guest login denied"),
+	AUTH_LOGIN_RESULT_PASSWORD_CHANGE		=> __("Password change successful"),
+	AUTH_LOGIN_RESULT_BAD_PASSWORD			=> __("Bad password"),
+	);
+
 $auth_realms = array(
 	AUTH_REALM_BUILTIN		=> __("Local"),
 	AUTH_REALM_WEB			=> __("Web Basic"),
