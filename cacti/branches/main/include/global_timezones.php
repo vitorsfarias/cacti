@@ -40,7 +40,7 @@ if (isset($_GET['time_zone'])) {
 
 /* time zone definition is stored in the SESSION */
 }elseif (isset($_SESSION['sess_i18n_timezone'])) {
-	init_time_zone($_SESSION['sess_i18n_timezone']);
+	init_time_zone($_SESSION['sess_i18n_timezone'], false);
 
 /* look up for user customized time zone stored in Cacti DB */
 }elseif ($time_zone = read_user_config_option('time_zone')) {
@@ -48,18 +48,20 @@ if (isset($_GET['time_zone'])) {
 
 /* use the default time zone defined under "general" or fall back to sytsem time zone*/
 }else {
-	init_time_zone(read_config_option("i18n_default_timezone"));
+	init_time_zone(read_config_option("i18n_default_timezone"), false);
+	$_SESSION["sess_config_array"]["i18n_posix_tz_string"] = db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . read_config_option("i18n_default_timezone") . "'");
 }
 
 
 /**
  * init_time_zone() - initialize the custom time zone
  *
- * @time_zone - custom time zone that has to be used
+ * @time_zone - custom time zone that has to be used (olson format)
+ * @update_session_vars - update session values if true
  * @return - returns true (successful) or false (failed)
  */
-function init_time_zone($time_zone){
-	if(set_time_zone($time_zone)) {
+function init_time_zone($time_zone, $update_sess_vars = true){
+	if(set_time_zone($time_zone, $update_sess_vars)) {
 		@define("CACTI_CUSTOM_TIME_ZONE", $time_zone);
 		return true;
 	}else {
@@ -71,10 +73,11 @@ function init_time_zone($time_zone){
 /**
  * set_time_zone() - toogle between system and custom time zone
  *
- * @time_zone - time zone
+ * @time_zone - time zone (olson format)
+ * @update_session_vars - update session values if true
  * @return - returns true (successful) or false (failed)
  */
-function set_time_zone($time_zone) {
+function set_time_zone($time_zone, $update_session_vars) {
 	/* lock this function if time zone support is disabled */
 	if(read_config_option("i18n_timezone_support")) {
 		/* if defined only system or custom time zone will be accepted. Avoid that plugins will setup another time zone. */
@@ -83,8 +86,9 @@ function set_time_zone($time_zone) {
 		}else {
 			if(function_exists('date_default_timezone_set')) {
 				if(@date_default_timezone_set($time_zone)) {
-					if(isset($_SESSION)) {
+					if($update_session_vars && isset($_SESSION) && (!isset($_SESSION['sess_i18n_timezone']) || $_SESSION['sess_i18n_timezone'] != $time_zone )) {
 						$_SESSION['sess_i18n_timezone'] = $time_zone;
+						$_SESSION['sess_i18n_posix_tz_string'] = db_fetch_cell("SELECT posix_tz_string FROM i18n_time_zones WHERE olson_tz_string = '" . $time_zone . "'");
 					}
 					return true;
 				}
