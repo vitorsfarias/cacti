@@ -22,63 +22,23 @@
  +-------------------------------------------------------------------------+
 */
 
-include('../include/global.php');
-
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
 
 /* let's not repopulate the poller cache unless we have to */
 $repopulate = false;
 
-/* verify all required php extensions */
-if (!verify_php_extensions()) {exit;}
+require_once('../include/global.php');
+require_once('../lib/html.php');
+require_once('../lib/html_utility.php');
 
-$cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
-'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
-'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h',
-'0.8.8');
-
-if(!$database_empty) {
-	$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
-} else {
-	$old_cacti_version = '';
-}
-
-/* try to find current (old) version in the array */
-$old_version_index = array_search($old_cacti_version, $cacti_versions);
-
-/* do a version check */
-if ($old_cacti_version == CACTI_VERSION) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.") . "</p>";
-	exit;
-} elseif (preg_match("/^0\.6/", $old_cacti_version)) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You are attempting to install cacti %s	onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and update 'include/config.php' to point to the new database.", CACTI_VERSION) . "</p>";
-	exit;
-} elseif (empty($old_cacti_version)) {
-	print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
-		<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:") . "</p>
-		<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
-		<p>" . __("This error may also be generated if the cacti database user does not have correct permissions on the cacti database. Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the cacti database.") . "</p>";
-	exit;
-}
-
-function verify_php_extensions() {
-	$extensions = array("session", "sockets", "mysql", "xml", "pcre");
-	$ok = true;
-	$missing_extension = "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
-							<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("The following PHP extensions are missing:") . "</p><ul>";
-	foreach ($extensions as $extension) {
-		if (!extension_loaded($extension)){
-			$ok = false;
-			$missing_extension .= "<li style='font-family: Verdana, Arial; font-size: 12px;'>$extension</li>";
+function verify_php_extensions($extensions) {
+	for ($i = 0; $i < count($extensions); $i++) {
+		if (extension_loaded($extensions[$i]['name'])){
+			$extensions[$i]['installed'] = true;
 		}
 	}
-	if (!$ok) {
-		print $missing_extension . "</ul><p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("Please install those PHP extensions and retry") . "</p>";
-	}
-	return $ok;
+	return $extensions;
 }
 
 function db_install_execute($cacti_version, $sql) {
@@ -132,328 +92,55 @@ function find_best_path($binary_name) {
 		}
 	}
 }
-
-/* Here, we define each name, default value, type, and path check for each value
-we want the user to input. The "name" field must exist in the 'settings' table for
-this to work. Cacti also uses different default values depending on what OS it is
-running on. */
-
-/* RRDTool Binary Path */
-$input = array();
-$input["path_rrdtool"] = $settings["path"]["path_rrdtool"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_rrdtool = find_best_path("rrdtool");
-
-	if (config_value_exists("path_rrdtool")) {
-		$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
-	} else if (!empty($which_rrdtool)) {
-		$input["path_rrdtool"]["default"] = $which_rrdtool;
-	} else{
-		$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_rrdtool = find_best_path("rrdtool.exe");
-
-	if (config_value_exists("path_rrdtool")) {
-		$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
-	} else if (!empty($which_rrdtool)) {
-		$input["path_rrdtool"]["default"] = $which_rrdtool;
-	} else{
-		$input["path_rrdtool"]["default"] = "c:/rrdtool/rrdtool.exe";
-	}
-}
-
-/* PHP Binary Path */
-$input["path_php_binary"] = $settings["path"]["path_php_binary"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_php = find_best_path("php");
-
-	if (config_value_exists("path_php_binary")) {
-		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
-	} else if (!empty($which_php)) {
-		$input["path_php_binary"]["default"] = $which_php;
-	} else{
-		$input["path_php_binary"]["default"] = "/usr/bin/php";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_php = find_best_path("php.exe");
-
-	if (config_value_exists("path_php_binary")) {
-		$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
-	} else if (!empty($which_php)) {
-		$input["path_php_binary"]["default"] = $which_php;
-	} else{
-		$input["path_php_binary"]["default"] = "c:/php/php.exe";
-	}
-}
-
-/* Perl Binary Path */
-$input["path_perl_binary"] = $settings["path"]["path_perl_binary"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_perl = find_best_path("perl");
-
-	if (config_value_exists("path_perl_binary")) {
-		$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
-	} else if (!empty($which_perl)) {
-		$input["path_perl_binary"]["default"] = $which_perl;
-	} else{
-		$input["path_perl_binary"]["default"] = "/usr/bin/perl";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_perl = find_best_path("perl.exe");
-
-	if (config_value_exists("path_perl_binary")) {
-		$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
-	} else if (!empty($which_perl)) {
-		$input["path_perl_binary"]["default"] = $which_perl;
-	} else{
-		$input["path_perl_binary"]["default"] = "c:/perl/perl.exe";
-	}
-}
-
-/* Shell Binary Path */
-$input["path_sh_binary"] = $settings["path"]["path_sh_binary"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_sh = find_best_path("sh");
-
-	if (config_value_exists("path_sh_binary")) {
-		$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
-	} else if (!empty($which_sh)) {
-		$input["path_sh_binary"]["default"] = $which_sh;
-	} else{
-		$input["path_sh_binary"]["default"] = "/bin/sh";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_sh = find_best_path("sh.exe");
-
-	if (config_value_exists("path_sh_binary")) {
-		$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
-	} else if (!empty($which_sh)) {
-		$input["path_sh_binary"]["default"] = $which_sh;
-	} else{
-		$input["path_sh_binary"]["default"] = "c:/sh/sh.exe";
-	}
-}
-
-/* snmpwalk Binary Path */
-$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_snmpwalk = find_best_path("snmpwalk");
-
-	if (config_value_exists("path_snmpwalk")) {
-		$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
-	} else if (!empty($which_snmpwalk)) {
-		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
-	} else{
-		$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_snmpwalk = find_best_path("snmpwalk.exe");
-
-	if (config_value_exists("path_snmpwalk")) {
-		$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
-	} else if (!empty($which_snmpwalk)) {
-		$input["path_snmpwalk"]["default"] = $which_snmpwalk;
-	} else{
-		$input["path_snmpwalk"]["default"] = "c:/net-snmp/bin/snmpwalk.exe";
-	}
-}
-
-/* snmpget Binary Path */
-$input["path_snmpget"] = $settings["path"]["path_snmpget"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_snmpget = find_best_path("snmpget");
-
-	if (config_value_exists("path_snmpget")) {
-		$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
-	} else if (!empty($which_snmpget)) {
-		$input["path_snmpget"]["default"] = $which_snmpget;
-	} else{
-		$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_snmpget = find_best_path("snmpget.exe");
-
-	if (config_value_exists("path_snmpget")) {
-		$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
-	} else if (!empty($which_snmpget)) {
-		$input["path_snmpget"]["default"] = $which_snmpget;
-	} else{
-		$input["path_snmpget"]["default"] = "c:/net-snmp/bin/snmpget.exe";
-	}
-}
-
-/* snmpbulkwalk Binary Path */
-$input["path_snmpbulkwalk"] = $settings["path"]["path_snmpbulkwalk"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_snmpbulkwalk = find_best_path("snmpbulkwalk");
-
-	if (config_value_exists("path_snmpbulkwalk")) {
-		$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
-	} else if (!empty($which_snmpbulkwalk)) {
-		$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
-	} else{
-		$input["path_snmpbulkwalk"]["default"] = "/usr/local/bin/snmpbulkwalk";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_snmpbulkwalk = find_best_path("snmpbulkwalk.exe");
-
-	if (config_value_exists("path_snmpbulkwalk")) {
-		$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
-	} else if (!empty($which_snmpbulkwalk)) {
-		$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
-	} else{
-		$input["path_snmpbulkwalk"]["default"] = "c:/net-snmp/bin/snmpbulkwalk.exe";
-	}
-}
-
-/* snmpgetnext Binary Path */
-$input["path_snmpgetnext"] = $settings["path"]["path_snmpgetnext"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_snmpgetnext = find_best_path("snmpgetnext");
-
-	if (config_value_exists("path_snmpgetnext")) {
-		$input["path_snmpgetnext"]["default"] = read_config_option("path_snmpgetnext");
-	} else if (!empty($which_snmpgetnext)) {
-		$input["path_snmpgetnext"]["default"] = $which_snmpgetnext;
-	} else{
-		$input["path_snmpgetnext"]["default"] = "/usr/local/bin/snmpgetnext";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_snmpgetnext = find_best_path("snmpgetnext.exe");
-
-	if (config_value_exists("path_snmpgetnext")) {
-		$input["path_snmpgetnext"]["default"] = read_config_option("path_snmpgetnext");
-	} else if (!empty($which_snmpgetnext)) {
-		$input["path_snmpgetnext"]["default"] = $which_snmpgetnext;
-	} else{
-		$input["path_snmpgetnext"]["default"] = "c:/net-snmp/bin/snmpgetnext.exe";
-	}
-}
-
-/* log file path */
-$input["path_cactilog"] = $settings["path"]["path_cactilog"];
-$input["path_cactilog"]["description"] = "The path to your Cacti log file.";
-if (config_value_exists("path_cactilog")) {
-	$input["path_cactilog"]["default"] = read_config_option("path_cactilog");
-} else {
-	$input["path_cactilog"]["default"] = CACTI_BASE_PATH . "/log/cacti.log";
-}
-
-/* spine Binary Path */
-$input["path_spine"] = $settings["path"]["path_spine"];
-
-if (CACTI_SERVER_OS == "unix") {
-	$which_spine = find_best_path("spine");
-
-	if (config_value_exists("path_spine")) {
-		$input["path_spine"]["default"] = read_config_option("path_spine");
-	} else if (!empty($which_spine)) {
-		$input["path_spine"]["default"] = $which_spine;
-	} else{
-		$input["path_spine"]["default"] = "/usr/local/bin/spine";
-	}
-} elseif (CACTI_SERVER_OS == "win32") {
-	$which_spine = find_best_path("spine.exe");
-
-	if (config_value_exists("path_spine")) {
-		$input["path_spine"]["default"] = read_config_option("path_spine");
-	} else if (!empty($which_spine)) {
-		$input["path_spine"]["default"] = $which_spine;
-	} else{
-		$input["path_spine"]["default"] = "c:/spine/spine.exe";
-	}
-}
-
-/* SNMP Version */
-if (CACTI_SERVER_OS == "unix") {
-	$input["snmp_version"] = $settings["general"]["snmp_version"];
-	$input["snmp_version"]["default"] = "net-snmp";
-}
-
-/* RRDTool Version */
-if ((file_exists($input["path_rrdtool"]["default"])) && ((CACTI_SERVER_OS == "win32") || (is_executable($input["path_rrdtool"]["default"]))) ) {
-	$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
-
-	$out_array = array();
-	exec(cacti_escapeshellcmd($input["path_rrdtool"]["default"]), $out_array);
-
-	if (sizeof($out_array) > 0) {
-		if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
-			$input["rrdtool_version"]["default"] = RRD_VERSION_1_4;
-		} else if (preg_match("/^RRDtool 1\.3/", $out_array[0])) {
-			$input["rrdtool_version"]["default"] = RRD_VERSION_1_3;
-		} else if (preg_match("/^RRDtool 1\.2\./", $out_array[0])) {
-			$input["rrdtool_version"]["default"] = RRD_VERSION_1_2;
-		} else if (preg_match("/^RRDtool 1\.0\./", $out_array[0])) {
-			$input["rrdtool_version"]["default"] = RRD_VERSION_1_0;
-		}
-	}
-}
-
 /* default value for this variable */
 if (!isset($_REQUEST["install_type"])) {
 	$_REQUEST["install_type"] = 0;
 }
 
 /* defaults for the install type dropdown */
-if ($old_cacti_version == "new_install") {
+//if ($old_cacti_version == "new_install") {
 	$default_install_type = "1";
-} else{
-	$default_install_type = "3";
-}
+//} else{
+//	$default_install_type = "3";
+//}
 
 /* pre-processing that needs to be done for each step */
 if (empty($_REQUEST["step"])) {
 	$_REQUEST["step"] = 1;
 } else{
-	if (get_request_var_request("step") == "1") {
-		$_REQUEST["step"] = "2";
-	} elseif ((get_request_var_request("step") == "2") && (get_request_var_request("install_type") == "1")) {
-		$_REQUEST["step"] = "3";
-	} elseif ((get_request_var_request("step") == "2") && (get_request_var_request("install_type") == "3")) {
-		$_REQUEST["step"] = "8";
-	} elseif ((get_request_var_request("step") == "8") && ($old_version_index <= array_search("0.8.5a", $cacti_versions))) {
-		$_REQUEST["step"] = "9";
-	} elseif (get_request_var_request("step") == "8") {
-		$_REQUEST["step"] = "3";
-	} elseif (get_request_var_request("step") == "9") {
-		$_REQUEST["step"] = "3";
-	} elseif (get_request_var_request("step") == "3") {
-		$_REQUEST["step"] = "4";
-	}
+	//$_REQUEST["step"] = get_request_var_request("step");
 }
 
-if (get_request_var_request("step") == "4") {
+if (get_request_var_request("step") == "6") {
 	global $repopulate;
+	include_once('../lib/data_query.php');
+	include_once("..//lib/utility.php");
 
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/utility.php");
+	$input = install_file_paths();
 
 	$i = 0;
 
 	/* get all items on the form and write values for them  */
 	while (list($name, $array) = each($input)) {
 		if (isset($_POST[$name])) {
-			db_execute("replace into settings (name,value) values ('$name','" . get_request_var_post($name) . "')");
+			db_execute("REPLACE INTO settings (name, value) VALUES ('$name', '" . get_request_var_post($name) . "')");
 		}
 	}
 
 	setcookie(session_name(),"",time() - 3600,"/");
+} elseif (get_request_var_request("step") == '10') {
+	header ("Location: ../index.php");
+	exit;
+} elseif (get_request_var_request("step") == "5" && get_request_var_request("install_type") == "1") {
+	include_once('../include/global.php');
+	include_once('../lib/data_query.php');
+	include_once("..//lib/utility.php");
 
 	kill_session_var("sess_config_array");
 	kill_session_var("sess_device_cache_array");
 
 	/* just in case we have hard drive graphs to deal with */
-	$device_id = db_fetch_cell("select id from device where hostname='127.0.0.1'");
+	$device_id = db_fetch_cell("SELECT id FROM device WHERE hostname = '127.0.0.1'");
 
 	if (!empty($device_id)) {
 		run_data_query($device_id, 6);
@@ -468,9 +155,26 @@ if (get_request_var_request("step") == "4") {
 	db_execute("delete from version");
 	db_execute("insert into version (cacti) values ('" . CACTI_VERSION . "')");
 
-	header ("Location: ../index.php");
-	exit;
-} elseif (get_request_var_request("step") == "8" && get_request_var_request("install_type") == "3") {
+
+//	header ("Location: ../index.php");
+//	exit;
+} elseif (get_request_var_request("step") == "5" && get_request_var_request("install_type") == "3") {
+	include_once('../include/global.php');
+	$cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
+		'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
+		'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h',
+		'0.8.8');
+	
+
+	if(!$database_empty) {
+		$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+	} else {
+		$old_cacti_version = '';
+	}
+
+	/* try to find current (old) version in the array */
+	$old_version_index = array_search($old_cacti_version, $cacti_versions);
+
 	/* if the version is not found, die */
 	if (!is_int($old_version_index)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
@@ -556,14 +260,16 @@ if (get_request_var_request("step") == "4") {
 
 
 
-install_page_header ();
+
 
 switch (get_request_var_request("step")) {
 	case "1":
+		install_page_header (get_request_var_request("step"));
+
 		print '<p>' . __('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that cacti needs to know.') . '<p>';
-		if ($old_cacti_version == 'new_cacti_install') {
-			print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="../docs/html/upgrade.html">Upgrade</a> information file.') . '<p>';
-		} else {
+	//	if ($old_cacti_version == 'new_cacti_install') {
+	//		print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="../docs/html/upgrade.html">Upgrade</a> information file.') . '<p>';
+	//	} else {
 			print '<p>' . __('Make sure you have read and followed the required steps needed to install cacti before continuing. Install information can be found for ');
 			if (CACTI_SERVER_OS == "win32") {
 				print '<a href="../docs/html/install_windows.html">Windows</a>';
@@ -571,13 +277,12 @@ switch (get_request_var_request("step")) {
 				print '<a href="../docs/html/install_unix.html">Unix / Linux</a>';
 			}
 			print '<p>';
-		}
+	//	}
 		print '<p>' .  __('Cacti is licensed under the GNU General Public License v2, you must agree to its provisions before continuing:') . '<p>';
 		print '<hr><div style="height:400px;width:100%;overflow-y:scroll;background-color:white;">';
 		install_print_license();
 		print '</div><hr>';
 		print '<p>&nbsp;&nbsp;&nbsp;&nbsp;<input type=checkbox name=IAgree onclick="theChecker()">&nbsp;&nbsp;&nbsp;&nbsp;I agree to the above license agreement';
-		install_page_footer();
 		print '<script type="text/javascript">
 				function theChecker() { 
 					if (document.installform.IAgree.checked==false) {
@@ -587,183 +292,873 @@ switch (get_request_var_request("step")) {
 					}
 				}
 			</script>';
+		install_page_footer(false);
+
 		break;
-	case "2":
-		print '<p>' . __("Please select the type of installation") . '<p>';
-		print '<p><select name="install_type">';
-			if ($old_cacti_version == 'new_install') {
-				print '<option value="1"' . ($default_install_type == "1" ? " selected" : "") . '>' . __("New Install") . '</option>';
-			} else {
-				print '<option value="3"' . ($default_install_type == "3" ? " selected" : "") . '>' . __("Upgrade from cacti 0.8.x") . '</option>';
+	case "2":		/* PHP Modules */
+
+		install_page_header (get_request_var_request("step"));
+
+		print '<h2>Pre-installation Check</h2><br>';
+		print 'Cacti requies several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
+
+	//	html_start_box("<strong> " . __("Pre-Installation Checks") . "</strong>", "35", 0, "center", "", false);
+	//	html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
+
+
+		print 'PHP Required: 5.2.0<br>PHP Version: ';
+		
+		if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+			echo "<font color=red>" . PHP_VERSION . "</font><br>";
+		} else {
+			echo "<font color=green>" . PHP_VERSION . "</font><br>";
+		}
+
+		$extensions = array( array('name' => 'session', 'installed' => false),
+					array('name' => 'sockets', 'installed' => false),
+					array('name' => 'mysql', 'installed' => false),
+					array('name' => 'xml', 'installed' => false),
+					array('name' => 'pcre', 'installed' => false),
+					array('name' => 'json', 'installed' => false)
+
+				);
+
+		$ext = verify_php_extensions($extensions);
+
+
+		print "<table>";
+		$enabled = true;
+		foreach ($ext as $e) {
+			print '<tr><td>' . $e['name'] . '</td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td></tr>';
+			if ($e['installed'] == false) {
+				$enabled = false;
 			}
-		print '</select><p>' . __("The following information has been determined from Cacti's configuration file. If it is not correct, please edit 'include/config.php' before continuing.") . '<p>';
-		print '<p class="code">';
-		print __("Database User:") . " $database_username<br>";
-		print __("Database Hostname:") . " $database_hostname<br>";
-		print __("Database:") . " $database_default<br>";
-		print __("Server Operating System Type:") . " " . CACTI_SERVER_OS . "<br>";
-		print __("Cacti Version:") . " " . ($old_cacti_version == 'new_install' ? __('New Install') : $old_cacti_version) . "<br>";
+		}
+		print "</table>";
+
+		$extensions = array( array('name' => 'snmp', 'installed' => false),
+					array('name' => 'mysqli', 'installed' => false),
+					array('name' => 'gd', 'installed' => false),
+
+				);
+
+		$ext = verify_php_extensions($extensions);
+
+		print '<br><br>' . __('Other entensions may increase the performance of your Cacti install.<br><br>');
+
+		print "<table>";
+		foreach ($ext as $e) {
+			print '<tr><td>' . $e['name'] . '</td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td></tr>';
+
+		}
+		print "</table>";
+
+
+		install_page_footer($enabled);
+
+		break;
+	case "3":	/* Database Setup */
+		install_page_header (get_request_var_request("step"));
+
+		print '<p>' . __("The following information has been determined from Cacti's configuration file.") . '<p>';
+
+		if (file_exists('../include/config.php')) {
+			if (is_writable('../include/config.php')) {
+				$writeaccess = "Writable";
+			} else {
+				$writeaccess = "Config file is not writable";
+			}
+		} else {
+			$writeaccess = "Config file does not exist";
+		}
+		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		$form_array = array(
+			"database_settings" => array(
+				"friendly_name" => "Database Configuration Options",
+				"method" => "spacer",
+				),
+			"writeaccess" => array(
+				"friendly_name" => "Write Access to config file",
+				"description" => "This will display whether the webserver has write access to the include/config.php file.  The installer will need access to this file in order to update the configuration settings.  After setup, you should remove these permissions.",
+				"method" => "text",
+				"default" => "",
+				"value" => $writeaccess,
+				),
+			"database_type" => array(
+				"friendly_name" => "Database Type",
+				"description" => "This is the type of database that will be used for your cacti install.",
+				"method" => "drop_array",
+				"default" => "mysql",
+				"value" => "mysql",
+				"array" => array("mysql"),
+				),
+			"database_hostname" => array(
+				"friendly_name" => "Database Hostname",
+				"description" => "This is the hostname used to connect to your database.",
+				"method" => "textbox",
+				"default" => "127.0.0.1",
+				"value" => $database_hostname,
+				"max_length" => "60"
+				),
+			"database_port" => array(
+				"friendly_name" => "Database Port",
+				"description" => "This is the port used to connect to the database.",
+				"method" => "textbox",
+				"default" => "3306",
+				"value" => $database_port,
+				"max_length" => "6"
+				),
+			"database_default" => array(
+				"friendly_name" => "Database Name",
+				"description" => "This is the name of the database to connect to.",
+				"method" => "textbox",
+				"default" => "cacti",
+				"value" => $database_default,
+				"max_length" => "32"
+				),
+			"database_username" => array(
+				"friendly_name" => "Database Username",
+				"description" => "This is the username used to authenicate to the database",
+				"method" => "textbox",
+				"default" => "cactiuser",
+				"value" => $database_username,
+				"max_length" => "32"
+				),
+			"database_password" => array(
+				"friendly_name" => "Database Password",
+				"description" => "This is the password used to authenicate to the database.",
+				"method" => "textbox_password",
+				"default" => "",
+				"value" => "",
+				"max_length" => "32"
+				),
+		);
+		draw_edit_form(
+			array(
+				'config' => array(
+					'no_form_tag' => true
+					),
+				'fields' => $form_array
+			)
+		);
+
+		html_end_box();
+
 
 		print '</p>';
 		install_page_footer();
+		break;
+	case "4":		/* Type of Installation */
+
+
+
+
+
+		if (isset($_POST['database_default'])) {
+			if (install_write_config ()) {
+				if (!install_check_db_connection ()) {
+					Header("Location:index.php?step=3\n\n");
+					exit;
+				}
+			} else {
+				Header("Location:index.php?step=3\n\n");
+				exit;
+			}
+		}
+
+
+		install_page_header (get_request_var_request("step"));
+		$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+		print '<p>' . __("Please select the type of installation") . '<p>';
+		print '<p><select name="install_type">';
+		if ($old_cacti_version == 'new_install' || $old_cacti_version == '') {
+			print '<option value="1"' . ($default_install_type == "1" ? " selected" : "") . '>' . __("New Install") . '</option>';
+		} else {
+			print '<option value="3"' . ($default_install_type == "3" ? " selected" : "") . '>' . __("Upgrade from cacti 0.8.x") . '</option>';
+		}
+
+
+		print '</select></p><br><br>';
+		install_page_footer();
 
 		break;
-	case "3":
-		print '<p>' . __("Make sure all of these values are correct before continuing.") . '<p>';
+	case "5":		/* File Paths */
 		$i = 0;
-		/* find the appropriate value for each 'config name' above by config.php, database, or a default for fall back */
+		install_page_header (get_request_var_request("step"));
+
+		$input = install_file_paths();
+
+		print '<p>' . __("Make sure all of these values are correct before continuing.") . '<p>';
+
+		$installsettings = array();
+		$installsettings = $settings['path'];
+
+
+		unset($installsettings['path_rrdtool_default_font']);
+		$installsettings['versions_header'] = $settings['general']['versions_header'];
+
+		$installsettings['versions_header'] = $settings['general']['versions_header'];
+		$installsettings['snmp_version'] = $settings['general']['snmp_version'];
+		$installsettings['rrdtool_version'] = $settings['general']['rrdtool_version'];
+		$installsettings['extended_paths']['value'] = 'off';
 		while (list($name, $array) = each($input)) {
 			if (isset($input[$name])) {
-				$current_value = $array["default"];
+				$installsettings[$name]['value'] = $array["default"];
 
-				/* run a check on the path specified only if specified above, then fill a string with
-				the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
-				$form_check_string = "";
 
-				if ($array["method"] == "textbox" || $array["method"] == "filepath") {
-					if (@file_exists($current_value)) {
-						$form_check_string = "<font color='#008000'>[" . __("FOUND") . "]</font> ";
-					} else {
-						$form_check_string = "<font color='#FF0000'>[" . __("NOT FOUND") . "]</font> ";
-					}
-				}
-
-				/* draw the acual header and textbox on the form */
-				print "<p><strong>" . $form_check_string . $array["friendly_name"] . "</strong>";
-
-				if (!empty($array["friendly_name"])) {
-					print ": " . $array["description"];
-				} else {
-					print "<strong>" . $array["description"] . "</strong>";
-				}
-
-				print "<br>";
-
-				switch ($array["method"]) {
-					case 'textbox':
-						form_text_box($name, $current_value, "", "", "40", "text");
-						break;
-					case 'filepath':
-						form_filepath_box($name, $current_value, "", "", "40", "text");
-						break;
-					case 'drop_array':
-						form_dropdown($name, $array["array"], "", "", $current_value, "", "");
-						break;
-				}
-				print "<br></p>";
 			}
-			$i++;
 		}
 
-		print '<p><strong><font color="#FF0000">' . __("NOTE: ") . '</font></strong>' . __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.') . '</p>';
+	
+		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		draw_edit_form(
+			array(
+				'config' => array(
+					'no_form_tag' => true
+					),
+				'fields' => $installsettings
+			)
+		);
+
+		html_end_box();
+
+		//print '<p><strong><font color="#FF0000">' . __("NOTE:") . '</font></strong>' . __('Once you click "Finish", all of your settings will be saved and your database will be upgraded if this is an upgrade. You can change any of the settings on this screen at a later time by going to "Cacti Settings" from within Cacti.') . '</p>';
 		install_page_footer();
 
 
 
 		break;
-	case "8":
-		?>
-		<p><?php echo __("Upgrade results:"); ?></p>
-		<?php
-		$current_version = "";
-		$upgrade_results = "";
-		$failed_sql_query = false;
-		
-		$fail_text = "<span class=\"warning\">[" . __("Fail") . "]</span>&nbsp;";
-		$success_text = "<span class=\"success\">[" . __("Success") . "]</span>&nbsp;";
-		$fail_message = "<span class=\"warning\">[" . __("Message") . "]</span>&nbsp;";
-		
-		if (isset ($_SESSION["sess_sql_install_cache"])) {
-			while (list ($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
-				while (list ($version, $arr2) = each($arr1)) {
-					while (list ($status, $sql) = each($arr2)) {
-						if ($current_version != $version) {
-							$version_index = array_search($version, $cacti_versions);
-							$upgrade_results .= "<p><strong>" . $cacti_versions {
-								$version_index -1 }
-							 . " -> " . $cacti_versions {
-								$version_index }
-							 . "</strong></p>\n";
-						}
-		
-						$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
-		
-						/* if there are one or more failures, make a note because we are going to print
-						out a warning to the user later on */
-						if ($status == 0) {
-							$failed_sql_query = true;
-						}
-		
-						$current_version = $version;
-					}
-				}
-			}
-		
-			kill_session_var("sess_sql_install_cache");
-		} else {
-			print "<em>" . __("No SQL queries have been executed.") . "</em>";
-		}
-		
-		if ($failed_sql_query == true) {
-			print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>permissions. For each query that failed, you should evaluate the error message returned and take appropriate action.") . "</p>\n";
-		}
-		
-		print $upgrade_results;
-		install_page_footer();
-		?>
 
-		<?php
+	case "6":		/* Plugin Setup */
+		install_page_header (get_request_var_request("step"));
+		print "<h1>Plugin Setup</h1>";
+		print "Cacti has a plethora of plugins to enchance your monitoring capabilities.  Please select any from the list below that you would like to utilize.<br><br>";
+
+		/* get the comprehensive list of plugins 
+		$pluginslist = retrieve_plugin_list();
+		$desc = plugin_setup_plugin_descs();
+
+		$table = plugins_load_temp_table();
+		$_SESSION["plugin_temp_table"] = $table;
+		$plugins = db_fetch_assoc("SELECT * FROM $table WHERE status = 0 ORDER BY name");
+		$i = 0;
+		html_start_box('<strong>Plugins</strong>', '100%', $colors['header'], '3', 'center', '');
+
+		html_header_checkbox(array('Directory', 'Name', 'Description', 'Version', 'Author'));
+
+		foreach ($plugins as $p) {
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $p['id']); $i++;
+			form_selectable_cell($p['directory'], $p['id']);
+			form_selectable_cell($p['name'], $p['id']);
+			form_selectable_cell((isset($desc[$p['directory']]) ? $desc[$p['directory']] : ''), $p['id']);
+			form_selectable_cell($p['version'], $p['id']);
+			form_selectable_cell($p['author'], $p['id']);
+			form_checkbox_cell($p['name'], $p['id']);
+
+			form_end_row();
+
+		}
+		html_end_box(false);
+
+		print "<br><br>";
+
+*/
+		install_page_footer();
 
 		break;
-	case "9" :
-		?>
-			<p style='font-size: 16px; font-weight: bold; color: red;'><?php echo __("Important Upgrade Notice"); ?></p>
-			<p><?php echo __("Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>."); ?></p>
-			<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
-			<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
-			<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
-		<?php
+	case "7":
+		install_page_header (get_request_var_request("step"));
+
+		print "<h1>Template Setup</h1>";
+		print "Templates allow you to monitor and graph a vast assortment of data within Cacti.  While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.<br><br>";
+		print "<form name='chk' method='post' action='start.php'>";
+
+		$templates = plugin_setup_get_templates();
+
+		html_start_box('<strong>Templates</strong>', '100%', $colors['header'], '3', 'center', false);
+		html_header_checkbox(array('Name', 'Description', 'Author', 'Homepage' ));
+		$i = 0;
+		foreach ($templates as $id => $p) {
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $id); $i++;
+			form_selectable_cell($p['name'], $id);
+			form_selectable_cell($p['description'], $id);
+			form_selectable_cell($p['author'], $id);
+			if ($p['homepage'] != '') {
+				form_selectable_cell("<a href='". $p['homepage'] . "' target=_new>" . $p['homepage'] . "</a>", $id);
+			} else {
+				form_selectable_cell('', $id);
+			}
+			form_checkbox_cell($p['name'], $id);
+			form_end_row();
+		}
+		html_end_box(false);
+
+		install_page_footer();
+		break;
+	case "8":		/* Settings */
+		install_page_header (get_request_var_request("step"));
+
+		print "<h1>Settings Setup</h1>";
+		print "To ensure proper functionality of your Cacti install, there are several settings that are required to be configured.<br><br>";
+
+		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		$form_array = array(
+			"settings_dns_header" => array(
+				"friendly_name" => "DNS Options",
+				"method" => "spacer",
+				),
+			"settings_dns_primary" => array(
+				"friendly_name" => "Primary DNS IP Address",
+				"description" => "Enter the primary DNS IP Address to utilize for reverse lookups.",
+				"method" => "textbox",
+				"default" => "",
+				"value" => "",
+				"max_length" => "30"
+				),
+			"settings_dns_secondary" => array(
+				"friendly_name" => "Secondary DNS IP Address",
+				"description" => "Enter the secondary DNS IP Address to utilize for reverse lookups.",
+				"method" => "textbox",
+				"default" => "",
+				"value" => "",
+				"max_length" => "30"
+				),
+			"settings_dns_timeout" => array(
+				"friendly_name" => "DNS Timeout",
+				"description" => "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver.",
+				"method" => "textbox",
+				"default" => "500",
+				"value" => "",
+				"max_length" => "10"
+				),
+		);
+		draw_edit_form(
+			array(
+				'config' => array(
+					'no_form_tag' => true
+					),
+				'fields' => $form_array
+			)
+		);
+
+		html_end_box();
+
+		install_page_footer();
+		break;
+	case "9":
+		install_page_header (get_request_var_request("step"));
+		print '<h2>' . __("Complete") . '</h2>';
+		print __('Your Cacti installation is now complete and ready to be utilized.  If you have any issues, please feel free to drop by our forums!');
 		install_page_footer();
 
+
+
+	case "88":
+				?>
+
+						<p><?php echo __("Upgrade results:"); ?></p>
+
+						<?php
+						$current_version  = "";
+						$upgrade_results = "";
+						$failed_sql_query = false;
+
+						$fail_text    = "<span class=\"warning\">[" . __("Fail") ."]</span>&nbsp;";
+						$success_text = "<span class=\"success\">[" . __("Success") . "]</span>&nbsp;";
+						$fail_message = "<span class=\"warning\">[" . __("Message") . "]</span>&nbsp;";
+
+						if (isset($_SESSION["sess_sql_install_cache"])) {
+							while (list($index, $arr1) = each($_SESSION["sess_sql_install_cache"])) {
+								while (list($version, $arr2) = each($arr1)) {
+									while (list($status, $sql) = each($arr2)) {
+										if ($current_version != $version) {
+											$version_index = array_search($version, $cacti_versions);
+											$upgrade_results .= "<p><strong>" . $cacti_versions{$version_index-1}  . " -> " . $cacti_versions{$version_index} . "</strong></p>\n";
+										}
+
+										$upgrade_results .= "<p class='code'>" . (($status == FALSE) ? $fail_text . $sql[0] . "<br>" . $fail_message . $sql[1] : $success_text . $sql) . "</p>\n";
+
+										/* if there are one or more failures, make a note because we are going to print
+										out a warning to the user later on */
+										if ($status == 0) {
+											$failed_sql_query = true;
+										}
+
+										$current_version = $version;
+									}
+								}
+							}
+
+							kill_session_var("sess_sql_install_cache");
+						} else{
+							print "<em>" . __("No SQL queries have been executed.") . "</em>";
+						}
+
+						if ($failed_sql_query == true) {
+							print "<p><strong><font color='#FF0000'>" . __("WARNING:") . "</font></strong> " . __("One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong>permissions. For each query that failed, you should evaluate the error message returned and take appropriate action.") . "</p>\n";
+						}
+
+						print $upgrade_results;
+						?>
+
+				<?php
+						break;
+					case "99":
+				?>
+
+						<p style='font-size: 16px; font-weight: bold; color: red;'><?php echo __("Important Upgrade Notice"); ?></p>
+
+						<p><?php echo __("Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>."); ?></p>
+
+						<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
+
+						<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
+
+						<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
+
+					<?php }
+
+
+
+
+
+
+function plugin_setup_get_templates() {
+	global $config;
+	$templates = Array(
+			'Linux - IO Wait.xml.gz',
+			'Linux - Load Average.xml.gz',
+			'Local - Poller Statistics.xml.gz',
+			'Website - Connection Statistics.xml.gz',
+			'Windows - Services.xml.gz',
+			);
+
+	$path = CACTI_BASE_PATH . '/install/templates';
+	$info = Array();
+	foreach ($templates as $xmlfile) {
+		$filename = "compress.zlib:///$path/$xmlfile";
+		$xml = file_get_contents($filename);;
+		//Loading Template Information from package
+		$xmlget = simplexml_load_string($xml); 
+		$data = ToArray($xmlget);
+		if (is_array($data['info']['author'])) $data['info']['author'] = '';
+		if (is_array($data['info']['email'])) $data['info']['email'] = '';
+		if (is_array($data['info']['description'])) $data['info']['description'] = '';
+		if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '';
+
+		$data['info']['filename'] = $xmlfile;
+		$info[] = $data['info'];
 	}
-
-
-
-
-
-function install_page_header() {
-	print '<html><head><title>cacti</title><meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	    <link type="text/css" href="../include/main.css" rel="stylesheet"></head><body>';
-	print '<form name="installform" method="post" action="index.php">';
-	print '<div style="align:center;margin:20px 100px 20px 100px;">';
-	print '<table align="center" cellpadding="1" cellspacing="0" border="0">';
-	print '	<tr>
-		<td width="100%">
-			<table cellpadding="3" cellspacing="0" border="0" style="border:1px solid #104075;" bgcolor="#F0F0F0" width="100%">
-				<tr class="rowHeader">
-					<td class="textHeaderDark"><strong>';
-						 echo __("Cacti Installation Guide"); print '</strong></td>
-				</tr>
-				<tr>
-					<td width="100%" style="font-size: 12px;">';
+	return $info;
 }
 
-function install_page_footer() {
-	print 	'					<p align="right"><input name="installButton" type="submit" value="' . (get_request_var_request("step") == "3" ? __("Finish") : __("Next")) . '" title="' . (get_request_var_request("step") == "3" ? __("Finish Install"): __("Proceed to Next Step")) . '"' . (get_request_var_request("step") == 1 ? ' disabled="disabled"' : '') . '></p>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+function ToArray ($data) {
+	if (is_object($data)) {
+		$data = get_object_vars($data);
+	}
+	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
+}
+
+function install_check_db_connection () {
+	global $database_sessions, $database_default;
+	if (isset($database_sessions[$database_default]) && $database_sessions[$database_default])
+		return TRUE;
+	return FALSE;
+}
+
+function install_check_db_old () {
+	global $old_cacti_version;
+
+
+
+	if(!$database_empty) {
+		$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+	} else {
+		$old_cacti_version = '';
+	}
+
+	/* try to find current (old) version in the array */
+	$old_version_index = array_search($old_cacti_version, $cacti_versions);
+
+	/* do a version check */
+	if ($old_cacti_version == CACTI_VERSION) {
+		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
+			<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("This installation is already up-to-date. Click <a href='../index.php'>here</a> to use cacti.") . "</p>";
+		exit;
+	} elseif (preg_match("/^0\.6/", $old_cacti_version)) {
+		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __("Error") . "</p>
+			<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You are attempting to install cacti %s	onto a 0.6.x database. To continue, you must create a new database, import 'cacti.sql' into it, and update 'include/config.php' to point to the new database.", CACTI_VERSION) . "</p>";
+		exit;
+	} elseif (empty($old_cacti_version)) {
+		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>Error</p>
+			<p style='font-family: Verdana, Arial; font-size: 12px;'>" . __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:") . "</p>
+			<p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p>
+			<p>" . __("This error may also be generated if the cacti database user does not have correct permissions on the cacti database. Please ensure that the cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the cacti database.") . "</p>";
+		exit;
+	}
+}
+
+function install_file_paths () {
+	global $settings;
+
+	/* Here, we define each name, default value, type, and path check for each value
+	we want the user to input. The "name" field must exist in the 'settings' table for
+	this to work. Cacti also uses different default values depending on what OS it is
+	running on. */
+
+	/* RRDTool Binary Path */
+	$input = array();
+	$input["path_rrdtool"] = $settings["path"]["path_rrdtool"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_rrdtool = find_best_path("rrdtool");
+
+		if (config_value_exists("path_rrdtool")) {
+			$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
+		} else if (!empty($which_rrdtool)) {
+			$input["path_rrdtool"]["default"] = $which_rrdtool;
+		} else{
+			$input["path_rrdtool"]["default"] = "/usr/local/bin/rrdtool";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_rrdtool = find_best_path("rrdtool.exe");
+
+		if (config_value_exists("path_rrdtool")) {
+			$input["path_rrdtool"]["default"] = read_config_option("path_rrdtool");
+		} else if (!empty($which_rrdtool)) {
+			$input["path_rrdtool"]["default"] = $which_rrdtool;
+		} else{
+			$input["path_rrdtool"]["default"] = "c:/rrdtool/rrdtool.exe";
+		}
+	}
+
+	/* PHP Binary Path */
+	$input["path_php_binary"] = $settings["path"]["path_php_binary"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_php = find_best_path("php");
+
+		if (config_value_exists("path_php_binary")) {
+			$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
+		} else if (!empty($which_php)) {
+			$input["path_php_binary"]["default"] = $which_php;
+		} else{
+			$input["path_php_binary"]["default"] = "/usr/bin/php";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_php = find_best_path("php.exe");
+
+		if (config_value_exists("path_php_binary")) {
+			$input["path_php_binary"]["default"] = read_config_option("path_php_binary");
+		} else if (!empty($which_php)) {
+			$input["path_php_binary"]["default"] = $which_php;
+		} else{
+			$input["path_php_binary"]["default"] = "c:/php/php.exe";
+		}
+	}
+
+	/* Perl Binary Path */
+	$input["path_perl_binary"] = $settings["path"]["path_perl_binary"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_perl = find_best_path("perl");
+
+		if (config_value_exists("path_perl_binary")) {
+			$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
+		} else if (!empty($which_perl)) {
+			$input["path_perl_binary"]["default"] = $which_perl;
+		} else{
+			$input["path_perl_binary"]["default"] = "/usr/bin/perl";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_perl = find_best_path("perl.exe");
+
+		if (config_value_exists("path_perl_binary")) {
+			$input["path_perl_binary"]["default"] = read_config_option("path_perl_binary");
+		} else if (!empty($which_perl)) {
+			$input["path_perl_binary"]["default"] = $which_perl;
+		} else{
+			$input["path_perl_binary"]["default"] = "c:/perl/perl.exe";
+		}
+	}
+
+	/* Shell Binary Path */
+	$input["path_sh_binary"] = $settings["path"]["path_sh_binary"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_sh = find_best_path("sh");
+
+		if (config_value_exists("path_sh_binary")) {
+			$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
+		} else if (!empty($which_sh)) {
+			$input["path_sh_binary"]["default"] = $which_sh;
+		} else{
+			$input["path_sh_binary"]["default"] = "/bin/sh";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_sh = find_best_path("sh.exe");
+
+		if (config_value_exists("path_sh_binary")) {
+			$input["path_sh_binary"]["default"] = read_config_option("path_sh_binary");
+		} else if (!empty($which_sh)) {
+			$input["path_sh_binary"]["default"] = $which_sh;
+		} else{
+			$input["path_sh_binary"]["default"] = "c:/sh/sh.exe";
+		}
+	}
+
+	/* snmpwalk Binary Path */
+	$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_snmpwalk = find_best_path("snmpwalk");
+
+		if (config_value_exists("path_snmpwalk")) {
+			$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
+		} else if (!empty($which_snmpwalk)) {
+			$input["path_snmpwalk"]["default"] = $which_snmpwalk;
+		} else{
+			$input["path_snmpwalk"]["default"] = "/usr/local/bin/snmpwalk";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_snmpwalk = find_best_path("snmpwalk.exe");
+
+		if (config_value_exists("path_snmpwalk")) {
+			$input["path_snmpwalk"]["default"] = read_config_option("path_snmpwalk");
+		} else if (!empty($which_snmpwalk)) {
+			$input["path_snmpwalk"]["default"] = $which_snmpwalk;
+		} else{
+			$input["path_snmpwalk"]["default"] = "c:/net-snmp/bin/snmpwalk.exe";
+		}
+	}
+
+	/* snmpget Binary Path */
+	$input["path_snmpget"] = $settings["path"]["path_snmpget"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_snmpget = find_best_path("snmpget");
+
+		if (config_value_exists("path_snmpget")) {
+			$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
+		} else if (!empty($which_snmpget)) {
+			$input["path_snmpget"]["default"] = $which_snmpget;
+		} else{
+			$input["path_snmpget"]["default"] = "/usr/local/bin/snmpget";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_snmpget = find_best_path("snmpget.exe");
+
+		if (config_value_exists("path_snmpget")) {
+			$input["path_snmpget"]["default"] = read_config_option("path_snmpget");
+		} else if (!empty($which_snmpget)) {
+			$input["path_snmpget"]["default"] = $which_snmpget;
+		} else{
+			$input["path_snmpget"]["default"] = "c:/net-snmp/bin/snmpget.exe";
+		}
+	}
+
+	/* snmpbulkwalk Binary Path */
+	$input["path_snmpbulkwalk"] = $settings["path"]["path_snmpbulkwalk"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_snmpbulkwalk = find_best_path("snmpbulkwalk");
+
+		if (config_value_exists("path_snmpbulkwalk")) {
+			$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
+		} else if (!empty($which_snmpbulkwalk)) {
+			$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
+		} else{
+			$input["path_snmpbulkwalk"]["default"] = "/usr/local/bin/snmpbulkwalk";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_snmpbulkwalk = find_best_path("snmpbulkwalk.exe");
+
+		if (config_value_exists("path_snmpbulkwalk")) {
+			$input["path_snmpbulkwalk"]["default"] = read_config_option("path_snmpbulkwalk");
+		} else if (!empty($which_snmpbulkwalk)) {
+			$input["path_snmpbulkwalk"]["default"] = $which_snmpbulkwalk;
+		} else{
+			$input["path_snmpbulkwalk"]["default"] = "c:/net-snmp/bin/snmpbulkwalk.exe";
+		}
+	}
+
+	/* snmpgetnext Binary Path */
+	$input["path_snmpgetnext"] = $settings["path"]["path_snmpgetnext"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_snmpgetnext = find_best_path("snmpgetnext");
+
+		if (config_value_exists("path_snmpgetnext")) {
+			$input["path_snmpgetnext"]["default"] = read_config_option("path_snmpgetnext");
+		} else if (!empty($which_snmpgetnext)) {
+			$input["path_snmpgetnext"]["default"] = $which_snmpgetnext;
+		} else{
+			$input["path_snmpgetnext"]["default"] = "/usr/local/bin/snmpgetnext";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_snmpgetnext = find_best_path("snmpgetnext.exe");
+
+		if (config_value_exists("path_snmpgetnext")) {
+			$input["path_snmpgetnext"]["default"] = read_config_option("path_snmpgetnext");
+		} else if (!empty($which_snmpgetnext)) {
+			$input["path_snmpgetnext"]["default"] = $which_snmpgetnext;
+		} else{
+			$input["path_snmpgetnext"]["default"] = "c:/net-snmp/bin/snmpgetnext.exe";
+		}
+	}
+
+	/* log file path */
+	$input["path_cactilog"] = $settings["path"]["path_cactilog"];
+	$input["path_cactilog"]["description"] = "The path to your Cacti log file.";
+	if (config_value_exists("path_cactilog")) {
+		$input["path_cactilog"]["default"] = read_config_option("path_cactilog");
+	} else {
+		$input["path_cactilog"]["default"] = CACTI_BASE_PATH . "/log/cacti.log";
+	}
+
+	/* spine Binary Path */
+	$input["path_spine"] = $settings["path"]["path_spine"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_spine = find_best_path("spine");
+
+		if (config_value_exists("path_spine")) {
+			$input["path_spine"]["default"] = read_config_option("path_spine");
+		} else if (!empty($which_spine)) {
+			$input["path_spine"]["default"] = $which_spine;
+		} else{
+			$input["path_spine"]["default"] = "/usr/local/bin/spine";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_spine = find_best_path("spine.exe");
+
+		if (config_value_exists("path_spine")) {
+			$input["path_spine"]["default"] = read_config_option("path_spine");
+		} else if (!empty($which_spine)) {
+			$input["path_spine"]["default"] = $which_spine;
+		} else{
+			$input["path_spine"]["default"] = "c:/spine/spine.exe";
+		}
+	}
+
+	/* SNMP Version */
+	if (CACTI_SERVER_OS == "unix") {
+		$input["snmp_version"] = $settings["general"]["snmp_version"];
+		$input["snmp_version"]["default"] = "net-snmp";
+	}
+
+	/* RRDTool Version */
+	if ((file_exists($input["path_rrdtool"]["default"])) && ((CACTI_SERVER_OS == "win32") || (is_executable($input["path_rrdtool"]["default"]))) ) {
+		$input["rrdtool_version"] = $settings["general"]["rrdtool_version"];
+
+		$out_array = array();
+		exec(cacti_escapeshellcmd($input["path_rrdtool"]["default"]), $out_array);
+
+		if (sizeof($out_array) > 0) {
+			if (preg_match("/^RRDtool 1\.4/", $out_array[0])) {
+				$input["rrdtool_version"]["default"] = RRD_VERSION_1_4;
+			} else if (preg_match("/^RRDtool 1\.3/", $out_array[0])) {
+				$input["rrdtool_version"]["default"] = RRD_VERSION_1_3;
+			} else if (preg_match("/^RRDtool 1\.2\./", $out_array[0])) {
+				$input["rrdtool_version"]["default"] = RRD_VERSION_1_2;
+			} else if (preg_match("/^RRDtool 1\.0\./", $out_array[0])) {
+				$input["rrdtool_version"]["default"] = RRD_VERSION_1_0;
+			}
+		}
+	}
+	return $input;
+}
+
+
+function install_page_header($step) {
+print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Cacti</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	<meta http-equiv="Content-Script-Type" content="text/javascript" >
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<link type="text/css" href="../include/main.css" rel="stylesheet">
+	<link type="text/css" href="../include/dd.css" rel="stylesheet">
+	<link type="text/css" href="../include/jquery.autocomplete.css" rel="stylesheet">
+	<link type="text/css" media="screen" href="../include/css/cacti_dd_menu.css" rel="stylesheet">
+	<link type="text/css" media="screen" href="../include/css/jquery-ui.css" rel="stylesheet">
+	<link href="../images/favicon.ico" rel="shortcut icon">
+	<script type="text/javascript" src="../include/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery-ui.js"></script>
+	<script type="text/javascript" src="../include/js/layout.js"></script>
+	<script type="text/javascript" src="../include/layout.php"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.autocomplete.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.bgiframe.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.ajaxQueue.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.tablednd.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.dropdown.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/jquery.dd.js"></script>
+	<script type="text/javascript" src="../include/js/jquery/colorpicker.js"></script>
+</head>
+<body class=body>
+<div id=header>
+	<div id=logobar></div>
+	<div id=navbar>
+		<div id=navbar_l>
+			<ul>';
+			//	echo draw_header_tab("console", __("Installation"), "index.php");
+
+print '		</ul>
+		</div>
+	</div>
+	<div id=navbrcrumb>
+		<div style=\'float:left\'>
+			Cacti Installation
+		</div>
+	</div>
+</div>
+
+<div id=wrapper>
+	<div id=menu>';
+		$menu = Array(1 => 'License', 2 => 'Pre-Installation', 3 => 'Database Check', 4 => 'Install / Upgrade', 5 => 'File Paths', 6 => 'Plugin Install', 7 => 'Template Install', 8 => 'Settings', 9 => 'Complete');
+		install_draw_menu ($menu, $step);
+		print '		<div style=\'text-align:center; padding:20px\'><img src=\'../images/cacti_logo.gif\' alt=Cacti></div>
+	</div>
+	<div id="vsplitter" >
+		<div id="vsplitter_toggle" ></div>
 	</div>
 
-	<input type="hidden" name="step" value="' . $_REQUEST["step"] . '">
+	<div id=content style="font-size:15px;">';
+
+
+	
+	print '<form name="installform" method="post" action="index.php">';
+
+
+}
+
+function install_page_footer($enabled = true) {
+	print 	'<p align="right"><input name="installButton" type="submit" value="' . (get_request_var_request("step") == "9" ? __("Finish") : __("Next")) . '" title="' . (get_request_var_request("step") == "9" ? __("Finish Install"): __("Proceed to Next Step")) . '"' . ($enabled == false ? ' disabled="disabled"' : '') . '></p>
+
+
+	<input type="hidden" name="step" value="' . ($_REQUEST["step"]+1) . '">
 
 	</form>
 
-	</body>
-	</html>';
+	</div> 
+</div> 
+<div id=footer><br> 
+</div> 
+</body> 
+</html>';
+}
+
+function install_draw_menu ($menu, $step) {
+	print "<div id=0_div class=menuMain>" . __("Installation") . "</div><div><ul id=0 class=menuSubMain>";
+	$background = "../images/menu_line.gif";
+	$i = 1;
+	foreach ($menu as $id => $item_title) {
+		print "<li " . ($i == $step ? "class='menuSubMainSelected'" : '') . "><a>$item_title</a></li>";
+		$i++;
+	}
+	print "</ul></div>";
 }
 
 
@@ -1195,8 +1590,94 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 </pre> 
  
 
- 
- 
-
 ';
 }
+
+function install_write_config () {
+	if (!isset($_POST['database_default'])) {
+		return FALSE;
+	}
+
+	$config = array();
+	$config['url_path'] = "";
+	$config['memory_limit'] = "";
+	$cacti_session_name = "Cacti";
+	$database_ssl = false;
+
+	if (file_exists('../include/config.php')) {
+		include('../include/config.php');
+	} else {
+		@file_put_contents('../include/config.php', '');
+	}
+
+	if (!is_writable('../include/config.php')) {
+		return FALSE;
+	}
+
+	$file = fopen('../include/config.php', 'w');
+
+	input_validate_input_number(get_request_var_post("database_type"));
+	input_validate_input_number(get_request_var_post("database_port"));
+
+	$types = array('mysql', 'mysqli');
+	$database_type = $types[$_POST['database_type']];
+	$database_default  = preg_replace('/[^A-Za-z0-9_\-]/', '', $_POST['database_default']);
+	$database_hostname = preg_replace('/[^A-Za-z0-9_\.\-]/', '', $_POST['database_hostname']);
+	$database_username = preg_replace('/[^A-Za-z0-9_\-]/', '', $_POST['database_username']);
+	$database_password = preg_replace('/[^A-Za-z0-9_\-\'\!\@\#\%\^\&\*\(\)\{\}\[\]\:\?\<\>]/', '', $_POST['database_password']);
+	$database_password_confirm = preg_replace('/[^A-Za-z0-9_\-\'\!\@\#\%\^\&\*\(\)\{\}\[\]\:\?\<\>]/', '', $_POST['database_password_confirm']);
+	$database_port = $_POST['database_port'];
+	//$database_ssl = $_POST['database_ssl'];
+
+	fwrite($file, '<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+/* make sure these values refect your actual database/host/user/password */
+
+');
+
+	fwrite ($file, '$database_type = "' . $database_type . "\";\n");
+	fwrite ($file, '$database_default = "' . $database_default . "\";\n");
+	fwrite ($file, '$database_hostname = "' . $database_hostname . "\";\n");
+	fwrite ($file, '$database_username = "' . $database_username . "\";\n");
+	fwrite ($file, '$database_password = "' . $database_password . "\";\n");
+	fwrite ($file, '$database_port = "' . ($database_port ? $database_port : '3306') . "\";\n");
+	fwrite ($file, '$database_ssl = ' . ($database_ssl ? 'true' : 'false') . ";\n\n");
+	fwrite ($file, "/* Default session name - Session name must contain alpha characters */\n");
+	fwrite ($file, '$cacti_session_name = "' . $cacti_session_name . "\";\n\n");
+	fwrite($file, '/*
+ This is full URL Path to the Cacti installation.
+ For example, if your cacti was accessible by http://server/cacti/
+ you would use "/cacti/" as the url path.
+ For just http://server/ use "/".  Use value of "" for relative path.
+*/
+
+');
+	fwrite($file, "\$config['url_path'] = \""  . $config['url_path'] . "\";\n\n");
+	fwrite($file, "/* for large site, you may need additional memory for PHP.  If so, set the default here */\n");
+	fwrite($file, "\$config['memory_limit'] = \"" . $config['memory_limit'] . "\";\n\n\n");
+	return TRUE;
+}
+
+
