@@ -1491,8 +1491,6 @@ function device_filter() {
 				<tr>
 					<td class="nw50">
 						&nbsp;<?php print __("Type:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="template_id" onChange="applyDeviceFilterChange(document.form_devices)">
 							<option value="-1"<?php if (html_get_page_variable("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 							<option value="0"<?php if (html_get_page_variable("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
@@ -1507,10 +1505,8 @@ function device_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Status:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="status" onChange="applyDeviceFilterChange(document.form_devices)">
 							<option value="-1"<?php if (html_get_page_variable("status") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 							<option value="-3"<?php if (html_get_page_variable("status") == "-3") {?> selected<?php }?>><?php print __("Enabled");?></option>
@@ -1522,10 +1518,8 @@ function device_filter() {
 							<option value="0"<?php  if (html_get_page_variable("status") == "0") {?> selected<?php }?>><?php print __("Unknown");?></option>
 						</select>
 					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="rows" onChange="applyDeviceFilterChange(document.form_devices)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
 							<?php
@@ -1538,13 +1532,9 @@ function device_filter() {
 						</select>
 					</td>
 				</tr>
-			</table>
-			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Site:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="site" onChange="applyDeviceFilterChange(document.form_devices)">
 							<option value="-1"<?php if (html_get_page_variable("site") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
 							<option value="0"<?php if (html_get_page_variable("site") == "0") {?> selected<?php }?>><?php print __("Not Defined");?></option>
@@ -1559,10 +1549,8 @@ function device_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Poller:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="poller" onChange="applyDeviceFilterChange(document.form_devices)">
 							<option value="-1"<?php if (html_get_page_variable("poller") == "-1") {?> selected<?php }?>><?php print __("All");?></option>
 							<option value="0"<?php if (html_get_page_variable("poller") == "0") {?> selected<?php }?>><?php print __("System Default");?></option>
@@ -1577,10 +1565,8 @@ function device_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<input type="text" name="filter" size="20" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw120">

@@ -381,8 +381,6 @@ function sites_filter() {
 					</td>
 					<td>
 						&nbsp;<input type="checkbox" id="detail" name="detail" <?php if ((html_get_page_variable("detail") == "true") || (html_get_page_variable("detail") == CHECKED)) print ' checked';?> onClick="applySiteFilterChange(document.form_sites)">
-					</td>
-					<td>
 						<label for="detail"><?php print __("Details");?></label>
 					</td>
 					<td class="nw120">
@@ -395,10 +393,8 @@ function sites_filter() {
 			</table>
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Site:");?>
-					</td>
-					<td class="w1">
 						<select name="site_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("site_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
@@ -411,10 +407,8 @@ function sites_filter() {
 						?>
 						</select>
 					</td>
-					<td nowrap style='white-space: nowrap;' width="70">
+					<td>
 						&nbsp;<?php print __("Device Template:");?>
-					</td>
-					<td class="w1">
 						<select name="device_template_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("device_template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
