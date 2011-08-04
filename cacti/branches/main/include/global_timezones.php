@@ -153,6 +153,7 @@ function get_list_of_timezones() {
 	$europe = __("Europe") . ": ";
 	$indian = __("Indian") . ": ";
 	$pacific = __("Pacific") . ": ";
+	$others = __("Others") . ": ";
 
 	$timezones = array(
 		"Africa/Abidjan" => $africa . __("Abidja"),
@@ -556,6 +557,7 @@ function get_list_of_timezones() {
 		"Pacific/Truk" => $pacific . __("Truk"),
 		"Pacific/Wake" => $pacific . __("Wake"),
 		"Pacific/Wallis" => $pacific . __("Wallis"),
+		"UTC" => $others . "UTC",
 	);
 
 	return $timezones;
