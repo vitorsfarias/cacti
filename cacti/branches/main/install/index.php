@@ -537,7 +537,6 @@ switch (get_request_var_request("step")) {
 		break;
 
 	case "6":		/* Plugin Setup */
-
 		if (!install_check_db_connection ()) {
 			Header("Location:index.php?step=3\n\n");
 			exit;
@@ -546,38 +545,22 @@ switch (get_request_var_request("step")) {
 		install_page_header (get_request_var_request("step"));
 		print "<h1>Plugin Setup</h1>";
 		print "Cacti has a plethora of plugins to enchance your monitoring capabilities.  Please select any from the list below that you would like to utilize.<br><br>";
-
-		/* get the comprehensive list of plugins 
 		$pluginslist = retrieve_plugin_list();
-		$desc = plugin_setup_plugin_descs();
-
-		$table = plugins_load_temp_table();
-		$_SESSION["plugin_temp_table"] = $table;
-		$plugins = db_fetch_assoc("SELECT * FROM $table WHERE status = 0 ORDER BY name");
 		$i = 0;
-		html_start_box('<strong>Plugins</strong>', '100%', $colors['header'], '3', 'center', '');
-
-		html_header_checkbox(array('Directory', 'Name', 'Description', 'Version', 'Author'));
-
+		html_start_box('<strong>Plugins</strong>', '100', $colors['header'], '3', 'center', '');
+		html_header_checkbox(array(array('name' => 'Directory'), array('name' => 'Name'), array('name' => 'Description'), array('name' => 'Version'), array('name' => 'Author')));
 		foreach ($plugins as $p) {
 			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'line' . $p['id']); $i++;
 			form_selectable_cell($p['directory'], $p['id']);
 			form_selectable_cell($p['name'], $p['id']);
-			form_selectable_cell((isset($desc[$p['directory']]) ? $desc[$p['directory']] : ''), $p['id']);
+			form_selectable_cell($p['desc'], $p['id']);
 			form_selectable_cell($p['version'], $p['id']);
 			form_selectable_cell($p['author'], $p['id']);
 			form_checkbox_cell($p['name'], $p['id']);
-
 			form_end_row();
-
 		}
 		html_end_box(false);
-
-		print "<br><br>";
-
-*/
 		install_page_footer();
-
 		break;
 	case "7":		/* Template Setup */
 
@@ -746,7 +729,6 @@ switch (get_request_var_request("step")) {
 
 
 function plugin_setup_get_templates() {
-	global $config;
 	$templates = Array(
 			'Linux - IO Wait.xml.gz',
 			'Linux - Load Average.xml.gz',
@@ -770,6 +752,31 @@ function plugin_setup_get_templates() {
 
 		$data['info']['filename'] = $xmlfile;
 		$info[] = $data['info'];
+	}
+	return $info;
+}
+
+function retrieve_plugin_list() {
+	$plugins = Array(
+			'Test Plugin.xml.gz',
+			);
+
+	$path = CACTI_BASE_PATH . '/install/plugins';
+	$info = Array();
+	foreach ($plugins as $xmlfile) {
+		$filename = "compress.zlib:///$path/$xmlfile";
+		$xml = @file_get_contents($filename);
+		if ($xml) {
+			$xmlget = simplexml_load_string($xml); 
+			$data = ToArray($xmlget);
+			if (is_array($data['info']['author'])) $data['info']['author'] = '';
+			if (is_array($data['info']['email'])) $data['info']['email'] = '';
+			if (is_array($data['info']['description'])) $data['info']['description'] = '';
+			if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '';
+			$data['info']['desc'] = '';
+			$data['info']['filename'] = $xmlfile;
+			$info[] = $data['info'];
+		}
 	}
 	return $info;
 }
