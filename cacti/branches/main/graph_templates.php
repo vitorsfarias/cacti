@@ -427,7 +427,6 @@ function template_edit() {
 	switch (get_request_var_request("tab")) {
 		case "graphs":
 			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 
 			graph();
 
