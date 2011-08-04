@@ -252,8 +252,6 @@ if (get_request_var_request("step") == "6") {
 
 
 
-
-
 switch (get_request_var_request("step")) {
 	case "1":
 		install_page_header (get_request_var_request("step"));
@@ -291,40 +289,37 @@ switch (get_request_var_request("step")) {
 		print '<h2>Pre-installation Check</h2><br>';
 		print 'Cacti requies several PHP Modules to be installed to work properly.  If any of these are not installed, you will be unable to continue the installation until corrected.<br><br>';
 
-	//	html_start_box("<strong> " . __("Pre-Installation Checks") . "</strong>", "35", 0, "center", "", false);
-	//	html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
+		html_start_box("<strong> " . __("Required PHP Modules") . "</strong>", "30", 0, "", "", false);
+		html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
 
-
-		print 'PHP Required: 5.2.0<br>PHP Version: ';
-		
-		if (version_compare(PHP_VERSION, '5.2.0', '<')) {
-			echo "<font color=red>" . PHP_VERSION . "</font><br>";
-		} else {
-			echo "<font color=green>" . PHP_VERSION . "</font><br>";
-		}
+		form_alternate_row_color();
+		form_selectable_cell('PHP Version', '');
+		form_selectable_cell('5.2.0+', '');
+		form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
+		form_end_row();
 
 		$extensions = array( array('name' => 'session', 'installed' => false),
 					array('name' => 'sockets', 'installed' => false),
 					array('name' => 'mysql', 'installed' => false),
 					array('name' => 'xml', 'installed' => false),
 					array('name' => 'pcre', 'installed' => false),
-					array('name' => 'json', 'installed' => false)
-
+					array('name' => 'json', 'installed' => false),
 				);
 
 		$ext = verify_php_extensions($extensions);
-
-
-		print "<table>";
+		$i = 0;
 		$enabled = true;
 		foreach ($ext as $e) {
-			print '<tr><td>' . $e['name'] . '</td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td></tr>';
-			if ($e['installed'] == false) {
-				$enabled = false;
-			}
+			form_alternate_row_color();
+			form_selectable_cell($e['name'], '');
+			form_selectable_cell('<font color=green>Yes</font>', '');
+			form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+			form_end_row();
+			if (!$e['installed']) $enabled = false;
 		}
-		print "</table>";
+		html_end_box(false);
 
+		print '<br>' . __('<br>These extensions may increase the performance of your Cacti install but are not necessary.<br><br>');
 		$extensions = array( array('name' => 'snmp', 'installed' => false),
 					array('name' => 'mysqli', 'installed' => false),
 					array('name' => 'gd', 'installed' => false),
@@ -332,16 +327,18 @@ switch (get_request_var_request("step")) {
 				);
 
 		$ext = verify_php_extensions($extensions);
-
-		print '<br><br>' . __('Other extensions may increase the performance of your Cacti install.<br><br>');
-
-		print "<table>";
+		$i = 0;
+		html_start_box("<strong> " . __("Other Modules") . "</strong>", "30", 0, "", "", false);
+		html_header(array(array('name' => 'Name'), array('name' => 'Required'), array('name' => 'Installed')));
 		foreach ($ext as $e) {
-			print '<tr><td>' . $e['name'] . '</td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td></tr>';
-
+			form_alternate_row_color();
+			//print '<td>' . $e['name'] . '</td><td><font color=green>Yes</font></td><td>' . ($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>') . '</td>';
+			form_selectable_cell($e['name'], '');
+			form_selectable_cell('<font color=green>Yes</font>', '');
+			form_selectable_cell(($e['installed'] ? '<font color=green>Yes</font>' : '<font color=red>NO</font>'), '');
+			form_end_row();
 		}
-		print "</table>";
-
+		html_end_box(false);
 
 		install_page_footer($enabled);
 
