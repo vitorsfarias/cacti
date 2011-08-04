@@ -30,7 +30,6 @@ include_once(CACTI_BASE_PATH . "/lib/utility.php");
 include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/snmp.php");
 include_once(CACTI_BASE_PATH . "/lib/ping.php");
-include_once(CACTI_BASE_PATH . "/lib/api_device.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");

@@ -611,7 +611,6 @@ function device_template_edit() {
 			include_once(CACTI_BASE_PATH . "/lib/template.php");
 			include_once(CACTI_BASE_PATH . "/lib/snmp.php");
 			include_once(CACTI_BASE_PATH . "/lib/ping.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_device.php");
 
 			device();
 

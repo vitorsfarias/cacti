@@ -39,7 +39,7 @@ include_once(CACTI_BASE_PATH."/lib/data_source.php");
 include_once(CACTI_BASE_PATH."/lib/api_graph.php");
 include_once(CACTI_BASE_PATH."/lib/snmp.php");
 include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/api_device.php");
+include_once(CACTI_BASE_PATH."/lib/device.php");
 
 /* process calling arguments */
 $parms 		= $_SERVER["argv"];
