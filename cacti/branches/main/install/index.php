@@ -98,11 +98,8 @@ if (!isset($_REQUEST["install_type"])) {
 }
 
 /* defaults for the install type dropdown */
-//if ($old_cacti_version == "new_install") {
-	$default_install_type = "1";
-//} else{
-//	$default_install_type = "3";
-//}
+$default_install_type = "1";
+
 
 /* pre-processing that needs to be done for each step */
 if (empty($_REQUEST["step"])) {
@@ -132,7 +129,6 @@ if (get_request_var_request("step") == "6") {
 	header ("Location: ../index.php");
 	exit;
 } elseif (get_request_var_request("step") == "5" && get_request_var_request("install_type") == "1") {
-	include_once('../include/global.php');
 	include_once('../lib/data_query.php');
 	include_once("..//lib/utility.php");
 
@@ -154,10 +150,6 @@ if (get_request_var_request("step") == "6") {
 
 	db_execute("delete from version");
 	db_execute("insert into version (cacti) values ('" . CACTI_VERSION . "')");
-
-
-//	header ("Location: ../index.php");
-//	exit;
 } elseif (get_request_var_request("step") == "5" && get_request_var_request("install_type") == "3") {
 	include_once('../include/global.php');
 	$cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
@@ -267,17 +259,14 @@ switch (get_request_var_request("step")) {
 		install_page_header (get_request_var_request("step"));
 
 		print '<p>' . __('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that cacti needs to know.') . '<p>';
-	//	if ($old_cacti_version == 'new_cacti_install') {
-	//		print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="../docs/html/upgrade.html">Upgrade</a> information file.') . '<p>';
-	//	} else {
-			print '<p>' . __('Make sure you have read and followed the required steps needed to install cacti before continuing. Install information can be found for ');
-			if (CACTI_SERVER_OS == "win32") {
-				print '<a href="../docs/html/install_windows.html">Windows</a>';
-			} else {
-				print '<a href="../docs/html/install_unix.html">Unix / Linux</a>';
-			}
-			print '<p>';
-	//	}
+		print '<p>' . __('Make sure you have read and followed the required steps needed to install cacti before continuing. Install information can be found for ');
+		if (CACTI_SERVER_OS == "win32") {
+			print '<a href="../docs/html/install_windows.html">Windows</a>';
+		} else {
+			print '<a href="../docs/html/install_unix.html">Unix / Linux</a>';
+		}
+		print '<p>';
+
 		print '<p>' .  __('Cacti is licensed under the GNU General Public License v2, you must agree to its provisions before continuing:') . '<p>';
 		print '<hr><div style="height:400px;width:100%;overflow-y:scroll;background-color:white;">';
 		install_print_license();
@@ -344,7 +333,7 @@ switch (get_request_var_request("step")) {
 
 		$ext = verify_php_extensions($extensions);
 
-		print '<br><br>' . __('Other entensions may increase the performance of your Cacti install.<br><br>');
+		print '<br><br>' . __('Other extensions may increase the performance of your Cacti install.<br><br>');
 
 		print "<table>";
 		foreach ($ext as $e) {
@@ -359,6 +348,14 @@ switch (get_request_var_request("step")) {
 		break;
 	case "3":	/* Database Setup */
 		install_page_header (get_request_var_request("step"));
+
+		$error = get_request_var_request("error");
+		if ($error == 'NoWrite') {
+			print '<p><font color=red>' . __('ERROR: There was an issue writing the include/config.php file.') . '</font></p>';
+		}
+		if ($error == 'NoAccess') {
+			print '<p><font color=red>' . __('ERROR: Could not connect to the database') . '</font></p>';
+		}
 
 		print '<p>' . __("The following information has been determined from Cacti's configuration file.") . '<p>';
 
@@ -432,6 +429,13 @@ switch (get_request_var_request("step")) {
 				"value" => "",
 				"max_length" => "32"
 				),
+			"database_ssl" => array(
+				"friendly_name" => "Database SSL",
+				"description" => "Whether the database connection utilizes SSL.",
+				"method" => "checkbox",
+				"default" => "off",
+				"value" => ($database_ssl ? true : false),
+				),
 		);
 		draw_edit_form(
 			array(
@@ -450,18 +454,16 @@ switch (get_request_var_request("step")) {
 		break;
 	case "4":		/* Type of Installation */
 
-
-
-
-
 		if (isset($_POST['database_default'])) {
 			if (install_write_config ()) {
+				include('../include/config.php');
+				db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 				if (!install_check_db_connection ()) {
-					Header("Location:index.php?step=3\n\n");
+					Header("Location:index.php?step=3&error=NoAccess\n\n");
 					exit;
 				}
 			} else {
-				Header("Location:index.php?step=3\n\n");
+				Header("Location:index.php?step=3&error=NoWrite\n\n");
 				exit;
 			}
 		}
@@ -483,6 +485,14 @@ switch (get_request_var_request("step")) {
 
 		break;
 	case "5":		/* File Paths */
+
+
+		if (!install_check_db_connection ()) {
+			Header("Location:index.php?step=3\n\n");
+			exit;
+		}
+
+
 		$i = 0;
 		install_page_header (get_request_var_request("step"));
 
@@ -530,6 +540,12 @@ switch (get_request_var_request("step")) {
 		break;
 
 	case "6":		/* Plugin Setup */
+
+		if (!install_check_db_connection ()) {
+			Header("Location:index.php?step=3\n\n");
+			exit;
+		}
+
 		install_page_header (get_request_var_request("step"));
 		print "<h1>Plugin Setup</h1>";
 		print "Cacti has a plethora of plugins to enchance your monitoring capabilities.  Please select any from the list below that you would like to utilize.<br><br>";
@@ -566,7 +582,13 @@ switch (get_request_var_request("step")) {
 		install_page_footer();
 
 		break;
-	case "7":
+	case "7":		/* Template Setup */
+
+		if (!install_check_db_connection ()) {
+			Header("Location:index.php?step=3\n\n");
+			exit;
+		}
+
 		install_page_header (get_request_var_request("step"));
 
 		print "<h1>Template Setup</h1>";
@@ -596,6 +618,15 @@ switch (get_request_var_request("step")) {
 		install_page_footer();
 		break;
 	case "8":		/* Settings */
+
+
+		if (!install_check_db_connection ()) {
+			Header("Location:index.php?step=3\n\n");
+			exit;
+		}
+
+
+
 		install_page_header (get_request_var_request("step"));
 
 		print "<h1>Settings Setup</h1>";
@@ -646,6 +677,13 @@ switch (get_request_var_request("step")) {
 		install_page_footer();
 		break;
 	case "9":
+
+		if (!install_check_db_connection ()) {
+			Header("Location:index.php?step=3\n\n");
+			exit;
+		}
+
+
 		install_page_header (get_request_var_request("step"));
 		print '<h2>' . __("Complete") . '</h2>';
 		print __('Your Cacti installation is now complete and ready to be utilized.  If you have any issues, please feel free to drop by our forums!');
@@ -703,20 +741,7 @@ switch (get_request_var_request("step")) {
 
 				<?php
 						break;
-					case "99":
-				?>
-
-						<p style='font-size: 16px; font-weight: bold; color: red;'><?php echo __("Important Upgrade Notice"); ?></p>
-
-						<p><?php echo __("Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>."); ?></p>
-
-						<p><?php echo __("See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup."); ?></p>
-
-						<p><?php echo '<tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span class="warning">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt>'; ?></p>
-
-						<p><?php echo __("Once you have made this change, please click Next to continue."); ?></p>
-
-					<?php }
+}
 
 
 
@@ -1627,7 +1652,7 @@ function install_write_config () {
 	$database_password = preg_replace('/[^A-Za-z0-9_\-\'\!\@\#\%\^\&\*\(\)\{\}\[\]\:\?\<\>]/', '', $_POST['database_password']);
 	$database_password_confirm = preg_replace('/[^A-Za-z0-9_\-\'\!\@\#\%\^\&\*\(\)\{\}\[\]\:\?\<\>]/', '', $_POST['database_password_confirm']);
 	$database_port = $_POST['database_port'];
-	//$database_ssl = $_POST['database_ssl'];
+	$database_ssl = $_POST['database_ssl'];
 
 	fwrite($file, '<?php
 /*
