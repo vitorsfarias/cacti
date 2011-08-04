@@ -362,17 +362,13 @@ function sites_filter() {
 			<form method='get' action='<?php print basename($_SERVER["PHP_SELF"]);?>' name='form_sites'>
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Search:");?>&nbsp;
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
-					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="rows" onChange="applySiteFilterChange(document.form_sites)">
+					<select name="rows" onChange="applySiteFilterChange(document.form_sites)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -387,7 +383,7 @@ function sites_filter() {
 						&nbsp;<input type="checkbox" id="detail" name="detail" <?php if ((html_get_page_variable("detail") == "true") || (html_get_page_variable("detail") == CHECKED)) print ' checked';?> onClick="applySiteFilterChange(document.form_sites)">
 					</td>
 					<td>
-						<label for="detail"><?php print __("Show Device Details");?></label>
+						<label for="detail"><?php print __("Details");?></label>
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
