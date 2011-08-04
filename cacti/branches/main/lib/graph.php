@@ -1380,10 +1380,8 @@ function graphs_filter() {
 			<form name="form_graph_id" action="graphs.php">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Host:");?>&nbsp;
-					</td>
-					<td width="1">
 						<?php
 						if (isset($_REQUEST["device_id"])) {
 							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=" . html_get_page_variable("device_id") . " ORDER BY description,hostname");
@@ -1394,10 +1392,8 @@ function graphs_filter() {
 						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
-					<td width="70">
+					<td>
 						&nbsp;<?php print __("Template:");?>&nbsp;
-					</td>
-					<td width="1">
 						<select name="template_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
 							<option value="-1"<?php if (html_get_page_variable("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 							<option value="0"<?php if (html_get_page_variable("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
@@ -1431,19 +1427,13 @@ function graphs_filter() {
 						<input type="button" Value="<?php print __("Clear");?>" name="clear" onClick="clearGraphsFilterChange(document.form_graph_id)">
 					</td>
 				</tr>
-			</table>
-			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
 					<td>
+						&nbsp;<?php print __("Search:");?>&nbsp;
 						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>" onChange="applyGraphsFilterChange(document.form_graph_id)">
 					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td width="1">
 						<select name="rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
 							<?php
@@ -2084,7 +2074,7 @@ function graphs_new() {
 					<td class="nw50">
 						&nbsp;Search:&nbsp;
 					</td>
-					<td class="nw200">
+					<td>
 						<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td align="left" class="nw120">
