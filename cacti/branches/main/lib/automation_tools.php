@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
  */
 
+//FIXME: Fix naming of functions within this library
+
 /** getHostTemplates
  *
  * @return array

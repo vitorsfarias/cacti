@@ -36,7 +36,7 @@ include(dirname(__FILE__)."/../include/global.php");
 require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
 include_once(CACTI_BASE_PATH."/lib/snmp.php");
 include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/api_automation_tools.php");
+include_once(CACTI_BASE_PATH."/lib/automation_tools.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
