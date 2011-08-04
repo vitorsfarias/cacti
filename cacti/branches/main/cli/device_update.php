@@ -36,7 +36,7 @@ require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 include_once(CACTI_BASE_PATH."/lib/automation_tools.php");
 include_once(CACTI_BASE_PATH."/lib/utility.php");
 include_once(CACTI_BASE_PATH."/lib/data_source.php");
-include_once(CACTI_BASE_PATH."/lib/api_graph.php");
+include_once(CACTI_BASE_PATH."/lib/graph.php");
 include_once(CACTI_BASE_PATH."/lib/snmp.php");
 include_once(CACTI_BASE_PATH."/lib/data_query.php");
 include_once(CACTI_BASE_PATH."/lib/device.php");

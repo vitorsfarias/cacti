@@ -34,7 +34,7 @@ $no_http_headers = true;
 include (dirname(__FILE__) . "/../include/global.php");
 include_once (CACTI_BASE_PATH . "/lib/automation_tools.php");
 include_once (CACTI_BASE_PATH . "/lib/data_source.php");
-include_once (CACTI_BASE_PATH . "/lib/api_graph.php");
+include_once (CACTI_BASE_PATH . "/lib/graph.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];

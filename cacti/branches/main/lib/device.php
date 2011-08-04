@@ -189,7 +189,7 @@ function device_form_actions() {
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
-	require_once(CACTI_BASE_PATH . "/lib/api_graph.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph.php");
 
 	$fields_device_edit = device_form_list();
 	$fields_device_edit_availability = device_availability_form_list();
@@ -699,7 +699,7 @@ function device_edit() {
 		case "datasources":
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
+			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/template.php");
 			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
@@ -712,7 +712,6 @@ function device_edit() {
 		case "graphs":
 			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/tree.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/template.php");
