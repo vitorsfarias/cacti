@@ -57,7 +57,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 	global $config;
 	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/api_poller.php");
+	include_once(CACTI_BASE_PATH . "/lib/poller.php");
 
 	$poller_items = array();
 
