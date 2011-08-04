@@ -466,7 +466,7 @@ function tree_remove() {
 }
 
 function tree_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/graph_tree/graph_tree_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph_tree.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
