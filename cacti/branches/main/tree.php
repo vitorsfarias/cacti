@@ -492,40 +492,29 @@ function tree_edit() {
 		"fields" => inject_form_variables(graph_tree_form_list(), (isset($tree) ? $tree : array()))
 		));
 
-	html_end_box(FALSE);
+	html_end_box();
+
+	html_start_box("Tree Details/Objects", "100", "3", "center", "", true);
 
 	if (!empty($_GET["id"])) {
 		/* setup the tree div's */
-		echo "<div id='tree' style='float:left;width:50%;'>";
-		html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", "3", "center", "");
-		$header_items = array(
-			array("name" => __("Item")),
-			array("name" => __("Value"))
-		);
-
-		print "<tr><td>";
-		html_header($header_items, 3, false, 'tree');
-		grow_edit_graph_tree(get_request_var("id"), "", "");
-		print "</table></td></tr>";		/* end of html_header */
-		html_end_box();
+		echo "<div id='tree' style='float:left;width:49%;'>";
+		echo "<div id='tree_content'></div>";
 		echo "</div>";
 
 		/* setup the graph items div */
 		echo "<div id='items' style='float:right;width:50%';>";
-		html_start_box("<strong>" . __("Item Filter") . "</strong>", "100", "3", "center", "");
-		$header_items = array(
-			array("name" => __("Item")),
-			array("name" => __("Value"))
-		);
-
-		print "<tr><td>";
-		html_header($header_items, 3, false, 'tree');
-		print "</table></td></tr>";		/* end of html_header */
-		html_end_box();
+		echo "<div id='item_content'></div>";
 		echo "</div>";
 	}
 
-	form_save_button_alt("path!tree.php");
+	html_end_box(FALSE);
+
+	html_start_box("", "100", "3", "center", "", true);
+
+	print "<tr><td class='right'><input type='button' value='Return' onclick='javascript:history.back()'></td></tr>";
+
+	html_end_box(FALSE);
 }
 
 function tree_filter() {
