@@ -119,12 +119,28 @@ default:
 
 	html_end_box();
 
+
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
+
+	?>
+	<script type="text/javascript">
+		$(function(){
+			$('#i18n_language_support').bind('change', function() {
+				$('#i18n_default_language').attr('disabled', ($('#i18n_language_support').val() == '0') ? true : false );
+				$('#i18n_auto_detection').attr('disabled', ($('#i18n_language_support').val() == '0') ? true : false );
+			});
+			$('#i18n_timezone_support').bind('change', function() {
+				$('#i18n_default_timezone').attr('disabled', ($('#i18n_timezone_support').val() == '0') ? true : false );
+			});
+		$('#i18n_timezone_support').trigger('change');
+		$('#i18n_language_support').trigger('change');
+		});
+	</script>
+	<?php
 
 	form_save_button("", "save");
 
 	include(CACTI_BASE_PATH . "/include/bottom_footer.php");
-
 	break;
 }
