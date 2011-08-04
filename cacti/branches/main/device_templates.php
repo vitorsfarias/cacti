@@ -597,10 +597,9 @@ function device_template_edit() {
 
 	switch (get_request_var_request("tab")) {
 		case "devices":
-			include_once(CACTI_BASE_PATH . "/lib/device/device_form.php");
+			include_once(CACTI_BASE_PATH . "/lib/device.php");
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-			include_once(CACTI_BASE_PATH . "/lib/device/device_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
