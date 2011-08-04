@@ -453,7 +453,7 @@ function data_source_template_edit() {
 		case "datasources":
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
+			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/template.php");
 			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");

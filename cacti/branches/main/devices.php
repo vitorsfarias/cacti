@@ -31,7 +31,6 @@ include_once(CACTI_BASE_PATH . "/lib/tree.php");
 include_once(CACTI_BASE_PATH . "/lib/snmp.php");
 include_once(CACTI_BASE_PATH . "/lib/ping.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 include_once(CACTI_BASE_PATH . "/lib/sort.php");
 include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
