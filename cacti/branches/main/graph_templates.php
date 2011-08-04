@@ -490,7 +490,7 @@ function graph_template_item_save() {
 
 function graph_template_display_general($graph_template, $header_label) {
 	include_once(CACTI_BASE_PATH . "/lib/graph.php");
-	include_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
+	include_once(CACTI_BASE_PATH . "/lib/graph_template.php");
 
 	# fetch all settings for this graph template
 	if (isset($graph_template["id"])) {
