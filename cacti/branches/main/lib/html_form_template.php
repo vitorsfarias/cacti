@@ -30,13 +30,11 @@
      									  variables can be used:
        									  |field| - the current field name
    @param string $header_title 			- the title to use on the header for this form
-   @param bool $alternate_colors 		- whether to alternate colors for each row on the form or not
    @param bool $include_hidden_fields 	- should elements that are not to be displayed be represented as hidden
      									  html input elements or omitted altogether?
    @param int $snmp_query_graph_id 		- if this graph template is part of a data query, specify the graph id here. this
      									  will be used to determine if a given field is using suggested values */
-function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $colors;
+function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = "|field|", $header_title = "", $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	$form_array = array();
@@ -81,11 +79,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	}
 
 	/* setup form options */
-	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
-	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
-	}
+	$form_config_array = array("no_form_tag" => true);
 
 	draw_edit_form(
 		array(
@@ -107,10 +101,8 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
      								  variables can be used:
       								  |field| - the current field name
        								  |id| - the current graph input id
-   @param string $header_title 		- the title to use on the header for this form
-   @param bool $alternate_colors 	- whether to alternate colors for each row on the form or not */
-function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "", $alternate_colors = true) {
-	global $colors;
+   @param string $header_title 		- the title to use on the header for this form */
+function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "") {
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	$form_array = array();
@@ -191,11 +183,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	}
 
 	/* setup form options */
-	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
-	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
-	}
+	$form_config_array = array("no_form_tag" => true);
 
 	if (sizeof($input_item_list > 0)) {
 		draw_edit_form(
@@ -220,13 +208,11 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
      									  variables can be used:
        									  |field| - the current field name
    @param string $header_title 			- the title to use on the header for this form
-   @param bool $alternate_colors 		- whether to alternate colors for each row on the form or not
    @param bool $include_hidden_fields 	- should elements that are not to be displayed be represented as hidden
      									  html input elements or omitted altogether?
    @param int $snmp_query_graph_id 		- if this data template is part of a data query, specify the graph id here. this
      									  will be used to determine if a given field is using suggested values */
-function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $colors;
+function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = "|field|", $header_title = "", $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	$form_array = array();
@@ -280,12 +266,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		}
 	}
 
-	/* setup form options */
-	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
-	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
-	}
+	$form_config_array = array("no_form_tag" => true);
 
 	draw_edit_form(
 		array(
@@ -310,24 +291,18 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
    @param string $header_title 				- the title to use on the header for this form
    @param bool $draw_title_for_each_item  	- should a separate header be drawn for each data source item, or
      										  should all data source items be drawn under one header?
-   @param bool $alternate_colors 			- whether to alternate colors for each row on the form or not
    @param bool $include_hidden_fields 		- should elements that are not to be displayed be represented as hidden
      										  html input elements or omitted altogether?
    @param int $snmp_query_graph_id 			- if this graph template is part of a data query, specify the graph id here. this
      										  will be used to determine if a given field is using suggested values */
-function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = "|field_id|", $header_title = "", $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $colors;
+function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = "|field_id|", $header_title = "", $draw_title_for_each_item = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 
 	$draw_any_items = false;
 	$num_fields_drawn = 0;
 
 	/* setup form options */
-	if ($alternate_colors == true) {
-		$form_config_array = array("no_form_tag" => true);
-	}else{
-		$form_config_array = array("no_form_tag" => true, "force_row_color" => $colors["form_alternate1"]);
-	}
+	$form_config_array = array("no_form_tag" => true);
 
 	if (sizeof($values_array) > 0) {
 		$struct_data_source_item = data_source_item_form_list();
@@ -426,12 +401,11 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
    @param string $header_title 				- the title to use on the header for this form
    @param bool $draw_title_for_each_item 	- should a separate header be drawn for each data source item, or
      										  should all data source items be drawn under one header?
-   @param bool $alternate_colors 			- whether to alternate colors for each row on the form or not
    @param bool $include_hidden_fields 		- should elements that are not to be displayed be represented as hidden
      										  html input elements or omitted altogether?
    @param int $snmp_query_id 				- if this graph template is part of a data query, specify the data query id here. this
      										  will be used to determine if a given field is associated with a suggested value */
-function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
+function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = "|field|", $header_title = "", $include_hidden_fields = true, $snmp_query_id = 0) {
 	$data          = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where id=$data_template_data_id");
 	$device_id     = db_fetch_cell("select device.id from (data_local,device) where data_local.device_id=device.id and data_local.id=" . $data["local_data_id"]);
 	$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");
@@ -482,11 +456,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				html_header($header_items, 1, false, 'template_custom_data');
 			}
 
-			if ($alternate_colors == true) {
-				form_alternate_row_color();
-			}else{
-				print "<tr class='topBoxAlt'>\n";
-			}
+			form_alternate_row_color();
 
 			print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
 			print "<td>";

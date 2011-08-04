@@ -285,13 +285,13 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 
-			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false));
+			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]"));
 
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -299,8 +299,8 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 					where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
 					and local_data_id=0");
 
-				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, $snmp_query_id));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, $snmp_query_id));
 			}
 			}
 
@@ -343,8 +343,6 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
    ------------------- */
 
 function graphs_new() {
-	global $colors;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("device_id"));
 	input_validate_input_number(get_request_var_request("graph_type"));
@@ -576,8 +574,8 @@ function graphs_new() {
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
 		/* create a row at the bottom that lets the user create any graph they choose */
-		print "	<tr bgcolor='#" . (($i % 2 == 0) ? "ffffff" : $colors["light"]) . "'>
-				<td colspan='2' width='60' nowrap>
+		form_alternate_row_color();
+		print "<td colspan='2' width='60' nowrap>
 					<strong>" . __("Create:") . "</strong>&nbsp;";
 					form_dropdown("cg_g", $available_graph_templates, "name", "id", "", "(Select a graph type to create)", "", "textArea");
 		print "		</td>
