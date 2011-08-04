@@ -286,19 +286,19 @@ function auth_display_custom_error_message($message) {
 				if ($ldap_error) {?>
 				<tr><td></td></tr>
 				<tr>
-					<td colspan="2"><font color="#FF0000"><strong><?php print $ldap_error_message; ?></strong></font></td>
+					<td colspan="2"><font color="#FF0000"><?php print $ldap_error_message; ?></font></td>
 				</tr>
 				<?php }else{
 				if ($action == "login") {?>
 				<tr><td></td></tr>
 				<tr>
-					<td colspan="2"><font color="#FF0000"><strong><?php print __("Invalid User Name/Password Please Retype");?></strong></font></td>
+					<td colspan="2"><font color="#FF0000"><?php print __("Invalid User Name/Password Please Retype");?></font></td>
 				</tr>
 				<?php }
 				if ($user_enabled == "0") {?>
 				<tr><td></td></tr>
 				<tr>
-					<td colspan="2"><font color="#FF0000"><strong><?php print __("User Account Disabled");?></strong></font></td>
+					<td colspan="2"><font color="#FF0000"><?php print __("User Account Disabled");?></font></td>
 				</tr>
 				<?php } } ?>
 				<tr><td></td></tr>

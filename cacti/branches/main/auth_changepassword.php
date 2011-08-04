@@ -103,13 +103,13 @@ case 'changepassword':
 				<?php if ($bad_password == true) {?>
 				<tr><td></td></tr>
 				<tr>
-					<td colspan="2"><font color="#FF0000"><strong><?php print __("Your passwords do not match, please retype:");?></strong></font></td>
+					<td colspan="2"><font color="#FF0000"><?php print __("Your passwords do not match, please retype:");?></font></td>
 				</tr>
 				<?php }?>
 				<tr><td></td></tr>
 				<tr>
 					<td colspan="2">
-						<strong><font color="#FF0000"><?php print __("*** Forced Password Change ***");?></font></strong><br><br>
+						<font color="#FF0000"><?php print __("*** Forced Password Change ***");?></font><br><br>
 						<?php print __("Please enter a new password for cacti:");?>
 					</td>
 				</tr>
