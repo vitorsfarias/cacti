@@ -328,7 +328,7 @@ switch (get_request_var_request("step")) {
 		} else {
 			$writeaccess = "Config file does not exist";
 		}
-		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		html_start_box('', '100%', '3', '', '');
 		$form_array = array(
 			"database_settings" => array(
 				"friendly_name" => "Database Configuration Options",
@@ -442,7 +442,7 @@ switch (get_request_var_request("step")) {
 				$installsettings[$name]['value'] = $array["default"];
 			}
 		}
-		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		html_start_box('', '60', '3', '', '');
 		draw_edit_form(
 			array(
 				'config' => array(
@@ -451,8 +451,9 @@ switch (get_request_var_request("step")) {
 				'fields' => $installsettings
 			)
 		);
+		html_end_box(false);
+		print '<p><br><br>';
 
-		html_end_box();
 		install_page_footer();
 		break;
 	case "6":		/* Plugin Setup */
@@ -510,7 +511,7 @@ switch (get_request_var_request("step")) {
 		print "<h1>Settings Setup</h1>";
 		print "To ensure proper functionality of your Cacti install, there are several settings that are required to be configured.<br><br>";
 
-		html_start_box('', '100%', $colors['header'], '3', 'center', '');
+		html_start_box('', '60', '3', '', '');
 		$form_array = array(
 			"settings_dns_header" => array(
 				"friendly_name" => "DNS Options",
