@@ -227,7 +227,7 @@ case 'tree':
 		});
 
 		<?php
-		if (isset($_REQUEST["tree_id"]) || $_REQUEST["tree_id"] <= 0) {
+		if (!isset($_REQUEST["tree_id"]) || $_REQUEST["tree_id"] <= 0) {
 			$tree_id = read_graph_config_option("default_tree_id");
 			if ($tree_id == 0) {
 				$tree_id = db_fetch_cell("SELECT id FROM graph_tree LIMIT 1");
