@@ -25,7 +25,7 @@
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/utility.php");
 include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
-include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
+include_once(CACTI_BASE_PATH . "/lib/tree.php");
 include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 include_once(CACTI_BASE_PATH . "/lib/template.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");

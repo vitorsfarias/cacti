@@ -34,7 +34,6 @@ include(dirname(__FILE__)."/../include/global.php");
 require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 include_once(CACTI_BASE_PATH . "/lib/automation_tools.php");
-include_once(CACTI_BASE_PATH . '/lib/api_tree.php');
 include_once(CACTI_BASE_PATH . '/lib/tree.php');
 
 /* process calling arguments */

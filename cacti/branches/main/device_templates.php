@@ -602,7 +602,6 @@ function device_template_edit() {
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_query.php");

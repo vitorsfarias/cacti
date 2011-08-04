@@ -23,7 +23,6 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/tree.php");
 include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 
