@@ -506,8 +506,8 @@ th a {
 }
 
 .linkEditMain:hover {
-	color: #3C3B85;
-	text-decoration: underline;
+	color: #2B2A5F;
+	text-decoration: none;
 	font-weight: bold;
 }
 
