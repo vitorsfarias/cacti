@@ -100,7 +100,7 @@ function data_template_item_save() {
 		if (is_error_message()) {
 			header("Location: data_templates_items.php?action=item_edit&item_id=" . (empty($data_template_rrd_id) ? $_POST["data_template_rrd_id"] : $data_template_rrd_id) . "&id=" . $_POST["data_template_id"]);
 		}else{
-			header("Location: data_templates.php?action=edit&id=" . $_POST["data_template_id"]);
+			header("Location: data_templates.php?action=edit&tab=items&id=" . $_POST["data_template_id"] . "&data_template_id=" . $_POST["data_template_id"]);
 		}
 	}
 }
@@ -124,7 +124,7 @@ function data_template_item_remove() {
 		}
 	}
 
-	header("Location: data_templates.php?action=edit&id=" . $_GET["data_template_id"]);
+	header("Location: data_templates.php?action=edit&tab=items&id=" . $_GET["data_template_id"] . "&data_template_id=" . $_GET["data_template_id"]);
 	exit;
 }
 
@@ -194,8 +194,7 @@ function data_template_item_edit() {
 	form_hidden_box("save_component_item", "1", "");
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 
-	#form_save_button("data_templates.php?action=edit&id=" . $_GET["id"]);
-	form_save_button_alt("url!" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""));
+	form_save_button("data_templates.php?action=edit&tab=items&id=" . $_GET["id"], "return");
 
 	include_once(CACTI_BASE_PATH . "/access/js/data_source_item.js");
 	include_once(CACTI_BASE_PATH . "/access/js/field_description_hover.js");

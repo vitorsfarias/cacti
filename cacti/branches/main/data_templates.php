@@ -500,8 +500,8 @@ function data_source_template_display_general($data_template, $header_label) {
 		));
 
 	html_end_box(false);
-	form_hidden_box("data_template_id", $template_data["data_template_id"], "0");
-	form_hidden_box("data_template_data_id", $template_data["id"], "0");
+	form_hidden_box("data_template_id", (isset($template_data["data_template_id"]) ? $template_data["data_template_id"]: "0"), "0");
+	form_hidden_box("data_template_data_id", (isset($template_data["id"]) ? $template_data["id"]: "0"), "0");
 	form_hidden_box("current_rrd", (isset($_GET["current_rrd"]) ? $_GET["current_rrd"] : "0"), "0");
 	form_hidden_box("save_component_template", 1, "");
 
@@ -514,7 +514,7 @@ function data_source_template_display_general($data_template, $header_label) {
 	$i = 0;
 	if (!empty($_GET["id"])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
+		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY name");
 
 		html_start_box(__("Custom Data") . " " . __("[data input:") . " " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", 0, "center", "", true);
 
@@ -527,6 +527,9 @@ function data_source_template_display_general($data_template, $header_label) {
 				$old_value = $data_input_data["value"];
 			}else{
 				$old_value = "";
+				/* initialize data in case there's no data input data for this very input field */
+				$data_input_data["t_value"] = "";
+				$data_input_data["value"] = "";
 			}
 
 			form_alternate_row_color("custom_data" . $field["id"]); ?>
@@ -573,7 +576,7 @@ function data_template_display_items() {
 	html_start_box(__("Data Source Items") . " $header_label", "100", "0", "center", "data_templates_items.php?action=item_edit&data_template_id=" . $_REQUEST["id"], true);
 	draw_data_template_items_list($template_item_list, "data_templates_items.php", "data_template_id=" . $_REQUEST["id"], false);
 	html_end_box(true);
-	form_save_button_alt("url!data_templates.php");
+	form_save_button("data_templates.php", "return");
 }
 
 function data_templates_filter() {
