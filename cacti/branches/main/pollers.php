@@ -73,7 +73,6 @@ function form_save() {
 		$save["disabled"]    = form_input_validate((isset($_POST["disabled"]) ? get_request_var_post("disabled"):""), "disabled", "", true, 3);
 		$save["description"] = form_input_validate(get_request_var_post("description"), "description", "", false, 3);
 		$save["hostname"]    = form_input_validate(get_request_var_post("hostname"), "hostname", "", true, 3);
-		$save["ip_address"]  = form_input_validate(get_request_var_post("ip_address"), "ip_address", "", true, 3);
 
 		if (!is_error_message()) {
 			$poller_id = sql_save($save, "poller");

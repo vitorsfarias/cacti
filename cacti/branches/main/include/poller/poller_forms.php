@@ -44,13 +44,6 @@ $fields_poller_edit = array(
 		"value" => "|arg1:hostname|",
 		"max_length" => "250",
 		),
-	"ip_address" => array(
-		"method" => "textbox",
-		"friendly_name" => __("IP Address"),
-		"description" => __("The IP Address of this poller for status checking."),
-		"value" => "|arg1:ip_address|",
-		"max_length" => "250",
-		),
 	"disabled" => array(
 		"method" => "checkbox",
 		"friendly_name" => __("Disabled"),
