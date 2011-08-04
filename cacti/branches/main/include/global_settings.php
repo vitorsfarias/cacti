@@ -303,7 +303,7 @@ $settings = array(
 			"friendly_name" => __("Default Time Zone"),
 			"description" => __("Default time zone for this system."),
 			"method" => "drop_array",
-			"default" => "0",
+			"default" => "UTC",
 			"array" => get_list_of_timezones()
 			),
 		),
