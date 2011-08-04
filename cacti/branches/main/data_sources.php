@@ -828,9 +828,9 @@ function data_source_edit() {
 
 		html_start_box("<strong>" . __("Supplemental Data Source Template Data") . "</strong>", "100", 0, "center", "");
 
-		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], $data, "|field|", "<strong>" . __("Data Source Fields") . "</strong>", true, true, 0);
-		draw_nontemplated_fields_data_source_item($data["data_template_id"], $data_source_items, "|field|_|id|", "<strong>" . __("Data Source Item Fields") . "</strong>", true, true, true, 0);
-		draw_nontemplated_fields_custom_data($data["id"], "value_|id|", "<strong>" . __("Custom Data") . "</strong>", true, true, 0);
+		draw_nontemplated_fields_data_source($data["data_template_id"], $data["local_data_id"], $data, "|field|", "<strong>" . __("Data Source Fields") . "</strong>", true, 0);
+		draw_nontemplated_fields_data_source_item($data["data_template_id"], $data_source_items, "|field|_|id|", "<strong>" . __("Data Source Item Fields") . "</strong>", true, true, 0);
+		draw_nontemplated_fields_custom_data($data["id"], "value_|id|", "<strong>" . __("Custom Data") . "</strong>", true, 0);
 
 		html_end_box();
 

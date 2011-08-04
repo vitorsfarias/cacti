@@ -354,7 +354,7 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 }
 
 function plugin_filter() {
-	global $item_rows, $config, $colors;
+	global $item_rows, $config;
 	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
 
 	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . CACTI_VERSION .
@@ -419,7 +419,7 @@ function plugin_filter() {
 }
 
 function plugin_show($status = 'all', $refresh = true) {
-	global $item_rows, $colors;
+	global $item_rows;
 
 	$table = New html_table;
 

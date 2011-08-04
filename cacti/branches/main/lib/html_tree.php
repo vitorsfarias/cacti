@@ -23,7 +23,7 @@
  */
 
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
-	global $current_user, $config;
+	global $current_user;
 
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
@@ -183,8 +183,6 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 }
 
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
-	global $config, $colors;
-
 	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 
@@ -220,42 +218,40 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 			$transparent_indent = "<img src='images/transparent_pixel.gif' width='" . (($tier-1) * 20) . "' height='1' align='middle' alt=''>&nbsp;";
 			$sort_cache[$tier] = $leaf["sort_children_type"];
 
-			if ($i % 2 == 0) { $row_color = $colors["form_alternate1"]; }else{ $row_color = $colors["form_alternate2"]; } $i++;
-
 			$visible = get_visibility($leaf);
 
 			if ($leaf["local_graph_id"] > 0) {
 				if ($visible) {
-					print "<tr>";
-					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>" . $leaf["graph_title"] . "</a></td>\n";
-					print "<td bgcolor='#$row_color'>Graph</td>";
+					form_alternate_row_color();
+					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>" . $leaf["graph_title"] . "</a></td>\n";
+					print "<td>Graph</td>";
 				}
 			}elseif ($leaf["title"] != "") {
 				$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
 				if ($visible) {
-					print "<tr>";
-					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt=''></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
-					print "<td bgcolor='#$row_color'>Heading</td>";
+					form_alternate_row_color();
+					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt=''></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
+					print "<td>Heading</td>";
 				}
 			}elseif ($leaf["device_id"] > 0) {
 				if ($visible) {
-					print "<tr>";
-					print "<td bgcolor='#$row_color'>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
-					print "<td bgcolor='#$row_color'>Host</td>";
+					form_alternate_row_color();
+					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
+					print "<td>Host</td>";
 				}
 			}
 
 			if ($visible) {
 				if ( ((isset($sort_cache{$tier-1})) && ($sort_cache{$tier-1} != DATA_QUERY_INDEX_SORT_TYPE_NONE)) || ($tree_sorting_type != DATA_QUERY_INDEX_SORT_TYPE_NONE) )  {
-					print "<td bgcolor='#$row_color' width='80'></td>\n";
+					print "<td width='80'></td>\n";
 				}else{
-					print "<td bgcolor='#$row_color' width='80' align='center'>\n
+					print "<td width='80' align='center'>\n
 					<a href='" . htmlspecialchars("tree.php?action=item_movedown&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"]) . "'><img class='buttonSmall' src='images/move_down.gif' alt='Move Down' align='middle'></a>\n
 					<a href='" . htmlspecialchars("tree.php?action=item_moveup&id=" . $leaf["id"] . "&tree_id=" . $_GET["id"]) . "'><img class='buttonSmall' src='images/move_up.gif' alt='Move Up' align='middle'></a>\n
 					</td>\n";
 				}
 
-				print 	"<td bgcolor='#$row_color' align='right'>\n
+				print 	"<td align='right'>\n
 				<a href='". htmlspecialchars("tree.php?action=item_remove&id=" . $leaf["id"] . "&tree_id=$tree_id") . "'><img class='buttonSmall' src='images/delete_icon.gif' alt='Delete' align='middle'></a>\n
 				</td></tr>\n";
 			}
@@ -373,8 +369,6 @@ function tree_tier_string($order_key, $chars_per_tier = CHARS_PER_TIER) {
 }
 
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 
 	$tree = db_fetch_assoc("select
@@ -408,8 +402,6 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 }
 
 function grow_dhtml_trees() {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
@@ -597,7 +589,7 @@ function create_dhtml_tree() {
 }
 
 function tree_authorized($tree_id) {
-	global $current_user, $config;
+	global $current_user;
 
 	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$tree_policy = db_fetch_cell("SELECT policy_trees FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
@@ -694,7 +686,7 @@ function template_authorized($graph_template_id, $user) {
 }
 
 function get_trees($tree_id) {
-	global $current_user, $config;
+	global $current_user;
 
 	$trees_where = "";
 	$sql_where   = "";
@@ -752,7 +744,7 @@ function get_trees($tree_id) {
 }
 
 function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_parent = false) {
-	global $current_user, $config;
+	global $current_user;
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 
 	// prototype
@@ -998,7 +990,7 @@ function get_device_grouping_data_query_items($leaf, $device_group_data) {
 }
 
 function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
-	global $current_user, $config, $graphs_per_page;
+	global $current_user, $graphs_per_page;
 
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");

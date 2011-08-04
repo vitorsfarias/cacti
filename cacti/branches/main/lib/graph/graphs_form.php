@@ -646,7 +646,6 @@ function graph_item_dnd() {
 }
 
 function graph_diff() {
-	global $colors;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
@@ -770,8 +769,8 @@ function graph_diff() {
 				$alternate_color_2 = "EEEEEE";
 				$custom_row_color = "D5D5D5";
 			}else{
-				$alternate_color_1 = $colors["alternate"];
-				$alternate_color_2 = $colors["alternate"];
+				$alternate_color_1 = "E7E9F2";
+				$alternate_color_2 = "E7E9F2";
 				$custom_row_color = "D2D6E7";
 			}
 
@@ -795,7 +794,7 @@ function graph_diff() {
 
 		/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
 		if ($mode == "add") {
-			$action_column_color = $colors["header"];
+			$action_column_color = "00438C";
 			$action_css = "";
 		}elseif ($mode == "delete") {
 			$action_column_color = "C63636";
@@ -1018,8 +1017,8 @@ function graph_edit() {
 	if (!empty($graphs["graph_template_id"])) {
 		html_start_box("<strong>" . __("Supplemental Graph Template Data") . "</strong>", "100", "0", "center", "");
 
-		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>" . __("Graph Fields") . "</strong>", true, true, 0);
-		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "<strong>" . __("Graph Item Fields") ."</strong>", true);
+		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>" . __("Graph Fields") . "</strong>", true, 0);
+		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "<strong>" . __("Graph Item Fields") ."</strong>");
 
 		html_end_box();
 	}
