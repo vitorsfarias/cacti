@@ -188,7 +188,6 @@ function device_form_save() {
 function device_form_actions() {
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
 	require_once(CACTI_BASE_PATH . "/lib/api_graph.php");
 
@@ -735,7 +734,6 @@ function device_edit() {
 function device_display_general($device, $device_text) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/device/device_info.php");
 
 	if (isset($device["id"])) {
 
@@ -1807,3 +1805,14 @@ function device($refresh = true) {
 	$table->draw_table();
 }
 
+function &device_form_list() {
+	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
+
+	return $fields_device_edit;
+}
+
+function &device_availability_form_list() {
+	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
+
+	return $fields_device_edit_availability;
+}
