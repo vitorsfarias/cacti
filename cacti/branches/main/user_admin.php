@@ -64,6 +64,10 @@ switch (get_request_var_request("action")) {
 		ajax_get_graphs_brief();
 
 		break;
+	case 'ajax_get_graph_templates':
+		ajax_get_graph_templates();
+
+		break;
 	default:
 		if (!plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -574,6 +578,14 @@ function graph_perms_edit() {
 				$(this).parent().find("#perm_graphs").val(0);
 			}
 		});
+		$("#graph_templates").autocomplete("user_admin.php?action=ajax_get_graph_templates", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#graph_templates").result(function(event, data, formatted) {
+			if (data) {
+				$(this).parent().find("#perm_graph_templates").val(data[1]);
+			}else{
+				$(this).parent().find("#perm_graph_templates").val(0);
+			}
+		});
 	});
 	//-->
 	</script>
@@ -743,7 +755,8 @@ function graph_perms_edit() {
 				&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_graph_template_y">
 			</td>
 			<td align='left' width='1'>
-				<?php form_dropdown("perm_graph_templates",db_fetch_assoc("SELECT id, name FROM graph_templates WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=".get_request_var("id",0).") ORDER BY name"),"name","id","","","");?>
+				<input class="ac_field" type="text" id="graph_templates" size="70" value="">
+				<input type="hidden" id="perm_graph_templates" name="perm_graph_templates">
 			</td>
 		</tr>
 	</table>
