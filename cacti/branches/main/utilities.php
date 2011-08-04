@@ -24,8 +24,6 @@
 
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/utilities/user_log.php");
-include_once(CACTI_BASE_PATH . "/lib/utilities/poller_cache.php");
 
 load_current_session_value("page_referrer", "page_referrer", "");
 
