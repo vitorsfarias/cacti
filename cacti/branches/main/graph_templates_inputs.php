@@ -145,7 +145,7 @@ function input_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/graph.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

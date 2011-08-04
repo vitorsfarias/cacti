@@ -112,8 +112,8 @@ function import_xml_data(&$xml_data, $import_custom_rra_settings) {
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache) {
 	global $hash_version_codes;
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
 
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");

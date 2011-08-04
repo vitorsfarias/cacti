@@ -25,8 +25,8 @@
 function graph_template_to_xml($graph_template_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
 
 	$hash["graph_template"] = get_hash_version("graph_template") . get_hash_graph_template($graph_template_id);
 	$xml_text = "";
