@@ -479,7 +479,7 @@ function push_out_device($device_id, $local_data_id = 0, $data_template_id = 0) 
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph.php");
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");

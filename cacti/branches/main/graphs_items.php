@@ -264,7 +264,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/graph.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
