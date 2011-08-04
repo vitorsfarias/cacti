@@ -526,16 +526,12 @@ function tree_filter() {
 			<form name='form_tree' action="<?php print basename($_SERVER['PHP_SELF']);?>" method="post">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Search:");?>&nbsp;
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
-					</td>
-					<td class="nw50">
+					<td>
 						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
 						<select name="rows" onChange="applyFilterChange(document.form_rra)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
