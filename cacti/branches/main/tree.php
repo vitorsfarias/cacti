@@ -171,7 +171,7 @@ function item_edit() {
 
 	print "<form action='tree.php' name='form_tree' method='post'>\n";
 
-	html_start_box("<strong>" . __("Tree Items") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Tree Items"), "100", "3", "center", "");
 
 	form_alternate_row_color("parent_item");
 	?>
@@ -411,7 +411,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $tree_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($tree_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='tree.php' method='post'>\n";
 
@@ -485,7 +485,7 @@ function tree_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='tree_edit'>\n";
-	html_start_box("<strong>" . __("Graph Trees") . "</strong> $header_label", "100", "3", "center", "", true);
+	html_start_box(__("Graph Trees") . " $header_label", "100", "3", "center", "", true);
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -494,7 +494,7 @@ function tree_edit() {
 
 	html_end_box();
 
-	html_start_box("Tree Details/Objects", "100", "3", "center", "", true);
+	html_start_box(__("Tree Details/Objects"), "100", "3", "center", "", true);
 
 	if (!empty($_GET["id"])) {
 		/* setup the tree div's */
@@ -519,7 +519,7 @@ function tree_edit() {
 
 function tree_filter() {
 	global $item_rows;
-	html_start_box("<strong>" . __("Graph Trees") . "</strong>", "100", "3", "center", "tree.php?action=edit", true);
+	html_start_box(__("Graph Trees"), "100", "3", "center", "tree.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

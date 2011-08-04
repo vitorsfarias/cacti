@@ -283,7 +283,7 @@ function item_edit() {
 	$id = (!empty($_REQUEST["id"]) ? "&id=" . get_request_var_request("id") : "");
 	$device = db_fetch_row("select hostname from device where id=" . get_request_var_request("device_id"));
 
-	html_start_box("<strong>" . __("Data Sources") . "</strong> " . __("[device: ") . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "");
+	html_start_box(__("Data Sources") . " " . __("[device: ") . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "");
 
 	?>
 	<tr>
@@ -408,7 +408,7 @@ function item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_item_edit'>\n";
-	html_start_box("<strong>" . __("Graph Items") . "</strong> $header_label", "100", 0, "center", "", true);
+	html_start_box(__("Graph Items") . " $header_label", "100", 0, "center", "", true);
 
 	draw_edit_form(
 		array(

@@ -118,7 +118,7 @@ function settings() {
 	# the tab contents
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tab_short_name) . "'>\n";
-		html_start_box("<strong>" . __("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")</strong>", "100", 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
+		html_start_box(__("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")", "100", 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
 
 		$form_array = array();
 

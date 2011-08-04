@@ -122,7 +122,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $gprint_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($gprint_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='gprint_presets.php' method='post'>\n";
 
@@ -207,7 +207,7 @@ function gprint_presets_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='gprint_edit'>\n";
-	html_start_box("<strong>" . __("GPRINT Presets") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("GPRINT Presets") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -222,7 +222,7 @@ function gprint_presets_edit() {
 function gprint_presets_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("GPRINT Presets") . "</strong>", "100", "3", "center", "gprint_presets.php?action=edit", true);
+	html_start_box(__("GPRINT Presets"), "100", "3", "center", "gprint_presets.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -321,7 +321,7 @@ function form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $graph_template_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($graph_template_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='graph_templates.php' method='post'>\n";
 
@@ -502,7 +502,7 @@ function graph_template_display_general($graph_template, $header_label) {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_template_edit'>\n";
 
 	# the template header
-	html_start_box("<strong>" . __("Graph Template") . "</strong> $header_label", "100", "0", "center", "", true);
+	html_start_box(__("Graph Template") . " $header_label", "100", "0", "center", "", true);
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -515,36 +515,36 @@ function graph_template_display_general($graph_template, $header_label) {
 	form_hidden_box("save_component_template", 1, "");
 
 	/* id tags of tables (set via html_start_box) required for initial js on load */
-	html_start_box("<strong>" . __("Graph Template Labels") . "</strong>", "100", "0", "center", "", true, "table_graph_template_labels");
+	html_start_box(__("Graph Template Labels"), "100", "0", "center", "", true, "table_graph_template_labels");
 	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
 	html_end_box(false);
 
 	/* TODO: we should not use rrd version in the code, when going data-driven */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
-		html_start_box("<strong>" . __("Graph Template Right Axis Settings") . "</strong>", "100", "0", "center", "", true, "table_graph_template_right_axis");
+		html_start_box(__("Graph Template Right Axis Settings"), "100", "0", "center", "", true, "table_graph_template_right_axis");
 		draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $template_graph, false);
 	}
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Size") . "</strong>", "100", "0", "center", "", true, "table_graph_template_size");
+	html_start_box(__("Graph Template Size"), "100", "0", "center", "", true, "table_graph_template_size");
 	draw_template_edit_form('header_graph_size', graph_size_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Limits") . "</strong>", "100", "0", "center", "", true, "table_graph_template_limits");
+	html_start_box(__("Graph Template Limits"), "100", "0", "center", "", true, "table_graph_template_limits");
 	draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Grid") . "</strong>", "100", "0", "center", "", true, "table_graph_template_grid");
+	html_start_box(__("Graph Template Grid"), "100", "0", "center", "", true, "table_graph_template_grid");
 
 	draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Color") . "</strong>", "100", "0", "center", "", true, "table_graph_template_color");
+	html_start_box(__("Graph Template Color"), "100", "0", "center", "", true, "table_graph_template_color");
 	draw_template_edit_form('header_graph_color', graph_color_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Legend") . "</strong>", "100", "0", "center", "", true, "table_graph_template_legend");
+	html_start_box(__("Graph Template Legend"), "100", "0", "center", "", true, "table_graph_template_legend");
 	draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Misc") . "</strong>", "100", "0", "center", "", true, "table_graph_template_misc");
+	html_start_box(__("Graph Template Misc"), "100", "0", "center", "", true, "table_graph_template_misc");
 	draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("<strong>" . __("Graph Template Cacti Specifics") . "</strong>", "100", "0", "center", "", true, "table_graph_template_cacti");
+	html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", true, "table_graph_template_cacti");
 	draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $template_graph, false);
 	html_end_box(false);
 
@@ -603,12 +603,12 @@ function graph_template_display_items() {
 	}
 
 	/* graph template item */
-	html_start_box("<strong>" . __("Graph Template Items") . "</strong> $header_label", "100", "0", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
+	html_start_box(__("Graph Template Items") . " $header_label", "100", "0", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
 	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_REQUEST["id"], false);
 	html_end_box(true);
 
 	/* graph template inputs */
-	html_start_box("<strong>" . __("Graph Item Inputs") . "</strong>", "100", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
+	html_start_box(__("Graph Item Inputs"), "100", "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")), true);
 	print "<tr><td>\n";
 	html_header(array(array("name" => __("Name"))), 2,'','','left wp100');
 
@@ -674,7 +674,7 @@ function process_page_variables() {
 function graph_templates_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("Graph Templates") . "</strong>", "100", "3", "center", "graph_templates.php?action=edit", true);
+	html_start_box(__("Graph Templates"), "100", "3", "center", "graph_templates.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

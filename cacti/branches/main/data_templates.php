@@ -314,7 +314,7 @@ function data_source_template_form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $ds_template_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($ds_template_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='data_templates.php' method='post'>\n";
 
@@ -492,7 +492,7 @@ function data_source_template_display_general($data_template, $header_label) {
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='data_data_source_template_edit'>\n";
 
 	# the template header
-	html_start_box("<strong>" . __("Data Source Template") . "</strong> $header_label", "100", 0, "center", "", true);
+	html_start_box(__("Data Source Template") . " $header_label", "100", 0, "center", "", true);
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -506,7 +506,7 @@ function data_source_template_display_general($data_template, $header_label) {
 	form_hidden_box("save_component_template", 1, "");
 
 
-	html_start_box("<strong>" . __("Data Source") . "</strong>", "100", 0, "center", "", true);
+	html_start_box(__("Data Source"), "100", 0, "center", "", true);
 	draw_template_edit_form('header_data_source', data_source_form_list(), $template_data, false);
 	html_end_box();
 
@@ -516,7 +516,7 @@ function data_source_template_display_general($data_template, $header_label) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc("SELECT * FROM data_input_fields WHERE data_input_id=" . $template_data["data_input_id"] . " AND input_output='in' ORDER BY sequence");
 
-		html_start_box("<strong>" . __("Custom Data") . "</strong> [data input: " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", 0, "center", "", true);
+		html_start_box(__("Custom Data") . " " . __("[data input:") . " " . db_fetch_cell("SELECT name FROM data_input WHERE id=" . $template_data["data_input_id"]) . "]", "100", 0, "center", "", true);
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -570,7 +570,7 @@ function data_template_display_items() {
 		$header_label = __("[new]");
 	}
 
-	html_start_box("<strong>" . __("Data Source Items") . "</strong> $header_label", "100", "0", "center", "data_templates_items.php?action=item_edit&data_template_id=" . $_REQUEST["id"], true);
+	html_start_box(__("Data Source Items") . " $header_label", "100", "0", "center", "data_templates_items.php?action=item_edit&data_template_id=" . $_REQUEST["id"], true);
 	draw_data_template_items_list($template_item_list, "data_templates_items.php", "data_template_id=" . $_REQUEST["id"], false);
 	html_end_box(true);
 	form_save_button_alt("url!data_templates.php");
@@ -579,7 +579,7 @@ function data_template_display_items() {
 function data_templates_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>Data Source Templates</strong>", "100", "3", "center", "data_templates.php?action=edit", true);
+	html_start_box(__("Data Source Templates"), "100", "3", "center", "data_templates.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

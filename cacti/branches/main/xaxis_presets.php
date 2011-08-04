@@ -224,7 +224,7 @@ function xaxis_form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $xaxis_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($xaxis_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='xaxis_presets.php' method='post'>\n";
 
@@ -298,7 +298,7 @@ function item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_item_edit'>\n";
-	html_start_box("<strong>" . __("X-Axis Items") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("X-Axis Items") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(
 		array(
@@ -332,7 +332,7 @@ function xaxis_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_edit'>\n";
-	html_start_box("<strong>". __("X-Axis Presets") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("X-Axis Presets") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -345,7 +345,7 @@ function xaxis_edit() {
 		$sql_query = "SELECT * FROM graph_templates_xaxis_items WHERE xaxis_id=" . $_GET["id"] . " ORDER BY timespan ASC";
 		$xaxis_items = db_fetch_assoc($sql_query);
 
-		html_start_box("<strong>" . __("X-Axis Items") . "</strong>", "100", 0, "center", "xaxis_presets.php?action=item_edit&xaxis_id=" . $_GET["id"], false, "xaxis");
+		html_start_box(__("X-Axis Items"), "100", 0, "center", "xaxis_presets.php?action=item_edit&xaxis_id=" . $_GET["id"], false, "xaxis");
 		$header_items = array(
 			array("name" => __("Item")),
 			array("name" => __("Name")),
@@ -405,7 +405,7 @@ function xaxis_filter() {
 	?>
 	<?php
 
-	html_start_box("<strong>" . __("X-Axis Presets") . "</strong>", "100", "3", "center", "xaxis_presets.php?action=edit", true);
+	html_start_box(__("X-Axis Presets"), "100", "3", "center", "xaxis_presets.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

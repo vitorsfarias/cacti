@@ -149,7 +149,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $site_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($site_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='sites.php' method='post'>\n";
 
@@ -318,7 +318,7 @@ function site_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='site_edit'>\n";
 
-	html_start_box("<strong>" . __("Site") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("Site") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk", "no_form_tag" => true),
@@ -356,7 +356,7 @@ function sites_filter() {
 	}
 	-->
 	</script>
-	<?php html_start_box("<strong>" . __("Site Filters") . "</strong>", "100", "3", "center", "sites.php?action=edit", true);?>
+	<?php html_start_box(__("Site Filters"), "100", "3", "center", "sites.php?action=edit", true);?>
 	<tr class='rowAlternate2'>
 		<td>
 			<form method='get' action='<?php print basename($_SERVER["PHP_SELF"]);?>' name='form_sites'>

@@ -468,7 +468,7 @@ function item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_template_item_edit'>\n";
-	html_start_box("<strong>" . __("Graph Template Items") . "</strong> $header_label", "100", 0, "center", "", true);
+	html_start_box(__("Graph Template Items") . " $header_label", "100", 0, "center", "", true);
 
 	draw_edit_form(
 		array(

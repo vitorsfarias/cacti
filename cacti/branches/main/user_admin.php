@@ -195,7 +195,7 @@ function form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $user_actions[get_request_var_post("drp_action")] . "</strong>", "60", "3", "center", "");
+	html_start_box($user_actions[get_request_var_post("drp_action")], "60", "3", "center", "");
 
 	print "<form action='user_admin.php' method='post'>\n";
 
@@ -521,7 +521,7 @@ function perm_remove() {
  */
 function user_global_edit($user){
 
-	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center");
+	html_start_box(__("General Settings"), "100", 0, "center");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -593,7 +593,7 @@ function graph_perms_edit() {
 
 	#print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_admin'>\n";
 	/* box: graph permissions */
-	html_start_box("<strong>" . __("Graph Permissions (By Graph)") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Graph Permissions (By Graph)"), "100", "3", "center", "");
 
 	$graphs = db_fetch_assoc("SELECT
 		graph_templates_graph.local_graph_id AS id,
@@ -651,7 +651,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: device permissions */
-	html_start_box("<strong>" . __("Graph Permissions (By Device)") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Graph Permissions (By Device)"), "100", "3", "center", "");
 
 	$devices = db_fetch_assoc("SELECT
 		device.id,
@@ -707,7 +707,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: graph template permissions */
-	html_start_box("<strong>" . __("Graph Permissions (By Graph Template)") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Graph Permissions (By Graph Template)"), "100", "3", "center", "");
 
 	$graph_templates = db_fetch_assoc("SELECT
 		graph_templates.id,
@@ -763,7 +763,7 @@ function graph_perms_edit() {
 	<?php
 
 	/* box: tree permissions */
-	html_start_box("<strong>" . __("Tree Permissions") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Tree Permissions"), "100", "3", "center", "");
 
 	$trees = db_fetch_assoc("SELECT
 		graph_tree.id,
@@ -889,7 +889,7 @@ function graph_settings_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	html_start_box("<strong>" . __("Graph Settings") . "</strong>", "100", 0, "center", "");
+	html_start_box(__("Graph Settings"), "100", 0, "center", "");
 
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
 		$header_items = array(
@@ -1044,7 +1044,7 @@ function user_process_page_variables() {
 function user_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __('User Management') . "</strong>", "100", "3", "center", "user_admin.php?action=edit", true);
+	html_start_box(__('User Management'), "100", "3", "center", "user_admin.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
