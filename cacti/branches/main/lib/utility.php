@@ -939,7 +939,7 @@ function poller_cache_format_detail($action, $snmp_version, $snmp_community, $sn
 function poller_cache_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("Poller Cache Items") . "</strong>", "100", "3", "center", "", true);
+	html_start_box(__("Poller Cache Items"), "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1263,7 +1263,7 @@ function utilities_format_authentication_result($type) {
 function userlog_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("User Login History") . "</strong>", "100", "3", "center", "", true);
+	html_start_box(__("User Login History"), "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
