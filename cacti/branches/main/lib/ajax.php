@@ -320,6 +320,7 @@ function ajax_get_graphs_brief() {
 			title_cache AS name
 			FROM graph_templates_graph
 			WHERE local_graph_id > 0
+			AND LOWER(title_cache) LIKE '%$q%'
 			AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			ORDER BY title_cache";
 	}else{
@@ -328,6 +329,7 @@ function ajax_get_graphs_brief() {
 			title_cache AS name
 			FROM graph_templates_graph
 			WHERE local_graph_id > 0
+			AND LOWER(title_cache) LIKE '%$q%'
 			AND local_graph_id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			ORDER BY title_cache";
 	}
