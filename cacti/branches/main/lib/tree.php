@@ -28,6 +28,7 @@
      values are 'header', 'graph', and 'device' */
 function get_tree_item_type($tree_item_id) {
 	$tree_item = db_fetch_row("select title,local_graph_id,device_id from graph_tree_items where id=$tree_item_id");
+	if (empty($tree_item))  return '';
 
 	if ($tree_item["local_graph_id"] > 0) {
 		return "graph";
