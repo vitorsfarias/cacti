@@ -696,7 +696,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 }
 
 function duplicate_device_template($_device_template_id, $device_template_title) {
-	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
 
 	$device_template = db_fetch_row("select * from device_template where id=$_device_template_id");
 	$device_template_graphs = db_fetch_assoc("select * from device_template_graph where device_template_id=$_device_template_id");

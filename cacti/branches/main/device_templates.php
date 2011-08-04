@@ -644,7 +644,7 @@ function device_template_edit() {
 
 function device_template_display_general($device_template, $header_label) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_edit'>\n";
 	html_start_box("<strong>" . __("Device Templates") . "</strong> $header_label", "100", "0", "center", "", true);
