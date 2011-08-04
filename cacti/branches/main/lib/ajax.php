@@ -843,6 +843,9 @@ function ajax_get_timezones() {
 			__("Truk") 			=> 'Pacific/Truk',
 			__("Wake") 			=> 'Pacific/Wake',
 			__("Wallis") 		=> 'Pacific/Wallis'
+		),
+		__("Others") => array(
+			"UTC"				=> 'UTC'
 		)
 	);
 
