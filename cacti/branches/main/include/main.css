@@ -334,7 +334,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', end
 }
 
 .menuSubMain a {
-	color: #0000ff;
+	color: #3C3B85;
 	border: 0px;
 	padding: 2px 0px 2px 0px;
 	text-decoration: none;
@@ -486,7 +486,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', end
 
 /* links */
 a, a:active, a:visited {
-	color: #0000ff;
+	color: #3C3B85;
 	text-decoration: none;
 }
 
@@ -500,13 +500,13 @@ th a {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #0000ff;
+	color: #3C3B85;
 	text-decoration: none;
 	font-weight: bold;
 }
 
 .linkEditMain:hover {
-	color: #0000ff;
+	color: #3C3B85;
 	text-decoration: underline;
 	font-weight: bold;
 }
@@ -983,7 +983,7 @@ span.fail {
 }
 
 span.new {
-	color: #0000ff;
+	color: #3C3B85;
 }
 
 span.dependant {
