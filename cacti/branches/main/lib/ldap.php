@@ -57,7 +57,7 @@ Error codes:
 5	Protocol error, unable to start TLS communications
 6	Unable to create LDAP object
 7	Protocol error
-8	Insuffient access
+8	Insufficient access
 9	Unable to connect to server
 10	Timeout
 11	General bind error
@@ -182,7 +182,7 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_device = "
 					$output["error_text"] = "Authentication Success";
 			        } else if ($ldap_group_response === false) {
 					$output["error_num"] = "8";
-					$output["error_text"] = "Insuffient access";
+					$output["error_text"] = "Insufficient access";
 					cacti_log("LDAP: " . $output["error_text"], false, "AUTH");
 					@ldap_close($ldap_conn);
 					return $output;
@@ -212,7 +212,7 @@ function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_device = "
 			}elseif ($ldap_error == 0x32) {
 				/* insuffient access */
 				$output["error_num"] = "8";
-				$output["error_text"] = "Insuffient access";
+				$output["error_text"] = "Insufficient access";
 			}elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
 				$output["error_num"] = "9";
@@ -277,7 +277,7 @@ Error codes:
 5	Protocol error, unable to start TLS communications
 6	Protocol error
 7	Invalid credential
-8	Insuffient access
+8	Insufficient access
 9	Unable to connect to server
 10	Timeout
 11	General bind error
@@ -475,7 +475,7 @@ function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_device = "",$ldap_po
 				/* insuffient access */
 				$output["dn"] = "";
 				$output["error_num"] = "8";
-				$output["error_text"] = "Insuffient access";
+				$output["error_text"] = "Insufficient access";
 			}elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
 				$output["dn"] = "";
