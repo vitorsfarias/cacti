@@ -32,8 +32,7 @@ include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
 include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
 include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-include_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
-include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
+include_once(CACTI_BASE_PATH . "/lib/graph.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

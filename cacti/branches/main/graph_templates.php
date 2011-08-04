@@ -426,7 +426,7 @@ function template_edit() {
 
 	switch (get_request_var_request("tab")) {
 		case "graphs":
-			include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
+			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 
 			graph();
@@ -489,7 +489,7 @@ function graph_template_item_save() {
 }
 
 function graph_template_display_general($graph_template, $header_label) {
-	include_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
+	include_once(CACTI_BASE_PATH . "/lib/graph.php");
 	include_once(CACTI_BASE_PATH . "/lib/graph_template/graph_template_info.php");
 
 	# fetch all settings for this graph template

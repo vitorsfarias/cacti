@@ -601,8 +601,7 @@ function device_template_edit() {
 			include_once(CACTI_BASE_PATH . "/lib/utility.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
 			include_once(CACTI_BASE_PATH . "/lib/device/device_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/graph/graphs_new_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/graph/graphs_form.php");
+			include_once(CACTI_BASE_PATH . "/lib/graph.php");
 			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
 			include_once(CACTI_BASE_PATH . "/lib/api_tree.php");
 			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");

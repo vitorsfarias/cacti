@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(CACTI_BASE_PATH . "/lib/graph.php");
+
 /** draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
      with a particular graph template
    @param int $graph_template_id 		- the id of the graph template to base the form after
@@ -35,7 +37,6 @@
    @param int $snmp_query_graph_id 		- if this graph template is part of a data query, specify the graph id here. this
      									  will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = "|field|", $header_title = "", $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -103,7 +104,6 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
        								  |id| - the current graph input id
    @param string $header_title 		- the title to use on the header for this form */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = "|field|_|id|", $header_title = "") {
-	require_once(CACTI_BASE_PATH . "/lib/graph/graph_info.php");
 
 	$form_array = array();
 	$draw_any_items = false;
