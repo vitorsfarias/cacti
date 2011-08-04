@@ -153,7 +153,7 @@ function data_template_item_edit() {
 
 
 	# the template header
-	html_start_box("<strong>" . __("Data Template Item") . "</strong> $header_label", "100", 0, "center", "", true);
+	html_start_box(__("Data Template Item") . " $header_label", "100", 0, "center", "", true);
 
 	/* data input fields list */
 	$struct_data_source_item = data_source_item_form_list();

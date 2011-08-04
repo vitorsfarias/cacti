@@ -117,7 +117,7 @@ function export() {
 	<form action="templates_export.php" method="post">
 	<?php
 
-	html_start_box("<strong>" . __("Export Template") . "</strong> [" . $export_types{get_request_var_request("export_type")}["name"] . "]", "100", "3", "center", "");
+	html_start_box(__("Export Template") . " [" . $export_types{get_request_var_request("export_type")}["name"] . "]", "100", "3", "center", "");
 
 	form_alternate_row_color("item"); 
 	

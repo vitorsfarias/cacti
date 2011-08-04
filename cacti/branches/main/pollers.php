@@ -175,7 +175,7 @@ function form_actions() {
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	html_start_box("<strong>" . $poller_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($poller_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='pollers.php' method='post'>\n";
 
@@ -271,7 +271,7 @@ function poller_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='poller_edit'>\n";
 
-	html_start_box("<strong>" . __("Pollers") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("Pollers") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("form_name" => "chk", "no_form_tag" => true),
@@ -286,7 +286,7 @@ function poller_edit() {
 function pollers_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("Pollers") . "</strong>", "100", "3", "center", "pollers.php?action=edit", true);
+	html_start_box(__("Pollers"), "100", "3", "center", "pollers.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

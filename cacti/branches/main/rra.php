@@ -124,7 +124,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $rra_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($rra_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='rra.php' method='post'>\n";
 
@@ -224,7 +224,7 @@ function rra_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='rra_edit'>\n";
-	html_start_box("<strong>" . __("Round Robin Archives") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("Round Robin Archives") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -238,7 +238,7 @@ function rra_edit() {
 
 function rra_filter() {
 	global $item_rows;
-	html_start_box("<strong>" . __("Round Robin Archives") . "</strong>", "100", "3", "center", "rra.php?action=edit", true);
+	html_start_box(__("Round Robin Archives"), "100", "3", "center", "rra.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

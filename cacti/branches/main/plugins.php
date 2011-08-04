@@ -357,8 +357,8 @@ function plugin_filter() {
 	global $item_rows, $config;
 	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
 
-	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . CACTI_VERSION .
-		(isset($plugin_architecture['version']) ? ", Plugin Architecture Version: " . $plugin_architecture['version']:"") .
+	html_start_box(__("Plugin Management (Cacti Version:") . " " . CACTI_VERSION .
+		(isset($plugin_architecture['version']) ? ", " . __("Plugin Architecture Version:") . " " . $plugin_architecture['version']:"") .
 		")", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
@@ -501,17 +501,16 @@ function plugin_show($status = 'all', $refresh = true) {
 	$table->draw_table();
 
 	html_start_box("", "100", "3", "center", "");
-	echo "<tr><td colspan=8><strong>" . __('NOTE:') . 
-		"</strong> " . __("Change 'Load Order' by dragging and dropping.") . 
-		"<br><strong>" . __('NOTE for SYSTEM plugins:') . 
-		"</strong> " . __("SYSTEM plugins can not be reordered. Load order for them is determined by order of installation.") . "</td></tr>";
+	echo "<tr><td colspan=8>" . __('NOTE:') . 
+		__("Change 'Load Order' by dragging and dropping.") .  "<br>" .
+		__('NOTE for SYSTEM plugins:') . 
+		__("SYSTEM plugins can not be reordered. Load order for them is determined by order of installation.") . "</td></tr>";
 	html_end_box();
 
 	?>
 	<script type="text/javascript">
 		$('#plugin_list').tableDnD({
 			onDrop: function(table, row) {
-				//alert($.tableDnD.serialize());
 				$.get("plugins.php?mode=plugin_dnd&id=0&"+$.tableDnD.serialize());
 			}
 		});

@@ -84,7 +84,7 @@ default:
 	print "</div></td></tr></table>\n";
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='settings'>\n";
-	html_start_box("<strong>" . __("Cacti Settings") . " (" . $tabs[$current_tab] . ")</strong>", "100", 0, "center", "");
+	html_start_box(__("Cacti Settings") . " (" . $tabs[$current_tab] . ")", "100", 0, "center", "");
 
 	$form_array = array();
 

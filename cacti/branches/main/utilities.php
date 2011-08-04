@@ -273,7 +273,7 @@ function display_php() {
 
 	$php_info = utilities_php_modules();
 
-	html_start_box("<strong>" . __("PHP Module Information") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("PHP Module Information"), "100", "3", "center", "");
 	print "<tr>\n";
 	print "<td class='textAreaNotes left'>" . $php_info . "</td>\n";
 	print "</tr>\n";
@@ -331,7 +331,7 @@ function display_general() {
 	}
 
 	/* Display tech information */
-	html_start_box("<strong>" . __("General Technical Support Information") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("General Technical Support Information"), "100", "3", "center", "");
 	print "<tr><td>";
 	html_header(array(array("name" => __("General Information"))), 2, '', '', 'left wp100');
 	print "<tr class='rowAlternate1'>\n";
@@ -529,7 +529,7 @@ function display_database() {
 		array("name" => __("Auto Increment"), "align" => "left"),
 		array("name" => __("Collation"), "align" => "left"));
 
-	html_start_box("<strong>" . __("MySQL Table Information") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("MySQL Table Information"), "100", "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($table_status) > 0) {
@@ -579,7 +579,7 @@ function display_database_processes() {
 		array("name" => __("Info"))
 	);
 
-	html_start_box("<strong>" . __("MySQL Process Information") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("MySQL Process Information"), "100", "3", "center", "");
 	print "<tr><td>";
 	html_header($display_array);
 	if (sizeof($db_processes) > 0) {
@@ -646,7 +646,7 @@ function display_languages() {
 	}
 
 
-	html_start_box("<strong>" . __("Language Information") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Language Information"), "100", "3", "center", "");
 	html_header(array(array("name" => __("General Information"))), 2,'','','left','');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Current Language") . "</td>\n";
@@ -762,7 +762,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("Log File Filters") . "</strong>", "100", "3", "center", "", true);
+	html_start_box(__("Log File Filters"), "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -930,7 +930,7 @@ function utilities_clear_logfile() {
 		$logfile = "./log/cacti.log";
 	}
 
-	html_start_box("<strong>" . __("Clear Cacti Log File") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Clear Cacti Log File"), "100", "3", "center", "");
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = format_date();
@@ -1022,7 +1022,7 @@ function utilities_view_snmp_cache() {
 	</script>
 	<?php
 
-	html_start_box("<strong>" . __("SNMP Cache Items") . "</strong>", "100", "3", "center", "", true);
+	html_start_box(__("SNMP Cache Items"), "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
@@ -1212,7 +1212,7 @@ function utilities_view_snmp_cache() {
 }
 
 function utilities() {
-	html_start_box("<strong>" . __("Cacti System Utilities") . "</strong>", "100", "3", "center", "");
+	html_start_box(__("Cacti System Utilities"), "100", "3", "center", "");
 
 	print "<tr><td>";
 	html_header(array(array("name" => __("Technical Support"))), 2, '', '', 'left wp100'); ?>

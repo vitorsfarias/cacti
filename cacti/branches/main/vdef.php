@@ -212,7 +212,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $vdef_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($vdef_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='vdef.php' method='post'>\n";
 
@@ -297,7 +297,7 @@ function item_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='form_vdef'>\n";
-	html_start_box("<strong>" . __("VDEF Items") . "</strong> $header_label", "100", 0, "center", "", true);
+	html_start_box(__("VDEF Items") . " $header_label", "100", 0, "center", "", true);
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
@@ -437,7 +437,7 @@ function vdef_edit() {
 	}
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='vdef_edit'>\n";
-	html_start_box("<strong>". __("VDEF's") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("VDEF's") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -453,7 +453,7 @@ function vdef_edit() {
 		draw_vdef_preview(get_request_var("id"));
 		echo "</table><br>";
 
-		html_start_box("<strong>" . __("VDEF Items") . "</strong>", "100", 0, "center", "vdef.php?action=item_edit&vdef_id=" . $vdef["id"], false, "vdef");
+		html_start_box(__("VDEF Items"), "100", 0, "center", "vdef.php?action=item_edit&vdef_id=" . $vdef["id"], false, "vdef");
 		$header_items = array(
 			array("name" => __("Item")),
 			array("name" => __("Item Value"))
@@ -505,7 +505,7 @@ function vdef_edit() {
 function vdef_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("VDEF's") . "</strong>", "100", "3", "center", "vdef.php?action=edit", true);
+	html_start_box(__("VDEF's"), "100", "3", "center", "vdef.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

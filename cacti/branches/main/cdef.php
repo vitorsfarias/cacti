@@ -215,7 +215,7 @@ function form_actions() {
 
 	include_once("./include/top_header.php");
 
-	html_start_box("<strong>" . $cdef_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($cdef_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	print "<form action='cdef.php' method='post'>\n";
 
@@ -332,7 +332,7 @@ function item_edit() {
 	echo "</table><br>";
 
 	print "<form action='cdef.php' name='form_cdef' method='post'>\n";
-	html_start_box("<strong>" . __("CDEF Items") . "</strong> [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100", "3", "center", "");
+	html_start_box(__("CDEF Items") . " [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100", "3", "center", "");
 
 	if (isset($_GET["type_select"])) {
 		$current_type = $_GET["type_select"];
@@ -437,7 +437,7 @@ function cdef_edit() {
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='cdef_edit'>\n";
 
-	html_start_box("<strong>". __("CDEF's") . "</strong> $header_label", "100", 0, "center", "");
+	html_start_box(__("CDEF's") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -451,7 +451,7 @@ function cdef_edit() {
 		draw_cdef_preview(get_request_var("id"));
 		echo "</table><br>";
 
-		html_start_box("<strong>" . __("CDEF Items") . "</strong>", "100", 0, "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"], false, "cdef");
+		html_start_box(__("CDEF Items"), "100", 0, "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"], false, "cdef");
 
 		$header_items = array(
 			array("name" => __("Item")),
@@ -509,7 +509,7 @@ function cdef_edit() {
 function cdef_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("CDEF's") . "</strong>", "100", "3", "center", "cdef.php?action=edit", true);
+	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php?action=edit", true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>
