@@ -355,27 +355,29 @@ $user_auth_realm_filenames = array(
 	"layout.php" => 7
 );
 
+/* sequence of hash_type_codes defines the sequence of import ations
+ * on template import */
 $hash_type_codes = array(
+	"round_robin_archive" => "15",
 	"cdef" => "05",
 	"cdef_item" => "14",
+	"vdef" => "18",
+	"vdef_item" => "19",
+	"gprint_preset" => "06",
+	"xaxis" => "16",
+	"xaxis_item" => "17",
 	"data_input_method" => "03",
 	"data_input_field" => "07",
+	"data_template" => "01",
+	"data_template_item" => "08",
+	"graph_template" => "00",
+	"graph_template_item" => "10",
+	"graph_template_input" => "09",
 	"data_query" => "04",
 	"data_query_graph" => "11",
 	"data_query_sv_graph" => "12",
 	"data_query_sv_data_source" => "13",
-	"data_template" => "01",
-	"data_template_item" => "08",
 	"device_template" => "02",
-	"gprint_preset" => "06",
-	"graph_template" => "00",
-	"graph_template_item" => "10",
-	"graph_template_input" => "09",
-	"round_robin_archive" => "15",
-	"vdef" => "18",
-	"vdef_item" => "19",
-	"xaxis" => "16",
-	"xaxis_item" => "17",
 	);
 
 $hash_version_codes = array(
