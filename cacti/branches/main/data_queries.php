@@ -136,6 +136,9 @@ function data_query_form_save() {
 
 			if ($snmp_query_id) {
 				raise_message(1);
+
+				/* save the updated image */
+				data_query_update_cache($snmp_query_id, $save["image"]);
 			}else{
 				raise_message(2);
 			}
@@ -806,13 +809,17 @@ function data_query_validate_cache() {
 
 	if (sizeof($queries)) {
 	foreach($queries as $query) {
-		data_query_update_cache($query["id"], $query["hash"] , data_query_get_image($query["image"]));
+		data_query_update_cache($query["id"], data_query_get_image($query["image"]));
 	}
 	}
 }
 
-function data_query_update_cache($id, $hash, $image) {
-	$image_info = pathinfo($image);
+function data_query_update_cache($id, $image) {
+	/* accomodate both URL and BASE paths */
+	if (strpos($image, CACTI_URL_PATH) == 0) {
+		$image = str_replace(CACTI_URL_PATH, CACTI_BASE_PATH, $image);
+	}
+
 	copy($image, CACTI_CACHE_PATH . "/images/" . basename($image));
 	db_execute("UPDATE snmp_query SET image='" . basename($image) . "' WHERE id=" . $id);
 }

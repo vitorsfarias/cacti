@@ -208,6 +208,9 @@ function form_save() {
 
 			if ($graph_template_id) {
 				raise_message(1);
+
+				/* update the image from cache */
+				graph_template_update_cache($graph_template_id, $save["image"]);
 			}else{
 				raise_message(2);
 			}
@@ -755,13 +758,17 @@ function graph_template_validate_cache() {
 
 	if (sizeof($templates)) {
 	foreach($templates as $t) {
-		graph_template_update_cache($t["id"], $t["hash"] , graph_template_get_image($t["image"]));
+		graph_template_update_cache($t["id"], graph_template_get_image($t["image"]));
 	}
 	}
 }
 
-function graph_template_update_cache($id, $hash, $image) {
-	$image_info = pathinfo($image);
+function graph_template_update_cache($id, $image) {
+	/* accomodate both URL and BASE paths */
+	if (strpos($image, CACTI_URL_PATH) == 0) {
+		$image = str_replace(CACTI_URL_PATH, CACTI_BASE_PATH, $image);
+	}
+
 	copy($image, CACTI_CACHE_PATH . "/images/" . basename($image));
 	db_execute("UPDATE graph_templates SET image='" . basename($image) . "' WHERE id=" . $id);
 }
