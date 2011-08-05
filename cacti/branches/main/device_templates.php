@@ -97,7 +97,7 @@ function device_template_form_save() {
 		$save["hash"]					= get_hash_device_template($_POST["id"]);
 		$save["name"]					= form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["description"]			= form_input_validate($_POST["description"], "description", "", true, 3);
-		$save["image"]					= form_input_validate($_POST["image"], "image", "", true, 3);
+		$save["image"]					= form_input_validate(basename($_POST["image"]), "image", "", true, 3);
 		$save["override_defaults"]		= form_input_validate((isset($_POST["override_defaults"]) ? "on":""), "override_defaults", "", true, 3);
 		$save["override_permitted"]		= form_input_validate((isset($_POST["override_permitted"]) ? "on":""), "override_permitted", "", true, 3);
 		$save["snmp_version"]			= form_input_validate($_POST["snmp_version"], "snmp_version", "", true, 3);
@@ -126,7 +126,7 @@ function device_template_form_save() {
 				raise_message(1);
 
 				/* update the image from the cache */
-				device_template_update_cache($device_template_id, $save["image"]);
+				device_template_update_cache($device_template_id, $_POST["image"]);
 			}else{
 				raise_message(2);
 			}

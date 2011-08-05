@@ -95,7 +95,7 @@ function form_save() {
 		$save1["hash"] = get_hash_graph_template($_POST["graph_template_id"]);
 		$save1["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save1["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
-		$save1["image"] = form_input_validate($_POST["image"], "image", "", true, 3);
+		$save1["image"] = form_input_validate(basename($_POST["image"]), "image", "", true, 3);
 
 		$save2["id"] = $_POST["graph_template_graph_id"];
 		$save2["local_graph_template_graph_id"] = 0;
@@ -210,7 +210,7 @@ function form_save() {
 				raise_message(1);
 
 				/* update the image from cache */
-				graph_template_update_cache($graph_template_id, $save["image"]);
+				graph_template_update_cache($graph_template_id, $_POST["image"]);
 			}else{
 				raise_message(2);
 			}

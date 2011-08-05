@@ -138,7 +138,7 @@ function data_query_form_save() {
 				raise_message(1);
 
 				/* save the updated image */
-				data_query_update_cache($snmp_query_id, $save["image"]);
+				data_query_update_cache($snmp_query_id, $_POST["image"]);
 			}else{
 				raise_message(2);
 			}
