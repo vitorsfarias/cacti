@@ -575,9 +575,9 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
  * @param string $form_default_value
  * @param int $form_width
  */
-function form_dropdown_image($form_name, $form_path, $form_previous_value, $form_default_value, $form_width = "120") {
+function form_dropdown_image($form_name, $form_path, $form_previous_value, $form_default_value = "", $form_width = "120") {
 	if ($form_previous_value == "") {
-		$form_previous_value = $form_path . "/" . $form_default_value;
+		$form_previous_value = $form_default_value;
 	}
 	if (isset($_SESSION["sess_field_values"])) {
 		if (!empty($_SESSION["sess_field_values"][$form_name])) {
@@ -589,21 +589,23 @@ function form_dropdown_image($form_name, $form_path, $form_previous_value, $form
 
 	$form_none_entry = ucfirst(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $form_default_value)))));
 
-	$path       = CACTI_BASE_PATH . "/". $form_path;
-	$imgpath    = CACTI_URL_PATH . $form_path;
+	$path       = CACTI_CACHE_PATH . "/". $form_path;
+	$imgpath    = CACTI_CACHE_URL_PATH . $form_path;
 
 	if (!empty($form_none_entry)) {
-		print "<option style='width:" . $form_width . "px;' title='" . $form_previous_value . "' value='" . $form_previous_value . "'" . (empty($form_previous_value) ? " selected" : "") . ">&nbsp;$form_none_entry&nbsp;</option>\n";
+		print "<option style='width:" . $form_width . "px;' title='" . $imgpath . "/" . $form_previous_value . "' value='" . $imgpath . "/" . $form_previous_value . "'" . (empty($form_previous_value) ? " selected" : "") . ">&nbsp;$form_none_entry&nbsp;</option>\n";
 	}
 
 	$dh = opendir($path);
 	/* validate contents of the plugin directory */
 	if (is_resource($dh)) {
 		while (($file = readdir($dh)) !== false) {
-			if ($file != "." && $file != ".." && !is_dir("$path/$file")) {
+			if ($file != "." && $file != ".." && !is_dir("$path/$file") && preg_match("/(\.png|\.jpg|\.gif)/", $file)) {
 				if (sizeof(getimagesize($path . "/" . $file))) {
 					$title = ucfirst(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $file)))));
-					print "<option style='width:" . $form_width . "px;' title='" . $imgpath . "/" . $file . "' value='" . $imgpath . "/" . $file . "'" . (($form_previous_value == ($imgpath . "/" . $file)) ? " selected" : "") . ">&nbsp;" . $title . "&nbsp;</option>\n";
+					if ($title != $form_none_entry) {
+						print "<option style='width:" . $form_width . "px;' title='" . $imgpath . "/" . $file . "' value='" . $imgpath . "/" . $file . "'" . (($form_previous_value == ($imgpath . "/" . $file)) ? " selected" : "") . ">&nbsp;" . $title . "&nbsp;</option>\n";
+					}
 				}
 			}
 		}

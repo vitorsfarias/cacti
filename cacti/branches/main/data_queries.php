@@ -127,7 +127,7 @@ function data_query_form_save() {
 		$save["hash"] = get_hash_data_query($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["description"] = form_input_validate($_POST["description"], "description", "", true, 3);
-		$save["image"] = form_input_validate($_POST["image"], "image", "", true, 3);
+		$save["image"] = form_input_validate(basename($_POST["image"]), "image", "", true, 3);
 		$save["xml_path"] = form_input_validate($_POST["xml_path"], "xml_path", "", false, 3);
 		$save["data_input_id"] = $_POST["data_input_id"];
 
@@ -801,6 +801,38 @@ function data_query_remove($id) {
 	db_execute("delete from device_snmp_cache where snmp_query_id=" . $id);
 }
 
+function data_query_validate_cache() {
+	$queries = db_fetch_assoc("SELECT * FROM snmp_query WHERE image=''");
+
+	if (sizeof($queries)) {
+	foreach($queries as $query) {
+		data_query_update_cache($query["id"], $query["hash"] , data_query_get_image($query["image"]));
+	}
+	}
+}
+
+function data_query_update_cache($id, $hash, $image) {
+	$image_info = pathinfo($image);
+	copy($image, CACTI_CACHE_PATH . "/images/" . basename($image));
+	db_execute("UPDATE snmp_query SET image='" . basename($image) . "' WHERE id=" . $id);
+}
+
+function data_query_get_image($image) {
+	if ($image == '') {
+		return CACTI_BASE_PATH . "/images/tree_icons/dataquery.png";
+	}elseif (file_exists(CACTI_BASE_PATH . "/images/tree_icons/$image")){
+		return CACTI_BASE_PATH . "/images/tree_icons/$image";
+	}elseif (file_exists(CACTI_CACHE_PATH . "/images/$image")) {
+		return CACTI_BASE_PATH . "/images/$image";
+	}else{
+		return CACTI_BASE_PATH . "/images/dataquery.png";
+	}
+}
+	
+function data_query_display_image($image) {
+	return "<img src='" . CACTI_CACHE_URL_PATH . "/images/" . basename($image) . "' alt='' class='img_filter'>";
+}
+	
 function data_query_edit() {
 	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
@@ -986,6 +1018,8 @@ function get_data_query_records(&$total_rows, &$rowspp) {
 function data_query($refresh = true) {
 	global $dq_actions;
 
+	data_query_validate_cache();
+
 	$table = New html_table;
 
 	$table->page_variables = array(
@@ -1015,6 +1049,8 @@ function data_query($refresh = true) {
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,
+			"function" => "data_query_display_image",
+			"params" => array("image"),
 			"align" => "center"
 		),
 		"data_input_method" => array(
@@ -1043,4 +1079,5 @@ function data_query($refresh = true) {
 	/* display the table */
 	$table->draw_table();
 }
+
 ?>

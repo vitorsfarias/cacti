@@ -43,7 +43,7 @@ $fields_data_query_edit = array(
 		),
 	"image" => array(
 		"method" => "drop_image",
-		"path" => "images/tree_icons",
+		"path" => "/images/",
 		"friendly_name" => __("Image"),
 		"description" => __("A useful icon to use to associate with this Device Template."),
 		"default" => "dataquery.png",

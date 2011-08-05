@@ -125,6 +125,7 @@ if (CACTI_SERVER_OS == "win32") {
 define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
 define('CACTI_URL_PATH', $config['url_path']);
 define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');
+define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');
 
 /* display ALL errors */
 error_reporting(E_ALL);
