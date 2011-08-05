@@ -328,8 +328,8 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 	$first3 = true;
 	foreach($fieldArray as $k => $v) {
 		if (!$first) {
-			$sql .= ',';
-			$sql2 .= ',';
+			$sql .= ', ';
+			$sql2 .= ', ';
 		}
 		$sql .= "`$k`";
 		if (is_numeric($v)) {
@@ -340,7 +340,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 		$first = false;
 		if (in_array($k, $keyCol)) continue; // skip UPDATE if is key
 		if (!$first3) {
-			$sql3 .= ',';
+			$sql3 .= ', ';
 		}
 		$sql3 .= "`$k`=VALUES(`$k`)";
 		$first3 = false;
