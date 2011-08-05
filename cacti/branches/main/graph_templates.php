@@ -750,8 +750,42 @@ function get_graph_template_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
+function graph_template_validate_cache() {
+	$templates = db_fetch_assoc("SELECT * FROM graph_templates WHERE image=''");
+
+	if (sizeof($templates)) {
+	foreach($templates as $t) {
+		graph_template_update_cache($t["id"], $t["hash"] , graph_template_get_image($t["image"]));
+	}
+	}
+}
+
+function graph_template_update_cache($id, $hash, $image) {
+	$image_info = pathinfo($image);
+	copy($image, CACTI_CACHE_PATH . "/images/" . basename($image));
+	db_execute("UPDATE graph_templates SET image='" . basename($image) . "' WHERE id=" . $id);
+}
+
+function graph_template_get_image($image) {
+	if ($image == '') {
+		return CACTI_BASE_PATH . "/images/tree_icons/graphs.gif";
+	}elseif (file_exists(CACTI_BASE_PATH . "/images/tree_icons/$image")){
+		return CACTI_BASE_PATH . "/images/tree_icons/$image";
+	}elseif (file_exists(CACTI_CACHE_PATH . "/images/$image")) {
+		return CACTI_BASE_PATH . "/images/$image";
+	}else{
+		return CACTI_BASE_PATH . "/images/graphs.gif";
+	}
+}
+
+function graph_template_display_image($image) {
+	return "<img src='" . CACTI_CACHE_URL_PATH . "/images/" . basename($image) . "' alt='' class='img_filter'>";
+}
+
 function template($refresh = true) {
 	global $graph_template_actions;
+
+	graph_template_validate_cache();
 
 	$table = New html_table;
 
@@ -783,6 +817,8 @@ function template($refresh = true) {
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,
+			"function" => "graph_template_display_image",
+			"params" => array("image"),
 			"align" => "center")
 	);
 

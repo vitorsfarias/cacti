@@ -57,7 +57,7 @@ $fields_device_template_edit = array(
 		),
 	"image" => array(
 		"method" => "drop_image",
-		"path" => "images/tree_icons",
+		"path" => "/images/",
 		"friendly_name" => __("Image"),
 		"description" => __("A useful icon to use to associate with this Device Template."),
 		"width" => "120",

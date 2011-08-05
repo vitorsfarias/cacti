@@ -1243,8 +1243,42 @@ function get_device_template_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
+function device_template_validate_cache() {
+	$templates = db_fetch_assoc("SELECT * FROM device_template WHERE image=''");
+
+	if (sizeof($templates)) {
+	foreach($templates as $t) {
+		device_template_update_cache($t["id"], $t["hash"] , device_template_get_image($t["image"]));
+	}
+	}
+}
+
+function device_template_update_cache($id, $hash, $image) {
+	$image_info = pathinfo($image);
+	copy($image, CACTI_CACHE_PATH . "/images/" . basename($image));
+	db_execute("UPDATE device_template SET image='" . basename($image) . "' WHERE id=" . $id);
+}
+
+function device_template_get_image($image) {
+	if ($image == '') {
+		return CACTI_BASE_PATH . "/images/tree_icons/device.gif";
+	}elseif (file_exists(CACTI_BASE_PATH . "/images/tree_icons/$image")){
+		return CACTI_BASE_PATH . "/images/tree_icons/$image";
+	}elseif (file_exists(CACTI_CACHE_PATH . "/images/$image")) {
+		return CACTI_BASE_PATH . "/images/$image";
+	}else{
+		return CACTI_BASE_PATH . "/images/device.gif";
+	}
+}
+
+function device_template_display_image($image) {
+	return "<img src='" . CACTI_CACHE_URL_PATH . "/images/" . basename($image) . "' alt='' class='img_filter'>";
+}
+
 function device_template($refresh = true) {
 	global $device_actions;
+
+	device_template_validate_cache();
 
 	$table = New html_table;
 
@@ -1282,6 +1316,8 @@ function device_template($refresh = true) {
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,
+			"function" => "device_template_display_image",
+			"params" => array("image"),
 			"align" => "center"
 		)
 	);

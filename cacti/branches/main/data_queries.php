@@ -828,11 +828,11 @@ function data_query_get_image($image) {
 		return CACTI_BASE_PATH . "/images/dataquery.png";
 	}
 }
-	
+
 function data_query_display_image($image) {
 	return "<img src='" . CACTI_CACHE_URL_PATH . "/images/" . basename($image) . "' alt='' class='img_filter'>";
 }
-	
+
 function data_query_edit() {
 	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
