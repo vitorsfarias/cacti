@@ -290,6 +290,11 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
 
 		break;
+	case 'file':
+		form_file($field_name,
+			((isset($field_array["size"])) ? $field_array["size"] : "40"));
+
+		break;
 	default:
 		print "<em>" . htmlspecialchars($field_array["value"],ENT_QUOTES) . "</em>";
 
@@ -299,8 +304,25 @@ function draw_edit_control($field_name, &$field_array) {
 	}
 }
 
+/* form_file - draws a standard html file input element
+   @param string $form_name - the name of this form element
+   @param int $form_size - the size (width) of the textbox */
+function form_file($form_name, $form_size = 30) {
+
+	print "<input type='file'";
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			print "class='txtErrorTextBox'";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	print " id='$form_name' name='$form_name' size='$form_size'>";
+}
+
 /** form_filepath_box - draws a standard html textbox and provides status of a files existence
-   @param string$form_name - the name of this form element
+   @param string $form_name - the name of this form element
    @param string $form_previous_value - the current value of this form element
    @param string $form_default_value - the value of this form element to use if there is
      no current value available

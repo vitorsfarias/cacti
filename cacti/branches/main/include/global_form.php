@@ -51,3 +51,4 @@ $export_types = array(
 		"dropdown_sql" => "select id,name from snmp_query order by name"
 		)
 	);
+	
