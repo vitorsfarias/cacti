@@ -65,7 +65,7 @@ if (isset($config['memory_limit']) && $config['memory_limit'] != '') {
 	ini_set('memory_limit', '512M');
 }
 
-/* environment variables */
+/* environment variable to keep Cygwin from issuing warnings when running rrdtool */
 if(strstr(PHP_OS, "WIN")) {
 	putenv("cygwin=nodosfilewarning");
 }
@@ -124,6 +124,7 @@ if (CACTI_SERVER_OS == "win32") {
 
 define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
 define('CACTI_URL_PATH', $config['url_path']);
+define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');
 
 /* display ALL errors */
 error_reporting(E_ALL);
