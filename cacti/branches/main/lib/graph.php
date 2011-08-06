@@ -1166,6 +1166,7 @@ function graph_edit() {
 			$("input").attr("disabled","disabled");
 			$("select").attr("disabled","disabled");
 			$("#cancel").removeAttr("disabled");
+			$("#save").removeAttr("disabled");
 			$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
 		});
 
@@ -1173,6 +1174,8 @@ function graph_edit() {
 			if (disabled) {
 				$("input").removeAttr("disabled");
 				$("select").removeAttr("disabled");
+				$("#cancel").removeAttr("disabled");
+				$("#save").removeAttr("disabled");
 				$(".lock").html("<?php print __("Template is unlocked");?>");
 				disabled = false;
 				rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
@@ -1180,6 +1183,7 @@ function graph_edit() {
 				$("input").attr("disabled","disabled");
 				$("select").attr("disabled","disabled");
 				$("#cancel").removeAttr("disabled");
+				$("#save").removeAttr("disabled");
 				$(".lock").html("<?php print __("Template is locked");?>");
 				disabled = true;
 			}
