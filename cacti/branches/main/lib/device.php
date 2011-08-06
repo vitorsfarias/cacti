@@ -679,12 +679,12 @@ function device_edit($tab = false) {
 	}else{
 		if (!empty($_REQUEST["id"])) {
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-			$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
+			$device_text    = $device["description"] . "(" . $device["hostname"] . ")";
 			$header_label = __("[edit: ") . $device["description"] . "]";
 		}elseif (!empty($_GET["device_id"])) {
 			$_REQUEST["id"]   = $_REQUEST["device_id"];
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-			$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
+			$device_text    = $device["description"] . "(" . $device["hostname"] . ")";
 			$header_label = __("[edit: ") . $device["description"] . "]";
 		}else{
 			$header_label = __("[new]");
