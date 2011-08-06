@@ -75,7 +75,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 	$command_line = str_replace("\\\n", " ", $command_line);
 
 	/* output information to the log file if appropriate */
-	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
+	if (read_config_option("log_graph") == CHECKED) {
 		cacti_log("CACTI2RRD: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt);
 	}
 
