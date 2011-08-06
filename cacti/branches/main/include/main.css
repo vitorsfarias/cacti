@@ -1387,3 +1387,12 @@ div.calendar { position: relative; }
 @media print {
 	.noprint { display:none }
 }
+pre {
+ white-space: pre-wrap;
+ white-space: -moz-pre-wrap;
+ white-space: -o-pre-wrap;
+ background: #E7E9F2;
+ display: block;
+ padding: 0.5em 1em;
+ border: 3px solid #606C88;
+}
