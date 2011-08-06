@@ -630,103 +630,69 @@ function device_remove_gt() {
     Host Functions
    --------------------- */
 
-function device_edit() {
+function device_edit($tab = false) {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("device_id"));
 	/* ==================================================== */
 
-	$device_tabs = array(
-		"general" => __("General"),
-		"newgraphs" => __("New Graphs"),
-		"graphs" => __("Graphs"),
-		"datasources" => __("Data Sources")
-	);
+	if ($tab) {
+		$device_tabs = array(
+			"general" => __("General"),
+			"graphs_new.php" => __("New Graphs"),
+			"graphs.php" => __("Graphs"),
+			"data_sources.php" => __("Data Sources")
+		);
 
-	if (!empty($_REQUEST["id"])) {
-		$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-		$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
-		$header_label = __("[edit: ") . $device["description"] . "]";
-	}elseif (!empty($_GET["device_id"])) {
-		$_REQUEST["id"]   = $_REQUEST["device_id"];
-		$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-		$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
-		$header_label = __("[edit: ") . $device["description"] . "]";
+		/* draw the categories tabs on the top of the page */
+		print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
+		print "<td><div id='tabs'>";
+
+		if (sizeof($device_tabs) > 0) {
+			print "<ul>";
+			foreach (array_keys($device_tabs) as $tab_short_name) {
+				if ($tab_short_name == "general") {
+					print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				}else{
+					print "<li><a href='" . htmlspecialchars($tab_short_name . "?action=ajax_view" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				}
+
+				if (!isset($_REQUEST["id"])) break;
+			}
+			print "</ul>";
+		}
+
+		print "</div></td></tr></table>";
+		?>
+		<script type='text/javascript'>
+		$("#tabs").tabs({
+			ajaxOptions: {
+				error: function(xhr, status, index, anchor) {
+					$( anchor.hash ).html(
+						"Couldn't load this tab. We'll try to fix this as soon as possible. " +
+						"If this wouldn't be a demo." );
+				}
+			}
+		});
+		</script>
+		<?php
 	}else{
-		$header_label = __("[new]");
-		$device_text    = __("New Device");
-		$device         = "";
-	}
+		if (!empty($_REQUEST["id"])) {
+			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
+			$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
+			$header_label = __("[edit: ") . $device["description"] . "]";
+		}elseif (!empty($_GET["device_id"])) {
+			$_REQUEST["id"]   = $_REQUEST["device_id"];
+			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
+			$device_text    = "<strong>" . $device["description"] . "(" . $device["hostname"] . ")</strong>";
+			$header_label = __("[edit: ") . $device["description"] . "]";
+		}else{
+			$header_label = __("[new]");
+			$device_text    = __("New Device");
+			$device         = "";
+		}
 
-	/* set the default settings category */
-	if (!isset($_REQUEST["tab"])) {
-		/* there is no selected tab; select the first one */
-		$current_tab = array_keys($device_tabs);
-		$current_tab = $current_tab[0];
-	}else{
-		$current_tab = $_REQUEST["tab"];
-	}
-
-	/* draw the categories tabs on the top of the page */
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-	print "<td><div class='tabs'>";
-
-	if (sizeof($device_tabs) > 0) {
-	foreach (array_keys($device_tabs) as $tab_short_name) {
-		print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("devices.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></div>";
-
-		if (!isset($_REQUEST["id"])) break;
-	}
-	}
-	print "</div></td></tr></table>";
-
-	if (!isset($_REQUEST["tab"])) {
-		$_REQUEST["tab"] = "general";
-	}
-
-	switch (get_request_var_request("tab")) {
-		case "newgraphs":
-			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/sort.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-			include_once(CACTI_BASE_PATH . "/lib/template.php");
-
-			graphs_new();
-
-			break;
-		case "datasources":
-			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-			include_once(CACTI_BASE_PATH . "/lib/template.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-
-			data_source();
-
-			break;
-		case "graphs":
-			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/tree.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-			include_once(CACTI_BASE_PATH . "/lib/template.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-
-			graph();
-
-			break;
-		default:
-			device_display_general($device, $device_text);
-
-			break;
+		device_display_general($device, $device_text);
 	}
 }
 

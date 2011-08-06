@@ -87,6 +87,9 @@ switch (get_request_var_request("action")) {
 	case 'ajax_graph_item_dnd':
 		graph_item_dnd();
 		break;
+	case 'ajax_view':
+		graph();
+		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
