@@ -499,13 +499,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhs_$rand_id");
 
-			print "\t\t\t<th style='display:block;$align' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>" . $display_text . "</th>\n";
+			print "\t\t\t<th style='display:block;$align' id='hhs_$rand_id'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark nodrag nodrop lastColumn'" : "class='textSubHeaderDark nodrag nodrop'") . ">" . $display_text . "</th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;$align' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark nodrag nodrop'>";
+			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;$align' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark nodrag nodrop lastColumn'" : "class='textSubHeaderDark nodrag nodrop'") . ">";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
@@ -587,7 +587,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 	}
 
-	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 nodrag nodrop'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
+	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 nodrag nodrop lastColumn'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
 	print "\t\t</tr></thead><tbody>\n";
 }
 
@@ -625,9 +625,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hh_$rand_id");
 
-			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . " class='textSubHeaderDark $thclass'>" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
 		}
 		$rand_id++;
 		$i++;
@@ -677,7 +677,7 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 		$rand_id++;
 	}
 
-	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
+	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 lastColumn'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
 	print "\t\t</tr></thead><tbody>\n";
 }
 

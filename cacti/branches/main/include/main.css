@@ -666,7 +666,7 @@ th a {
 }
 
 .rowSubHeader th {
-	padding: 5px 3px 2px 3px;
+	padding: 5px 4px 2px 4px;
 	text-align: left;
 	font-size: 11px;
 }
@@ -794,6 +794,10 @@ table.resizable th {
 	background: -ms-linear-gradient(top, #7d7e7d 0%,#0e0e0e 100%); /* IE10+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
 	background: linear-gradient(top, #7d7e7d 0%,#0e0e0e 100%); /* W3C */
+}
+
+.lastColumn {
+	border-right: 0px;
 }
 
 .textSubHeaderDark a, .textSubHeaderDark a:visited, .textSubHeaderDark a:hover {
