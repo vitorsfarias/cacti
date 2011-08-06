@@ -511,7 +511,7 @@ function cdef_filter() {
 
 	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_cdef" action="cdef.php">
 			<table cellpadding="0" cellspacing="3">

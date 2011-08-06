@@ -1055,7 +1055,7 @@ function user_filter() {
 
 	html_start_box(__('User Management'), "100", "3", "center", "user_admin.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_user_admin" action="user_admin.php">
 			<table cellpadding="0" cellspacing="0">

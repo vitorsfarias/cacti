@@ -357,7 +357,7 @@ function sites_filter() {
 	-->
 	</script>
 	<?php html_start_box(__("Site Filters"), "100", "3", "center", "sites.php?action=edit", true);?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form method='get' action='<?php print basename($_SERVER["PHP_SELF"]);?>' name='form_sites'>
 			<table cellpadding="0" cellspacing="3">

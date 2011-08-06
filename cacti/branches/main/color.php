@@ -553,7 +553,7 @@ function color() {
 
 	html_start_box(__("Colors"), "100", "3", "center", "color.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_color" method="get" action="color.php">
 			<table cellpadding="0" cellspacing="3">

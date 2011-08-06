@@ -222,6 +222,7 @@ img {
 /* php info section */
 .center h2 {
 	text-align: left;
+	font-size:1.0em;
 	margin: 0px;
 	padding: 4px;
 	border-width: 0px;
@@ -246,6 +247,7 @@ img {
 .center th {
 	vertical-align: middle;
 	text-align: left;
+	font-size:1.0em;
 	padding: 4px;
 	margin: 0px;
 	border-width: thin;
@@ -712,6 +714,10 @@ th a {
 	padding: 3px 3px 0px 3px;
 }
 
+.rowAlternate3 {
+	background-color: #e7e9f2;
+}
+
 .rowSelected {
 	background-color: #f5f5d2;
 }
@@ -828,19 +834,25 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
 .textAreaNotes {
 	padding:10px 5px;
 }
+
 .textAreaNotes.e {
 	width: 18%;
 	font-weight: bold;
 }
+
 .textAreaNotes.v {
 }
+
 .center td.e {
 	width:10%;
 	font-weight: bold;
+	font-size:1.0em;
 }
 
 .center td.v {
+	white-space:pre-wrap;
 }
+
 .textEditTitle {
 	font-weight: bold;
 }

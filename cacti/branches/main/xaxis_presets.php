@@ -407,7 +407,7 @@ function xaxis_filter() {
 
 	html_start_box(__("X-Axis Presets"), "100", "3", "center", "xaxis_presets.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 		<form action="xaxis_presets.php" name="form_xaxis" method="post">
 		<table cellpadding="0" cellspacing="3">

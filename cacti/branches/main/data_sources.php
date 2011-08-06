@@ -931,7 +931,7 @@ function data_source_filter() {
 
 	html_start_box(__("Data Sources") . " " . __("[device:") . " " . (empty($device["hostname"]) ? __("No Host") : $device["hostname"]) . "]", "100", "3", "center", "data_sources.php?action=edit&device_id=" . html_get_page_variable("device_id"), true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form action="data_sources.php" name="form_data_sources">
 			<table cellpadding="0" cellspacing="3">

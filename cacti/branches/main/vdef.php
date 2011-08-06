@@ -506,7 +506,7 @@ function vdef_filter() {
 
 	html_start_box(__("VDEF's"), "100", "3", "center", "vdef.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_vdef" action="vdef.php">
 			<table cellpadding="0" cellspacing="3">

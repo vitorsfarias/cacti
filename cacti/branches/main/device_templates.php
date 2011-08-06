@@ -1168,7 +1168,7 @@ function device_templates_filter() {
 
 	html_start_box(__("Device Templates"), "100", "3", "center", "device_templates.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_device_template" action="device_templates.php">
 			<table cellpadding="0" cellspacing="3">
