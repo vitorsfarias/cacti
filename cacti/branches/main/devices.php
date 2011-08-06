@@ -82,10 +82,13 @@ switch (get_request_var_request("action")) {
 		device_ajax_actions();
 
 		break;
+	case 'ajax_edit':
+		device_edit(false);
+		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-		device_edit();
+		device_edit(true);
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
@@ -99,7 +102,7 @@ switch (get_request_var_request("action")) {
 		}else{
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-			device_edit();
+			device_edit(true);
 
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		}

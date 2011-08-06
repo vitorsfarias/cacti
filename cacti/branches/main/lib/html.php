@@ -73,7 +73,7 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 		-->
 		</script>
 	<?php } ?>
-		<table cellpadding=0 cellspacing=0 align="<?php print $align;?>" class="startBoxHeader <?php print "wp$width"?> startBox0" >
+		<table cellpadding=0 cellspacing=0 align="<?php print $align;?>" class="ui-corner-top startBoxHeader <?php print "wp$width"?> startBox0" >
 			<?php if ($title != "") {?><tr class="rowHeader">
 				<td colspan="100">
 					<table cellpadding=0 cellspacing=1 class="startBox0">
