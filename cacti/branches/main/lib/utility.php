@@ -941,7 +941,7 @@ function poller_cache_filter() {
 
 	html_start_box(__("Poller Cache Items"), "100", "3", "center", "", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_pollercache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
@@ -1265,7 +1265,7 @@ function userlog_filter() {
 
 	html_start_box(__("User Login History"), "100", "3", "center", "", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_userlog" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">

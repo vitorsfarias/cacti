@@ -1369,7 +1369,7 @@ function graphs_filter() {
 
 	html_start_box(__("Graph Management"), "100", "3", "center", "graphs.php?action=edit&device_id=" . html_get_page_variable("device_id"), true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_graph_id" action="graphs.php">
 			<table cellpadding="0" cellspacing="3">
@@ -2015,7 +2015,7 @@ function graphs_new() {
 	html_start_box($device["description"] . "(" . $device["hostname"] . ") " . db_fetch_cell("select name from device_template where id=" . $device["device_template_id"]), "100", "3", "center", "");
 
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_graphs_new" method="post" action="<?php print $file2;?>">
 			<table cellpadding="0" align="left">

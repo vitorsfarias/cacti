@@ -708,7 +708,7 @@ function device_display_general($device, $device_text) {
 		html_start_box($device_text, "100", "3", "center", (isset($_GET["id"]) ? "menu::" . __("Device Options") . ":device_options:html_start_box:" . $dd_menu_options : ""), true);
 
 		?>
-			<tr class="rowAlternate2">
+			<tr class="rowAlternate3">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
 					($device["availability_method"] == AVAIL_SNMP_AND_PING) ||
 					($device["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
