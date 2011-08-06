@@ -320,7 +320,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 		$keyCol = array($keyCol);
 	}
 
-	$sql = "INSERT INTO `$table` (";
+	$sql = "REPLACE INTO `$table` (";
 	$sql2 = '';
 	$sql3 = '';
 
@@ -347,7 +347,8 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 
 
 	}
-	$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
+	//$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
+	$sql .= ") VALUES ($sql2)";
 	@db_execute($sql);
 	return db_fetch_insert_id();
 }
