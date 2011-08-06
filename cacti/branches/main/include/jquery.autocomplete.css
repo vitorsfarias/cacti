@@ -47,12 +47,16 @@
 	color: white;
 }
 
+.ac_arrow {
+}
+
+
 .ac_field{
 	padding: 1px;
 	border:thin solid #ABADB3;
-	background-image:url('../images/move_down.gif');
+	background-image:url('../images/dd_arrow.gif');
 	background-color:#FFFFFF;
-	background-position:right center;
+	background-position:right top;
 	background-repeat:no-repeat;
 }
 
