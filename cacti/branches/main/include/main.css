@@ -171,7 +171,7 @@ img {
 	position: fixed;
 	overflow: auto;
 	margin-right: 0px;
-	padding: 8px;
+	padding: 0px 2px 0px 2px;
 	width: auto;
 	/* shadow */
 	background: #a2a2a2; /* Old browsers */
