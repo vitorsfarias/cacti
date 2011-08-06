@@ -182,22 +182,10 @@ function settings() {
 	?>
 	<script type="text/javascript">
 	<!--
-
-	function selectTab(tab) {
-		$('.tab_settings').hide();
-		$('.tab').removeClass("tabSelected");
-		$('.tab').addClass("tabDefault");
-		$('#settings_'+tab).show();
-		$('#tab_'+tab).removeClass("tabDefault");
-		$('#tab_'+tab).addClass("tabSelected");
-	}
-
 	$().ready(function() {
 		// the name of the default selected tab has to match an array key of $settings_graphs
-		selectTab('general');
-		$('#tabs').tabs();
+		$('#tabs').tabs({ cookie: { expires: 30 } });
 	});
-
 	//-->
 	</script>
 	<?php
