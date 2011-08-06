@@ -48,12 +48,16 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
+		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		user_edit(true);
+		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'user_edit':
 	case 'user_realms_edit':
 	case 'graph_settings_edit':
 	case 'graph_perms_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-		user_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		user_edit(false);
 
 		break;
 	case 'ajax_get_devices_detailed':
@@ -949,72 +953,77 @@ function graph_settings_edit() {
 /**
  * global control function for user edit
  */
-function user_edit() {
+function user_edit($tabs = false) {
 
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
+	if (!$tabs) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
 
-	if (!empty($_GET["id"])) {
-		$user = db_fetch_row("SELECT * FROM user_auth WHERE id = " . get_request_var("id"));
-		$header_label = __("[edit: ") . $user["username"] . "]";
-	}else{
-		$user = array();
-		$header_label = __("[new]");
-	}
+		if (!empty($_GET["id"])) {
+			$user = db_fetch_row("SELECT * FROM user_auth WHERE id = " . get_request_var("id"));
+			$header_label = __("[edit: ") . $user["username"] . "]";
+		}else{
+			$user = array();
+			$header_label = __("[new]");
+		}
+	
+		plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
 
-	plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
+		print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
 
-	$user_tabs = array(
-		"user_edit" => array("name" => __("General Settings"), "title" => __("General Settings are common settings for all users.")),
-		"user_realms_edit" => array("name" => __("Realm Permissions"), "title" => __("Realm permissions control which sections of Cacti this user will have access to.")),
-		"graph_perms_edit" => array("name" => __("Graph Permissions"), "title" => __("Graph policies will be evaluated in the order shown until a match is found.")),
-		"graph_settings_edit" => array("name" => __("Graph Settings"), "title" => __("Graph settings control how graphs are displayed for this user.")));
-
-	/* draw the categories tabs on the top of the page */
-	/* set the default settings category */
-	load_current_session_value("tab", "sess_user_edit_tab", "user_edit");
-	$current_tab = $_SESSION["sess_user_edit_tab"];
-
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-	print "<td><div class='tabs'>";
-
-	if (sizeof($user_tabs)) {
-	foreach (array_keys($user_tabs) as $tab_short_name) {
-		print "<div title='" . $user_tabs[$tab_short_name]["title"] . "' class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("user_admin.php?action=edit&tab=" . $tab_short_name . "&id=" . get_request_var("id")) . "'>" . $user_tabs[$tab_short_name]["name"] . "</a></div>";
-
-		if (empty($_GET["id"])) break;
-	}
-	}
-
-	print "</div></td></tr></table>\n";
-
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
-
-	switch ($current_tab) {
-		case "user_edit":
-			user_global_edit($user);
-			break;
-
-		case "graph_settings_edit":
-			graph_settings_edit();
-			break;
-
-		case "user_realms_edit":
-			user_realms_edit();
-			break;
-
-		case "graph_perms_edit":
-			graph_perms_edit();
-			break;
-
-		default:
-			if (!plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
+		switch ($_REQUEST["tab"]) {
+			case "user_edit":
+				user_global_edit($user);
+				break;
+			case "graph_settings_edit":
+				graph_settings_edit();
+				break;
+			case "user_realms_edit":
 				user_realms_edit();
-			}
+				break;
+			case "graph_perms_edit":
+				graph_perms_edit();
+				break;
+			default:
+				if (!plugin_hook_function('user_admin_run_action', get_request_var_request("action"))) {
+					user_realms_edit();
+				}
 
+		}
+
+		form_save_button_alt("return!user_admin.php");
+	}else{
+		$user_tabs = array(
+			"user_edit" => array("name" => __("General Settings"), "title" => __("General Settings are common settings for all users.")),
+			"user_realms_edit" => array("name" => __("Realm Permissions"), "title" => __("Realm permissions control which sections of Cacti this user will have access to.")),
+			"graph_perms_edit" => array("name" => __("Graph Permissions"), "title" => __("Graph policies will be evaluated in the order shown until a match is found.")),
+			"graph_settings_edit" => array("name" => __("Graph Settings"), "title" => __("Graph settings control how graphs are displayed for this user.")));
+
+		print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
+		print "<td><div id='tabs_user'>";
+
+		$i = 1;
+		if (sizeof($user_tabs)) {
+			print "<ul>";
+			foreach (array_keys($user_tabs) as $tab_short_name) {
+				print "<li><a id='tabs-$i' href='" . htmlspecialchars("user_admin.php?action=$tab_short_name&tab=" . $tab_short_name . "&id=" . get_request_var("id")) . "'>" . $user_tabs[$tab_short_name]["name"] . "</a></li>";
+				$i++;
+	
+				if (empty($_GET["id"])) break;
+			}
+			print "</ul>";
+		}
+
+		print "</div></td></tr></table>\n";
+
+		print "<script type='text/javascript'>
+			$().ready(function() {
+				$('#tabs_user').tabs({ cookie: { expires: 30 } });
+			});
+		</script>\n";
 	}
-	form_save_button_alt("return!user_admin.php");
+
 }
 
 /**
