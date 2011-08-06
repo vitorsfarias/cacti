@@ -5,6 +5,7 @@
 	background-color: #ffffff;
 	overflow: hidden;
 	font-family: Arial, Verdana, Helvetica, sans-serif;
+	font-size: 11px;
 }
 
 form {
@@ -93,7 +94,7 @@ img {
 	position: fixed;
 	overflow: auto;
 	left: 0px;
-	top: 4.0em;
+	top: 6.0em;
 	width: 100%;
 	height: 98%;
 	/* shadow */
@@ -190,8 +191,8 @@ img {
 	left: 0;
 	overflow: auto;
 	margin-right: 8px;
-	padding: 8px 18px 8px 5px;
-	width: 98.5%;
+//	padding: 8px 18px 8px 5px;
+	width: 100%;
 	/* shadow */
 	background: #a2a2a2; /* Old browsers */
 	background: -moz-linear-gradient(top, #a2a2a2 0%, #b3b3b3 14%, #e0e0e0 43%, #f2f2f2 71%, #ffffff 86%, #ffffff 100%); /* FF3.6+ */
@@ -711,12 +712,12 @@ th a {
 	padding: 3px 3px 0px 3px;
 }
 
-.rowAlternate2 {
+.rowAlternate0 {
 	background-color: #e7e9f2;
 	font-size: 11px;
 }
 
-.rowAlternate2 td {
+.rowAlternate0 td {
 	padding: 3px 3px 0px 3px;
 }
 

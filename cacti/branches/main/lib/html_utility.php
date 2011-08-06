@@ -93,7 +93,9 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
 
 	if (strlen($row_class)) $row_class = " " . $row_class;
 
-	$class = "rowAlternate1" . $row_class;
+	$class = "rowAlternate$class_int " . $row_class;
+
+	$class_int = ($class_int + 1 ) % 2;
 
 	if (is_numeric($row_id)) {
 		print "<tr id='row_$row_id' class='$class'>\n";
