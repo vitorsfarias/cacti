@@ -2492,7 +2492,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 
 			case "vertical_label":
 				if (!empty($value)) {
-					$option .= "--vertical-label=\"" . cacti_escapeshellarg($value) . "\"" . RRD_NL;
+					$option .= "--vertical-label=" . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
@@ -2516,7 +2516,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 			case "right_axis_label":
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
-						$option .= "--right-axis-label \"" . cacti_escapeshellarg($value) . "\"" . RRD_NL;
+						$option .= "--right-axis-label " . cacti_escapeshellarg($value) . RRD_NL;
 					}
 				}
 				break;
@@ -2525,7 +2525,7 @@ function rrdgraph_opts($graph, $graph_data_array, $version) {
 				if ($version != RRD_VERSION_1_0 && $version != RRD_VERSION_1_2) {
 					if (!empty($value)) {
 						$format = db_fetch_cell('SELECT gprint_text from graph_templates_gprint WHERE id=' . $value);
-						$option .= "--right-axis-format \"" . cacti_escapeshellarg($format) . "\"" . RRD_NL;
+						$option .= "--right-axis-format " . cacti_escapeshellarg($format) . RRD_NL;
 					}
 				}
 				break;
