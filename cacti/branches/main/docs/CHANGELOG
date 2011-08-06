@@ -61,6 +61,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001633: PA: new hook in graph.php 
 -bug#0001746: SNMP Hex-String matching 
 -bug#0001772: Script Server is not honouring reindex method "Index Count Changed" and "Verify All Fields"
+-bug#0001948: Autocomplete requires you to start typing to see list
 -bug#0001965: database upgrade script fails when changing user specific font settings 
 -bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag
 -bug#0001993: "Undefined index: height in /var/www/html/cacti/lib/html.php on line 147" in PHP error log
