@@ -55,6 +55,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "console");
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.tablednd.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.cookie.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/colorpicker.js'></script>
 
 <?php
