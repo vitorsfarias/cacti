@@ -243,9 +243,24 @@ function data_source_template_form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($template_id);
 				/* ==================================================== */
-
-				if (sizeof(db_fetch_assoc("SELECT * FROM data_template_data WHERE data_template_id=$template_id LIMIT 1"))) {
-					$bad_ids[] = $template_id;
+				
+				/* show all data sources that are in use by the current template to be deleted
+				 * remember: "real" data sources are those with a lical_data_id > 0 */
+				$in_use = db_fetch_assoc("SELECT * FROM data_template_data WHERE data_template_id=$template_id  AND local_data_id > 0");
+				if (sizeof($in_use)) {
+					/* create an array of bad id's; we will need that later for printing a himan readable error messsage 
+					 * index is the current template that shall be deleted
+					 * remember that we may delete multiple templates in one run*/
+					$bad_ids[$template_id] = array();
+					foreach ($in_use as $data_template_data) {
+						/* for the given data template, save 
+						 * $bad_ids = array(
+						 *   data_template_id = array(			-- all failing data templates, per id
+						 *     data_template_data_id = array(   -- per data template: all failing data sources, per id
+						 *       name)));                       -- per data source: name of the data source
+						 */
+						$bad_ids[$template_id][$data_template_data["id"]] = $data_template_data["name_cache"];
+					}
 				}else{
 					$template_ids[] = $template_id;
 				}
@@ -253,10 +268,17 @@ function data_source_template_form_actions() {
 			}
 
 			if (isset($bad_ids)) {
-				$message = "";
-				foreach($bad_ids as $template_id) {
-					$message .= (strlen($message) ? "<br>":"") . "<i>Data Source Template " . $template_id . " is in use and can not be removed</i>\n";
+				$message = __("Following Data Templates were not removed because they are still in use by some Data Source." . "<br><ul>");
+				foreach($bad_ids as $template_id => $data_template_data) {
+					$message .= "<li>" . __("Data Source Template " . $template_id . " is in use and can not be removed") . "<ul>";
+					foreach ($data_template_data as $data_source_id => $name_cache) {
+						$message .=  "<li>" . __("Data Template Id: ") . " " . $template_id . " ";
+						$message .=  __("Data Source Id: ") . " " . $data_source_id . " ";
+						$message .=  __("Data Source Name: '") . " " . $name_cache . "'</li>";
+					}
+					$message .= "</li>";
 				}
+				$message .= "</li>";
 
 				$_SESSION['sess_message_dt_ref_int'] = array('message' => "<font size=-2>$message</font>", 'type' => 'info');
 
