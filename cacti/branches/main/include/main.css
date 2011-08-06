@@ -24,6 +24,7 @@ tr {
 
 th {
 	overflow: hidden;
+	font-weight:normal;
 }
 
 td {
@@ -1312,6 +1313,7 @@ div.calendar { position: relative; }
 @media print {
 	.noprint { display:none }
 }
+
 pre {
  white-space: pre-wrap;
  white-space: -moz-pre-wrap;
