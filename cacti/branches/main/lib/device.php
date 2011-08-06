@@ -398,7 +398,7 @@ function device_form_actions() {
 	$device_actions[ACTION_NONE] = __("None");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_actions'>\n";
-	html_start_box("<strong>" . $device_actions{get_request_var_post("drp_action")} . "</strong>", "60", "3", "center", "");
+	html_start_box($device_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
 
 	if (isset($device_array) && sizeof($device_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -810,7 +810,7 @@ function device_display_general($device, $device_text) {
 	html_end_box(FALSE);
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
-	html_start_box("<strong>" . __("General Settings") . "</strong>", "100", 0, "center", "", true);
+	html_start_box(__("General Settings"), "100", 0, "center", "", true);
 
 	/* preserve the device template id if passed in via a GET variable */
 	$fields_device_edit = device_form_list();
@@ -1264,7 +1264,7 @@ function device_display_general($device, $device_text) {
 	<?php
 
 	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box("<strong>" . __("Data Query Debug Information") . "</strong>", "100", "3", "center", "", true);
+		html_start_box(__("Data Query Debug Information"), "100", "3", "center", "", true);
 
 		print "<tr><td><span class=\"log\">" . debug_log_return("data_query") . "</span></td></tr>";
 
@@ -1272,7 +1272,7 @@ function device_display_general($device, $device_text) {
 	}
 
 	if (isset($device["id"])) {
-		html_start_box("<strong>". __("Associated Graph Templates") . "</strong>", "100", 0, "center", "", true);
+		html_start_box(__("Associated Graph Templates"), "100", 0, "center", "", true);
 		print "<tr><td>";
 		html_header(array(array("name" => __("Graph Template Name")), array("name" => __("Status"))), 2);
 
@@ -1315,7 +1315,7 @@ function device_display_general($device, $device_text) {
 
 			?>
 				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+					<?php print $i;?>) <?php print $item["name"];?>
 				</td>
 				<td>
 					<?php print (($is_being_graphed == true) ? "<span class=\"success\">" . __("Is Being Graphed") . "</span> (<a href='" . htmlspecialchars("graphs.php?action=edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and device_id=" . get_request_var("id") . " limit 0,1")) . "'>" . __("Edit") . "</a>)" : "<span class=\"unknown\">" . __("Not Being Graphed") . "</span>");?>
@@ -1349,7 +1349,7 @@ function device_display_general($device, $device_text) {
 		print "</table></td></tr>";		/* end of html_header */
 		html_end_box(FALSE);
 
-		html_start_box("<strong>" . __("Associated Data Queries") . "</strong>", "100", 0, "center", "", true);
+		html_start_box(__("Associated Data Queries"), "100", 0, "center", "", true);
 		print "<tr><td>";
 		html_header(array(array("name" => __("Data Query Name")), array("name" => __("Debugging")), array("name" => __("Re-Index Method")), array("name" =>__("Status"))), 2);
 
@@ -1395,7 +1395,7 @@ function device_display_general($device, $device_text) {
 
 				?>
 					<td style="padding: 4px;">
-						<strong><?php print $i;?>)</strong> <?php print $item["name"];?>
+						<?php print $i;?>) <?php print $item["name"];?>
 					</td>
 					<td>
 						(<a href="devices.php?action=query_verbose&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>"><?php print __("Verbose Query");?></a>)
@@ -1447,7 +1447,7 @@ function device_display_general($device, $device_text) {
 function device_filter() {
 	global $item_rows;
 
-	html_start_box("<strong>" . __("Devices") . "</strong>", "100", "3", "center", "devices.php?action=edit&template_id=" . html_get_page_variable("template_id") . "&status=" . html_get_page_variable("status"), true);
+	html_start_box(__("Devices"), "100", "3", "center", "devices.php?action=edit&template_id=" . html_get_page_variable("template_id") . "&status=" . html_get_page_variable("status"), true);
 	?>
 	<tr class='rowAlternate2'>
 		<td>

@@ -732,8 +732,7 @@ function row_plugin_class($plugin_type) {
 }
 
 function display_plugin_directory($plugin_name, $website) {
-
-	return "<a href='" . htmlspecialchars($website) . "' target='_blank'><strong>" . ucfirst($plugin_name) . "</strong></a>";
+	return "<a href='" . htmlspecialchars($website) . "' target='_blank'>" . ucfirst($plugin_name) . "</a>";
 }
 
 function display_plugin_type($plugin_name, $status) {

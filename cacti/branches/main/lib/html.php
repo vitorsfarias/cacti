@@ -130,7 +130,7 @@ function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width,
 					<table cellpadding=0 cellspacing=1 class="startBox0" >
 						<tr>
 							<td class='textHeaderDark'>
-								<strong><?php print __("Data Query");?></strong> [<?php print $query_name; ?>]
+								<?php print __("Data Query");?> [<?php print $query_name; ?>]
 							</td>
 							<td class='right nw'>
 								<a href='graphs_new.php?action=query_reload&amp;id=<?php print $query_id;?>&amp;device_id=<?php print $device_id;?>'><img class='buttonSmall' src='images/reload_icon_small.gif' alt='<?php print __("Reload");?>' title='<?php print __("Reload Associated Query");?>' align='middle'></a>
@@ -221,7 +221,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 				}
 
 				if ($print) {
-					print "\t\t\t<tr class='rowSubHeaderAlt'><td colspan='3' class='textHeaderLight'><strong>" . __("Data Query:") . "</strong> " . $graph["data_query_name"] . "</td></tr>";
+					print "\t\t\t<tr class='rowSubHeaderAlt'><td colspan='3' class='textHeaderLight'>" . __("Data Query:") . " " . $graph["data_query_name"] . "</td></tr>";
 				}
 				print "<tr class='rowSubHeader'>
 					<td colspan='3' class='textHeaderDark'>
@@ -260,7 +260,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 									<?php
 									#print "<object class='graphimage' id='graph_" . $graph["local_graph_id"] . "' type='svg+xml' data='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . $rra["id"]) . "' border='0'>Can't display SVG</object>";
 								}
-								print (read_graph_config_option("show_graph_title") == CHECKED ? "<p style='font-size: 10;' align='center'><strong>" . $graph["title_cache"] . "</strong></p>" : "");
+								print (read_graph_config_option("show_graph_title") == CHECKED ? "<p style='font-size: 10;' align='center'>" . $graph["title_cache"] . "</p>" : "");
 								?>
 							</td>
 							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
@@ -328,7 +328,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 
 					print "\t\t<tr class='rowSubHeader'>
 						<td colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderDark'>
-							<strong>" . __("Graph Template:") . "</strong> " . $graph["graph_template_name"] . "
+							" . __("Graph Template:") . " " . $graph["graph_template_name"] . "
 						</td>
 					</tr>";
 					$i = 0;
@@ -357,7 +357,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 					}
 
 					print "\t\t\t<tr class='rowSubHeaderAlt'>
-							<td colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderLight'><strong>" . __("Data Query:") . "</strong> " . $graph["data_query_name"] . "</td>
+							<td colspan='" . read_graph_config_option("num_columns") . "' class='textHeaderLight'>" . __("Data Query:") . " " . $graph["data_query_name"] . "</td>
 						</tr>";
 					$i = 0;
 				}
@@ -406,7 +406,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 								<?php
 								#print "<object class='graphimage' id='graph_" . $graph["local_graph_id"] . "' type='svg+xml' data='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . $rra["id"]) . "' border='0'>Can't display SVG</object>";
 							}
-							print (read_graph_config_option("show_graph_title") == CHECKED ? "<p style='font-size: 10;' align='center'><strong>" . $graph["title_cache"] . "</strong></p>" : "");
+							print (read_graph_config_option("show_graph_title") == CHECKED ? "<p style='font-size: 10;' align='center'>" . $graph["title_cache"] . "</p>" : "");
 							?>
 						</td>
 						<td valign='top' style='align: left; padding: 3px;'>
@@ -1244,7 +1244,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 		print "<td>";
 		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") ."'>"; }
-		print "<strong>Item # " . ($i+1) . "</strong>";
+		print "Item # " . ($i+1);
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
 
@@ -1280,7 +1280,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		}
 
 		if ($item["hard_return"] == CHECKED) {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+			$hard_return = "<font color=\"#FF0000\">&lt;HR&gt;</font>";
 		}
 
 		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
@@ -1590,7 +1590,7 @@ function draw_actions_dropdown($actions_array) {
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = "left") { ?>
 		<td height="1" style="text-align:<?php print $align;?>;" colspan="<?php print $column_span;?>">
-			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
+			<font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font>
 		</td>
 <?php
 }

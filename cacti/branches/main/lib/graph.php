@@ -1890,13 +1890,13 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 
-			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]"));
+			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "Graph [Template: " . $graph_template["graph_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "Graph Items [Template: " . $graph_template_name . "]"));
 
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "Data Source [Template: " . $data_template["data_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -1905,7 +1905,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 					and local_data_id=0");
 
 				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, $snmp_query_id));
+				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "Custom Data [Template: " . $data_template["data_template_name"] . "]", false, $snmp_query_id));
 			}
 			}
 
@@ -2377,7 +2377,7 @@ function graphs_new() {
 						if ($field_array["direction"] == "input") {
 							foreach($field_names as $row) {
 								if ($row["field_name"] == $field_name) {
-									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' class='textSubHeaderDark'><strong>" . $field_array["name"] . "</strong></th>\n";
+									$html_dq_header .= "<th style='padding:0px 5px 0px 5px;' class='textSubHeaderDark'>" . $field_array["name"] . "</th>\n";
 									break;
 								}
 							}

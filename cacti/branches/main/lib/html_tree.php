@@ -70,13 +70,13 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 				$icon = get_icon($leaf["graph_tree_id"], $leaf["order_key"]);
 				if ($visible) {
 					form_alternate_row_color();
-					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt=''></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;<strong>" . $leaf["title"] . "</strong></a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
+					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=edit&id=" . $_GET["id"] . "&leaf_id=" . $leaf["id"] . "&subaction=change") . "'><img src='" . $icon . "' alt=''></a><a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>&nbsp;" . $leaf["title"] . "</a> (<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&parent_id=" . $leaf["id"]) . "'>Add</a>)</td>\n";
 					print "<td>Heading</td>";
 				}
 			}elseif ($leaf["device_id"] > 0) {
 				if ($visible) {
 					form_alternate_row_color();
-					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'><strong>Host:</strong> " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
+					print "<td>$transparent_indent<a href='" . htmlspecialchars("tree.php?action=item_edit&tree_id=" . $_GET["id"] . "&id=" . $leaf["id"]) . "'>Host: " . $leaf["hostname"] . "</a>&nbsp;<a href='" . htmlspecialchars("devices.php?action=edit&id=" . $leaf["device_id"]) . "'>(Edit device)</a></td>\n";
 					print "<td>Host</td>";
 				}
 			}
@@ -346,7 +346,7 @@ function create_dhtml_tree() {
 						$tier = tree_tier($leaf["order_key"]);
 
 						if ($leaf["device_id"] > 0) {
-							$dhtml_tree[$i] = "\t\t\tou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"<strong>Host:<\/strong> " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
+							$dhtml_tree[$i] = "\t\t\tou" . ($tier) . " = insFld(ou" . abs(($tier-1)) . ", gFld(\"Host: " . addslashes($leaf["hostname"]) . "\", \"graph_view.php?action=tree&tree_id=" . $tree["id"] . "&leaf_id=" . $leaf["id"] . "\"))\n";
 							$i++;
 							$dhtml_tree[$i] = "\t\t\tou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
@@ -889,9 +889,9 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 		$data_query_index = $device_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . "<strong>Tree:</strong> $tree_name"; $title_delimeter = "-> "; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . "<strong.Leaf:</strong> $leaf_name"; $title_delimeter = "-> "; }
-	if (!empty($device_name)) { $title .= $title_delimeter . "<strong>Host:</strong> $device_name"; $title_delimeter = "-> "; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . "Tree: $tree_name"; $title_delimeter = "-> "; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . "Leaf: $leaf_name"; $title_delimeter = "-> "; }
+	if (!empty($device_name)) { $title .= $title_delimeter . "Host: $device_name"; $title_delimeter = "-> "; }
 	if (!empty($device_group_data_name)) { $title .= $title_delimeter . " $device_group_data_name"; $title_delimeter = "-> "; }
 
 	/* ================= input validation ================= */
@@ -1142,13 +1142,13 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='left' style='width:100px;' class='textHeaderDark'>";
-		if ($_REQUEST["page"] > 1) { $nav .= "<strong><a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]-1) . ")'>&lt;&lt;&nbsp;" . __("Previous") . "</a></strong>"; }
+		if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]-1) . ")'>&lt;&lt;&nbsp;" . __("Previous") . "</a>"; }
 		$nav .= "</td>\n
 							<td align='center' class='textHeaderDark'>
 								" . __("Showing Graphs") . " " . ((get_request_var_request("graphs")*(get_request_var_request("page")-1))+1) . " " . __("to") . " " . ((($total_rows < read_graph_config_option("treeview_graphs_per_page")) || ($total_rows < (get_request_var_request("graphs")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("graphs")*get_request_var_request("page"))) . " " . __("of") . " $total_rows [$url_page_select]
 							</td>\n
 							<td align='right' style='width:100px;' class='textHeaderDark'>";
-		if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "<strong><a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]+1) . ")'>". __("Next") . " &gt;&gt;</a></strong>"; }
+		if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]+1) . ")'>". __("Next") . " &gt;&gt;</a>"; }
 		$nav .= "</td>\n
 						</tr>
 					</table>
@@ -1256,8 +1256,8 @@ function draw_tree_header_row($tree_id, $tree_item_id, $current_tier, $current_t
 
 	/* draw the actual cell containing the header */
 	if (!empty($current_title)) {
-		print "<td style='white-space:nowrap;'><strong>
-			" . (($show_url == true) ? "<a href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id") . "'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</strong></td>\n";
+		print "<td style='white-space:nowrap;'>
+			" . (($show_url == true) ? "<a href='" . htmlspecialchars("graph_view.php?action=tree&tree_id=$tree_id&start_branch=$tree_item_id") . "'>" : "") . $current_title . (($show_url == true) ? "</a>" : "") . "&nbsp;</td>\n";
 	}
 
 	/* end the nested table for the heading */
