@@ -19,6 +19,7 @@ input {
 
 tr {
 	overflow: hidden;
+	line-height: 1.5em;
 }
 
 th {
@@ -27,7 +28,6 @@ th {
 
 td {
 	overflow: hidden;
-	//line-height: 1.5em;
 }
 
 img {
@@ -128,7 +128,6 @@ img {
 #content {
 	position: fixed;
 	overflow: auto;
-	//overflow-x: hidden;
 	margin-right: 0px;
 	padding: 8px 8px 8px 10px;
 	width: auto;
