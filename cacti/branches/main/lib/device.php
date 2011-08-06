@@ -647,7 +647,7 @@ function device_edit($tab = false) {
 
 		/* draw the categories tabs on the top of the page */
 		print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-		print "<td><div id='tabs'>";
+		print "<td><div id='tabs_device'>";
 
 		if (sizeof($device_tabs) > 0) {
 			print "<ul>";
@@ -666,14 +666,8 @@ function device_edit($tab = false) {
 		print "</div></td></tr></table>";
 		?>
 		<script type='text/javascript'>
-		$("#tabs").tabs({
-			ajaxOptions: {
-				error: function(xhr, status, index, anchor) {
-					$( anchor.hash ).html(
-						"Couldn't load this tab. We'll try to fix this as soon as possible. " +
-						"If this wouldn't be a demo." );
-				}
-			}
+		$().ready(function() {
+			$('#tabs_device').tabs({ cookie: { expires: 30 } });
 		});
 		</script>
 		<?php

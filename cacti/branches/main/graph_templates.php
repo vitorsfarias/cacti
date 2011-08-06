@@ -392,7 +392,7 @@ function template_edit($tabs = false) {
 		);
 
 		/* draw the categories tabs on the top of the page */
-		print "<div id='tabs'>\n";
+		print "<div id='tabs_gtemplate'>\n";
 		print "<ul>\n";
 
 		$i = 0;
@@ -409,7 +409,7 @@ function template_edit($tabs = false) {
 
 		print "<script type='text/javascript'>
 			$().ready(function() {
-				$('#tabs').tabs({ cookie: { expires: 30 } });
+				$('#tabs_gtemplate').tabs({ cookie: { expires: 30 } });
 			});
 		</script>\n";
 	}else{
