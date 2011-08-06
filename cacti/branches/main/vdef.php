@@ -87,7 +87,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function draw_vdef_preview($vdef_id) {
-	print "<tr><td><pre>vdef=" . get_vdef($vdef_id, true) . "</pre></td></tr>";
+	print "<pre>vdef=" . get_vdef($vdef_id, true) . "</pre>";
 }
 
 /* --------------------------
@@ -285,10 +285,9 @@ function item_edit() {
 		$current_type = $vdef["type"];
 		$values[$current_type] = $vdef["value"];
 	}
-
-	echo "<table id='preview' class='left startBox1 wp100'>";
+	print "<div>";
 	draw_vdef_preview(get_request_var("vdef_id"));
-	echo "</table><br>";
+	print "</div>";
 
 	if (!empty($_GET["vdef_id"])) {
 		$header_label = "[edit: " . db_fetch_cell("select name from vdef where id=" . get_request_var("vdef_id")) . "]";
