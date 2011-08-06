@@ -791,11 +791,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
 	border-right: 0px;
 }
 
-.textSubHeaderDark a, .textSubHeaderDark a:visited, .textSubHeaderDark a:hover {
-	color: #ffffff;
-	text-decoration: none;
+.textSubHeaderDark a, .textSubHeaderDark a:visited, .textSubHeaderDark a:active, .textSubHeaderDark a:hover {
+	color: #ffffff !important;
+	text-decoration: none !important;
 	white-space: nowrap;
 }
+
 .textSubHeaderDark th {
 	width: auto;
 	white-space: nowrap;
