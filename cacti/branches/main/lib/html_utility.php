@@ -88,7 +88,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @param $row_class 	- additional class attributes, e.g. "nodrag nodrop"
    @returns 		- the background color used for this particular row */
 function form_alternate_row_color($row_id = "", $hover = false, $row_class = "") {
-	static $class_int  = 1;
+	static $class_int  = 0;
 	static $alt_row_id = 0;
 
 	if (strlen($row_class)) $row_class = " " . $row_class;
