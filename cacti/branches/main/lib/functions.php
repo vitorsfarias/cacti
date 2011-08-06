@@ -559,7 +559,7 @@ function display_output_messages() {
 		<script type='text/javascript'>
 		<!--
 		$().ready(function() {
-			t = setTimeout("hideMessage()", 2000);
+			t = setTimeout("hideMessage()", <?php print(read_config_option("error_display_timeout"));?>);
 		});
 
 		function hideMessage() {
