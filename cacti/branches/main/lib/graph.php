@@ -1268,8 +1268,8 @@ function graph_edit() {
 	if (!empty($graphs["graph_template_id"])) {
 		html_start_box(__("Supplemental Graph Template Data"), "100", "0", "center", "");
 
-		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "<strong>" . __("Graph Fields") . "</strong>", true, 0);
-		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "<strong>" . __("Graph Item Fields") ."</strong>");
+		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", __("Graph Fields"), true, 0);
+		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", __("Graph Item Fields"));
 
 		html_end_box();
 	}
