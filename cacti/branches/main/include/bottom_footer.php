@@ -24,8 +24,9 @@
 ?>
 	</div>
 </div>
-<div id='footer'><br>
-	<p id='debug'></p>
+<div id='footer'>
+</div>
+<div id='cdialog'>
 </div>
 </body>
 </html>
