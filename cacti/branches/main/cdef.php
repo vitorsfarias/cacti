@@ -88,7 +88,7 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function draw_cdef_preview($cdef_id) {
-	print "<tr><td><pre style='white-space:pre-wrap;'>cdef=" . get_cdef($cdef_id, true) . "</pre></td></tr>";
+	print "<tr><td><pre>cdef=" . get_cdef($cdef_id, true) . "</pre></td></tr>";
 }
 
 /* --------------------------

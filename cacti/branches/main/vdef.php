@@ -87,7 +87,7 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function draw_vdef_preview($vdef_id) {
-	print "<tr><td><pre style='white-space:pre-wrap;'>vdef=" . get_vdef($vdef_id, true) . "</pre></td></tr>";
+	print "<tr><td><pre>vdef=" . get_vdef($vdef_id, true) . "</pre></td></tr>";
 }
 
 /* --------------------------
