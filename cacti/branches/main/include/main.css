@@ -683,7 +683,6 @@ th a {
 .rowGraphFilter {
 	color: #000000;
 	font-weight: normal;
-	font-size: 8px;
 	background: #fefeff; /* Old browsers */
 	background: -moz-linear-gradient(top, #fefeff 0%, #e5eaf5 32%, #d3daed 36%, #d5dcee 52%, #e1e6f6 96%, #b6bccc 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefeff), color-stop(32%,#e5eaf5), color-stop(36%,#d3daed), color-stop(52%,#d5dcee), color-stop(96%,#e1e6f6), color-stop(100%,#b6bccc)); /* Chrome,Safari4+ */
