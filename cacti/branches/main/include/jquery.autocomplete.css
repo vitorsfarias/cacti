@@ -54,9 +54,9 @@
 .ac_field{
 	padding: 1px;
 	border:thin solid #ABADB3;
-	background-image:url('../images/dd_arrow.gif');
+	background-image:url('../images/ac_dropdown.gif');
 	background-color:#FFFFFF;
-	background-position:right top;
+	background-position:right center;
 	background-repeat:no-repeat;
 }
 
