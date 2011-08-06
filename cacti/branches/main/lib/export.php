@@ -587,8 +587,7 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 
 function device_template_to_xml($device_template_id) {
 	global $export_errors;
-
-	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
 
 	$hash = get_hash_version("device_template") . get_hash_device_template($device_template_id);
 	$xml_text = "";
@@ -597,7 +596,7 @@ function device_template_to_xml($device_template_id) {
 	$device_template_graph = db_fetch_assoc("select * from device_template_graph where device_template_id=$device_template_id");
 	$device_template_snmp_query = db_fetch_assoc("select * from device_template_snmp_query where device_template_id=$device_template_id");
 
-	if (empty($host_template["id"])) {
+	if (empty($device_template["id"])) {
 		$export_errors++;
 		raise_message(28);
 		cacti_log("ERROR: Invalid Device Template found during Export.  Please run database repair script to identify and/or correct.", false, "WEBUI");
