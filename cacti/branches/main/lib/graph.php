@@ -1280,33 +1280,27 @@ function graph_edit() {
 	}
 
 	if (!empty($_GET["id"])) {
-		?>
-		<table width="100%" align="center">
-			<tr>
-				<td align="center" class="textInfo" colspan="2">
-					<img src="<?php print htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id"));?>" alt="">
-				</td>
-				<?php
-				if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
+		print "<div id=\"center\">";
+		print "<img src=" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . " alt=\"" . get_request_var("id") . "\">";
+		
+		if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
 					$graph_data_array = array();
 					$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
 					/* make rrdtool_function_graph to only print the command without executing it */
 					$graph_data_array["print_source"] = 1;
-					?>
-					<td>
-						<span class="textInfo"><?php print __("RRDTool Command:");?></span><br>
-						<pre><?php print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);?></pre>
-						<span class="textInfo"><?php print __("RRDTool Says:");?></span><br>
-						<?php /* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
-						unset($graph_data_array["print_source"]);?>
-						<pre><?php print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);?></pre>
-					</td>
-					<?php
+						
+		print "<br><span class=\"textInfo\">" .  __("RRDTool Command:") . "</span><br>";
+					print "<pre>";
+					print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+					print "</pre>";
+		print "<span class=\"textInfo\">" . __("RRDTool Says:") . "</span><br>";
+		
+		/* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
+		unset($graph_data_array["print_source"]);
+		print "<pre>";
+		print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+		print "</pre>";
 				}
-				?>
-			</tr>
-		</table>
-		<?php
 	}
 
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
