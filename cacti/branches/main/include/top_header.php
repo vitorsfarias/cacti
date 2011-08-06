@@ -67,7 +67,6 @@ plugin_hook('page_head');
 ?>
 </head>
 <body id='body'>
-<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/wztooltip/wz_tooltip.js'></script>
 <div id='header'>
 	<div id='logobar' class='logobar'></div>
 	<div id='navbar' class='navbar'>

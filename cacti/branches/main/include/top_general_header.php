@@ -70,7 +70,6 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<?php initializeCookieVariable(); plugin_hook('page_head'); ?>
 </head>
 <body class='body'>
-<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/wztooltip/wz_tooltip.js"></script>
 <div id='header'>
 	<div id='logobar'></div>
 	<div id='navbar'>
