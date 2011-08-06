@@ -458,7 +458,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 			form_alternate_row_color();
 
-			print "<td width='50%'><strong>" . $field["name"] . "</strong></td>\n";
+			print "<td width='50%'>" . $field["name"] . "</td>\n";
 			print "<td>";
 
 			draw_custom_data_row($form_field_name, $field["id"], $data["id"], $old_value);

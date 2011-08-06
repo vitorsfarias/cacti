@@ -970,7 +970,7 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 			<td bgcolor="#B61D22" colspan="10">
 				<table width="100%" cellpadding="3" cellspacing="0">
 					<tr>
-						<td bgcolor="#B61D22" class="textHeaderDark"><strong><?php print $title_text;?></strong></td>
+						<td bgcolor="#B61D22" class="textHeaderDark"><?php print $title_text;?></td>
 					</tr>
 					<?php
 					form_area($body_text);
@@ -1074,7 +1074,7 @@ function form_confirm_alt($title_text, $body_text, $cancel_url, $action_url) { ?
 				<td bgcolor="#B61D22" colspan="10">
 					<table width="100%" cellpadding="3" cellspacing="0">
 						<tr>
-							<td bgcolor="#B61D22" class="textHeaderDark"><strong><?php print $title_text;?></strong></td>
+							<td bgcolor="#B61D22" class="textHeaderDark"><?php print $title_text;?></td>
 						</tr>
 						<?php
 						form_area($body_text);

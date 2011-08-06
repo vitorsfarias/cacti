@@ -473,13 +473,13 @@ function get_graph_list_content() {
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
 							<td align='left' style='width:100px;' class='textHeaderDark'>";
-		if ($_REQUEST["page"] > 1) { $nav .= "<strong><a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]-1) . ")'>&lt;&lt;&nbsp;Previous</a></strong>"; }
+		if ($_REQUEST["page"] > 1) { $nav .= "<a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]-1) . ")'>&lt;&lt;&nbsp;Previous</a>"; }
 		$nav .= "</td>\n
 							<td align='center' class='textHeaderDark'>
 								Showing Graphs " . ((get_request_var_request("graphs")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < get_request_var_request("graphs")) || ($total_rows < (get_request_var_request("graphs")*get_request_var_request("page")))) ? $total_rows : (get_request_var_request("graphs")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 							</td>\n
 							<td align='right' style='width:100px;' class='textHeaderDark'>";
-		if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "<strong><a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]+1) . ")'>Next &gt;&gt;</a></strong>"; }
+		if (($_REQUEST["page"] * $_REQUEST["graphs"]) < $total_rows) { $nav .= "<a class='linkOverDark' href='#' onClick='pageChange(" . ($_REQUEST["page"]+1) . ")'>Next &gt;&gt;</a>"; }
 		$nav .= "</td>\n
 						</tr>
 					</table>
@@ -507,7 +507,7 @@ function get_graph_list_content() {
 			<table width='100%' cellspacing='0' cellpadding='0' style='border-width:0px;'>
 				<tr>
 					<?php
-					print "<td width='1%' align='left' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px 0px 0px 1px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='left' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px 0px 0px 1px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'>Select All</td>\n";
 					?>
 				</tr>
 			</table>
@@ -524,7 +524,7 @@ function get_graph_list_content() {
 				$checked = false;
 			}
 			form_checkbox_cell($graph["title_cache"], $graph["local_graph_id"], $checked);
-			form_selectable_cell("<strong><a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . $graph["title_cache"] . "</a></strong>", $graph["local_graph_id"]);
+			form_selectable_cell("<a href='" . htmlspecialchars("graph.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all") . "'>" . $graph["title_cache"] . "</a>", $graph["local_graph_id"]);
 			form_selectable_cell($graph["height"] . "x" . $graph["width"], $graph["local_graph_id"]);
 			form_end_row();
 		}
@@ -534,7 +534,7 @@ function get_graph_list_content() {
 		<td colspan='3'>
 			<table width='100%' cellspacing='0' cellpadding='0' style='border-width:0px'>
 				<tr><?php
-					print "<td width='1%' align='right' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'><strong>Select All</strong></td>\n";
+					print "<td width='1%' align='right' class='textHeaderDark' style='padding:2px;'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></td><td class='textSubHeaderDark'>Select All</td>\n";
 					?>
 				</tr>
 			</table>
