@@ -594,7 +594,7 @@ function form_dropdown_image($form_name, $form_path, $form_previous_value, $form
 
 	if (!empty($form_none_entry)) {
 		print "<option>&nbsp;Default Image&nbsp;</option>\n";
-		print "<option title='" . CACTI_URL_PATH . "images/tree_icons/" . $form_default_value . "' value='" . CACTI_URL_PATH . "images/tree_icons/" . $form_default_value . "'" . (empty($form_default_value) ? " selected" : "") . ">&nbsp;$form_none_entry&nbsp;</option>\n";
+		print "<option title='" . CACTI_URL_PATH . "images/tree_icons/" . $form_default_value . "' value='" . CACTI_URL_PATH . "images/tree_icons/" . $form_default_value . "'" . (empty($form_default_value) || basename($form_previous_value) == $form_default_value ? " selected" : "") . ">&nbsp;$form_none_entry&nbsp;</option>\n";
 	}
 
 	/* get the images in use first */
