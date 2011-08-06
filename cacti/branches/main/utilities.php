@@ -220,7 +220,7 @@ function utilities_view_tech($tabs = false) {
 		);
 
 		/* draw the categories tabs on the top of the page */
-		print "<td><div id='tabs_util'>\n";
+		print "<div id='tabs_util'>\n";
 		print "<ul>\n";
 
 		$i = 1;
@@ -231,7 +231,7 @@ function utilities_view_tech($tabs = false) {
 		}
 		}
 		print "</ul>\n";
-		print "</div></td></tr></table>\n";
+		print "</div>\n";
 
 		print "<script type='text/javascript'>
 			$().ready(function() {
@@ -323,7 +323,7 @@ function display_general() {
 	/* Check RRDTool issues */
 	$rrdtool_error = "";
 	if ($rrdtool_version != read_config_option("rrdtool_version")) {
-		$rrdtool_error .= "<br><span class='warning'>" . __("ERROR: Installed RRDTool version does not match configured version.") . "<br>" . __("Please visit the") . " <a href='" . htmlspecialchars("settings.php?tab=general") . "'> " . __("Configuration Settings") . "</a>" . __("and select the correct RRDTool Utility Version.") . "</span><br>";
+		$rrdtool_error .= "<br><span class='warning'>" . __("ERROR: Installed RRDTool version does not match configured version.") . "<br>" . __("Please visit the") . " <a class='linkEditMain' href='" . htmlspecialchars("settings.php?tab=general") . "'> " . __("Configuration Settings") . "</a>" . __("and select the correct RRDTool Utility Version.") . "</span><br>";
 	}
 	$graph_gif_count = db_fetch_cell("SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2");
 	if (($graph_gif_count > 0) && (read_config_option("rrdtool_version") != RRD_VERSION_1_0)) {
@@ -574,7 +574,7 @@ function display_database_processes() {
 		array("name" => __("Host")),
 		array("name" => __("Database")),
 		array("name" => __("Command")),
-		array("name" => __("Time")),
+		array("name" => __("Time"), "align" => "right"),
 		array("name" => __("State")),
 		array("name" => __("Info"))
 	);
@@ -590,7 +590,7 @@ function display_database_processes() {
 			print "<td>" . $item["Host"] . "</td>\n";
 			print "<td>" . $item["db"] . "</td>\n";
 			print "<td>" . $item["Command"] . "</td>\n";
-			print "<td>" . $item["Time"] . "</td>\n";
+			print "<td style='text-align:right'>" . number_format($item["Time"]) . "</td>\n";
 			print "<td>" . $item["State"] . "</td>\n";
 			print "<td>" . $item["Info"] . "</td>\n";
 			print "</tr>\n";
@@ -1219,7 +1219,7 @@ function utilities() {
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_tech&tab=general");?>'><?php print __("Technical Support");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_tech&tab=general");?>'><?php print __("Technical Support");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.");?>
@@ -1233,7 +1233,7 @@ function utilities() {
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'><?php print __("View Cacti Log File");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'><?php print __("View Cacti Log File");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.");?>
@@ -1241,7 +1241,7 @@ function utilities() {
 	</tr>
 	<tr class="rowAlternate3">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'><?php print __("View User Log");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'><?php print __("View User Log");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("Allows Administrators to browse the user log.  Administrators can filter and export the log as well.");?>
@@ -1255,7 +1255,7 @@ function utilities() {
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'><?php print __("View Poller Cache");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'><?php print __("View Poller Cache");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.");?>
@@ -1263,7 +1263,7 @@ function utilities() {
 	</tr>
 	<tr class="rowAlternate3">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'><?php print __("View SNMP Cache");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'><?php print __("View SNMP Cache");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled device.");?>
@@ -1271,7 +1271,7 @@ function utilities() {
 	</tr>
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes e">
-			<a href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'><?php print __("Rebuild Poller Cache");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'><?php print __("Rebuild Poller Cache");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("The poller cache will be cleared and re-generated if you select this option. Sometimes device/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.");?>
