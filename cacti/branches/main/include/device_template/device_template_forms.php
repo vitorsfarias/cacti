@@ -84,7 +84,7 @@ $fields_device_template_edit = array(
 		),
 	"availability_header" => array(
 		"method" => "spacer",
-		"friendly_name" => __("Availability/Reachability Options"),
+		"friendly_name" => __("Availability/Reachability Settings"),
 		),
 	"availability_method" => array(
 		"friendly_name" => __("Downed Device Detection"),
@@ -95,6 +95,10 @@ $fields_device_template_edit = array(
 		"method" => "drop_array",
 		"default" => read_config_option("availability_method"),
 		"array" => $availability_options
+		),
+	"ping_header" => array(
+		"method" => "spacer",
+		"friendly_name" => __("Ping Options"),
 		),
 	"ping_method" => array(
 		"friendly_name" => __("Ping Method"),
