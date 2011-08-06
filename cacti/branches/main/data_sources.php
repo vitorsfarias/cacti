@@ -768,6 +768,7 @@ function data_source_edit() {
 			$("input").attr("disabled","disabled")
 			$("select").attr("disabled","disabled")
 			$("#cancel").removeAttr("disabled");
+			$("#save").removeAttr("disabled");
 			$("#data_source_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
 		});
 
@@ -776,11 +777,14 @@ function data_source_edit() {
 				$("input").removeAttr("disabled");
 				$("select").removeAttr("disabled");
 				$("#cancel").removeAttr("disabled");
+				$("#save").removeAttr("disabled");
 				$(".lock").html("<?php print __("Template is unlocked");?>");
 				disabled = false;
 			}else{
 				$("input").attr("disabled","disabled")
 				$("select").attr("disabled","disabled")
+				$("#cancel").removeAttr("disabled");
+				$("#save").removeAttr("disabled");
 				$(".lock").html("<?php print __("Template is locked");?>");
 				disabled = true;
 			}
