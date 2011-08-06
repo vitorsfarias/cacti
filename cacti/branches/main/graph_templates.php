@@ -52,11 +52,13 @@ switch (get_request_var_request("action")) {
 		template_remove();
 
 		header("Location: graph_templates.php");
+
 		break;
 	case 'input_remove':
 		input_remove();
 
 		header("Location: graph_templates.php?action=edit&id=" . $_GET["graph_template_id"]);
+
 		break;
 	case 'input_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -64,13 +66,17 @@ switch (get_request_var_request("action")) {
 		input_edit();
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_edit':
+		template_edit(false);
+
 		break;
 	case 'edit':
 		include_once (CACTI_BASE_PATH . "/include/top_header.php");
-
-		template_edit();
-
+		template_edit(true);
 		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'ajax_item_dnd':
 		graph_template_item_save();
@@ -78,10 +84,9 @@ switch (get_request_var_request("action")) {
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		template();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -378,73 +383,67 @@ function form_actions() {
  template - Graph Templates
  ---------------------------- */
 
-function template_edit() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
+function template_edit($tabs = false) {
+	if ($tabs) {
+		$graph_template_tabs = array(
+			"general" 	=> __("General"),
+			"items" 	=> __("Items"),
+			"graphs" 	=> __("Graphs"),
+		);
 
-	$graph_template_tabs = array(
-		"general" 	=> __("General"),
-		"items" 	=> __("Items"),
-		"graphs" 	=> __("Graphs"),
-	);
+		/* draw the categories tabs on the top of the page */
+		print "<div id='tabs'>\n";
+		print "<ul>\n";
 
-	if (!empty($_REQUEST["id"])) {
-		$graph_template = db_fetch_row("select * from graph_templates where id=" . $_REQUEST["id"]);
-		$header_label = __("[edit: ") . $graph_template["name"] . "]";
-		if (!db_fetch_cell("SELECT COUNT(*) FROM graph_local WHERE graph_template_id=" . $_REQUEST["id"])) {
-			unset($graph_template_tabs["graphs"]);
-		}
-	}else{
-		$graph_template = array();
-		$header_label = __("[new]");
-		unset($graph_template_tabs["graphs"]);
-	}
+		$i = 0;
+		if (sizeof($graph_template_tabs) > 0) {
+			foreach (array_keys($graph_template_tabs) as $tab_short_name) {
+				print "<li><a id='tabs-$i' href='" . htmlspecialchars("graph_templates.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$graph_template_tabs[$tab_short_name]</a></li>";
+				$i++;
 
-	/* set the default settings category */
-	if (!isset($_REQUEST["tab"])) {
-		/* there is no selected tab; select the first one */
-		$current_tab = array_keys($graph_template_tabs);
-		$current_tab = $current_tab[0];
-	}else{
-		$current_tab = $_REQUEST["tab"];
-	}
-
-	/* draw the categories tabs on the top of the page */
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-	print "<td><div class='tabs'>";
-
-	if (sizeof($graph_template_tabs) > 0) {
-		foreach (array_keys($graph_template_tabs) as $tab_short_name) {
-			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("graph_templates.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$graph_template_tabs[$tab_short_name]</a></div>";
-
-			if (!isset($_REQUEST["id"])) break;
-		}
-	}
-	print "</div></td></tr></table>";
-
-	if (!isset($_REQUEST["tab"])) {
-		$_REQUEST["tab"] = "general";
-	}
-
-	switch (get_request_var_request("tab")) {
-		case "graphs":
-			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-
-			graph();
-
-			break;
-		case "items":
-			/* graph item list goes here */
-			if (!empty($_REQUEST["id"])) {
-				graph_template_display_items();
+				if (!isset($_REQUEST["id"])) break;
 			}
+		}
+		print "</ul>\n";
+		print "</div>";
 
-			break;
-		default:
-			graph_template_display_general($graph_template, $header_label);
+		print "<script type='text/javascript'>
+			$().ready(function() {
+				$('#tabs').tabs({ cookie: { expires: 30 } });
+			});
+		</script>\n";
+	}else{
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		/* ==================================================== */
 
-			break;
+		if (!empty($_REQUEST["id"])) {
+			$graph_template = db_fetch_row("select * from graph_templates where id=" . $_REQUEST["id"]);
+			$header_label = __("[edit: ") . $graph_template["name"] . "]";
+		}else{
+			$graph_template = array();
+			$header_label = __("[new]");
+		}
+
+		switch (get_request_var_request("tab")) {
+			case "graphs":
+				include_once(CACTI_BASE_PATH . "/lib/graph.php");
+
+				graph();
+
+				break;
+			case "items":
+				/* graph item list goes here */
+				if (!empty($_REQUEST["id"])) {
+					graph_template_display_items();
+				}
+
+				break;
+			default:
+				graph_template_display_general($graph_template, $header_label);
+	
+				break;
+		}
 	}
 }
 
