@@ -107,17 +107,25 @@ function settings() {
 	print "<form method='post' action='graph_settings.php'>\n";
 
 	# the tabs
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr><td><div class='tabs'>\n";
+//	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'>
+//		<tr>
+//			<td>
+	print "<div id='tabs'>\n";
+
+	$i = 1;
 	if (sizeof($settings_graphs) > 0) {
+		print "<ul>\n";
 		foreach (array_keys($settings_graphs) as $tab_short_name) {
-			print "<div><a id='tab_" . clean_up_name($tab_short_name) . "' " . (($tab_short_name == "General") ? "class='tab tabSelected'" : "class='tab tabDefault'") . " onClick='selectTab(\"" . clean_up_name($tab_short_name) . "\")' href='#'>$tabs_graphs[$tab_short_name]</a></div>\n";
+			print "<li><a href='#tabs-$i'>$tabs_graphs[$tab_short_name]</a></li>\n";
+			$i++;
 		}
+		print "</ul>\n";
 	}
-	print "</div></td></tr></table>\n";
 
 	# the tab contents
+	$i = 1;
 	while (list($tab_short_name, $tab_fields) = each($settings_graphs)) {
-		print "<table cellpadding='0' cellspacing='0' width='100%'><tr><td><div class='tab_settings' id='settings_" . clean_up_name($tab_short_name) . "'>\n";
+		print "<div id='tabs-$i'>\n";
 		html_start_box(__("Graph Settings") . " (" . $tabs_graphs[$tab_short_name] . ")", "100", 0, "center", "", false, "Tab_Settings_" . clean_up_name($tab_short_name));
 
 		$form_array = array();
@@ -149,9 +157,11 @@ function settings() {
 				)
 		);
 
-		html_end_box();
-		print "</div></td></tr></table>\n";
+		html_end_box(false);
+		print "</div>\n";
+		$i++;
 	}
+	print "</div>\n";
 
 	if (isset($_SERVER["HTTP_REFERER"])) {
 		$timespan_sel_pos = strpos($_SERVER["HTTP_REFERER"],"&predefined_timespan");
@@ -185,6 +195,7 @@ function settings() {
 	$().ready(function() {
 		// the name of the default selected tab has to match an array key of $settings_graphs
 		selectTab('general');
+		$('#tabs').tabs();
 	});
 
 	//-->
