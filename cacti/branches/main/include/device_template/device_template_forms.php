@@ -60,7 +60,7 @@ $fields_device_template_edit = array(
 		"path" => "/images/",
 		"friendly_name" => __("Image"),
 		"description" => __("A useful icon to use to associate with this Device Template."),
-		"width" => "120",
+		"width" => "220",
 		"default" => "device.gif",
 		"value" => "|arg1:image|"
 		),
