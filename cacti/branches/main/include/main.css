@@ -703,6 +703,15 @@ th a {
 	background: linear-gradient(top, #fefeff 0%,#e5eaf5 32%,#d3daed 36%,#d5dcee 52%,#e1e6f6 96%,#b6bccc 100%); /* W3C */
 }
 
+.rowAlternate0 {
+	background-color: #e7e9f2;
+	font-size: 11px;
+}
+
+.rowAlternate0 td {
+	padding: 3px 3px 0px 3px;
+}
+
 .rowAlternate1 {
 	background-color: #f5f5f5;
 	font-size: 11px;
@@ -712,12 +721,12 @@ th a {
 	padding: 3px 3px 0px 3px;
 }
 
-.rowAlternate0 {
+.rowAlternate2 {
 	background-color: #e7e9f2;
 	font-size: 11px;
 }
 
-.rowAlternate0 td {
+.rowAlternate2 td {
 	padding: 3px 3px 0px 3px;
 }
 
