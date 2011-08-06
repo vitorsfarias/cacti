@@ -677,6 +677,18 @@ $settings = array(
 			"default" => 60,
 			"array" => $page_refresh_interval,
 			),
+		"errormgmt_header" => array(
+			"friendly_name" => __("Error Management"),
+			"method" => "spacer",
+			),
+		"error_display_timeout" => array(
+			"friendly_name" => __("Error Message Display Timeout [ms]"),
+			"description" => __("The timeout in milliseconds that expires the display of error messages."),
+			"method" => "textbox",
+			"default" => "2000",
+			"max_length" => "10",
+			"size" => "5"
+			),
 		"fonts_header" => array(
 			"friendly_name" => __("Default RRDtool 1.2.x++ Fonts"),
 			"method" => "spacer",
