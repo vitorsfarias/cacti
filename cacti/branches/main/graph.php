@@ -142,10 +142,14 @@ case 'zoom':
 	}
 
 	/* fetch information for the current RRA */
-	$rra = db_fetch_row("select id,timespan,steps,name from rra where id=" . $_GET["rra_id"]);
+	if ($_GET["rra_id"] > 0) {
+		$rra = db_fetch_row("select id,timespan,steps,name from rra where id=" . $_GET["rra_id"]);
 
-	/* define the time span, which decides which rra to use */
-	$timespan = -($rra["timespan"]);
+		/* define the time span, which decides which rra to use */
+		$timespan = -($rra["timespan"]);
+	}else{
+		$timespan = -300;
+	}
 
 	/* find the step and how often this graph is updated with new data */
 	$ds_step = db_fetch_cell("SELECT

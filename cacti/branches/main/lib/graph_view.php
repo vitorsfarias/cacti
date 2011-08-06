@@ -1075,7 +1075,7 @@ function graph_view_search_filter() {
 							<input type='text' style='display:none;' name='workaround'>
 							<input size='30' style='width:100;' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>' onChange='applyFilter(document.form_graph_view)'>
 						</td>
-						<td class="nw100">
+						<td class="nw80">
 							&nbsp;<?php print __("Graphs/Page:");?>&nbsp;
 						</td>
 						<td class="w1">
@@ -1088,12 +1088,12 @@ function graph_view_search_filter() {
 								}
 								?>
 							</select>
-						</td>
-						<td width="40">
-							<label for="thumbnails">&nbsp;<?php print __("Thumbnails:");?>&nbsp;</label>
+						</td>&nbsp;
+						<td class='w10'>
+							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="applyFilter(document.form_graph_view);" <?php print ((isset($_REQUEST['thumbnails'])) && ($_REQUEST['thumbnails'] == "true") ? "checked":"");?>>
 						</td>
 						<td>
-							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="applyFilter(document.form_graph_view);" <?php print ((isset($_REQUEST['thumbnails'])) && ($_REQUEST['thumbnails'] == "true") ? "checked":"");?>>
+							<label for="thumbnails">&nbsp;<?php print __("Thumbnails:");?>&nbsp;</label>
 						</td>
 						<td class='w1'>
 							<input type='button' value='<?php print __("Refresh");?>' name='refresh' onClick='applyFilter(document.form_graph_view)'>
