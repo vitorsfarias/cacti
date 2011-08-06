@@ -2168,7 +2168,7 @@ function graphs_new() {
 
 			form_alternate_row_color("gt_line" . $query_row, true);
 
-			print "<td style='line-height: 1.5em;padding:0px 5px 0px 5px;' onClick='toggleGraph(\"" . $query_row . "\")'>" . $graph_template["graph_template_name"] . "</td>";
+			print "<td onClick='toggleGraph(\"" . $query_row . "\")'>" . $graph_template["graph_template_name"] . "</td>";
 			print "<td align='right'>
 						<input type='checkbox' name='cg_$query_row' id='cg_$query_row' onChange='toggleGraph(\"" . $query_row . "\", true)'>
 					</td>";
