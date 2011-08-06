@@ -677,7 +677,7 @@ function graph_templates_filter() {
 
 	html_start_box(__("Graph Templates"), "100", "3", "center", "graph_templates.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 		<form name="form_graph_template" action='<?php print basename($_SERVER["PHP_SELF"]);?>'>
 			<table cellpadding="0" cellspacing="3">

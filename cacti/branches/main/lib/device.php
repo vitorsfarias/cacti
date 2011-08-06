@@ -1449,7 +1449,7 @@ function device_filter() {
 
 	html_start_box(__("Devices"), "100", "3", "center", "devices.php?action=edit&template_id=" . html_get_page_variable("template_id") . "&status=" . html_get_page_variable("status"), true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form action="devices.php" name="form_devices" method="post">
 			<table cellpadding="0" cellspacing="3">

@@ -224,7 +224,7 @@ function gprint_presets_filter() {
 
 	html_start_box(__("GPRINT Presets"), "100", "3", "center", "gprint_presets.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_gprint" action="gprint_presets.php">
 			<table cellpadding="0" cellspacing="3">

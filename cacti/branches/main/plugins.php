@@ -361,7 +361,7 @@ function plugin_filter() {
 		(isset($plugin_architecture['version']) ? ", " . __("Plugin Architecture Version:") . " " . $plugin_architecture['version']:"") .
 		")", "100", "3", "center", "", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form action="plugins.php" name="form_plugins" method="post">
 			<table cellpadding="0" cellspacing="3">

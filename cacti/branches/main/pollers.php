@@ -288,7 +288,7 @@ function pollers_filter() {
 
 	html_start_box(__("Pollers"), "100", "3", "center", "pollers.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_pollers" action="pollers.php">
 			<table cellpadding="0" cellspacing="3">

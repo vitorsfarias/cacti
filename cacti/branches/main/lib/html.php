@@ -73,13 +73,13 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 		-->
 		</script>
 	<?php } ?>
-		<table cellpadding=0 cellspacing=0 align="<?php print $align;?>" class="ui-corner-top startBoxHeader <?php print "wp$width"?> startBox0" >
+		<table cellpadding="0" cellspacing="0" align="<?php print $align;?>" class="<?php echo ($collapsing ? "collapse ":"");?>ui-corner-top startBoxHeader <?php print "wp$width"?> startBox0" >
 			<?php if ($title != "") {?><tr class="rowHeader">
 				<td colspan="100">
-					<table cellpadding=0 cellspacing=1 class="startBox0">
+					<table cellpadding="0" cellspacing="0" class="startBox0">
 						<tr>
 							<td>
-								<table cellpadding=0 cellspacing=1 class="startBox0" <?php print $ani;?>>
+								<table cellpadding="0" cellspacing="0" class="startBox0" <?php print $ani;?>>
 									<tr>
 										<?php if ($collapsing) {?><td class="textHeaderDark nw9">
 											<img id="<?php print $item_id . '_twisty';?>" src="<?php print CACTI_URL_PATH; ?>images/tw_open.gif" alt="<?php print __("Filter");?>" align="middle">
@@ -106,7 +106,8 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 					</table>
 				</td>
 			</tr>
-			<?php }?><tr style='border: 0px;' id='<?php print $item_id;?>'>
+			<?php }?>
+			<tr style='border: 0px;' id='<?php print $item_id;?>'>
 				<td>
 					<table cellpadding=0 cellspacing=1 <?php print $table_id;?> class="startBox<?php print $cell_padding;?>"><?php
 }

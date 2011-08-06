@@ -934,7 +934,7 @@ function data_queries_filter() {
 
 	html_start_box(__("Data Queries"), "100", "3", "center", "data_queries.php?action=edit", true);
 	?>
-	<tr class="rowAlternate2 noprint">
+	<tr class="rowAlternate3 noprint">
 		<td class="noprint">
 			<form name="form_graph_id" action="data_queries.php">
 			<table cellpadding="0" cellspacing="3">

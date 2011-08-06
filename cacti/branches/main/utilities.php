@@ -24,6 +24,7 @@
 
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/utility.php");
+include_once(CACTI_BASE_PATH . "/lib/time.php");
 
 load_current_session_value("page_referrer", "page_referrer", "");
 
@@ -113,13 +114,17 @@ switch (get_request_var_request("action")) {
 		utilities_view_user_log();
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		utilities_view_tech(false);
+
 		break;
 	case 'view_tech':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
-		utilities_view_tech();
-
+		utilities_view_tech(true);
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'ajax_get_devices_brief':
 		ajax_get_devices_brief();
@@ -128,9 +133,7 @@ switch (get_request_var_request("action")) {
 
 		if (!plugin_hook_function('utilities_action', get_request_var_request('action'))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 			utilities();
-
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		}
 		break;
@@ -164,6 +167,7 @@ function utilities_php_modules() {
 	$php_info = str_replace("<br />", "", $php_info);
 	$php_info = str_replace("<h2>", "<h2><strong>" . __("Module Name:") . " </strong>", $php_info);
 	$php_info = str_replace("cellpadding=\"3\"", "cellspacing=\"0\" cellpadding=\"3\"", $php_info);
+	$php_info = str_replace("width=\"600\"","", $php_info);
 
 	return $php_info;
 }
@@ -203,45 +207,42 @@ function memory_readable($val) {
 }
 
 
-function utilities_view_tech() {
+function utilities_view_tech($tabs = false) {
 	global $config, $rrdtool_versions;
 
-	/* Remove all cached settings, cause read of database */
-	kill_session_var("sess_config_array");
+	if ($tabs) {
+		$tabs = array(
+			"general" => __("General"),
+			"database" => __("DB Info"),
+			"process" => __("DB Processes"),
+			"php" => __("PHP Info"),
+			"i18n" => __("Languages")
+		);
 
-	$tabs = array(
-		"general" => __("General"),
-		"database" => __("DB Info"),
-		"process" => __("DB Processes"),
-		"php" => __("PHP Info"),
-		"i18n" => __("Languages")
-	);
+		/* draw the categories tabs on the top of the page */
+		print "<td><div id='tabs_util'>\n";
+		print "<ul>\n";
 
-	/* set the default settings category */
-	if (!isset($_REQUEST["tab"])) {
-		/* there is no selected tab; select the first one */
-		$current_tab = array_keys($tabs);
-		$current_tab = $current_tab[0];
+		$i = 1;
+		if (sizeof($tabs) > 0) {
+		foreach (array_keys($tabs) as $tab_short_name) {
+			print "<li><a id='tabs-$i' href='" . htmlspecialchars("utilities.php?action=ajax_view&tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>";
+			$i++;
+		}
+		}
+		print "</ul>\n";
+		print "</div></td></tr></table>\n";
+
+		print "<script type='text/javascript'>
+			$().ready(function() {
+				$('#tabs_util').tabs({ cookie: { expires: 30 } });
+			});
+		</script>\n";
 	}else{
-		$current_tab = $_REQUEST["tab"];
-	}
+		/* Remove all cached settings, cause read of database */
+		kill_session_var("sess_config_array");
 
-	/* draw the categories tabs on the top of the page */
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-	print "<td><div class='tabs'>";
-
-	if (sizeof($tabs) > 0) {
-	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("utilities.php?action=view_tech&tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></div>";
-	}
-	}
-	print "</div></td></tr></table>";
-
-	if (!isset($_REQUEST["tab"])) {
-		$_REQUEST["tab"] = "general";
-	}
-
-	switch (get_request_var_request("tab")) {
+		switch (get_request_var_request("tab")) {
 		case "general":
 			display_general();
 
@@ -263,6 +264,7 @@ function utilities_view_tech() {
 		default:
 
 			break;
+		}
 	}
 }
 
@@ -273,7 +275,7 @@ function display_php() {
 
 	html_start_box(__("PHP Module Information"), "100", "3", "center", "");
 	print "<tr>\n";
-	print "<td class='textAreaNotes left'>" . $php_info . "</td>\n";
+	print "<td class='left'>" . $php_info . "</td>\n";
 	print "</tr>\n";
 
 	html_end_box();
@@ -338,7 +340,7 @@ function display_general() {
 	print "		<td class='textAreaNotes v'>" . __date("D, " . date_time_format() . " T") . "</td>\n";
 	enable_tmz_support();
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("User Date") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . __date("D, " . date_time_format() . " T") . "</td>\n";
 	print "</tr>\n";
@@ -346,7 +348,7 @@ function display_general() {
 	print "		<td class='textAreaNotes e'>" . __("Cacti Version") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . CACTI_VERSION . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Cacti OS") . "</td>\n";
 	print "		<td>" . CACTI_SERVER_OS . "</td>\n";
 	print "</tr>\n";
@@ -355,7 +357,7 @@ function display_general() {
 	print "		<td>" . $snmp_version . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("RRDTool Version") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . (isset($rrdtool_versions[$rrdtool_version]) ? $rrdtool_versions[$rrdtool_version]: "Unknown") . " " . $rrdtool_error . "</td>\n";
 	print "</tr>\n";
@@ -363,7 +365,7 @@ function display_general() {
 	print "		<td class='textAreaNotes e'>" . __("Hosts") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . $device_count . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Graphs") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . $graph_count . "</td>\n";
 	print "</tr>\n";
@@ -394,7 +396,7 @@ function display_general() {
 	print "		<td class='textAreaNotes e'>" . __("Interval") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . read_config_option("poller_interval") . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Type"). "</td>\n";
 	print "		<td class='textAreaNotes v'>" . $poller_options[read_config_option("poller_type")] . " " . $spine_version . "</td>\n";
 	print "</tr>\n";
@@ -415,7 +417,7 @@ function display_general() {
 	print "</td>\n";
 	print "</tr>\n";
 
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Concurrent Processes") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . read_config_option("concurrent_processes") . "</td>\n";
 	print "</tr>\n";
@@ -425,7 +427,7 @@ function display_general() {
 	print "		<td class='textAreaNotes v'>" . read_config_option("max_threads") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("PHP Servers") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . read_config_option("php_servers") . "</td>\n";
 	print "</tr>\n";
@@ -435,7 +437,7 @@ function display_general() {
 	print "		<td class='textAreaNotes v'>" . read_config_option("script_timeout") . "</td>\n";
 	print "</tr>\n";
 
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Max OID") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . read_config_option("max_get_size") . "</td>\n";
 	print "</tr>\n";
@@ -452,7 +454,7 @@ function display_general() {
 	print "		<td class='textAreaNotes e'>" . __("PHP Version") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . phpversion() . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("PHP OS") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . PHP_OS . "</td>\n";
 	print "</tr>\n";
@@ -466,7 +468,7 @@ function display_general() {
 	}
 	print "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("PHP SNMP") . "</td>\n";
 	print "		<td class='textAreaNotes v'>";
 	if (function_exists("snmpget")) {
@@ -480,7 +482,7 @@ function display_general() {
 	print "		<td class='textAreaNotes e'>max_execution_time</td>\n";
 	print "		<td class='textAreaNotes v'>" . ini_get("max_execution_time") . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>memory_limit</td>\n";
 	print "		<td class='textAreaNotes v'>" . ini_get("memory_limit");
 
@@ -541,11 +543,11 @@ function display_database() {
 			}
 			print "<td>" . $item["Version"] . "</td>\n";
 			print "<td>" . $item["Row_format"] . "</td>\n";
-			print "<td>" . $item["Rows"] . "</td>\n";
-			print "<td>" . $item["Avg_row_length"] . "</td>\n";
-			print "<td>" . $item["Data_length"] . "</td>\n";
-			print "<td>" . $item["Index_length"] . "</td>\n";
-			print "<td>" . $item["Auto_increment"] . "</td>\n";
+			print "<td style='text-align:right;'>" . number_format($item["Rows"]) . "</td>\n";
+			print "<td style='text-align:right;'>" . number_format($item["Avg_row_length"]) . "</td>\n";
+			print "<td style='text-align:right;'>" . number_format($item["Data_length"]) . "</td>\n";
+			print "<td style='text-align:right;'>" . number_format($item["Index_length"]) . "</td>\n";
+			print "<td style='text-align:right;'>" . number_format($item["Auto_increment"]) . "</td>\n";
 			if (isset($item["Collation"])) {
 				print "  <td>" . $item["Collation"] . "</td>\n";
 			} else {
@@ -650,7 +652,7 @@ function display_languages() {
 	print "		<td class='textAreaNotes e'>" . __("Current Language") . "</td>\n";
 	print "		<td class='textAreaNotes v'>". $language . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate2'>\n";
+	print "<tr class='rowAlternate3'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Language Mode") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . $i18n_modes[read_config_option('i18n_language_support')] . "</td>\n";
 	print "</tr>\n";
@@ -762,7 +764,7 @@ function utilities_view_logfile() {
 
 	html_start_box(__("Log File Filters"), "100", "3", "center", "", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_logfile" action="utilities.php">
 			<table cellpadding="1" cellspacing="0">
@@ -1022,7 +1024,7 @@ function utilities_view_snmp_cache() {
 
 	html_start_box(__("SNMP Cache Items"), "100", "3", "center", "", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_snmpcache" action="utilities.php">
 			<table cellpadding="0" cellspacing="0">
@@ -1237,7 +1239,7 @@ function utilities() {
 			<?php print __("The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.");?>
 		</td>
 	</tr>
-	<tr class="rowAlternate2">
+	<tr class="rowAlternate3">
 		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'><?php print __("View User Log");?></a>
 		</td>
@@ -1259,7 +1261,7 @@ function utilities() {
 			<?php print __("This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.");?>
 		</td>
 	</tr>
-	<tr class="rowAlternate2">
+	<tr class="rowAlternate3">
 		<td class="textAreaNotes e">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'><?php print __("View SNMP Cache");?></a>
 		</td>

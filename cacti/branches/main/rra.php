@@ -240,7 +240,7 @@ function rra_filter() {
 	global $item_rows;
 	html_start_box(__("Round Robin Archives"), "100", "3", "center", "rra.php?action=edit", true);
 	?>
-	<tr class='rowAlternate2'>
+	<tr class='rowAlternate3'>
 		<td>
 			<form name='form_rra' action="<?php print basename($_SERVER['PHP_SELF']);?>" method="post">
 			<table cellpadding="0" cellspacing="3">
