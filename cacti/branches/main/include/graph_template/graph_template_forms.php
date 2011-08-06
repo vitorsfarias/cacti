@@ -47,7 +47,7 @@ $fields_graph_template_template_edit = array(
 		"friendly_name" => __("Image"),
 		"description" => __("A useful icon to use to associate with this Device Template."),
 		"default" => "graphs.gif",
-		"width" => "120",
+		"width" => "220",
 		"value" => "|arg1:image|"
 		),
 	);
