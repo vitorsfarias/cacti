@@ -47,7 +47,7 @@ $fields_data_query_edit = array(
 		"friendly_name" => __("Image"),
 		"description" => __("A useful icon to use to associate with this Device Template."),
 		"default" => "dataquery.png",
-		"width" => "120",
+		"width" => "220",
 		"value" => "|arg1:image|"
 		),
 	"xml_path" => array(
