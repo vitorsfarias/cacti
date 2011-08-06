@@ -327,9 +327,9 @@ function item_edit() {
 		$values[$current_type] = $cdef["value"];
 	}
 
-	echo "<table id='preview' class='left startBox1 wp100'>";
+	print "<div>";
 	draw_cdef_preview(get_request_var("cdef_id"));
-	echo "</table><br>";
+	echo "</div>";
 
 	print "<form action='cdef.php' name='form_cdef' method='post'>\n";
 	html_start_box(__("CDEF Items") . " [edit: " . db_fetch_cell("select name from cdef where id=" . $_GET["cdef_id"]) . "]", "100", "3", "center", "");
@@ -447,9 +447,9 @@ function cdef_edit() {
 	html_end_box();
 
 	if (!empty($_GET["id"])) {
-		echo "<table id='preview' class='left startBox1 w100'>";
+		print "<div>";	
 		draw_cdef_preview(get_request_var("id"));
-		echo "</table><br>";
+		print "</div>";
 
 		html_start_box(__("CDEF Items"), "100", 0, "center", "cdef.php?action=item_edit&cdef_id=" . $cdef["id"], false, "cdef");
 
