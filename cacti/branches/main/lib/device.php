@@ -109,16 +109,16 @@ function device_form_save() {
 		$use_template = false;
 		if ($_POST["device_template_id"] != 0) {
 			$device_template = db_fetch_row("SELECT *
-				FROM device_template
-				WHERE id=" . $_POST["device_template_id"]);
-			if (($device_template["override_defaults"] == CHECKED) &&
-				(($device_template["override_permitted"] == CHECKED) &&
-				($_POST["template_enabled"] == CHECKED)) || ($device_template["override_permitted"] != CHECKED)) {
-				$use_template = true;
-				$device_template["template_enabled"] = CHECKED;
-			}
+			FROM device_template
+			WHERE id=" . $_POST["device_template_id"]);
+		if (($device_template["override_defaults"] == CHECKED) &&
+			(($device_template["override_permitted"] == CHECKED) &&
+			($_POST["template_enabled"] == CHECKED)) || ($device_template["override_permitted"] != CHECKED)) {
+			$use_template = true;
+			$device_template["template_enabled"] = CHECKED;
 		}
-
+		}
+		
 		if (!$use_template) {
 			$device_template["snmp_community"]        = get_request_var_post("snmp_community");
 			$device_template["snmp_version"]          = get_request_var_post("snmp_version");
@@ -139,7 +139,7 @@ function device_form_save() {
 			$device_template["device_threads"]        = get_request_var_post("device_threads");
 			$device_template["template_enabled"]      = "";
 		}
-
+		
 		$device_template["notes"]    = ""; /* no support for notes in a device template */
 		$device_template["disabled"] = ""; /* no support for disabling in a device template */
 		$device_id = device_save($_POST["id"], $_POST["site_id"], $_POST["poller_id"], $_POST["device_template_id"], $_POST["description"],
@@ -154,6 +154,7 @@ function device_form_save() {
 			$device_template["snmp_priv_protocol"], $device_template["snmp_context"], $device_template["max_oids"],
 			$device_template["device_threads"], $device_template["template_enabled"]);
 
+		
 		header("Location: devices.php?action=edit&id=" . (empty($device_id) ? $_POST["id"] : $device_id));
 		exit;
 	}
@@ -705,6 +706,7 @@ function device_display_general($device, $device_text) {
 		$dd_menu_options = 'cacti_dd_menu=device_options&device_id=' . $device["id"];
 
 		html_start_box($device_text, "100", "3", "center", (isset($_GET["id"]) ? "menu::" . __("Device Options") . ":device_options:html_start_box:" . $dd_menu_options : ""), true);
+
 		?>
 			<tr class="rowAlternate2">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
@@ -888,7 +890,6 @@ function device_display_general($device, $device_text) {
 	?>
 	<script type="text/javascript">
 	<!--
-
 	// default snmp information
 	var snmp_community       = $('#snmp_community').val();
 	var snmp_username        = $('#snmp_username').val();
@@ -907,211 +908,17 @@ function device_display_general($device, $device_text) {
 	var ping_timeout   = $('#ping_timeout').val();
 	var ping_retries   = $('#ping_retries').val();
 
-	var availability_methods = document.getElementById('availability_method').options;
-	var num_methods          = document.getElementById('availability_method').length;
-	var selectedIndex        = document.getElementById('availability_method').selectedIndex;
 
-	var agent = navigator.userAgent;
-	agent = agent.match("MSIE");
 
-	function setPingVisibility() {
-		availability_method = $('#availability_method').val();
-		ping_method         = $('#ping_method').val();
-
-		/* debugging, uncomment as required */
-		//alert("setPingVisibility The availability method is '" + availability_method + "'");
-		//alert("The ping method is '" + ping_method + "'");
-
-		switch(availability_method) {
-		case "<?php print AVAIL_NONE;?>": // none
-			$('#row_ping_method').css('display', 'none');
-			$('#row_ping_port').css('display', 'none');
-			$('#row_ping_timeout').css('display', 'none');
-			$('#row_ping_retries').css('display', 'none');
-
-			break;
-		case "<?php print AVAIL_SNMP;?>": // snmp
-			$('#row_ping_method').css('display', 'none');
-			$('#row_ping_port').css('display', 'none');
-			$('#row_ping_timeout').css('display', '');
-			$('#row_ping_retries').css('display', '');
-
-			break;
-		default: // ping ok
-			switch(ping_method) {
-			case "<?php print PING_ICMP;?>": // ping icmp
-				$('#row_ping_method').css('display', '');
-				$('#row_ping_port').css('display', 'none');
-				$('#row_ping_timeout').css('display', '');
-				$('#row_ping_retries').css('display', '');
-
-				break;
-			case "<?php print PING_UDP;?>": // ping udp
-			case "<?php print PING_TCP;?>": // ping tcp
-				$('#row_ping_method').css('display', '');
-				$('#row_ping_port').css('display', '');
-				$('#row_ping_timeout').css('display', '');
-				$('#row_ping_retries').css('display', '');
-
-				break;
-			}
-
-			break;
-		}
-	}
-
-	function addSelectItem(item, formObj) {
-		if (agent != "MSIE") {
-			formObj.add(item,null); // standards compliant
-		}else{
-			formObj.add(item);      // IE only
-		}
-	}
-
-	function setAvailability(type) {
-		/* get the availability structure */
-		var am=document.getElementById('availability_method');
-
-		/* get current selectedIndex */
-		selectedIndex = document.getElementById('availability_method').selectedIndex;
-
-		/* debugging uncomment as required */
-		//alert("setAvailability The selectedIndex is '" + selectedIndex + "'");
-		//alert("The array length is '" + am.length + "'");
-
-		switch(type) {
-		case "NoSNMP":
-		/* remove snmp options */
-			if (am.length == <?php print sizeof($availability_options);?>) {
-				am.remove(1);
-				am.remove(1);
-				am.remove(1);
-			}
-
-			/* set the index to something valid */
-			if (selectedIndex > 1) {
-				am.selectedIndex=1; /* we cannot use AVAIL_PING here, as we modified the am array */
-			}
-
-			break;
-		case "All":
-			/* restore all options */
-			if (am.length == 2) {
-				am.remove(0);
-				am.remove(0);
-
-				var a=document.createElement('option');
-				var b=document.createElement('option');
-				var c=document.createElement('option');
-				var d=document.createElement('option');
-				var e=document.createElement('option');
-
-				a.value=<?php print AVAIL_NONE;?>;
-				a.text="<?php print $availability_options[AVAIL_NONE];?>";
-				addSelectItem(a,am);
-
-				b.value=<?php print AVAIL_SNMP_AND_PING;?>;
-				b.text="<?php print $availability_options[AVAIL_SNMP_AND_PING];?>";
-				addSelectItem(b,am);
-
-				e.value=<?php print AVAIL_SNMP_OR_PING;?>;
-				e.text="<?php print $availability_options[AVAIL_SNMP_OR_PING];?>";
-				addSelectItem(e,am);
-
-				c.value=<?php print AVAIL_SNMP;?>;
-				c.text="<?php print $availability_options[AVAIL_SNMP];?>";
-				addSelectItem(c,am);
-
-				d.value=<?php print AVAIL_PING;?>;
-				d.text="<?php print $availability_options[AVAIL_PING];?>";
-				addSelectItem(d,am);
-
-				/* restore the correct index number */
-				if (selectedIndex == 0) {
-					am.selectedIndex = <?php print AVAIL_NONE;?>;
-				}else{
-					am.selectedIndex = <?php print AVAIL_PING;?>;
-				}
-			}
-
-			break;
-		}
-
-		setAvailabilityVisibility(type, am.selectedIndex);
-		setPingVisibility();
-	}
-
-	function setAvailabilityVisibility(type, selectedIndex) {
-		//alert("setAvailabilityVisibility type is '" + type + "'");
-		//alert("The selectedIndex is '" + selectedIndex + "'");
-		switch(type) {
-		case "NoSNMP":
-			switch(selectedIndex) {
-			case <?php print AVAIL_NONE;?>: // availability none
-				$('#row_ping_method').css('display', 'none');
-				$('#ping_method').val('0');
-
-				break;
-			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
-				$('#row_ping_method').css('display', '');
-				$('#ping_method').val(ping_method);
-
-				break;
-			}
-		case "All":
-			switch(selectedIndex) {
-			case <?php print AVAIL_NONE;?>: // availability none
-				$('#row_ping_method').css('display', 'none');
-				$('#ping_method').val('0');
-
-				break;
-			case <?php print AVAIL_SNMP_AND_PING;?>: // ping and snmp
-			case <?php print AVAIL_PING;?>: // ping
-			case <?php print AVAIL_SNMP_OR_PING;?>: // ping or snmp
-				if (($('#row_ping_method').css('display') == "none") ||
-					($('#row_ping_method').css('display') == undefined)) {
-					$('#ping_method').val(ping_method);
-					$('#row_ping_method').css('display', '');
-				}
-
-				break;
-			case <?php print AVAIL_SNMP;?>: // snmp
-				$('#row_ping_method').css('display', 'none');
-				$('#ping_method').val('0');
-
-				break;
-			}
-		}
-	}
-
-	function changeHostForm() {
-		snmp_version        = $('#snmp_version').val();
+	/* set the visibility of the SNMP options available
+	   depending on the SNMP version currently defined */
+	function setSNMPVisibility(snmp_version) {
 		//alert("changeHostForm SNMP Version is '" + snmp_version + "'");
 
 		switch(snmp_version) {
-		case "<?php print SNMP_VERSION_NONE;?>":
-			setAvailability("NoSNMP");
-			setSNMP("None");
-
-			break;
-		case "<?php print SNMP_VERSION_1;?>":
-		case "<?php print SNMP_VERSION_2;?>":
-			setAvailability("All");
-			setSNMP("v1v2");
-
-			break;
-		case "<?php print SNMP_VERSION_3;?>":
-			setAvailability("All");
-			setSNMP("v3");
-
-			break;
-		}
-	}
-
-	function setSNMP(snmp_type) {
-		//alert("setSNMP SNMP type is '" + snmp_type + "'");
-		switch(snmp_type) {
-		case "None":
+		case "<?php print SNMP_VERSION_NONE;?>": // SNMP none
+//			$('#snmp_version').attr("disabled","disabled");
+			$('#row_snmp_version').css('display', 'none');
 			$('#row_snmp_username').css('display', 'none');
 			$('#row_snmp_password').css('display', 'none');
 			$('#row_snmp_community').css('display', 'none');
@@ -1124,7 +931,10 @@ function device_display_general($device, $device_text) {
 			$('#row_max_oids').css('display', 'none');
 
 			break;
-		case "v1v2":
+		case "<?php print SNMP_VERSION_1;?>": // SNMP V1
+		case "<?php print SNMP_VERSION_2;?>": // SNMP V2
+//			$('#snmp_version').removeAttr("disabled");
+			$('#row_snmp_version').css('display', '');
 			$('#row_snmp_username').css('display', 'none');
 			$('#row_snmp_password').css('display', 'none');
 			$('#row_snmp_community').css('display', '');
@@ -1137,7 +947,9 @@ function device_display_general($device, $device_text) {
 			$('#row_max_oids').css('display', '');
 
 			break;
-		case "v3":
+		case "<?php print SNMP_VERSION_3;?>": // SNMP V3
+//			$('#snmp_version').removeAttr("disabled");
+			$('#row_snmp_version').css('display', '');
 			$('#row_snmp_username').css('display', '');
 			$('#row_snmp_password').css('display', '');
 			$('#row_snmp_community').css('display', 'none');
@@ -1153,16 +965,114 @@ function device_display_general($device, $device_text) {
 		}
 	}
 
-	function toggleAvailabilityAndSnmp(template_enabled) {
+
+
+	/* set the visibility of the ping_port
+	   in case we have an ICMP ping, you can't set a port
+	 */
+	function setPingPortVisibility(ping_method) {
+		//alert("setPingPortVisibility Ping Method is '" + ping_method + "'");
+		
+		switch(ping_method) {
+		case "<?php print PING_NONE;?>": // ping nothing
+			/* deactivate all PING options */
+			$('#row_ping_method').css('display', 'none');
+			$('#row_ping_port').css('display', 'none');
+			$('#row_ping_timeout').css('display', 'none');
+			$('#row_ping_retries').css('display', 'none');
+
+			break;
+		case "<?php print PING_ICMP;?>": // ping icmp
+			/* ICMP ping does not take a port */
+			$('#row_ping_method').css('display', '');
+			$('#row_ping_port').css('display', 'none');
+			$('#row_ping_timeout').css('display', '');
+			$('#row_ping_retries').css('display', '');
+
+			break;
+		case "<?php print PING_UDP;?>": // ping udp
+		case "<?php print PING_TCP;?>": // ping tcp
+			$('#row_ping_method').css('display', '');
+			$('#row_ping_port').css('display', '');
+			$('#row_ping_timeout').css('display', '');
+			$('#row_ping_retries').css('display', '');
+
+			break;
+		}
+	}
+
+	/* this function is called when
+	   - availibility options changes
+	   - ping method changes
+	   - SNMP version changes
+	   - and on page load
+	   it will cover the required changes by calling appropriate functions
+	   that are responsible for each specific change
+	 */
+	function changeHostForm() {
+		ping_method         = $('#ping_method').val();
+		//alert("Ping Method is '" + ping_method + "'");
+		snmp_version        = $('#snmp_version').val();
+		//alert("SNMP Version is '" + snmp_version + "'");		
+		availability        = $('#availability_method').val();
+		//alert("Availability is '" + availability + "'");
+
+
+		switch(availability) {
+		case "<?php print AVAIL_NONE;?>": // availability none
+			/* deactivate PING */
+			setPingPortVisibility("<?php print PING_NONE;?>")
+			/* deactivate SNMP */
+			setSNMPVisibility("<?php print SNMP_VERSION_NONE;?>")
+
+			break;
+		case "<?php print AVAIL_PING;?>": // ping
+			/* set PING */
+			setPingPortVisibility(ping_method)
+			/* deactivate SNMP */
+			setSNMPVisibility("<?php print SNMP_VERSION_NONE;?>")
+
+			break;
+		case "<?php print AVAIL_SNMP;?>": // snmp
+			/* deactivate PING */
+			setPingPortVisibility("<?php print PING_NONE;?>")
+			/* set SNMP */
+			setSNMPVisibility(snmp_version)
+
+			break;
+		case "<?php print AVAIL_SNMP_AND_PING;?>": // ping and snmp
+		case "<?php print AVAIL_SNMP_OR_PING;?>": // ping or snmp
+			/* set PING */
+			setPingPortVisibility(ping_method)
+			/* set SNMP */
+			setSNMPVisibility(snmp_version)
+
+			break;
+		}
+	}
+
+
+	/* enable/disable setting of 
+	   - availability options
+	   - ping options
+	   - SNMP options
+	   - threading
+	   as a result of templating being enabled or disabled
+	 */
+	function toggleAvailabilityAndSnmp(template_enabled){
+		//alert("toggleAvailabilityAndSnmp called");
+	
+		/* in case templating is disabled and override is allowed
+		   => allow for editing those options on device level
+		      by removing the "disabled" attribute
+		 */ 
 		if (!template_enabled && $('#override_permitted').val() == 'true') {
 			$('#override_permitted').removeAttr("disabled");
-			$('#availability_header').removeAttr("disabled");
 			$('#availability_method').removeAttr("disabled");
 			$('#ping_method').removeAttr("disabled");
 			$('#ping_port').removeAttr("disabled");
 			$('#ping_timeout').removeAttr("disabled");
 			$('#ping_retries').removeAttr("disabled");
-			$('#snmp_spacer').removeAttr("disabled");
 			$('#snmp_version').removeAttr("disabled");
 			$('#snmp_username').removeAttr("disabled");
 			$('#snmp_password').removeAttr("disabled");
@@ -1177,14 +1087,16 @@ function device_display_general($device, $device_text) {
 			$('#max_oids').removeAttr("disabled");
 			$('#device_threads').removeAttr("disabled");
 		}else{
+			/* in all other cases
+			   => disallow editing those options on device level
+			      by setting the "disabled" attribute
+		 	 */ 
 			$('#override_permitted').attr("disabled","disabled");
-			$('#availability_header').attr("disabled","disabled");
 			$('#availability_method').attr("disabled","disabled");
 			$('#ping_method').attr("disabled","disabled");
 			$('#ping_port').attr("disabled","disabled");
 			$('#ping_timeout').attr("disabled","disabled");
 			$('#ping_retries').attr("disabled","disabled");
-			$('#snmp_spacer').attr("disabled","disabled");
 			$('#snmp_version').attr("disabled","disabled");
 			$('#snmp_username').attr("disabled","disabled");
 			$('#snmp_password').attr("disabled","disabled");
@@ -1212,18 +1124,22 @@ function device_display_general($device, $device_text) {
 		}else{
 			$('#row_template_enabled').show();
 		}
-	}
+			}
 
 	$().ready(function() {
-		toggleAvailabilityAndSnmp($('#template_enabled').checked);
+		//alert('ready function firing');
+		toggleAvailabilityAndSnmp($('#template_enabled').attr('checked'));
 
 		/* Hide options when override is turned off */
 		$("#template_enabled").change(function() {
 			toggleAvailabilityAndSnmp(this.checked);
 		});
 
+		/* if this is a new device */
 		if ($('#id').val() == 0) {
+			/* react to any change of the device_template */
 			$('#device_template_id').change(function() {
+				/* and fetch data from the device_template */
 				$.get("devices.php?action=ajax&jaction=template&template="+this.value, function(data) {
 					if (data != "null") {
 						data = $.parseJSON(data);
