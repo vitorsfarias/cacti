@@ -587,7 +587,7 @@ function form_dropdown_image($form_name, $form_path, $form_previous_value, $form
 
 	print "<select id='$form_name' style='width:" . $form_width . "px;' name='$form_name'>";
 
-	$form_none_entry = ucfirst(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $form_default_value)))));
+	$form_none_entry = ucwords(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $form_default_value)))));
 
 	$path       = CACTI_CACHE_PATH . "/". $form_path;
 	$imgpath    = CACTI_CACHE_URL_PATH . $form_path;
@@ -604,7 +604,7 @@ function form_dropdown_image($form_name, $form_path, $form_previous_value, $form
 		while (($file = readdir($dh)) !== false) {
 			if ($file != "." && $file != ".." && !is_dir("$path/$file") && preg_match("/(\.png|\.jpg|\.gif)/", $file)) {
 				if (sizeof(getimagesize($path . "/" . $file))) {
-					$title = ucfirst(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $file)))));
+					$title = ucwords(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $file)))));
 					$found[] = basename($file);
 					print "<option style='width:" . $form_width . "px;' title='" . $imgpath . "/" . $file . "' value='" . $imgpath . "/" . $file . "'" . (basename($form_previous_value) == (basename($file)) ? " selected" : "") . ">&nbsp;" . $title . "&nbsp;</option>\n";
 				}
@@ -622,7 +622,7 @@ function form_dropdown_image($form_name, $form_path, $form_previous_value, $form
 		while (($file = readdir($dh)) !== false) {
 			if ($file != "." && $file != ".." && !is_dir("$path/$file") && preg_match("/(\.png|\.jpg|\.gif)/", $file)) {
 				if (!in_array(basename($file), $found) && sizeof(getimagesize($path . "/" . $file))) {
-					$title = ucfirst(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $file)))));
+					$title = ucwords(str_replace("_", " ", str_replace(".gif", "", str_replace(".jpg", "", str_replace(".png", "", $file)))));
 					if ($title != $form_none_entry) {
 						print "<option style='width:" . $form_width . "px;' title='" . $imgpath . "/" . $file . "' value='" . $imgpath . "/" . $file . "'" . (($form_previous_value == ($imgpath . "/" . $file)) ? " selected" : "") . ">&nbsp;" . $title . "&nbsp;</option>\n";
 					}
