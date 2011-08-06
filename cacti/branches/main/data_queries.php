@@ -816,7 +816,7 @@ function data_query_validate_cache() {
 
 function data_query_update_cache($id, $image) {
 	/* accomodate both URL and BASE paths */
-	if (strpos($image, CACTI_URL_PATH) == 0) {
+	if (strpos($image, "'" . CACTI_URL_PATH . "'") == 0) {
 		$image = str_replace(CACTI_URL_PATH, CACTI_BASE_PATH, $image);
 	}
 
@@ -873,7 +873,7 @@ function data_query_edit() {
 			$text = "<font color='#0d7c09'><strong>" . __("Successfully located XML file") . "</strong></font>";
 			$xml_file_exists = true;
 		}else{
-			$text = "<span class='warning'" . __("Could not locate XML file.") . "</span>";
+			$text = "<span class='warning'>" . __("Could not locate XML file.") . "</span>";
 			$xml_file_exists = false;
 		}
 

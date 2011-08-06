@@ -764,7 +764,7 @@ function graph_template_validate_cache() {
 
 function graph_template_update_cache($id, $image) {
 	/* accomodate both URL and BASE paths */
-	if (strpos($image, CACTI_URL_PATH) == 0) {
+	if (strpos($image, "'" . CACTI_URL_PATH . "'") == 0) {
 		$image = str_replace(CACTI_URL_PATH, CACTI_BASE_PATH, $image);
 	}
 
