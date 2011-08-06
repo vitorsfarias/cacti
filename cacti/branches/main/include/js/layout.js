@@ -756,7 +756,7 @@ function transitionPage() {
 
 function fixBrowserQuirks() {
 	var window_height = document.getElementById("wrapper").clientHeight;
-	var myDiv;
+	var myDiv = null;
 
 	if (browser == "IE") {
 		if (document.getElementById("content") != null) {
@@ -767,7 +767,7 @@ function fixBrowserQuirks() {
 			myDiv = document.getElementById("graph_content");
 		}
 
-		if (myDiv.scrollHeight > window_height) {
+		if (myDiv != null && myDiv.scrollHeight > window_height) {
 			myDiv.style.paddingRight = "30px";
 			myDiv.style.overflowX   = "hidden";
 		}
@@ -780,7 +780,7 @@ function fixBrowserQuirks() {
 			myDiv = document.getElementById("graph_content");
 		}
 
-		if (myDiv.scrollHeight <= window_height) {
+		if (myDiv != null && myDiv.scrollHeight <= window_height) {
 			myDiv.style.paddingRight = "10px";
 			myDiv.style.overflowX   = "hidden";
 		}
