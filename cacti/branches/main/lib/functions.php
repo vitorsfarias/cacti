@@ -2270,6 +2270,8 @@ function draw_navigation_text($type = "url") {
 		"utilities.php:view_snmp_cache" => array("title" => __("View SNMP Cache"), "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_tech" => array("title" => __("Technical Support"), "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_user_log" => array("title" => __("View User Log File"), "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:rebuild_font_cache" => array("title" => __("Rebuild Font Cache"), "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:view_font_cache" => array("title" => __("View Font Cache"), "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"vdef.php:" => array("title" => __("VDEF's"), "mapping" => "index.php:", "url" => "vdef.php", "level" => "1"),
 		"vdef.php:actions" => array("title" => __("Actions"), "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
 		"vdef.php:edit" => array("title" => __("(Edit)"), "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),

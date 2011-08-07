@@ -973,7 +973,7 @@ function poller_cache_filter() {
 					</td>
 					<td class="nw120">
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearPItemFilterChange(document.form_userlog)">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
 					</td>
 				</tr>
 			</table>
@@ -1159,7 +1159,7 @@ function utilities_view_poller_cache($refresh=true) {
 
 	/* initialize page behavior */
 	$table->key_field      = "local_data_id";
-	$table->href           = "utilities.php";
+	$table->href           = "utilities.php?action=view_poller_cache&page_referrer=view_poller_cache";
 	$table->session_prefix = "sess_poller_cache";
 	$table->filter_func    = "poller_cache_filter";
 	$table->refresh        = $refresh;
@@ -1428,7 +1428,7 @@ function utilities_view_user_log($refresh=true) {
 
 	/* initialize page behavior */
 	$table->key_field      = "user_id";
-	$table->href           = "utilities.php";
+	$table->href           = "utilities.php?action=view_user_log&page_referrer=view_user_log";
 	$table->session_prefix = "sess_userlog";
 	$table->filter_func    = "userlog_filter";
 	$table->refresh        = $refresh;
@@ -1445,4 +1445,227 @@ function utilities_view_user_log($refresh=true) {
 
 	/* display the table */
 	$table->draw_table();
+}
+
+/**
+ * update the font cache via browser
+ */
+function repopulate_font_cache() {
+	
+	$font_table = 'fonts';
+	
+	if ((file_exists(read_config_option("path_fc_list_binary"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_fc_list_binary"))))) {
+		
+		cacti_log(__("Updating Cacti Font Table, using fc-list"), false);
+		
+		/* get a list of all fonts found on this system
+		 * output looks like
+			DejaVu Serif:fullname=DejaVu Serif
+			DejaVu Serif:fullname=DejaVu Serif Bold
+			DejaVu Serif:fullname=DejaVu Serif Bold Italic
+			DejaVu Serif:fullname=DejaVu Serif Italic
+			Dingbats
+			FreeMono:fullname=Free Mono Cursiva,Free Mono kurzíva,Free Mono kursiv,Free Mono Πλάγια,Free Monospaced Oblique,Free Mono Kursivoitu,Free Mono Italique,Free Mono Dőlt,
+			Free Mono Corsivo,Free Mono Cursief,Free Mono Kursywa,Free Mono Itálico,Free Mono oblic,Free Mono Курсив,Free Mono İtalik,Free Mono huruf miring,Free Mono похилий,Free
+			 Mono slīpraksts,Free Mono pasvirasis,Free Mono nghiêng,Free Mono Etzana	but initially is unsorted
+		 */
+		$fontlist = explode("\n", shell_exec(cacti_escapeshellcmd(read_config_option("path_fc_list_binary")) . " : family fullname"));
+		
+		$size = sizeof($fontlist);
+		if ($size) {
+			/* empty the font table before inserting to start fresh */
+			db_execute("TRUNCATE TABLE $font_table");
+	
+			/* sort the table for a proper display */
+			sort($fontlist, SORT_LOCALE_STRING);
+			
+			$success = 0;
+			/* scan through all fonts found */
+			foreach ($fontlist as $font) {
+				/* get the fullnames out; this is what we require to name a font */
+				$font = preg_replace("/.*fullname=/", "", $font);
+				/* skip "empty" fonts */
+				if ($font == "") continue;
+				/* a single font may contain several "fullname"s, so explode them */
+cacti_log(__(">>>Font: %s", $font), false);
+				$fontarray = explode(",", $font);
+				
+				/* scan through all fullnames found */
+				foreach($fontarray as $item) {
+					/* escape the fullnames properly, this depends on locale
+					 * so it may erase some items */
+cacti_log(__(">>>Font: %s", $item), false);
+					$item = trim(cacti_escapeshellarg($item, false));
+					if ($item == "") continue;
+					$item = "'" . $item . "'";
+					if (db_execute("INSERT INTO $font_table SET font=$item")) {
+						cacti_log(__("Font successfully inserted: %s", $item), false);
+						$success++;
+					} else {
+						cacti_log(__("Error while inserting font: %s", $item), false);
+					}
+				}
+			}
+			
+			cacti_log(__("%d font items inserted into font table" . "", $success), false);
+		} else {
+			cacti_log(__("No fonts found, existing"), false);		
+		}
+	} else {
+		cacti_log__("Not able to execute the fc-list command. Either fc-list is not available, fc-list path not set or not executable.", false);
+	}
+
+}
+
+function font_cache_filter() {
+	global $item_rows;
+
+	html_start_box(__("Font Cache Items"), "100", "3", "center", "", true);
+	?>
+	<tr class='rowAlternate3'>
+		<td>
+			<form name="form_fontcache" action="utilities.php">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="nw50">
+						&nbsp;<?php print __("Search:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw50">
+						&nbsp;<?php print __("Rows:");?>&nbsp;
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyFontCacheFilterChange(document.form_fontcache)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			<div><input type='hidden' name='action' value='view_font_cache'></div>
+			<div><input type='hidden' name='page_referrer' value='view_font_cache'></div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function clearFontCacheFilterChange(objForm) {
+		strURL = '?filter=';
+		strURL = strURL + '&rows=-1';
+		strURL = strURL + '&action=view_font_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	function applyFontCacheFilterChange(objForm) {
+		strURL = '?filter=' + objForm.filter.value;
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		strURL = strURL + '&action=view_font_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+}
+
+/**
+ * fetch rows from font table
+ */
+function font_cache_get_records(&$total_rows, &$rowspp) {
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "";
+
+	$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " font LIKE '%%" . html_get_page_variable("filter") . "%%'";
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_data_source");
+	}else{
+		$rowspp = html_get_page_variable("rows");
+	}
+
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM fonts
+		$sql_where");
+
+	$font_sql = "SELECT *
+		FROM fonts
+		$sql_where
+		ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction") . "
+		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+
+	//	print $font_sql;
+
+	return db_fetch_assoc($font_sql);
+}
+
+
+/**
+ * view all fonts available in Cacti font cache and provide some filter options
+ */
+function utilities_view_font_cache($refresh=true) {
+	global $item_rows, $colors;
+
+	define("MAX_DISPLAY_PAGES", 21);
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "font"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+
+	$table->table_format = array(
+		"font" => array(
+			"name" => __("Font Name"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+	);
+
+	/* initialize page behavior */
+	$table->key_field      = "id";
+	$table->href           = "utilities.php?action=view_font_cache&page_referrer=view_font_cache";
+	$table->session_prefix = "sess_font_cache";
+	$table->filter_func    = "font_cache_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->sortable       = true;
+	$table->table_id       = "font_cache";
+#	$table->actions        = $font_cache_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = font_cache_get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
+
 }

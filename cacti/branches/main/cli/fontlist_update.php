@@ -102,8 +102,12 @@ if ((file_exists(read_config_option("path_fc_list_binary"))) && ((function_exist
 			
 			/* scan through all fullnames found */
 			foreach($fontarray as $item) {
-				/* escape the fullnames properly */
-				$item = cacti_escapeshellarg($item, true);
+				/* escape the fullnames properly, this depends on locale
+				 * so it may erase some items */
+				$item = trim(cacti_escapeshellarg($item, false));
+				if ($item == "") continue;
+				$item = "'" . $item . "'";
+				if ($item == "''") continue;
 				if (db_execute("INSERT INTO $font_table SET font=$item")) {
 					print __("Font successfully inserted: %s\n", $item);
 					$success++;
