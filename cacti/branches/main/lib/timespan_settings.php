@@ -131,20 +131,23 @@ function process_html_variables() {
 */
 function process_user_input(&$timespan, $timeshift) {
 	if (isset($_REQUEST["date1"])) {
+		$date1 = __date("Y-m-d H:i:s", strtotime(sanitize_search_string($_REQUEST["date1"])));
+		$date2 = __date("Y-m-d H:i:s", strtotime(sanitize_search_string($_REQUEST["date2"])));
+
 		/* the dates have changed, therefore, I am now custom */
-		if (($_SESSION["sess_current_date1"] != $_REQUEST["date1"]) || ($_SESSION["sess_current_date2"] != $_REQUEST["date2"])) {
-			$timespan["current_value_date1"] = sanitize_search_string($_REQUEST["date1"]);
-			$timespan["begin_now"] =strtotime($timespan["current_value_date1"]);
-			$timespan["current_value_date2"] = sanitize_search_string($_REQUEST["date2"]);
-			$timespan["end_now"]=strtotime($timespan["current_value_date2"]);
+		if (($_SESSION["sess_current_date1"] != $date1) || ($_SESSION["sess_current_date2"] != $date2)) {
+			$timespan["begin_now"] = strtotime(sanitize_search_string($_REQUEST["date1"]));
+			$timespan["current_value_date1"] = $date1;
+			$timespan["end_now"]= strtotime(sanitize_search_string($_REQUEST["date2"]));
+			$timespan["current_value_date2"] = $date2;
 			$_SESSION["sess_current_timespan"] = GT_CUSTOM;
 			$_SESSION["custom"] = 1;
 			$_REQUEST["predefined_timespan"] = GT_CUSTOM;
 		}else {
 			/* the default button wasn't pushed */
 			if (!isset($_REQUEST["button_clear_x"])) {
-				$timespan["current_value_date1"] = sanitize_search_string($_REQUEST["date1"]);
-				$timespan["current_value_date2"] = sanitize_search_string($_REQUEST["date2"]);
+				$timespan["current_value_date1"] = date("Y-m-d H:i:s", strtotime(sanitize_search_string($_REQUEST["date1"])));
+				$timespan["current_value_date2"] = date("Y-m-d H:i:s", strtotime(sanitize_search_string($_REQUEST["date2"])));
 				$timespan["begin_now"] = $_SESSION["sess_current_timespan_begin_now"];
 				$timespan["end_now"] = $_SESSION["sess_current_timespan_end_now"];
 
@@ -215,12 +218,12 @@ function set_preset_timespan(&$timespan) {
 function finalize_timespan(&$timespan) {
 	if (!isset($timespan["current_value_date1"])) {
 		/* Default end date is now default time span */
-		$timespan["current_value_date1"] = date("Y-m-d H:i", $timespan["begin_now"]);
+		$timespan["current_value_date1"] = __date("Y-m-d H:i:s", $timespan["begin_now"]);
 	}
 
 	if (!isset($timespan["current_value_date2"])) {
 		/* Default end date is now */
-		$timespan["current_value_date2"] = date("Y-m-d H:i", $timespan["end_now"]);
+		$timespan["current_value_date2"] = __date("Y-m-d H:i:s", $timespan["end_now"]);
 	}
 
 	/* correct bad dates on calendar */
@@ -228,21 +231,21 @@ function finalize_timespan(&$timespan) {
 		set_preset_timespan($timespan);
 		$_SESSION["sess_current_timespan"] = read_graph_config_option("default_timespan");
 
-		$timespan["current_value_date1"] = date("Y-m-d H:i", $timespan["begin_now"]);
-		$timespan["current_value_date2"] = date("Y-m-d H:i", $timespan["end_now"]);
+		$timespan["current_value_date1"] = __date("Y-m-d H:i:s", $timespan["begin_now"]);
+		$timespan["current_value_date2"] = __date("Y-m-d H:i:s", $timespan["end_now"]);
 	}
 
 	/* if moved to future although not allow by settings, stop at current time */
 	if ( ($timespan["end_now"] > time()) && (read_graph_config_option("allow_graph_dates_in_future") == "") ) {
 		$timespan["end_now"] = time();
 		# convert end time to human readable format
-		$timespan["current_value_date2"] = date("Y-m-d H:i", $timespan["end_now"]);
+		$timespan["current_value_date2"] = __date("Y-m-d H:i:s", $timespan["end_now"]);
 	}
 
 	$_SESSION["sess_current_timespan_end_now"] = $timespan["end_now"];
 	$_SESSION["sess_current_timespan_begin_now"] = $timespan["begin_now"];
-	$_SESSION["sess_current_date1"] = $timespan["current_value_date1"];
-	$_SESSION["sess_current_date2"] = $timespan["current_value_date2"];
+	$_SESSION["sess_current_date1"] = __date("Y-m-d H:i:s", strtotime($timespan["current_value_date1"]));
+	$_SESSION["sess_current_date2"] = __date("Y-m-d H:i:s", strtotime($timespan["current_value_date2"]));
 
 	$timespan_sel_pos = strpos(get_browser_query_string(),"&predefined_timespan");
 	if ($timespan_sel_pos) {
@@ -270,5 +273,5 @@ function set_timeshift() {
 		$_SESSION["custom"] = 0;
 	}
 
-	return $timeshift = $graph_timeshifts[$_SESSION["sess_current_timeshift"]];
+	return $timeshift = $graph_timeshifts[$_SESSION["sess_current_timeshift"]]["native"];
 }

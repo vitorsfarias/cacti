@@ -148,8 +148,8 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	}
 
 	# reformat time-since-epoch start/end times to human readable format
-	$span["current_value_date1"] = date("Y-m-d H:i",$span["begin_now"]);
-	$span["current_value_date2"] = date("Y-m-d H:i",$span["end_now"]);
+	$span["current_value_date1"] = __date("Y-m-d H:i:s",$span["begin_now"]);
+	$span["current_value_date2"] = __date("Y-m-d H:i:s",$span["end_now"]);
 }
 
 /** month_shift					- check for shifting one or more months

@@ -54,6 +54,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<link type="text/css" href="<?php echo CACTI_URL_PATH; ?>include/jquery.autocomplete.css" rel="stylesheet">
 	<link type="text/css" media="screen" href="<?php echo CACTI_URL_PATH; ?>include/css/cacti_dd_menu.css" rel="stylesheet">
 	<link type="text/css" media="screen" href="<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui.css" rel="stylesheet">
+	<link type="text/css" media="screen" href="<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui-timepicker.css" rel="stylesheet">
 	<link href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico" rel="shortcut icon">
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery-ui.js"></script>
@@ -65,8 +66,8 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.tablednd.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js"></script>
-	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jscalendar/lang/<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.timepicker.js'></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
 	<?php initializeCookieVariable(); plugin_hook('page_head'); ?>
 </head>
 <body class='body'>

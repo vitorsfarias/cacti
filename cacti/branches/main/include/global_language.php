@@ -45,6 +45,8 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 	$cacti_locale = $_GET['language'];
 	$cacti_country = $lang2locale[$_GET['language']]['country'];
 	$_SESSION['sess_i18n_language'] = $cacti_locale;
+	unset($_SESSION["sess_current_date1"]);
+	unset($_SESSION["sess_current_date2"]);
 
 	/* save customized language setting (authenticated users only) */
 	set_user_config_option('language', $cacti_locale);
@@ -94,7 +96,7 @@ if (isset($_GET['language']) && isset($lang2locale[$_GET['language']])) {
 $path2catalogue = CACTI_BASE_PATH . "/locales/LC_MESSAGES/" . $lang2locale[$cacti_locale]['filename'] . ".mo";
 
 /* define the path to the language file of the DHTML calendar */
-$path2calendar = CACTI_BASE_PATH . "/include/js/jscalendar/lang/" . $lang2locale[$cacti_locale]['filename'] . ".js";
+$path2calendar = CACTI_BASE_PATH . "/include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-" . $lang2locale[$cacti_locale]['filename'] . ".js";
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue) & file_exists($path2calendar)) {
@@ -381,7 +383,7 @@ function get_list_of_locales(){
 	"sv"		=> array("language"=>"Swedish",					"country" => "se", "filename" => "swedish_sweden"),
 	"th"		=> array("language"=>"Thai", 					"country" => "th", "filename" => "thai_thailand"),
 	"tr"		=> array("language"=>"Turkish", 				"country" => "tr", "filename" => "turkish_turkey"),
-	"uk"		=> array("language"=>"Vietnamese", 				"country" => "vn", "filename" => "vietnamese_vietnam"));
+	"vi"		=> array("language"=>"Vietnamese", 				"country" => "vn", "filename" => "vietnamese_vietnam"));
 	return $lang2locale;
 }
 
@@ -405,7 +407,7 @@ function get_installed_locales(){
 	$dhandle = opendir(CACTI_BASE_PATH . "/locales/LC_MESSAGES");
 	while (false !== ($filename = readdir($dhandle))) {
 		/* check if language file for DHTML calendar is also available */
-		$path2calendar = CACTI_BASE_PATH . "/include/js/jscalendar/lang/" . str_replace(".mo", ".js", $filename);
+		$path2calendar = CACTI_BASE_PATH . "/include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-" . str_replace(".mo", ".js", $filename);
 		if(isset($locations[$filename]) & file_exists($path2calendar)) {
 			$supported_languages[$locations[$filename]["locale"]] = $locations[$filename]["language"];
 		}

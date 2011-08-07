@@ -357,7 +357,7 @@ function ajax_get_languages() {
 	$supported_languages["cacti"][] = "english_usa.mo";
 	while (false !== ($filename = readdir($dhandle))) {
 		/* language file for the DHTML calendar has to be available too */
-		$path2calendar = "./include/js/jscalendar/lang/" . str_replace(".mo", ".js", $filename);
+		$path2calendar = "./include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-" . str_replace(".mo", ".js", $filename);
 		if(isset($locations[$filename]) & file_exists($path2calendar)) {
 			$supported_languages["cacti"][] = $filename;
 		}
