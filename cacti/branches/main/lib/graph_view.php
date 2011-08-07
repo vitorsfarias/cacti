@@ -793,58 +793,36 @@ function graph_view_timespan_selector($mode = "tree") {
 	?>
 	<script type='text/javascript'>
 	<!--
-	// Initialize the calendar
-	calendar=null;
 
-	// This function displays the calendar associated to the input field 'id'
-	function showCalendar(id) {
-		var el = document.getElementById(id);
-		if (calendar != null) {
-			// we already have some calendar created
-			calendar.hide();  // so we hide it first.
-		} else {
-			// first-time call, create the calendar.
-			var cal = new Calendar(true, null, selected, closeHandler);
-			cal.weekNumbers = false;  // Do not display the week number
-			cal.showsTime = true;     // Display the time
-			cal.time24 = true;        // Hours have a 24 hours format
-			cal.showsOtherMonths = false;    // Just the current month is displayed
-			calendar = cal;                  // remember it in the global var
-			cal.setRange(1900, 2070);        // min/max year allowed.
-			cal.create();
-		}
-
-		calendar.setDateFormat('%Y-%m-%d %H:%M');    // set the specified date format
-		calendar.parseDate(el.value);                // try to parse the text in field
-		calendar.sel = el;                           // inform it what input field we use
-
-		// Display the calendar below the input field
-		calendar.showAtElement(el, "Br");        // show the calendar
-
-		return false;
-	}
-
-	// This function update the date in the input field when selected
-	function selected(cal, date) {
-		cal.sel.value = date;      // just update the date in the input field.
-	}
-
-	// This function gets called when the end-user clicks on the 'Close' button.
-	// It just hides the calendar without destroying it.
-	function closeHandler(cal) {
-		cal.hide();                        // hide the calendar
-		calendar = null;
-	}
+	$().ready(function() {
+		$('#date1').datetimepicker({showSecond: true, showAnim: 'fadeIn', timeFormat: '<?php print __("hh:mm:ss");?>'});
+		$('#date2').datetimepicker({showSecond: true, showAnim: 'fadeIn', timeFormat: '<?php print __("hh:mm:ss");?>'});
+	});
 
 	request_type = 'preset';
+
+	function transform_date_format(element){
+		var date = $("#" + element).datepicker( "getDate" );
+		var unixTime = Date.parse(date);
+		var date	= new Date(unixTime);
+		var year	= date.getFullYear();
+		var month	= ((date.getMonth()+1) < 9 ) ? '0' + (date.getMonth()+1) : date.getMonth()+1;
+		var day		= (date.getDate() > 9) ? date.getDate() : '0' + date.getDate();
+		var hours	= (date.getHours() > 9) ? date.getHours() : '0' + date.getHours();
+		var minutes	= (date.getMinutes() > 9) ? date.getMinutes() : '0' + date.getMinutes();
+		var seconds	= (date.getSeconds() > 9) ? date.getSeconds() : '0' + date.getSeconds();
+
+		var formattedTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+		return formattedTime;
+	}
 
 	function applyTimespanFilterChange(objForm) {
 		<?php if ($mode == 'tree') { ?>
 		if (request_type == 'preset') {
 			strURL = '?action=ajax_tree_graphs&predefined_timespan=' + objForm.predefined_timespan.value;
 		}else{
-			strURL = '?action=ajax_tree_graphs&date1=' + objForm.date1.value;
-			strURL = strURL + '&date2=' + objForm.date2.value;
+			strURL = '?action=ajax_tree_graphs&date1=' + transform_date_format("date1");
+			strURL = strURL + '&date2=' + transform_date_format("date2");
 		}
 		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
@@ -853,8 +831,8 @@ function graph_view_timespan_selector($mode = "tree") {
 		if (request_type == 'preset') {
 			strURL = '?action=ajax_preview&predefined_timespan=' + objForm.predefined_timespan.value;
 		}else{
-			strURL = '?action=ajax_preview&date1=' + objForm.date1.value;
-			strURL = strURL + '&date2=' + objForm.date2.value;
+			strURL = '?action=ajax_preview&date1=' + transform_date_format("date1");
+			strURL = strURL + '&date2=' + transform_date_format("date2");
 		}
 		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
@@ -880,16 +858,16 @@ function graph_view_timespan_selector($mode = "tree") {
 		<?php if ($mode == 'tree') { ?>
 		strURL = '?action=ajax_tree_graphs&move_' + direction + '=true';
 		strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-		strURL = strURL + '&date1=' + objForm.date1.value;
-		strURL = strURL + '&date2=' + objForm.date2.value;
+		strURL = strURL + '&date1=' + transform_date_format("date1");
+		strURL = strURL + '&date2=' + transform_date_format("date2");
 		$.get("graph_view.php" + strURL, function(data) {
 			$("#graphs").html(data);
 		});
 		<?php }else{ ;?>
 		strURL = '?action=ajax_preview&move_' + direction + '=true';
 		strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-		strURL = strURL + '&date1=' + objForm.date1.value;
-		strURL = strURL + '&date2=' + objForm.date2.value;
+		strURL = strURL + '&date1=' + transform_date_format("date1");
+		strURL = strURL + '&date2=' + transform_date_format("date2");
 		$.get("graph_view.php" + strURL, function(data) {
 			$("#graph_content").html(data);
 		});
@@ -936,19 +914,13 @@ function graph_view_timespan_selector($mode = "tree") {
 						&nbsp;<?php print __("From:");?>&nbsp;
 					</td>
 					<td class='nw110'>
-						<input type='text' name='date1' id='date1' title='<?php print __("Graph Begin Timestamp");?>' size='14' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-					</td>
-					<td>
-						&nbsp;<input type='image' class='img_filter' src='images/calendar.gif' alt='<?php print __("Start");?>' title='<?php print __("Start Date Selector");?>' onclick='return showCalendar("date1");'>
+						<input type='text' name='date1' id='date1' title='<?php print __("Graph Begin Timestamp");?>' size='16' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
 					</td>
 					<td class='nw30'>
 						&nbsp;<?php print __("To:");?>&nbsp;
 					</td>
 					<td class='nw110'>
-						<input type='text' name='date2' id='date2' title='<?php print __("Graph End Timestamp");?>' size='14' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-					</td>
-					<td>
-						&nbsp;<input type='image' class='img_filter' src='images/calendar.gif' alt='<?php print __("End");?>' title='<?php print __("End Date Selector");?>' onclick='return showCalendar("date2");'>
+						<input type='text' name='date2' id='date2' title='<?php print __("Graph End Timestamp");?>' size='16' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
 					</td>
 					<td>
 						&nbsp;<img onMouseOver='this.style.cursor="pointer"' onClick='return timeShift(document.form_timespan_selector, "left")' class='img_filter' name='move_left' src='images/move_left.gif' alt='<?php print __("Left");?>' title='<?php print __("Shift Left");?>'>
@@ -959,7 +931,7 @@ function graph_view_timespan_selector($mode = "tree") {
 							$end_val = sizeof($graph_timeshifts)+1;
 							if (sizeof($graph_timeshifts) > 0) {
 								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-									print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+									print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value]["localized"], 40) . "</option>\n";
 								}
 							}
 							?>
