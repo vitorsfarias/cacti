@@ -36,6 +36,8 @@ if (isset($_REQUEST["sort_direction"])) {
 		$_REQUEST["action"] = "view_snmp_cache";
 	}else if (get_request_var_request('page_referrer') == "view_poller_cache") {
 		$_REQUEST["action"] = "view_poller_cache";
+	}else if (get_request_var_request('page_referrer') == "view_font_cache") {
+		$_REQUEST["action"] = "view_font_cache";
 	}else{
 		$_REQUEST["action"] = "view_user_log";
 	}
@@ -46,6 +48,8 @@ if ((isset($_REQUEST["clear_x"])) || (isset($_REQUEST["go_x"]))) {
 		$_REQUEST["action"] = "view_snmp_cache";
 	}else if (get_request_var_request('page_referrer') == "view_poller_cache") {
 		$_REQUEST["action"] = "view_poller_cache";
+	}else if (get_request_var_request('page_referrer') == "view_font_cache") {
+		$_REQUEST["action"] = "view_font_cache";
 	}else if (get_request_var_request('page_referrer') == "view_user_log") {
 		$_REQUEST["action"] = "view_user_log";
 	}else{
@@ -62,6 +66,27 @@ if (isset($_REQUEST["purge_x"])) {
 }
 
 switch (get_request_var_request("action")) {
+	case 'rebuild_font_cache':
+		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+
+		/* obtain timeout settings */
+		$max_execution = ini_get("max_execution_time");
+
+		ini_set("max_execution_time", "0");
+		repopulate_font_cache();
+		ini_set("max_execution_time", $max_execution);
+
+		utilities_view_font_cache();
+
+		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		break;
+	case 'view_font_cache':
+		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+
+		utilities_view_font_cache();
+
+		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		break;
 	case 'clear_poller_cache':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -1275,6 +1300,20 @@ function utilities() {
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("The poller cache will be cleared and re-generated if you select this option. Sometimes device/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.");?>
+		</td>
+	</tr>
+
+	<?php
+	print "</table></td></tr>";		/* end of html_header */
+	print "<tr><td>";
+	html_header(array(array("name" => __("Font Cache Administration"))), 2,'','','left wp100'); ?>
+
+	<tr class="rowAlternate1">
+		<td class="textAreaNotes e">
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=rebuild_font_cache");?>'><?php print __("Rebuild Font Cache");?></a>
+		</td>
+		<td class="textAreaNotes v">
+			<?php print __("For Pango based RRDTool Versions, fonts are accessed via fc-list and cached by Cacti for easy selection via dropdown. This option rebuilds the Cacti-maintained font table.");?>
 		</td>
 	</tr>
 
