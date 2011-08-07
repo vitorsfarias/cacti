@@ -711,7 +711,7 @@ function sizeContentDivs() {
 	var bottom = document.getElementById("wrapper").clientHeight;
 
 	/* IE6 will enter infinite loop here */
-	if($.browser.msie && $.browser.version=="6.0") {
+	if(!$.browser.msie && $.browser.version!="6.0") {
 		/* size the menu first */
 		if (document.getElementById("menu")) {
 			document.getElementById("menu").style.height = parseInt(bottom-top) + "px";
