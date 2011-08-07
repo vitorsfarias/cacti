@@ -247,8 +247,6 @@ var iEdgeThreshold  = 10;
 var isMouseDown     = false;
 var vSplitterClosed = false;
 var creatingCookie  = false;
-var browser         = "Unknown";
-var browserVersion  = 0;
 
 /* tells if on the right border or not */
 function isOnBorderRight(type, object, event) {
@@ -485,7 +483,7 @@ function mouseMove(event) {
 				//$('#debug').text("Name:"+objTh.id+", MinX:"+minX+", ThWidth:"+objThWidth+", New Width:"+thSt);
 			}
 
-			if ((browser == 'IE') && (document.selection)) {
+			if ($.browser.msie && document.selection) {
 				document.selection.empty();
 			}else if (window.getSelection()) {
 				window.getSelection().removeAllRanges();
@@ -509,7 +507,7 @@ function mouseMove(event) {
 				$("#graph_tree_content").css("left", "2px").css("width", parseInt(clWidth + 200) + "px");
 			}
 
-			if ((browser == 'IE') && (document.selection)) {
+			if ($.browser.msie && document.selection) {
 				document.selection.empty();
 			}else if (window.getSelection) {
 				window.getSelection().removeAllRanges();
@@ -522,7 +520,7 @@ function mouseUp(event) {
 	if (!event) event = window.event;
 
 	if (objTh) {
-		if ((browser == 'IE') && (document.selection)) {
+		if ($.browser.msie && document.selection) {
 			document.selection.empty();
 		} else if (window.getSelection) {
 			window.getSelection().removeAllRanges();
@@ -531,7 +529,7 @@ function mouseUp(event) {
 		objTh = null;
 		doneColResize();
 	} else if (objDiv) {
-		if ((browser == 'IE') && (document.selection)) {
+		if ($.browser.msie && document.selection) {
 			document.selection.empty();
 		}else if (window.getSelection) {
 			window.getSelection().removeAllRanges();
@@ -672,17 +670,11 @@ $(window).resize(function() {
 	/* initialize the page splitter as required */
 	vSplitterPos();
 
-	/* fix browser quirks */
-	fixBrowserQuirks();
-
 	/* size the content divs */
 	sizeContentDivs();
 });
 
 $().ready(function() {
-	/* detect the browser type */
-	detectBrowser();
-
 	/* initialize mouse functions */
 	document.onmousedown = mouseDown;
 	document.onmousemove = mouseMove;
@@ -690,9 +682,6 @@ $().ready(function() {
 
 	/* set document focus */
 	setFocus();
-
-	/* fix browser quirks */
-	fixBrowserQuirks();
 
 	/* size the content divs */
 	sizeContentDivs();
@@ -703,16 +692,18 @@ $().ready(function() {
 	/* restore column widths */
 	initResizableColumns();
 
-	/* stripe tables and add hovering */
+	/* add hovering */
 	$(".hover tbody tr").mouseover(function() {
 		$(this).addClass("rowSelected");
 	}).mouseout(function() {
 		$(this).removeClass("rowSelected");
 	});
+
+	/* stripe stripable tables */
 	$(".striped tbody tr:even").addClass("rowAlternate2").removeClass("rowAlternate1");
 
 	/* restore the page visibility */
-	transitionPage();
+	$('#wrapper').css("opacity", "1");
 });
 
 function sizeContentDivs() {
@@ -720,7 +711,7 @@ function sizeContentDivs() {
 	var bottom = document.getElementById("wrapper").clientHeight;
 
 	/* IE6 will enter infinite loop here */
-	if (browser != "IE" || (browser == "IE" && browserVersion != 6)) {
+	if($.browser.msie && $.browser.version=="6.0") {
 		/* size the menu first */
 		if (document.getElementById("menu")) {
 			document.getElementById("menu").style.height = parseInt(bottom-top) + "px";
@@ -734,75 +725,6 @@ function sizeContentDivs() {
 		}else{
 			document.getElementById("graph_content").style.height = parseInt(bottom-top) + "px";
 		}
-	}
-}
-
-function transitionPage() {
-	if (browser != "IE") {
-		if (document.getElementById("graph_tree")) {
-			document.getElementById("graph_tree").style.opacity         = 1;
-			document.getElementById("graph_tree_content").style.opacity = 1;
-			document.getElementById("wrapper").style.opacity            = 1;
-		}else if (document.getElementById("graph_content")) {
-			document.getElementById("graph_content").style.opacity      = 1;
-			document.getElementById("wrapper").style.opacity            = 1;
-		}else {
-			document.getElementById("menu").style.opacity    = 1;
-			document.getElementById("content").style.opacity = 1;
-			document.getElementById("wrapper").style.opacity = 1;
-		}
-	}
-}
-
-function fixBrowserQuirks() {
-	var window_height = document.getElementById("wrapper").clientHeight;
-	var myDiv = null;
-
-	if (browser == "IE") {
-		if (document.getElementById("content") != null) {
-			myDiv = document.getElementById("content");
-		}else if (document.getElementById("graph_tree")) {
-			myDiv = document.getElementById("graph_tree_content");
-		}else if (document.getElementById("graph_content")) {
-			myDiv = document.getElementById("graph_content");
-		}
-
-		if (myDiv != null && myDiv.scrollHeight > window_height) {
-			myDiv.style.paddingRight = "30px";
-			myDiv.style.overflowX   = "hidden";
-		}
-	}else if (browser == "FF") {
-		if (document.getElementById("content") != null) {
-			myDiv = document.getElementById("content");
-		}else if (document.getElementById("graph_tree")) {
-			myDiv = document.getElementById("graph_tree_content");
-		}else if (document.getElementById("graph_content")) {
-			myDiv = document.getElementById("graph_content");
-		}
-
-		if (myDiv != null && myDiv.scrollHeight <= window_height) {
-			myDiv.style.paddingRight = "10px";
-			myDiv.style.overflowX   = "hidden";
-		}
-	}
-}
-
-function detectBrowser() {
-	if (navigator.userAgent.indexOf('MSIE 6.0') >= 0) {
-		browser = "IE";
-		browserVersion = 6;
-	}else if (navigator.userAgent.indexOf('MSIE 7.0') >= 0) {
-		browser = "IE";
-		browserVersion = 7;
-	}else if (navigator.userAgent.indexOf('MSIE 8.0') >= 0) {
-		browser = "IE";
-		browserVersion = 8;
-	}else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
-		browser = "FF";
-	}else if (navigator.userAgent.indexOf('Opera') >= 0) {
-		browser = "Opera";
-	}else{
-		browser = "Other";
 	}
 }
 

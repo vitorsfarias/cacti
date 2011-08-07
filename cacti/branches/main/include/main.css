@@ -209,6 +209,7 @@ img {
 	padding: 8px 3px 8px 3px;
 	width: 165px;
 	z-index: 1;
+	height:100%;
 	/* shadow */
 	background: #a2a2a2; /* Old browsers */
 	background: -moz-linear-gradient(top, #a2a2a2 0%, #b3b3b3 14%, #e0e0e0 43%, #f2f2f2 71%, #ffffff 86%, #ffffff 100%); /* FF3.6+ */
