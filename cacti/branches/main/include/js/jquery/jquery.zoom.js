@@ -130,7 +130,7 @@
 			if($("#zoomBox").length == 0) {
 				/* IE does not fire hover or click behaviors on completely transparent elements.
 					Use a background color and set opacity to 1% as a workaround */
-				$("<div id='zoomBox' style=' background:blue; z-index:899; filter:alpha(opacity=1); -moz-opacity:0.01; -khtml-opacity:0.01; opacity:0.01; width:0px; height:0px; top:0px; left:0px; position:absolute; overflow:hidden; border:0; padding:0; margin:0'></div>").appendTo("body");
+				$("<div id='zoomBox' style=' background:blue; z-index:auto; filter:alpha(opacity=1); -moz-opacity:0.01; -khtml-opacity:0.01; opacity:0.01; width:0px; height:0px; top:0px; left:0px; position:absolute; overflow:hidden; border:0; padding:0; margin:0'></div>").appendTo("body");
 			}
 
 			// reset the zoom box
@@ -138,7 +138,7 @@
 
 			// add the zoom area if it has not been created yet.
 			if($("#zoomArea").length == 0) {
-				$("<div id='zoomArea' style=' cursor:e-resize; background-color:red; height:0px; top:"+zoomBoxPosTop+"px; position:absolute; z-index:900; filter:alpha(opacity=40); -moz-opacity:0.4; -khtml-opacity:0.4; opacity:0.4; overflow:hidden; border:0; padding:0; margin:0'>").appendTo("body");
+				$("<div id='zoomArea' style=' cursor:e-resize; background-color:red; height:0px; top:"+zoomBoxPosTop+"px; position:absolute; z-index:auto; filter:alpha(opacity=40); -moz-opacity:0.4; -khtml-opacity:0.4; opacity:0.4; overflow:hidden; border:0; padding:0; margin:0'>").appendTo("body");
 			}
 
 			// reset the area box
