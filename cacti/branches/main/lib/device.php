@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
+/**
+ * fetch data via ajax callback
+ * - template: fetch template information for given template id
+ */
 function device_ajax_actions() {
 	/* ================= input validation ================= */
 	$jaction = sanitize_search_string(get_request_var("jaction"));
@@ -45,6 +45,9 @@ function device_ajax_actions() {
 	}
 }
 
+/**
+ *  The Save Function
+ */
 function device_form_save() {
 	/*
 	 * loop for all possible changes of reindex_method
@@ -182,10 +185,9 @@ function device_form_save() {
 	}
 }
 
-/* ------------------------
-    The "actions" function
-   ------------------------ */
-
+/**
+ * The "actions" function
+ */
 function device_form_actions() {
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
@@ -596,10 +598,9 @@ function device_form_actions() {
 	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
-/* -------------------
-    Data Query Functions
-   ------------------- */
-
+/**
+ * reload data query for given data query id and device
+ */
 function device_reload_query() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -609,6 +610,9 @@ function device_reload_query() {
 	run_data_query(get_request_var("device_id"), get_request_var("id"));
 }
 
+/**
+ * remove a data query from a device
+ */
 function device_remove_query() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -618,6 +622,9 @@ function device_remove_query() {
 	device_dq_remove(get_request_var("device_id"), get_request_var("id"));
 }
 
+/**
+ * remove a graph template from a device
+ */
 function device_remove_gt() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -627,10 +634,9 @@ function device_remove_gt() {
 	device_gt_remove(get_request_var("device_id"), get_request_var("id"));
 }
 
-/* ---------------------
-    Host Functions
-   --------------------- */
-
+/**
+ * Edit a device
+ */
 function device_edit($tab = false) {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -663,14 +669,12 @@ function device_edit($tab = false) {
 			print "</ul>";
 		}
 
-		print "</div></td></tr></table>";
-		?>
+		print "</div></td></tr></table>
 		<script type='text/javascript'>
-		$().ready(function() {
-			$('#tabs_device').tabs({ cookie: { expires: 30 } });
-		});
-		</script>
-		<?php
+			$().ready(function() {
+				$('#tabs_device').tabs({ cookie: { expires: 30 } });
+			});
+		</script>\n";
 	}else{
 		if (!empty($_REQUEST["id"])) {
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
@@ -691,6 +695,9 @@ function device_edit($tab = false) {
 	}
 }
 
+/**
+ * display general device tab that shows configuration data for that device
+ */
 function device_display_general($device, $device_text) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
@@ -1354,6 +1361,9 @@ function device_display_general($device, $device_text) {
 	form_save_button("devices.php", "return");
 }
 
+/**
+ * show device filter options for device list
+ */
 function device_filter() {
 	global $item_rows;
 
@@ -1485,6 +1495,9 @@ function device_filter() {
 	<?php
 }
 
+/**
+ * get device records for device list, respecting filter options
+ */
 function get_device_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
@@ -1560,6 +1573,9 @@ function get_device_records(&$total_rows, &$rowspp) {
 	return db_fetch_assoc($sql_query);
 }
 
+/**
+ * display general device list
+ */
 function device($refresh = true) {
 	global $item_rows;
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
@@ -1666,20 +1682,27 @@ function device($refresh = true) {
 	$table->draw_table();
 }
 
+/**
+ * return device field list for form engine
+ */
 function &device_form_list() {
 	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
 
 	return $fields_device_edit;
 }
 
+/**
+ * return device availability options list for form engine
+ */
 function &device_availability_form_list() {
 	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
 
 	return $fields_device_edit_availability;
 }
 
-/** device_remove - removes a device
-   @param $device_id - the id of the device to remove */
+/** 
+ * device_remove - removes a device
+ * @param $device_id - the id of the device to remove */
 function device_remove($device_id) {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
@@ -1697,8 +1720,9 @@ function device_remove($device_id) {
 	db_execute("update graph_local set device_id=0 where device_id=$device_id");
 }
 
-/** device_remove_multi - removes multiple devices in one call
-   @param $device_ids - an array of device id's to remove */
+/** 
+ * device_remove_multi - removes multiple devices in one call
+ * @param $device_ids - an array of device id's to remove */
 function device_remove_multi($device_ids) {
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 
