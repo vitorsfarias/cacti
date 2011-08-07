@@ -128,6 +128,12 @@ $settings = array(
 			"method" => "filepath",
 			"max_length" => "255"
 			),
+		"path_fc_list_binary" => array(
+			"friendly_name" => __("fc-list Binary Path"),
+			"description" => __("The path to your fc-list binary file for listing available fonts."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
 		"logging_header" => array(
 			"friendly_name" => __("Logging"),
 			"method" => "spacer",

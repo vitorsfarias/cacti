@@ -883,6 +883,31 @@ function install_file_paths () {
 		}
 	}
 
+	/* fc_list Binary Path */
+	$input["path_fc_list_binary"] = $settings["path"]["path_fc_list_binary"];
+
+	if (CACTI_SERVER_OS == "unix") {
+		$which_fc_list = find_best_path("fc-list");
+
+		if (config_value_exists("path_fc_list_binary")) {
+			$input["path_fc_list_binary"]["default"] = read_config_option("path_fc_list_binary");
+		} else if (!empty($which_fc_list)) {
+			$input["path_fc_list_binary"]["default"] = $which_fc_list;
+		} else{
+			$input["path_fc_list_binary"]["default"] = "/usr/bin/fc_list";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+		$which_fc_list = find_best_path("fc_list.exe");
+
+		if (config_value_exists("path_fc_list_binary")) {
+			$input["path_fc_list_binary"]["default"] = read_config_option("path_fc_list_binary");
+		} else if (!empty($which_fc_list)) {
+			$input["path_fc_list_binary"]["default"] = $which_fc_list;
+		} else{
+			$input["path_fc_list_binary"]["default"] = "c:/rrdtool/fc-list.exe";
+		}
+	}
+
 	/* snmpwalk Binary Path */
 	$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
 
