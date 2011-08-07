@@ -22,30 +22,45 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * return graph field list for form engine
+ */
 function &graph_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph;
 }
 
+/**
+ * return graph labels field list for form engine
+ */
 function &graph_labels_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_labels;
 }
 
+/**
+ * return graph xaxis list for form engine
+ */
 function &graph_right_axis_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_right_axis;
 }
 
+/**
+ * return graph size list for form engine
+ */
 function &graph_size_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_size;
 }
 
+/**
+ * return graph limits list for form engine
+ */
 function &graph_limits_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
@@ -58,36 +73,54 @@ function &graph_grid_form_list() {
 	return $struct_graph_grid;
 }
 
+/**
+ * return graph colors list for form engine
+ */
 function &graph_color_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_color;
 }
 
+/**
+ * return graph legend list for form engine
+ */
 function &graph_legend_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_legend;
 }
 
+/**
+ * return graph misc list for form engine
+ */
 function &graph_misc_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_misc;
 }
 
+/**
+ * return graph cacti specifics list for form engine
+ */
 function &graph_cacti_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_cacti;
 }
 
+/**
+ * return graph item fields list for form engine
+ */
 function &graph_item_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_item;
 }
 
+/**
+ * return graph actions list for form engine
+ */
 function graph_actions_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 	global $graph_actions;
@@ -301,7 +334,7 @@ function graph_form_save() {
 	if (isset($_POST["save_component_graph"])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("graph_template_id"));
-		input_validate_input_number(get_request_var_post("_graph_template_id"));
+		input_validate_input_number(get_request_var_post("hidden_graph_template_id"));
 		/* ==================================================== */
 
 		$save1["id"] = form_input_validate($_POST["local_graph_id"], "local_graph_id", "^[0-9]+$", false, 3);
@@ -406,13 +439,13 @@ function graph_form_save() {
 				raise_message(1);
 
 				/* if template information chanegd, update all necessary template information */
-				if ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) {
+				if ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
 					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
 						/* set the template back, since the user may choose not to go through with the change
 						at this point */
-						db_execute("update graph_local set graph_template_id=" . $_POST["_graph_template_id"] . " where id=$local_graph_id");
-						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["_graph_template_id"] . " where local_graph_id=$local_graph_id");
+						db_execute("update graph_local set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where id=$local_graph_id");
+						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where local_graph_id=$local_graph_id");
 
 						header("Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
@@ -426,7 +459,7 @@ function graph_form_save() {
 			update_graph_title_cache($local_graph_id);
 		}
 
-		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["_graph_template_id"])) {
+		if ((!is_error_message()) && ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"])) {
 			change_graph_template($local_graph_id, get_request_var_post("graph_template_id"), true);
 		}elseif (!empty($_POST["graph_template_id"])) {
 			update_graph_data_query_cache($local_graph_id);
@@ -481,7 +514,7 @@ function graph_form_save() {
 
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
 		header("Location: graphs.php?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
-	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["_graph_template_id"]) || ($_POST["device_id"] != $_POST["_device_id"])) {
+	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
 		header("Location: graphs.php?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}else{
 		header("Location: graphs.php");
@@ -1163,32 +1196,44 @@ function graph_edit() {
 		var disabled = true;
 
 		$().ready(function() {
-			$("input").attr("disabled","disabled");
-			$("select").attr("disabled","disabled");
-			$("#cancel").removeAttr("disabled");
-			$("#save").removeAttr("disabled");
-			$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
+			if ($("#hidden_graph_template_id").val() == 0) {
+				unlockTemplate();
+				$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is unlocked");?></td>");
+				disabled = false;
+			}else{
+				lockTemplate();
+				$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
+				disabled = true;
+			}
 		});
 
-		function changeGraphState() {
-			if (disabled) {
+		function unlockTemplate() {
 				$("input").removeAttr("disabled");
 				$("select").removeAttr("disabled");
 				$("#cancel").removeAttr("disabled");
 				$("#save").removeAttr("disabled");
+		}
+		
+		function lockTemplate() {
+				$("input").attr("disabled","disabled")
+				$("select").attr("disabled","disabled")
+				$("#cancel").removeAttr("disabled");
+				$("#save").removeAttr("disabled");
+		}
+
+		function changeDSState() {
+			if (disabled) {
+				unlockTemplate();
 				$(".lock").html("<?php print __("Template is unlocked");?>");
 				disabled = false;
 				rrdtool_graph_dependencies(); // even when unlocking, disable distinct rrdtool options
 			}else{
-				$("input").attr("disabled","disabled");
-				$("select").attr("disabled","disabled");
-				$("#cancel").removeAttr("disabled");
-				$("#save").removeAttr("disabled");
+				lockTemplate();
 				$(".lock").html("<?php print __("Template is locked");?>");
 				disabled = true;
 			}
 		}
-		//-->
+		-->
 		</script>
 		<?php
 	}else{
@@ -1248,11 +1293,11 @@ function graph_edit() {
 			"method" => "hidden",
 			"value" => (isset($graphs["local_graph_template_graph_id"]) ? $graphs["local_graph_template_graph_id"] : "0")
 			),
-		"_graph_template_id" => array(
+		"hidden_graph_template_id" => array(
 			"method" => "hidden",
 			"value" => (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0")
 			),
-		"_device_id" => array(
+		"hidden_device_id" => array(
 			"method" => "hidden",
 			"value" => (isset($device_id) ? $device_id : "0")
 			)
