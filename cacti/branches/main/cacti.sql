@@ -2344,6 +2344,21 @@ INSERT INTO device_template_snmp_query VALUES (7,9,1);
 INSERT INTO device_template_snmp_query VALUES (8,6,1);
 
 --
+-- Table structure for table `fonts`
+--
+
+CREATE TABLE `fonts` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `font` varchar(255) NOT NULL default '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+--
+-- Dumping data for table `fonts`
+--
+
+
+--
 -- Table structure for table `plugin_config`
 --
 

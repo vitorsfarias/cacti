@@ -278,7 +278,13 @@ function upgrade_to_0_8_8() {
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('0.8.8', 'i18n_time_zones', $data, $show_output, $no_drop_items);
 
-
+	/* create new table fonts */
+	unset($data);
+	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',	'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'font', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
+	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
+	$data['type'] = 'MyISAM';
+	plugin_upgrade_table('0.8.8', 'fonts', $data, $show_output, $no_drop_items);
 
 	/*
 	 * rename host -> device for tables and columns
