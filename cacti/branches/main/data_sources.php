@@ -765,26 +765,38 @@ function data_source_edit() {
 		var disabled = true;
 
 		$().ready(function() {
-			$("input").attr("disabled","disabled")
-			$("select").attr("disabled","disabled")
-			$("#cancel").removeAttr("disabled");
-			$("#save").removeAttr("disabled");
-			$("#data_source_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
+			if ($("#hidden_data_template_id").val() == 0) {
+				unlockTemplate();
+				$("#data_source_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is unlocked");?></td>");
+				disabled = false;
+			}else{
+				lockTemplate();
+				$("#data_source_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
+				disabled = true;
+			}
 		});
 
-		function changeDSState() {
-			if (disabled) {
+		function unlockTemplate() {
 				$("input").removeAttr("disabled");
 				$("select").removeAttr("disabled");
 				$("#cancel").removeAttr("disabled");
 				$("#save").removeAttr("disabled");
-				$(".lock").html("<?php print __("Template is unlocked");?>");
-				disabled = false;
-			}else{
+		}
+		
+		function lockTemplate() {
 				$("input").attr("disabled","disabled")
 				$("select").attr("disabled","disabled")
 				$("#cancel").removeAttr("disabled");
 				$("#save").removeAttr("disabled");
+		}
+
+		function changeDSState() {
+			if (disabled) {
+				unlockTemplate();
+				$(".lock").html("<?php print __("Template is unlocked");?>");
+				disabled = false;
+			}else{
+				lockTemplate();
 				$(".lock").html("<?php print __("Template is locked");?>");
 				disabled = true;
 			}
