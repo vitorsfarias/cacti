@@ -525,7 +525,7 @@ $lang2locale = array(
 	"sv"	=> array("language"=>__("Swedish"),		"country" => "se", "filename" => "swedish_sweden"),
 	"th"	=> array("language"=>__("Thai"),		"country" => "th", "filename" => "thai_thailand"),
 	"tr"	=> array("language"=>__("Turkish"),		"country" => "tr", "filename" => "turkish_turkey"),
-	"uk"	=> array("language"=>__("Vietnamese"),		"country" => "vn", "filename" => "vietnamese_vietnam")
+	"vi"	=> array("language"=>__("Vietnamese"),		"country" => "vn", "filename" => "vietnamese_vietnam")
 );
 
 /* as per http://php.net/manual/en/function.strftime.php */
