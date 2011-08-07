@@ -359,12 +359,12 @@ function get_poller_records(&$total_rows, &$rowspp) {
 		$sql_where");
 
 	return db_fetch_assoc("SELECT p.*,
-		count(*) AS total_devices
+		count(h.id) AS total_devices
 		FROM poller AS p
 		LEFT JOIN device AS h ON h.poller_id=p.id
 		$sql_where
 		GROUP BY p.id
-		ORDER BY " . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
+		ORDER BY p." . html_get_page_variable('sort_column') . " " . html_get_page_variable('sort_direction') .
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
