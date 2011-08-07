@@ -109,7 +109,7 @@ plugin_hook('page_head');
 <div id='wrapper' style='opacity:0;'>
 	<div id='menu'>
 		<?php draw_menu();?>
-		<div style='text-align:center;padding:20px 0px;height:190px;'>
+		<div style='text-align:center;padding:20px 0px;height:100px;'>
 			<a href='<?php echo CACTI_URL_PATH; ?>about.php'><img src='<?php echo CACTI_URL_PATH; ?>images/cacti_logo.gif' alt='Cacti'></a>
 		</div>
 	</div>
