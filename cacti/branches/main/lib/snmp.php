@@ -28,8 +28,6 @@ define("SNMP_METHOD_PHP", 1);
 define("SNMP_METHOD_BINARY", 2);
 
 function cacti_snmp_get($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
-	global $config;
-
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -144,8 +142,6 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 }
 
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER) {
-	global $config;
-
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {
 		$retries = read_config_option("snmp_retries");
@@ -255,7 +251,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, $priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER) {
-	global $config, $banned_snmp_strings;
+	global $banned_snmp_strings;
 
 	$snmp_oid_included = true;
 	$snmp_auth	       = '';

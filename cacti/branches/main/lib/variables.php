@@ -146,8 +146,6 @@ function expand_title($device_id, $snmp_query_id, $snmp_index, $title) {
    @param string $path 	- the string to make path variable substitutions on
    @return string 		- the original string with all of the variable substitutions made */
 function substitute_script_query_path($path) {
-	global $config;
-
 	$path = clean_up_path(str_replace("|path_cacti|", CACTI_BASE_PATH, $path));
 	$path = clean_up_path(str_replace("|path_php_binary|", cacti_escapeshellcmd(read_config_option("path_php_binary")), $path));
 	$path = clean_up_path(str_replace("|path_perl_binary|", cacti_escapeshellcmd(read_config_option("path_perl_binary")), $path));

@@ -27,8 +27,6 @@
  * @param int $snmp_query_id
  */
 function run_data_query($device_id, $snmp_query_id) {
-	global $config;
-
 	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 	include_once(CACTI_BASE_PATH . "/lib/poller.php");
 	include_once(CACTI_BASE_PATH . "/lib/utility.php");
@@ -69,7 +67,7 @@ function run_data_query($device_id, $snmp_query_id) {
  * @param int $snmp_query_id
  */
 function get_data_query_array($snmp_query_id) {
-	global $config, $data_query_xml_arrays;
+	global $data_query_xml_arrays;
 
 	include_once(CACTI_BASE_PATH . "/lib/xml.php");
 
@@ -186,7 +184,6 @@ function query_script_device($device_id, $snmp_query_id) {
  * @param int $snmp_query_id
  */
 function query_snmp_device($device_id, $snmp_query_id) {
-	global $config;
 	include_once(CACTI_BASE_PATH . "/lib/snmp.php");
 
 	$device = db_fetch_row("SELECT
@@ -648,8 +645,6 @@ function update_data_source_data_query_cache($local_data_id) {
    @return array 				- an array formatted like the following:
 									$arr[snmp_index] = "formatted data query index string" */
 function get_formatted_data_query_indexes($device_id, $data_query_id) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/sort.php");
 
 	if (empty($data_query_id)) {
@@ -839,8 +834,6 @@ function get_best_data_query_index_type($device_id, $data_query_id) {
    @param int $device_id 		- the id of the device that this script query belongs to
    @return string 				- a full path to the script query script containing all arguments */
 function get_script_query_path($args, $script_path, $device_id) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/variables.php");
 
 	/* get any extra arguments that need to be passed to the script */

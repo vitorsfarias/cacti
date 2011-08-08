@@ -239,7 +239,6 @@ function shift_time(&$span, $direction, $shift_size) {
  */
 function date_time_format() {
 	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
-	global $config;
 
 	$graph_date = "";
 

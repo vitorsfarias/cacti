@@ -148,7 +148,7 @@ function export_log($stMessage) {
 }
 
 function export_pre_ftp_upload($stExportDir) {
-	global $config, $aFtpExport;
+	global $aFtpExport;
 
 	/* export variable as global */
 	$config["config_options_array"]["path_html_export"] = $stExportDir;
@@ -396,8 +396,6 @@ function export_post_ftp_upload($stExportDir) {
 }
 
 function export() {
-	global $config;
-
 	/* count how many graphs are created */
 	$total_graphs_created = 0;
 
@@ -490,7 +488,6 @@ function export() {
 }
 
 function classical_export($cacti_root_path, $cacti_export_path) {
-	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/time.php");
 
 	$total_graphs_created = 0;
@@ -651,7 +648,6 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 }
 
 function tree_export() {
-	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/time.php");
 
 	$total_graphs_created = 0;
@@ -1169,7 +1165,6 @@ function export_is_tree_allowed($tree_id) {
 }
 
 function export_tree_graphs_and_graph_html($path, $tree_id) {
-	global $config;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
@@ -1385,7 +1380,7 @@ function draw_html_left_tree($fp, $tree_id)  {
 }
 
 function grow_dhtml_trees_export($fp, $tree_id) {
-	global $config, $dhtml_trees;
+	global $dhtml_trees;
 	include_once(CACTI_BASE_PATH . "/lib/tree.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 

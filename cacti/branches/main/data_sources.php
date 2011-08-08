@@ -597,8 +597,6 @@ function data_source_data_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	global $config;
-
 	if (!empty($_GET["id"])) {
 		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["id"]);
 		$template_data = db_fetch_row("select id,data_input_id from data_template_data where data_template_id=" . $data["data_template_id"] . " and local_data_id=0");

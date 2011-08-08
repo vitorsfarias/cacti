@@ -181,7 +181,7 @@ function plugin_temp_table_exists($table) {
 }
 
 function plugin_load_temp_table() {
-	global $config, $plugins;
+	global $plugins;
 
 	$pluginslist = plugin_get_plugins_list();
 
@@ -354,7 +354,7 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 }
 
 function plugin_filter() {
-	global $item_rows, $config;
+	global $item_rows;
 	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
 
 	html_start_box(__("Plugin Management (Cacti Version:") . " " . CACTI_VERSION .

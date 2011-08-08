@@ -113,8 +113,6 @@ function form_save() {
    ----------------------- */
 
 function import_processor($import_data) {
-	global $config;
-
 	/* clean up method string */
 	if (isset($_POST["method"])) {
 		$method = $_POST["method"];
@@ -316,8 +314,6 @@ function import_processor($import_data) {
 }
 
 function import_colors() {
-	global $config;
-
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("method", "sess_color_method", "merge");
 

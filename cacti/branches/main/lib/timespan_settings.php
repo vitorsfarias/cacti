@@ -260,7 +260,6 @@ function finalize_timespan(&$timespan) {
  */
 
 function set_timeshift() {
-	global $config;
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 
 	# no current timeshift: get default timeshift

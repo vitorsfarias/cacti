@@ -26,7 +26,6 @@
    @param $cdef_item_id - the id of the individual cdef item
    @returns - a text-based representation of the cdef item */
 function get_cdef_item_name($cdef_item_id) 	{
-	global $config;
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 
 	$cdef_item = db_fetch_row("select type,value from cdef_items where id=$cdef_item_id");

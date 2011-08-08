@@ -26,8 +26,6 @@
    @param $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
-	global $config;
-
 	if (function_exists("popen")) {
 		if (CACTI_SERVER_OS == "unix") {
 			$fp = popen($command, "r");
@@ -59,7 +57,6 @@ function exec_poll($command) {
    @returns - the output of $command after execution against the php script
      server */
 function exec_poll_php($command, $pipes, $proc_fd) {
-	global $config;
 	/* execute using php process */
 	if (is_resource($proc_fd)) {
 		/* $pipes now looks like this:
@@ -85,8 +82,6 @@ function exec_poll_php($command, $pipes, $proc_fd) {
    @param $filename - the full pathname to the script to execute
    @param $args - any additional arguments that must be passed onto the executable */
 function exec_background($filename, $args = "") {
-	global $config;
-
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG) {
 		cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, "POLLER");
 	}
@@ -106,7 +101,6 @@ function exec_background($filename, $args = "") {
      for errors in certain versions of php.
    @param $filename - the name of the file to be tested. */
 function file_exists_2gb($filename) {
-	global $config;
 	$rval = 0;
 
 	if (CACTI_SERVER_OS != "win32") {
@@ -122,8 +116,6 @@ function file_exists_2gb($filename) {
    @param $device_id - the id of the device to which the data query belongs
    @param $data_query_id - the id of the data query to rebuild the reindex cache for */
 function update_reindex_cache($device_id, $data_query_id) {
-	global $config;
-
 	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
 	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
@@ -311,8 +303,6 @@ function poller_update_poller_reindex_from_buffer($device_id, $data_query_id, &$
   @param $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @param $remainder - don't use LIMIT if TRUE */
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 
 	/* let's count the number of rrd files we processed */

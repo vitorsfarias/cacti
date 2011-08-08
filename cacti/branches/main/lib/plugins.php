@@ -6,7 +6,7 @@
  * @return mixed $data
  */
 function plugin_hook($name) {
-	global $config, $plugin_hooks;
+	global $plugin_hooks;
 	$data = func_get_args();
 	$ret = '';
 	$p = array();
@@ -52,7 +52,7 @@ function plugin_hook($name) {
  * @return mixed $data
  */
 function plugin_hook_function($name, $parm=NULL) {
-	global $config, $plugin_hooks;
+	global $plugin_hooks;
 
 	$data = func_get_args();
 	$ret    = $parm;
@@ -100,7 +100,7 @@ function plugin_hook_function($name, $parm=NULL) {
  * @param bool $sql_install_cache	use the install cache
  */
 function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false) {
-	global $config, $database_default;
+	global $database_default;
 	include_once(CACTI_BASE_PATH . "/lib/database.php");
 
 	$result = db_fetch_assoc("show tables from `" . $database_default . "`") or die (mysql_error());
@@ -189,7 +189,7 @@ function plugin_db_changes_remove($plugin) {
 function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false) {
 	// Example: plugin_db_add_column ('thold', 'plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
-	global $config, $database_default;
+	global $database_default;
 	include_once(CACTI_BASE_PATH . '/lib/database.php');
 
 	$result = db_fetch_assoc('show columns from `' . $table . '`') or die (mysql_error());
@@ -214,7 +214,7 @@ function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false
  * @param string $plugin	plugin name
  */
 function plugin_install($plugin) {
-	global $config, $plugins_deprecated;
+	global $plugins_deprecated;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 
 	$exists = db_fetch_assoc("SELECT id FROM plugin_config WHERE directory = '$plugin'", false);
@@ -272,7 +272,6 @@ function plugin_install($plugin) {
  * @param string $plugin	plugin name
  */
 function plugin_uninstall($plugin) {
-	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	// Run the Plugin's Uninstall Function first
 	$function = 'plugin_' . $plugin . '_uninstall';
@@ -290,7 +289,6 @@ function plugin_uninstall($plugin) {
  * @param string $plugin	plugin name
  */
 function plugin_check_config($plugin) {
-	global $config;
 	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
 	$function = 'plugin_' . $plugin . '_check_config';
 	if (function_exists($function)) {
