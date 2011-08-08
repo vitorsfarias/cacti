@@ -35,6 +35,8 @@ include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 include_once(CACTI_BASE_PATH . "/lib/sort.php");
 include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
 include_once(CACTI_BASE_PATH . "/lib/template.php");
+include_once(CACTI_BASE_PATH . "/lib/data_source.php");
+include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -94,6 +96,18 @@ switch (get_request_var_request("action")) {
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 		device_edit(true);
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'graphs':
+		graph();
+
+		break;
+	case 'data_sources':
+		data_source();
+
+		break;
+	case 'graphs_new':
+		graphs_new();
 
 		break;
 	case 'ajax_view':

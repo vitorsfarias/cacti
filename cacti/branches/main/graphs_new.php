@@ -44,15 +44,15 @@ switch (get_request_var_request("action")) {
 		graphs_new_reload_query();
 
 		header("Location: graphs_new.php?device_id=" . $_GET["device_id"]);
+
 		break;
 	case 'ajax_view':
 		graphs_new();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		graphs_new();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
