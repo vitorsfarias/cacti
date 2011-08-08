@@ -451,7 +451,7 @@ function cdef_edit() {
 					<td>
 						<em><?php $cdef_item_type = $cdef_item["type"]; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print get_cdef_item_name($cdef_item["id"]);?></strong>
 					</td>
-					<td align="right" style='width:16px;'>
+					<td align="right" style='text-align:right;width:16px;'>
 						<a href="<?php print htmlspecialchars("cdef.php?action=item_remove&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php

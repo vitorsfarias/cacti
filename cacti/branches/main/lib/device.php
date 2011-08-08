@@ -1262,7 +1262,7 @@ function device_display_general($device, $device_text) {
 					<td><?php print __("Add Graph Template:");?>&nbsp;
 						<?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
 					</td>
-					<td align="right">
+					<td align="right" style="text-align:right;">
 						&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_gt_y" align="middle">
 					</td>
 					</tr>
@@ -1353,7 +1353,7 @@ function device_display_general($device, $device_text) {
 					<td><?php print __("Re-Index Method:");?>&nbsp;
 						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
 					</td>
-					<td align="right">
+					<td align="right" style="text-align:right;">
 						&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_dq_y" align="middle">
 					</td>
 					</tr>
