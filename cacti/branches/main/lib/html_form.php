@@ -987,15 +987,15 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
    @param string $cancel_url - the url to go to when the user clicks 'cancel'
    @param string $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_buttons($action_url, $cancel_url) {
-	global $config;
- ?>
+	?>
 	<tr>
 		<td bgcolor="#E1E1E1">
 			<a href="<?php print $cancel_url;?>"><img src="<?php print CACTI_URL_PATH; ?>images/button_cancel.gif" alt="<?php print __("Cancel");?>" align="middle"></a>
 			<a href="<?php print $action_url . "&confirm=yes";?>"><img src="<?php print CACTI_URL_PATH ?>images/button_delete.gif" alt="<?php print __("Delete");?>" align="middle"></a>
 		</td>
 	</tr>
-<?php }
+	<?php 
+}
 
 /** form_save_button - draws a (save|create) and cancel button at the bottom of
      an html edit form
@@ -1095,8 +1095,6 @@ function form_confirm_alt($title_text, $body_text, $cancel_url, $action_url) { ?
      'save' or 'create'. otherwise this field should be properly auto-detected
    @param string $key_field  	- required to dinstinguish between SAVE and CREATE */
 function form_save_button_alt($cancel_action = "", $action = "save", $force_type = "", $key_field = "id") {
-	global $config;
-
 	$calt = __("Cancel");
 
 	if ((empty($force_type)) || (substr_count($cancel_action,"return"))) {
@@ -1203,7 +1201,7 @@ function form_return_button() {
 	?>
 	<tr>
 		<td align="right">
-			<input type='button' value='<?php print __("Return");?>' onClick='window.history.back()' name='cancel'>
+			<input type='button' value='<?php print __("Return");?>' onClick='javascript:$("#cdialog").dialog("close")' name='cancel'>
 		</td>
 	</tr>
 	</form>
@@ -1228,20 +1226,39 @@ function form_cancel_button() {
    @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected
  */
-function form_continue($item_list, $drp_action = "none", $title = "") {
-	global $config;
-
+function form_continue($item_list, $drp_action = "none", $title = "", $form_id = "") {
 	?>
+	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
 		<td align="right">
 			<div><input type='hidden' name='action' value='actions'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
-			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
-			<input type='submit' value='<?php print __("Continue");?>' name='yes' title='<?php print $title;?>'>
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __("Continue");?>' name='continue' title='<?php print $title;?>'>
 		</td>
 	</tr>
 	</form>
+        <script type='text/javascript'>
+        $('#continue').click(function(data) {
+		// attempt to calculate the form id if one is not given
+		if ("<?php print $form_id;?>" == "") {
+			$var = $(this).parents('form:last');
+		}else{
+			$var = $('#<?php print $form_id;?>');
+		}
+		if ($var.attr('method') == 'post') {
+			$.post($var.attr('action'), $var.serialize(), function(data) {
+				$('#cdialog').dialog('close');
+				$.get($var.attr('action')+'?action=ajax_view', function(data) {
+					$('#content').html(data);
+				});
+			});
+		}else{
+			alert("Unable to determine form");
+		}
+        });
+        </script>
 	<?php
 }
 
@@ -1250,8 +1267,6 @@ function form_continue($item_list, $drp_action = "none", $title = "") {
    @param string $action 		- specifies the action code, e.g. "save_gt" for the main procedure select directive
  */
 function form_continue2($item_list, $action = "none", $title = "") {
-	global $config;
-
 	?>
 	<tr>
 		<td align="right">
@@ -1268,7 +1283,6 @@ function form_continue2($item_list, $action = "none", $title = "") {
 /** form_confirm_buttons_alt - draws a cancel and delete button suitable for display
      on a confirmation form */
 function form_confirm_buttons_alt() {
-	global $config;
 	?>
 	<tr>
 		<td bgcolor="#E1E1E1">

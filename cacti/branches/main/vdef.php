@@ -57,11 +57,6 @@ switch ($_REQUEST["action"]) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'remove':
-		vdef_remove();
-
-		header ("Location: vdef.php");
-		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -71,6 +66,10 @@ switch ($_REQUEST["action"]) {
 		break;
 	case 'ajax_item_dnd':
 		vdef_item_dnd();
+
+		break;
+	case 'ajax_view':
+		vdef();
 
 		break;
 	default:
@@ -191,7 +190,6 @@ function form_actions() {
 			}
 		}
 
-		header("Location: vdef.php");
 		exit;
 	}
 
@@ -210,11 +208,9 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	print "<form id='vdef_actions' action='vdef.php' method='post' name='vdef_actions'>\n";
 
-	html_start_box($vdef_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='vdef.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (isset($vdef_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -223,14 +219,17 @@ function form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following VDEF(s) will be deleted.") . "</p>
 						<p><ul>$vdef_list</ul></p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
+
+			$title = __("Delete VDEF(s)");
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			print "	<tr>
 					<td class='topBoxAlt'>
@@ -238,8 +237,7 @@ function form_actions() {
 						<p><ul>$vdef_list</ul></p>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
 
 			$title = __("Duplicate VDEF(s)");
 		}
@@ -250,12 +248,10 @@ function form_actions() {
 	if (!isset($vdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($vdef_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($vdef_array), get_request_var_post("drp_action"), $title, "vdef_actions");
 	}
 
 	html_end_box();
-
-	include_once("./include/bottom_footer.php");
 }
 
 /* --------------------------
@@ -364,24 +360,6 @@ function item_edit() {
 /* ---------------------
     VDEF Functions
    --------------------- */
-
-function vdef_remove() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
-
-	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
-		form_confirm("Are You Sure?", "Are you sure you want to delete the VDEF <strong>'" . db_fetch_cell("select name from vdef where id=" . get_request_var("id")) . "'</strong>?", "vdef.php", "vdef.php?action=remove&id=" . get_request_var("id"));
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		exit;
-	}
-
-	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from vdef where id=" . get_request_var("vdef_id"));
-		db_execute("delete from vdef_items where vdef_id=" . get_request_var("vdef_id"));
-	}
-}
 
 function vdef_item_dnd() {
 	/* ================= Input validation ================= */

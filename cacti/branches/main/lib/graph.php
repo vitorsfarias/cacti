@@ -25,7 +25,7 @@
 /**
  * return graph field list for form engine
  */
-function &graph_form_list() {
+function graph_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph;
@@ -34,7 +34,7 @@ function &graph_form_list() {
 /**
  * return graph labels field list for form engine
  */
-function &graph_labels_form_list() {
+function graph_labels_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_labels;
@@ -43,7 +43,7 @@ function &graph_labels_form_list() {
 /**
  * return graph xaxis list for form engine
  */
-function &graph_right_axis_form_list() {
+function graph_right_axis_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_right_axis;
@@ -52,7 +52,7 @@ function &graph_right_axis_form_list() {
 /**
  * return graph size list for form engine
  */
-function &graph_size_form_list() {
+function graph_size_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_size;
@@ -61,13 +61,13 @@ function &graph_size_form_list() {
 /**
  * return graph limits list for form engine
  */
-function &graph_limits_form_list() {
+function graph_limits_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_limits;
 }
 
-function &graph_grid_form_list() {
+function graph_grid_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_grid;
@@ -76,7 +76,7 @@ function &graph_grid_form_list() {
 /**
  * return graph colors list for form engine
  */
-function &graph_color_form_list() {
+function graph_color_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_color;
@@ -85,7 +85,7 @@ function &graph_color_form_list() {
 /**
  * return graph legend list for form engine
  */
-function &graph_legend_form_list() {
+function graph_legend_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_legend;
@@ -94,7 +94,7 @@ function &graph_legend_form_list() {
 /**
  * return graph misc list for form engine
  */
-function &graph_misc_form_list() {
+function graph_misc_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_misc;
@@ -103,7 +103,7 @@ function &graph_misc_form_list() {
 /**
  * return graph cacti specifics list for form engine
  */
-function &graph_cacti_form_list() {
+function graph_cacti_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_cacti;
@@ -112,7 +112,7 @@ function &graph_cacti_form_list() {
 /**
  * return graph item fields list for form engine
  */
-function &graph_item_form_list() {
+function graph_item_form_list() {
 	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
 
 	return $struct_graph_item;
@@ -129,7 +129,6 @@ function graph_actions_list() {
 }
 
 function get_graph_tree_items() {
-
 	/* Make sure nothing is cached */
 	header("Cache-Control: must-revalidate");
 	header("Cache-Control: post-check=0, pre-check=0", false);
@@ -245,7 +244,6 @@ function get_graph_tree_items() {
 }
 
 function get_graph_tree_graphs() {
-
 	include_once(CACTI_BASE_PATH . "/lib/timespan_settings.php");
 
 	/* Make sure nothing is cached */
@@ -519,6 +517,7 @@ function graph_form_save() {
 	}else{
 		header("Location: graphs.php");
 	}
+
 	exit;
 }
 
@@ -641,7 +640,6 @@ function graph_form_actions() {
 			plugin_hook_function('graphs_action_execute', get_request_var_post('drp_action'));
 		}
 
-		header("Location: graphs.php");
 		exit;
 	}
 
@@ -660,16 +658,14 @@ function graph_form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 	/* add a list of tree names to the actions dropdown */
 	$graph_actions = array_merge(graph_actions_list(), tree_add_tree_names_to_actions_array());
 
 	$graph_actions[ACTION_NONE] = __("None");
 
-	html_start_box($graph_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
+	print "<form id='gactions' name='gactions' action='graphs.php' method='post'>\n";
 
-	print "<form action='graphs.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($graph_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -678,6 +674,8 @@ function graph_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_DELETE) { /* delete */
 			$graphs = array();
 
@@ -698,16 +696,17 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be deleted.") . "</p>
-						<p><ul>$graph_list</ul></p>
-						";
+						<div class='action_list'><ul>$graph_list</ul></div>\n";
+
 						if (sizeof($data_sources) > 0) {
 							print "<tr class='rowAlternate1'><td class='textArea'><p class='textArea'>" . __("The following Data Source(s) are in use by these Graph(s):") . "</p>\n";
 
+							print "<div class='action_list'><ul>\n";
 							foreach ($data_sources as $data_source) {
-								print "<strong>" . $data_source["name_cache"] . "</strong><br>\n";
+								print "<li>" . $data_source["name_cache"] . "</li>\n";
 							}
 
-							print "<br>";
+							print "</ul></div>";
 							form_radio_button("delete_type", "1", "1", __("Leave the Data Source(s) untouched."), "1"); print "<br>";
 							form_radio_button("delete_type", "1", "2", __("Delete all <strong>Data Source(s)</strong> referenced by these Graph(s)."), "1"); print "<br>";
 							print "</td></tr>";
@@ -721,7 +720,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be re-associated with the Graph Template below.  Be aware that all warnings will be suppressed during the conversion, so graph data loss is possible.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("New Graph Template:") . "</strong><br>"; form_dropdown("graph_template_id",db_fetch_assoc("select graph_templates.id,graph_templates.name from graph_templates order by name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n";
@@ -731,7 +730,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be duplicated. You can optionally change the title format for the new Graph(s).") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", __("<graph_title> (1)"), "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -741,7 +740,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be converted into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).") . "</p>
-						<p><ul>$graph_list<ul></p>
+						<div class='action_list'><ul>$graph_list<ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", __("<graph_title> Template"), "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -751,7 +750,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be placed under the Tree Branch selected below.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("Destination Branch:") . "</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
@@ -762,7 +761,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be re-associated with the Device selected below.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("New Device:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n";
@@ -772,7 +771,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will have their suggested naming conventions recalculated and applied to the Graph(s).") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -781,7 +780,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be resized per your specifications.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("Graph Height:") . "</strong><br>"; form_text_box("graph_height", "", "", "255", "30", "text"); print "</p>
 						<p><strong>" . __("Graph Width:") . "</strong><br>"; form_text_box("graph_width", "", "", "255", "30", "text"); print "</p>
 					</td>
@@ -792,7 +791,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be enabled for Graph Export.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -801,7 +800,7 @@ function graph_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph(s) will be disabled for Graph Export.") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -825,17 +824,17 @@ function graph_form_actions() {
 					<p>" . __("You must first select a Graph.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($graph_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($graph_array), get_request_var_post("drp_action"), $title, "gactions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* -----------------------

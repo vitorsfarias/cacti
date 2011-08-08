@@ -194,7 +194,6 @@ function form_actions() {
 			}
 		}
 
-		header("Location: data_input.php");
 		exit;
 	}
 
@@ -208,18 +207,16 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "<br>";
+			$di_list .= "<li>" . db_fetch_cell("SELECT name FROM data_input WHERE id='" . $matches[1] . "'") . "</li>";
 			$di_array[$i] = $matches[1];
 
 			$i++;
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='input_actions' action='data_input.php' method='post' name='input_actions'>\n";
 
-	html_start_box($di_actions[get_request_var_post("drp_action")], "60", "3", "center", "");
-
-	print "<form action='data_input.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($di_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -228,6 +225,8 @@ function form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			$graphs = array();
 
@@ -235,7 +234,7 @@ function form_actions() {
 				<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the selected Data Input Method(s) will be deleted") . "</p>
-						<p>$di_list</p>
+						<ul>$di_list</ul>
 					</td>
 				</tr>\n";
 
@@ -247,18 +246,15 @@ function form_actions() {
 					<p>" . __("You must first select a Data Input Method.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
-		form_return_button();
 	}
 
 	if (!isset($di_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($di_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($di_array), get_request_var_post("drp_action"), $title, "input_actions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* --------------------------

@@ -51,50 +51,52 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'graph_diff':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		graph_diff();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'item':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		graph_item();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'graph_remove':
 		graph_remove();
 
 		header("Location: graphs.php");
+
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		graph_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'ajax_get_graph_templates':
 		ajax_get_graph_templates();
+
 		break;
 	case 'ajax_get_devices_detailed':
 		ajax_get_devices_detailed();
+
 		break;
 	case 'ajax_get_devices_brief':
 		ajax_get_devices_brief();
+
 		break;
 	case 'ajax_graph_item_dnd':
 		graph_item_dnd();
+
 		break;
 	case 'ajax_view':
 		graph();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		graph();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }

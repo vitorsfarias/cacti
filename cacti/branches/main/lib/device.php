@@ -370,7 +370,6 @@ function device_form_actions() {
 			plugin_hook_function('device_action_execute', get_request_var_post('drp_action'));
 		}
 
-		header("Location: devices.php");
 		exit;
 	}
 
@@ -389,8 +388,6 @@ function device_form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 	/* add a list of tree names to the actions dropdown */
 	if (isset($device_actions)) {
 		$device_actions = array_merge($device_actions, tree_add_tree_names_to_actions_array());
@@ -400,8 +397,9 @@ function device_form_actions() {
 
 	$device_actions[ACTION_NONE] = __("None");
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_actions'>\n";
-	html_start_box($device_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
+	print "<form id='device_edit_actions' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_actions'>\n";
+
+	html_start_box("", "100", "3", "center", "");
 
 	if (isset($device_array) && sizeof($device_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -410,11 +408,13 @@ function device_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_ENABLE) { /* Enable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be enabled.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
 					</tr>";
 
@@ -423,7 +423,7 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be disabled.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
 					</tr>";
 
@@ -432,7 +432,7 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will have their SNMP settings changed.  Make sure you check the box next to the fields you want to update, and fill in the new values before continuing.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
 					</tr>";
 
@@ -463,7 +463,7 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) Availability options will be changed.  Make sure you check the box next to the fields you want to update, and fill in the new values before continuing.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
 					</tr>";
 
@@ -494,7 +494,7 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) statistics will be reset.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
 					</tr>";
 
@@ -503,7 +503,7 @@ function device_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be deleted.") . "</p>
-						<p><ul>$device_list</ul></p>";
+						<div class='action_list'><ul>$device_list</ul></div>";
 						form_radio_button("delete_type", "2", "1", __("Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."), "1"); print "<br>";
 						form_radio_button("delete_type", "2", "2", __("Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>."), "1"); print "<br>";
 						print "</td></tr>
@@ -515,9 +515,9 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Poller below.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
-					</tr>";
+					</tr>\n";
 
 			$form_array = array();
 			$field_name = "poller_id";
@@ -536,9 +536,9 @@ function device_form_actions() {
 			print "	<tr>
 					<td colspan='2' class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Site below.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 					</td>
-					</tr>";
+					</tr>\n";
 
 			$form_array = array();
 			$field_name = "site_id";
@@ -552,18 +552,16 @@ function device_form_actions() {
 					)
 				);
 
-
 			$title = __("Change Device(s) Site");
 		}elseif (preg_match("/^tr_([0-9]+)$/", get_request_var_post("drp_action"), $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Device(s) will be placed under the Tree Branch selected below.") . "</p>
-						<p><ul>$device_list</ul></p>
+						<div class='action_list'><ul>$device_list</ul></div>
 						<p><strong>" . __("Destination Branch:") . "</strong><br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
 					</td>
 				</tr>\n
-				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n
-				";
+				<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n ";
 
 			$title = __("Place Device(s) on a Tree");
 		} else {
@@ -585,17 +583,17 @@ function device_form_actions() {
 					<p>" . __("You must first select a Device.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($device_array), get_request_var_post("drp_action"));
+		form_continue(serialize($device_array), get_request_var_post("drp_action"), $title, "device_edit_actions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /**

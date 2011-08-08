@@ -47,17 +47,19 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		poller_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		poller();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		poller();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -154,7 +156,6 @@ function form_actions() {
 			}
 		}
 
-		header("Location: pollers.php");
 		exit;
 	}
 
@@ -173,11 +174,9 @@ function form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='pactions' name='pactions' action='pollers.php' method='post'>\n";
 
-	html_start_box($poller_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='pollers.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($poller_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -186,11 +185,13 @@ function form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
 						<p>". __("When you click 'Continue', the following Poller(s) will be deleted.  All devices currently attached this these Poller(s) will be reassigned to the default poller.") . "</p>
-						<p><ul>$poller_list</ul></p>
+						<div class='action_list'><ul>$poller_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -199,7 +200,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Poller(s) will be disabled.  All Devices currently attached to these Poller(s) will no longer have their Graphs updated.") . "</p>
-						<p><ul>$poller_list</ul></p>
+						<div class='action_list'><ul>$poller_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -208,7 +209,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Poller(s) will be enabled.  All Devices currently attached to these Poller(s) will resume updating their Graphs.") . "</p>
-						<p><ul>$poller_list</ul></p>
+						<div class='action_list'><ul>$poller_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -220,17 +221,17 @@ function form_actions() {
 					<p>" . __("You must first select a Poller.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!sizeof($poller_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($poller_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($poller_array), get_request_var_post("drp_action"), $title, "pactions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* ---------------------

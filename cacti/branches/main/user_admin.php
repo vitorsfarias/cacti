@@ -72,6 +72,10 @@ switch (get_request_var_request("action")) {
 		ajax_get_graph_templates();
 
 		break;
+	case 'ajax_view':
+		user();
+
+		break;
 	default:
 		if (!plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -177,7 +181,6 @@ function form_actions() {
 			}
 		}
 
-		header("Location: user_admin.php");
 		exit;
 	}
 
@@ -197,38 +200,39 @@ function form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='uactions' name='uactions' action='user_admin.php' method='post'>\n";
 
-	html_start_box($user_actions[get_request_var_post("drp_action")], "60", "3", "center", "");
-
-	print "<form action='user_admin.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	$user_id = "";
 
 	/* Check for deleting of Graph Export User */
-	if ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
-	}elseif (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
+	if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
 		print "	<tr>
 					<td class='textArea'>
 						<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 					</td>
 				</tr>\n";
+
+		$title = __("Selection Error");
 	}elseif ((get_request_var_post("drp_action") === "1") && (sizeof($user_array))) { /* delete */
 		$exportuser = read_config_option('export_user_id');
 		if (in_array($exportuser, $user_array)) {
 			print "	<tr>
 				<td class='textArea'>
-					<p>" . __("You can not delete the Export User '") . $exportuser . __("'.  Please select 'Return' to return to the previous menu.") . "</p>
+					<p>" . __("You can not delete the Export User '") . db_fetch_cell("SELECT username FROM user_auth WHERE id=$exportuser") . __("'.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
 
 			unset($user_array);
+
+			$title = __("Export User Error");
 		}else{
 			print "
 				<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following User(s) will be deleted.") . "</p>
-						<p><ul>$user_list</ul></p>
+						<div class='action_list'><ul>$user_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -270,7 +274,7 @@ function form_actions() {
 			<tr>
 				<td class='textArea'>
 					<p>" . __("When you click 'Continue', the following User(s) will be enabled.") . "</p>
-					<p><ul>$user_list</ul></p>
+					<div class='action_list'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -280,7 +284,7 @@ function form_actions() {
 			<tr>
 				<td class='textArea'>
 					<p>" . __("When you click 'Continue', the following User(s) will be disabled.") . "</p>
-					<p><ul>$user_list</ul></p>
+					<div class='action_list'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -302,7 +306,7 @@ function form_actions() {
 			<tr>
 				<td class='textArea'>
 					<p>" . __("Users to update:") . "</p>
-					<p>$user_list</p>
+					<div class='action_list'><ul>$user_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -312,14 +316,11 @@ function form_actions() {
 	if (!isset($user_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($user_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($user_array), get_request_var_post("drp_action"), $title, "uactions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
-
 
 /* --------------------------
     Save Function

@@ -63,17 +63,19 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		data_source_template_edit();
-
 		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		data_source_template();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		data_source_template();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -334,11 +336,9 @@ function data_source_template_form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='tactions' name='tactions' action='data_templates.php' method='post'>\n";
 
-	html_start_box($ds_template_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='data_templates.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($ds_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -347,11 +347,13 @@ function data_source_template_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When  you click 'Continue',  the following Data Template(s) will be deleted.  Any Data Source(s) attached to these Data Template(s) will become individual Data Source(s).") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -360,7 +362,7 @@ function data_source_template_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Template(s) will be duplicated. You can optionally change the title format for the new Data Template(s).") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -373,17 +375,17 @@ function data_source_template_form_actions() {
 					<p>" . __("You must first select a Data Source Template.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($ds_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($ds_array), get_request_var_post("drp_action"), $title, "tactions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* ----------------------------
