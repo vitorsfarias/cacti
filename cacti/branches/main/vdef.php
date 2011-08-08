@@ -246,7 +246,7 @@ function form_actions() {
 	}
 
 	if (!isset($vdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($vdef_array), get_request_var_post("drp_action"), $title, "vdef_actions");
 	}

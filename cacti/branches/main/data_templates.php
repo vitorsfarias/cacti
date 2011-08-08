@@ -380,7 +380,7 @@ function data_source_template_form_actions() {
 	}
 
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($ds_array), get_request_var_post("drp_action"), $title, "tactions");
 	}

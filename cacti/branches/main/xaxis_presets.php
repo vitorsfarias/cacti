@@ -262,7 +262,7 @@ function xaxis_form_actions() {
 	}
 
 	if (!isset($xaxis_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($xaxis_array), get_request_var_post("drp_action"), $title, "xactions");
 	}

@@ -179,7 +179,7 @@ function form_actions() {
 	}
 
 	if (!isset($site_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($site_array), get_request_var_post("drp_action"), $title, "sactions");
 	}
