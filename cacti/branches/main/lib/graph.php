@@ -1004,137 +1004,138 @@ function graph_diff() {
 
 	if (sizeof($items) > 0) {
 		$struct_graph_item = graph_item_form_list();
-	foreach ($items as $item) {
-		reset($struct_graph_item);
 
-		/* graph grouping display logic */
-		$bold_this_row = false; $use_custom_row_color = false; $action_css = ""; unset($graph_preview_item_values);
+		foreach ($items as $item) {
+			reset($struct_graph_item);
 
-		if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
-			$mode = "add";
-			$user_message = __("When you click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.");
-		}elseif ((sizeof($graph_template_items) < sizeof($graph_items)) && ($i >= sizeof($graph_template_items))) {
-			$mode = "delete";
-			$user_message = __("When you click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.");
-		}
+			/* graph grouping display logic */
+			$bold_this_row = false; $use_custom_row_color = false; $action_css = ""; unset($graph_preview_item_values);
 
-		/* here is the fun meshing part. first we check the graph template to see if there is an input
-		for each field of this row. if there is, we revert to the value stored in the graph, if not
-		we revert to the value stored in the template. got that? ;) */
-		for ($j=0; ($j < count($graph_template_inputs)); $j++) {
-			if ($graph_template_inputs[$j]["graph_template_item_id"] == (isset($graph_template_items[$i]["id"]) ? $graph_template_items[$i]["id"] : "")) {
-				/* if we find out that there is an "input" covering this field/item, use the
-				value from the graph, not the template */
-				$graph_item_field_name = (isset($graph_template_inputs[$j]["column_name"]) ? $graph_template_inputs[$j]["column_name"] : "");
-				$graph_preview_item_values[$graph_item_field_name] = (isset($graph_items[$i][$graph_item_field_name]) ? $graph_items[$i][$graph_item_field_name] : "");
+			if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
+				$mode = "add";
+				$user_message = __("When you click save, the items marked with a '<strong>+</strong>' will be added <strong>(Recommended)</strong>.");
+			}elseif ((sizeof($graph_template_items) < sizeof($graph_items)) && ($i >= sizeof($graph_template_items))) {
+				$mode = "delete";
+				$user_message = __("When you click save, the items marked with a '<strong>-</strong>' will be removed <strong>(Recommended)</strong>.");
 			}
-		}
 
-		/* go back through each graph field and find out which ones haven't been covered by the
-		"inputs" above. for each one, use the value from the template */
-		while (list($field_name, $field_array) = each($struct_graph_item)) {
-			if ($mode == "delete") {
-				$graph_preview_item_values[$field_name] = (isset($graph_items[$i][$field_name]) ? $graph_items[$i][$field_name] : "");
-			}elseif (!isset($graph_preview_item_values[$field_name])) {
-				$graph_preview_item_values[$field_name] = (isset($graph_template_items[$i][$field_name]) ? $graph_template_items[$i][$field_name] : "");
+			/* here is the fun meshing part. first we check the graph template to see if there is an input
+			for each field of this row. if there is, we revert to the value stored in the graph, if not
+			we revert to the value stored in the template. got that? ;) */
+			for ($j=0; ($j < count($graph_template_inputs)); $j++) {
+				if ($graph_template_inputs[$j]["graph_template_item_id"] == (isset($graph_template_items[$i]["id"]) ? $graph_template_items[$i]["id"] : "")) {
+					/* if we find out that there is an "input" covering this field/item, use the
+					value from the graph, not the template */
+					$graph_item_field_name = (isset($graph_template_inputs[$j]["column_name"]) ? $graph_template_inputs[$j]["column_name"] : "");
+					$graph_preview_item_values[$graph_item_field_name] = (isset($graph_items[$i][$graph_item_field_name]) ? $graph_items[$i][$graph_item_field_name] : "");
+				}
 			}
-		}
 
-		/* "prepare" array values */
-		$consolidation_function_id = $graph_preview_item_values["consolidation_function_id"];
-		$graph_type_id = $graph_preview_item_values["graph_type_id"];
+			/* go back through each graph field and find out which ones haven't been covered by the
+			"inputs" above. for each one, use the value from the template */
+			while (list($field_name, $field_array) = each($struct_graph_item)) {
+				if ($mode == "delete") {
+					$graph_preview_item_values[$field_name] = (isset($graph_items[$i][$field_name]) ? $graph_items[$i][$field_name] : "");
+				}elseif (!isset($graph_preview_item_values[$field_name])) {
+					$graph_preview_item_values[$field_name] = (isset($graph_template_items[$i][$field_name]) ? $graph_template_items[$i][$field_name] : "");
+				}
+			}
 
-		/* color logic */
-		if (($graph_type_id != GRAPH_ITEM_TYPE_GPRINT) && ($graph_item_types[$graph_type_id] != $_graph_type_name)) {
-			$bold_this_row = true; $use_custom_row_color = true; $hard_return = "";
+			/* "prepare" array values */
+			$consolidation_function_id = $graph_preview_item_values["consolidation_function_id"];
+			$graph_type_id = $graph_preview_item_values["graph_type_id"];
 
-			if ($group_counter % 2 == 0) {
-				$alternate_color_1 = "EEEEEE";
-				$alternate_color_2 = "EEEEEE";
-				$custom_row_color = "D5D5D5";
+			/* color logic */
+			if (($graph_type_id != GRAPH_ITEM_TYPE_GPRINT) && ($graph_item_types[$graph_type_id] != $_graph_type_name)) {
+				$bold_this_row = true; $use_custom_row_color = true; $hard_return = "";
+
+				if ($group_counter % 2 == 0) {
+					$alternate_color_1 = "EEEEEE";
+					$alternate_color_2 = "EEEEEE";
+					$custom_row_color = "D5D5D5";
+				}else{
+					$alternate_color_1 = "E7E9F2";
+					$alternate_color_2 = "E7E9F2";
+					$custom_row_color = "D2D6E7";
+				}
+	
+				$group_counter++;
+			}
+
+			$_graph_type_name = $graph_item_types[$graph_type_id];
+
+			/* alternating row colors */
+			if ($use_custom_row_color == false) {
+				if ($i % 2 == 0) {
+					$action_column_color = $alternate_color_1;
+				}else{
+					$action_column_color = $alternate_color_2;
+				}
 			}else{
-				$alternate_color_1 = "E7E9F2";
-				$alternate_color_2 = "E7E9F2";
-				$custom_row_color = "D2D6E7";
+				$action_column_color = $custom_row_color;
 			}
 
-			$group_counter++;
-		}
+			print "<tr bgcolor='#$action_column_color'>"; $i++;
 
-		$_graph_type_name = $graph_item_types[$graph_type_id];
-
-		/* alternating row colors */
-		if ($use_custom_row_color == false) {
-			if ($i % 2 == 0) {
-				$action_column_color = $alternate_color_1;
-			}else{
-				$action_column_color = $alternate_color_2;
+			/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
+			if ($mode == "add") {
+				$action_column_color = "00438C";
+				$action_css = "";
+			}elseif ($mode == "delete") {
+				$action_column_color = "C63636";
+				$action_css = "text-decoration: line-through;";
 			}
-		}else{
-			$action_column_color = $custom_row_color;
-		}
 
-		print "<tr bgcolor='#$action_column_color'>"; $i++;
-
-		/* make the left-hand column blue or red depending on if "add"/"remove" mode is set */
-		if ($mode == "add") {
-			$action_column_color = "00438C";
-			$action_css = "";
-		}elseif ($mode == "delete") {
-			$action_column_color = "C63636";
-			$action_css = "text-decoration: line-through;";
-		}
-
-		if ($bold_this_row == true) {
-			$action_css .= " font-weight:bold;";
-		}
-
-		/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
-		print "<td width='1%' bgcolor='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
-		print "<td style='$action_css'><strong>" . __("Item") . " # " . $i . "</strong></td>\n";
-
-		if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
-
-		switch ($graph_type_id) {
-			case GRAPH_ITEM_TYPE_AREA:
-			case GRAPH_ITEM_TYPE_AREASTACK:
-			case GRAPH_ITEM_TYPE_GPRINT:
-			case GRAPH_ITEM_TYPE_LINE1:
-			case GRAPH_ITEM_TYPE_LINE2:
-			case GRAPH_ITEM_TYPE_LINE3:
-			case GRAPH_ITEM_TYPE_LINESTACK:
-				$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
-				break;
-			case GRAPH_ITEM_TYPE_HRULE:
-				$matrix_title = "VRULE: " . $graph_preview_item_values["value"];
-				break;
-				case GRAPH_ITEM_TYPE_VRULE:
-				$matrix_title = "HRULE: " . $graph_preview_item_values["value"];
-				break;
-			case GRAPH_ITEM_TYPE_COMMENT:
-				$matrix_title = "COMMENT: " . $graph_preview_item_values["text_format"];
-				break;
-		}
-
-		/* use the cdef name (if in use) if all else fails */
-		if ($matrix_title == "") {
-			if ($graph_preview_item_values["cdef_id"] != "") {
-				$matrix_title .= "CDEF: " . $graph_preview_item_values["cdef_id"];
+			if ($bold_this_row == true) {
+				$action_css .= " font-weight:bold;";
 			}
+
+			/* draw the TD that shows the user whether we are going to: KEEP, ADD, or DROP the item */
+			print "<td width='1%' bgcolor='#$action_column_color' style='font-weight: bold; color: white;'>" . $graph_item_actions[$mode] . "</td>";
+			print "<td style='$action_css'><strong>" . __("Item") . " # " . $i . "</strong></td>\n";
+
+			if (empty($graph_preview_item_values["task_item_id"])) { $graph_preview_item_values["task_item_id"] = "No Task"; }
+
+			switch ($graph_type_id) {
+				case GRAPH_ITEM_TYPE_AREA:
+				case GRAPH_ITEM_TYPE_AREASTACK:
+				case GRAPH_ITEM_TYPE_GPRINT:
+				case GRAPH_ITEM_TYPE_LINE1:
+				case GRAPH_ITEM_TYPE_LINE2:
+				case GRAPH_ITEM_TYPE_LINE3:
+				case GRAPH_ITEM_TYPE_LINESTACK:
+					$matrix_title = "(" . $graph_preview_item_values["task_item_id"] . "): " . $graph_preview_item_values["text_format"];
+					break;
+				case GRAPH_ITEM_TYPE_HRULE:
+					$matrix_title = "VRULE: " . $graph_preview_item_values["value"];
+					break;
+					case GRAPH_ITEM_TYPE_VRULE:
+					$matrix_title = "HRULE: " . $graph_preview_item_values["value"];
+					break;
+				case GRAPH_ITEM_TYPE_COMMENT:
+					$matrix_title = "COMMENT: " . $graph_preview_item_values["text_format"];
+					break;
+			}
+
+			/* use the cdef name (if in use) if all else fails */
+			if ($matrix_title == "") {
+				if ($graph_preview_item_values["cdef_id"] != "") {
+					$matrix_title .= "CDEF: " . $graph_preview_item_values["cdef_id"];
+				}
+			}
+
+			if ($graph_preview_item_values["hard_return"] == CHECKED) {
+				$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+			}
+
+			print "<td style='$action_css'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$action_css'>" . $graph_item_types{$graph_preview_item_values["graph_type_id"]} . "</td>\n";
+			print "<td style='$action_css'>" . $consolidation_functions{$graph_preview_item_values["consolidation_function_id"]} . "</td>\n";
+			print "<td" . ((!empty($graph_preview_item_values["color_id"])) ? " bgcolor='#" . $graph_preview_item_values["color_id"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
+			print "<td style='$action_css'>" . $graph_preview_item_values["color_id"] . "</td>\n";
+
+			print "</tr>";
 		}
-
-		if ($graph_preview_item_values["hard_return"] == CHECKED) {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
-		}
-
-		print "<td style='$action_css'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-		print "<td style='$action_css'>" . $graph_item_types{$graph_preview_item_values["graph_type_id"]} . "</td>\n";
-		print "<td style='$action_css'>" . $consolidation_functions{$graph_preview_item_values["consolidation_function_id"]} . "</td>\n";
-		print "<td" . ((!empty($graph_preview_item_values["color_id"])) ? " bgcolor='#" . $graph_preview_item_values["color_id"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
-		print "<td style='$action_css'>" . $graph_preview_item_values["color_id"] . "</td>\n";
-
-		print "</tr>";
-	}
 	}else{
 		form_alternate_row_color();
 		?>
