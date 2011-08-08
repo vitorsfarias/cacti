@@ -1681,7 +1681,7 @@ function graph($refresh = true) {
 
 function graphs_new_form_save() {
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
+		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
 	}else{
 		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
 	}
@@ -1863,7 +1863,7 @@ function device_new_graphs_save() {
 
 function device_new_graphs($device_id, $device_template_id, $selected_graphs_array) {
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
+		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
 		$file2 = "devices.php";
 	}else{
 		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
@@ -2034,7 +2034,7 @@ function graphs_new() {
 	load_current_session_value("filter",     "sess_graphs_new_filter",     "");
 
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
+		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
 		$file2 = "devices.php";
 	}else{
 		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
@@ -2407,7 +2407,7 @@ function graphs_new() {
 					}
 
 					if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-						$file = "devices.php?action=edit&tab=newgraphs&id=" . $_REQUEST["device_id"];
+						$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
 						$file2 = "devices.php";
 					}else{
 						$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];

@@ -644,9 +644,9 @@ function device_edit($tab = false) {
 	if ($tab) {
 		$device_tabs = array(
 			"general" => __("General"),
-			"graphs_new.php" => __("New Graphs"),
-			"graphs.php" => __("Graphs"),
-			"data_sources.php" => __("Data Sources")
+			"newgraphs" => __("New Graphs"),
+			"graphs" => __("Graphs"),
+			"datasources" => __("Data Sources")
 		);
 
 		/* draw the categories tabs on the top of the page */
@@ -656,10 +656,19 @@ function device_edit($tab = false) {
 		if (sizeof($device_tabs) > 0) {
 			print "<ul>";
 			foreach (array_keys($device_tabs) as $tab_short_name) {
-				if ($tab_short_name == "general") {
+				switch ($tab_short_name) {
+				case 'general':
 					print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
-				}else{
-					print "<li><a href='" . htmlspecialchars($tab_short_name . "?action=ajax_view" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					break;
+				case 'newgraphs':
+					print "<li><a href='" . htmlspecialchars("devices.php?action=graphs_new" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					break;
+				case 'graphs':
+					print "<li><a href='" . htmlspecialchars("devices.php?action=graphs" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					break;
+				case 'datasources':
+					print "<li><a href='" . htmlspecialchars("devices.php?action=data_sources" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					break;
 				}
 
 				if (!isset($_REQUEST["id"])) break;

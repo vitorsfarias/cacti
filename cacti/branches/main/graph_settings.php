@@ -107,9 +107,6 @@ function settings() {
 	print "<form method='post' action='graph_settings.php'>\n";
 
 	# the tabs
-//	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'>
-//		<tr>
-//			<td>
 	print "<div id='tabs'>\n";
 
 	$i = 1;
