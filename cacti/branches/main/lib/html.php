@@ -1576,12 +1576,23 @@ function draw_actions_dropdown($actions_array) {
 				<?php form_dropdown("drp_action",$actions_none+$actions_array,"","",ACTION_NONE,"","");?>
 			</td>
 			<td class='w1 right'>
-				<input type='submit' value='<?php print __("Go");?>' name='go'>
+				<input id='go' type='button' value='<?php print __("Go");?>' name='go'>
 			</td>
 		</tr>
 	</table>
 
 	<input type='hidden' name='action' value='actions'>
+	<script type='text/javascript'>
+	$('#go').click(function(data) {
+		$var = $(this).parents('form');
+		$.post($var.attr('action'), $var.serialize(), function(data) {
+			$('#cdialog').html(data);
+			title=$('#title td').text();
+			$('#title').empty().remove();
+			$('#cdialog').dialog({ title: title, minHeight: 80, minWidth: 500 });
+		});
+	});
+	</script>
 	<?php
 }
 

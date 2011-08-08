@@ -88,11 +88,6 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'remove':
-		data_query_remove();
-
-		header ("Location: data_queries.php");
-		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -264,8 +259,6 @@ function data_query_form_actions() {
 					}
 				}
 			}
-				
-				
 		}elseif (get_request_var_post("drp_action") === "2") { /* duplicate */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -276,7 +269,6 @@ function data_query_form_actions() {
 			}
 		}
 
-		header("Location: data_queries.php");
 		exit;
 	}
 
@@ -295,11 +287,9 @@ function data_query_form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='query_actions' action='data_queries.php' method='post' name='query_actions'>\n";
 
-	html_start_box($dq_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='data_queries.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($dq_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -308,6 +298,8 @@ function data_query_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			$graphs = array();
 
@@ -315,7 +307,7 @@ function data_query_form_actions() {
 				<tr>
 					<td class='textArea'>
 						<p>" . __("When you click \"Continue\", the following Data Queries will be deleted.") . "</p>
-						<p><ul>$dq_list</ul></p>
+						<ul>$dq_list</ul>
 					</td>
 				</tr>\n";
 
@@ -324,7 +316,7 @@ function data_query_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Queries will be duplicated. You can optionally change the title format for the new Data Query.") . "</p>
-						<p><ul>$dq_list</ul></p>
+						<ul>$dq_list</ul>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<data_query_name> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -342,12 +334,10 @@ function data_query_form_actions() {
 	if (!sizeof($dq_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($dq_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($dq_array), get_request_var_post("drp_action"), $title, "query_actions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* ----------------------------

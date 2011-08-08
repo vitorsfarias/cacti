@@ -60,16 +60,10 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'ds_remove':
-		ds_remove();
-
-		header ("Location: data_sources.php");
-		break;
 	case 'edit':
 		data_source_edit();
 
 		break;
-
 	case 'data_source_toggle_status':
 		data_source_toggle_status();
 
@@ -80,6 +74,7 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'ajax_view':
 		data_source();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -402,7 +397,6 @@ function data_source_form_actions() {
 			}
 		}
 
-		header("Location: data_sources.php");
 		exit;
 	}
 
@@ -423,11 +417,9 @@ function data_source_form_actions() {
 
 	$ds_actions[ACTION_NONE] = __("None");
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='ds_actions' name='ds_actions' action='data_sources.php' method='post'>\n";
 
-	html_start_box($ds_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='data_sources.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($ds_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -436,6 +428,8 @@ function data_source_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === DS_ACTION_DELETE) { /* delete */
 			$graphs = array();
 
@@ -456,17 +450,18 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be deleted.") . "</p>
-						<p><ul>$ds_list</ul></p>";
+						<ul>$ds_list</ul>";
 						if (sizeof($graphs) > 0) {
 							form_alternate_row_color();
 
 							print "<td class='textArea'><p class='textArea'>" . __("The following Graph(s) are using these Data Source(s):") . "</p>\n";
 
+							print "<div class='action_list'><ul>";
 							foreach ($graphs as $graph) {
-								print "<strong>" . $graph["title_cache"] . "</strong><br>\n";
+								print "<li>" . $graph["title_cache"] . "</li>\n";
 							}
+							print "</ul></div>";
 
-							print "<br>";
 							form_radio_button("delete_type", "3", "1", __("Leave the Graph(s) untouched."), "1"); print "<br>";
 							form_radio_button("delete_type", "3", "2", __("Delete all <strong>Graph Item(s)</strong> that reference these Data Source(s)."), "1"); print "<br>";
 							form_radio_button("delete_type", "3", "3", __("Delete all <strong>Graph(s)</strong> that reference these Data Source(s)."), "1"); print "<br>";
@@ -481,7 +476,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be re-associated with the choosen Graph Template. Be aware that all warnings will be suppressed during the conversion, so Graph data loss is possible.") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 						<p><strong>". __("New Data Source Template:") . "</strong><br>"; form_dropdown("data_template_id",db_fetch_assoc("select data_template.id,data_template.name from data_template order by data_template.name"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n";
@@ -491,7 +486,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be re-associated with the Device below.") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 						<p><strong>" . __("New Device:") . "</strong><br>"; form_dropdown("device_id",db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from device order by description,hostname"),"name","id","","","0"); print "</p>
 					</td>
 				</tr>\n";
@@ -501,7 +496,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be duplicated. You can optionally change the title format for the new Data Source(s).") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<ds_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -511,7 +506,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue' the following Data Source(s) will be converted into Data Template(s).  You can optionally change the title format for the new Data Template(s).") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<ds_title> Template", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -521,7 +516,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be enabled.") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -530,7 +525,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will be disabled.") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -540,7 +535,7 @@ function data_source_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following Data Source(s) will will have their suggested naming conventions recalculated.") . "</p>
-						<p><ul>$ds_list</ul></p>
+						<div class='action_list'><ul>$ds_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -564,17 +559,17 @@ function data_source_form_actions() {
 					<p>" . __("You must first select a Data Source.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($ds_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($ds_array), get_request_var_post("drp_action"), $title, "ds_actions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* ----------------------------

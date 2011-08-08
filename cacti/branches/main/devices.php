@@ -62,21 +62,25 @@ switch (get_request_var_request("action")) {
 		device_remove_gt();
 
 		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
+
 		break;
 	case 'query_remove':
 		device_remove_query();
 
 		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
+
 		break;
 	case 'query_reload':
 		device_reload_query();
 
 		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
+
 		break;
 	case 'query_verbose':
 		device_reload_query();
 
 		header("Location: devices.php?action=edit&id=" . $_GET["device_id"] . "&display_dq_details=true");
+
 		break;
 	case 'ajax':
 		device_ajax_actions();
@@ -84,27 +88,28 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'ajax_edit':
 		device_edit(false);
+
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		device_edit(true);
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		device();
+
 		break;
 	default:
 		if (!isset($_REQUEST["tab"])) {
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 			device();
-
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		}else{
 			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 			device_edit(true);
-
 			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		}
+
 		break;
 }

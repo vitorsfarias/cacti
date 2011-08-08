@@ -54,27 +54,29 @@ switch (get_request_var_request("action")) {
 		item_remove();
 
 		header("Location: xaxis_presets.php?action=edit&id=" . $_GET["xaxis_id"]);
+
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		item_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		xaxis_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		xaxis();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		xaxis();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -83,7 +85,6 @@ switch (get_request_var_request("action")) {
  -------------------------- */
 
 function xaxis_form_save() {
-
 	if (isset($_POST["save_component_xaxis"])) {
 		$save["id"]   = $_POST["id"];
 		$save["hash"] = get_hash_xaxis($_POST["id"]);
@@ -201,7 +202,6 @@ function xaxis_form_actions() {
 			}
 		}
 
-		header("Location: xaxis_presets.php");
 		exit;
 	}
 
@@ -222,11 +222,9 @@ function xaxis_form_actions() {
 
 	$xaxis_actions[ACTION_NONE] = __("None");
 
-	include_once("./include/top_header.php");
+	print "<form id='xactions' name='xactions' action='xaxis_presets.php' method='post'>\n";
 
-	html_start_box($xaxis_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='xaxis_presets.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (isset($xaxis_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -235,11 +233,13 @@ function xaxis_form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following X-Axis Preset(s) will be deleted.") . "</p>
-						<p><ul>$xaxis_list</ul></p>
+						<div class='actions_list'><ul>$xaxis_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -248,7 +248,7 @@ function xaxis_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following X-Axis Preset(s) will be duplicated. You can optionally change the title format for the new X-Axis Preset(s).") . "</p>
-						<p><ul>$xaxis_list</ul></p>
+						<div class='action_list'><ul>$xaxis_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<xaxis_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -257,17 +257,17 @@ function xaxis_form_actions() {
 		}
 	}else{
 		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one CDEF.") . "</span></td></tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!isset($xaxis_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($xaxis_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($xaxis_array), get_request_var_post("drp_action"), $title, "xactions");
 	}
 
 	html_end_box();
-
-	include_once("./include/bottom_footer.php");
 }
 
 /* ---------------------

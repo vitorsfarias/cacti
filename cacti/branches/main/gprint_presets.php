@@ -44,17 +44,19 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		gprint_presets_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_view':
+		gprint_presets();
+
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		gprint_presets();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -101,7 +103,7 @@ function form_actions() {
 				db_execute("delete from graph_templates_gprint where " . array_to_sql_or($selected_items, "id"));
 			}
 		}
-		header("Location: gprint_presets.php");
+
 		exit;
 	}
 
@@ -120,11 +122,9 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	print "<form id='gpactions' name='gpactions' action='gprint_presets.php' method='post'>\n";
 
-	html_start_box($gprint_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='gprint_presets.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (isset($gprint_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -133,11 +133,13 @@ function form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following GPRINT Preset(s) will be delete.") . "</p>
-						<p><ul>$gprint_list</ul></p>
+						<div class='action_list'><ul>$gprint_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -145,17 +147,17 @@ function form_actions() {
 		}
 	}else{
 		print "<tr><td class='topBoxAlt'><span class='textError'>" . __("You must select at least one GPRINT preset.") . "</span></td></tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!isset($gprint_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($gprint_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($gprint_array), get_request_var_post("drp_action"), $title, "gpactions");
 	}
 
 	html_end_box();
-
-	include_once("./include/bottom_footer.php");
 }
 
 /* --------------------------

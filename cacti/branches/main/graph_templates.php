@@ -62,9 +62,7 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'input_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		input_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
@@ -80,6 +78,10 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'ajax_item_dnd':
 		graph_template_item_save();
+
+		break;
+	case 'ajax_view':
+		template();
 
 		break;
 	default:
@@ -308,7 +310,6 @@ function form_actions() {
 			}
 		}
 
-		header("Location: graph_templates.php");
 		exit;
 	}
 
@@ -327,11 +328,9 @@ function form_actions() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	print "<form id='gtactions' name='gtactions' action='graph_templates.php' method='post'>\n";
 
-	html_start_box($graph_template_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='graph_templates.php' method='post'>\n";
+	html_start_box("", "100", "3", "center", "");
 
 	if (sizeof($graph_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -340,11 +339,13 @@ function form_actions() {
 							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 						</td>
 					</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph Template(s) will be deleted.  Any Graph(s) attached to these Graph Template(s) will become individual Graph(s).") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -353,7 +354,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea'>
 						<p>" . __("When you click 'Continue', the following Graph Template(s) will be duplicated. You can optionally change the title format for the new Graph Template(s).") . "</p>
-						<p><ul>$graph_list</ul></p>
+						<div class='action_list'><ul>$graph_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<template_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
@@ -366,17 +367,17 @@ function form_actions() {
 					<p>" . __("You must first select a Graph Template.  Please select 'Return' to return to the previous menu.") . "</p>
 				</td>
 			</tr>\n";
+
+		$title = __("Selection Error");
 	}
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($graph_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($graph_array), get_request_var_post("drp_action"), $title, "gtactions");
 	}
 
 	html_end_box();
-
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 }
 
 /* ----------------------------

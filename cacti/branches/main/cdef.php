@@ -58,11 +58,6 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'remove':
-		cdef_remove();
-
-		header ("Location: cdef.php");
-		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -72,6 +67,10 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'ajaxdnd':
 		cdef_dnd();
+
+		break;
+	case 'ajax_view':
+		cdef();
 
 		break;
 	default:
@@ -193,8 +192,6 @@ function form_actions() {
 				duplicate_cdef($selected_items[$i], get_request_var_post("title_format"));
 			}
 		}
-
-		header("Location: cdef.php");
 		exit;
 	}
 
@@ -213,11 +210,9 @@ function form_actions() {
 		}
 	}
 
-	include_once("./include/top_header.php");
+	print "<form id='cdef_actions' action='cdef.php' method='post' name='cdef_actions'>\n";
 
-	html_start_box($cdef_actions{get_request_var_post("drp_action")}, "60", "3", "center", "");
-
-	print "<form action='cdef.php' method='post'>\n";
+	html_start_box("", "100", "0", "center", "");
 
 	if (isset($cdef_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -226,11 +221,13 @@ function form_actions() {
 						<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
 					</td>
 				</tr>\n";
+
+			$title = __("Selection Error");
 		}elseif (get_request_var_post("drp_action") === "1") { /* delete */
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the selected CDEFs will be deleted.") . "</p>
-						<p><ul>$cdef_list</ul></p>
+						<div class='action_list'><ul>$cdef_list</ul></div>
 					</td>
 				</tr>\n";
 
@@ -239,11 +236,10 @@ function form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __("When you click 'Continue', the following CDEFs will be duplicated. You can optionally change the title format for the new CDEFs.") . "</p>
-						<p><ul>$cdef_list</ul></p>
+						<div class='action_list'><ul>$cdef_list</ul></div>
 						<p><strong>" . __("Title Format:") . "</strong><br>"; form_text_box("title_format", "<cdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
-				</tr>\n
-				";
+				</tr>\n";
 
 			$title = __("Duplicate CDEF(s)");
 		}
@@ -254,12 +250,10 @@ function form_actions() {
 	if (!isset($cdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button();
 	}else{
-		form_continue(serialize($cdef_array), get_request_var_post("drp_action"), $title);
+		form_continue(serialize($cdef_array), get_request_var_post("drp_action"), $title, "cdef_actions");
 	}
 
 	html_end_box();
-
-	include_once("./include/bottom_footer.php");
 }
 
 /* --------------------------
@@ -401,24 +395,6 @@ function item_edit() {
 /* ---------------------
     CDEF Functions
    --------------------- */
-
-function cdef_remove() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	/* ==================================================== */
-
-	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
-		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the CDEF") . " <strong>'" . db_fetch_cell("select name from cdef where id=" . $_GET["id"]) . "'</strong>?", "cdef.php", "cdef.php?action=remove&id=" . $_GET["id"]);
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		exit;
-	}
-
-	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		db_execute("delete from cdef where id=" . $_GET["id"]);
-		db_execute("delete from cdef_items where cdef_id=" . $_GET["id"]);
-	}
-}
 
 function cdef_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
