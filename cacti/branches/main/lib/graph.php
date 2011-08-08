@@ -829,7 +829,7 @@ function graph_form_actions() {
 	}
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($graph_array), get_request_var_post("drp_action"), $title, "gactions");
 	}

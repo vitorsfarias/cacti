@@ -588,7 +588,7 @@ function device_form_actions() {
 	}
 
 	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
-		form_return_button();
+		form_return_button($title);
 	}else{
 		form_continue(serialize($device_array), get_request_var_post("drp_action"), $title, "device_edit_actions");
 	}

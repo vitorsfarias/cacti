@@ -1197,8 +1197,9 @@ function form_cancel_action_compose($cancel_action) {
 /** form_return_button - draws a return button at the bottom of
      an html edit form
 */
-function form_return_button() {
+function form_return_button($title = "") {
 	?>
+	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
 		<td align="right">
 			<input type='button' value='<?php print __("Return");?>' onClick='javascript:$("#cdialog").dialog("close")' name='cancel'>
