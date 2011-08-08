@@ -831,7 +831,6 @@ function data_query_display_image($image) {
 }
 
 function data_query_edit() {
-	global $config;
 	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* ================= input validation ================= */

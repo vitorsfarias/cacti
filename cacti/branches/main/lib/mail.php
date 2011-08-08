@@ -23,7 +23,6 @@
 */
 
 function send_mail($to, $from, $subject, $message, $filename = '', $headers = '') {
-	global $config;
 	include_once(CACTI_BASE_PATH . "/include/mail.php");
 
 	$message = str_replace('<SUBJECT>', $subject, $message);
@@ -247,8 +246,6 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 }
 
 function test_mail() {
-	global $config;
-	
 	print "<html><head>";
 	print '<link type="text/css" href="../../include/main.css" rel="stylesheet">';
 	print "</head><body>";

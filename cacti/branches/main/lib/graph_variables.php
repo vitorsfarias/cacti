@@ -31,8 +31,6 @@
    @param $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
 function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 
 	$values_array = array();

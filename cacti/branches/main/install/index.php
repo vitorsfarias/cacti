@@ -638,7 +638,6 @@ function db_install_execute($cacti_version, $sql) {
 }
 
 function find_best_path($binary_name) {
-	global $config;
 	if (CACTI_SERVER_OS == "win32") {
 		$pgf = getenv("ProgramFiles");
 		$pgf64 = getenv("ProgramW6432");

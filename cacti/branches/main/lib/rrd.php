@@ -31,8 +31,6 @@ function escape_command($command) {
 }
 
 function rrd_init($output_to_term = TRUE) {
-	global $config;
-
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
 		putenv("RRD_DEFAULT_FONT=" . read_config_option("path_rrdtool_default_font"));
@@ -59,8 +57,6 @@ function rrd_close($rrdtool_pipe) {
 }
 
 function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_pipe = "", $logopt = "WEBLOG") {
-	global $config;
-
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -186,7 +182,6 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, &$rrdtool_
 }
 
 function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = "") {
-	global $config;
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
@@ -485,7 +480,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
-	global $config;
 	include(CACTI_BASE_PATH . "/include/global_arrays.php");
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
@@ -1499,7 +1493,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 }
 
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
-	global $config;
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 
 	include_once(CACTI_BASE_PATH . "/lib/cdef.php");
@@ -2108,8 +2101,6 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
  * returns				- rrdtool --font option for the given font type
  */
 function rrdtool_set_font($type, $no_legend = "") {
-	global $config;
-
 	/* first, fetch the font from user specific settings
 	 * if not available, use the global setting */
 	if (strlen(read_graph_config_option($type . "_font"))) {
@@ -2154,8 +2145,6 @@ function rrdtool_set_font($type, $no_legend = "") {
 
 
 function rrdtool_set_colortag($type, $colortag) {
-	global $config;
-
 	$tag = "";
 	$sequence = read_config_option("colortag_sequence");
 
@@ -2984,7 +2973,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source=TRUE) {
    @param $data_source_id - data source id
    @rerturn - (array) an array containing issues with the rrdtool file definition vs data source */
 function rrd_check($data_source_id) {
-	global $config, $rrd_tune_array;
+	global $rrd_tune_array;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array["data_source_id"]);
@@ -2998,7 +2987,7 @@ function rrd_check($data_source_id) {
    @param $data_source_id - data source id
    @rerturn - 1 success, 2 false */
 function rrd_repair($data_source_id) {
-	global $config, $rrd_tune_array;
+	global $rrd_tune_array;
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array["data_source_id"]);
@@ -3012,8 +3001,6 @@ function rrd_repair($data_source_id) {
    @param $data_source_id - data source id
    @returns - (array) an array containing all data from rrdtool info command */
 function rrdtool_function_info($data_source_id) {
-	global $config;
-
 	/* Get the path to rrdtool file */
 	$data_source_path = get_data_source_path($data_source_id, true);
 

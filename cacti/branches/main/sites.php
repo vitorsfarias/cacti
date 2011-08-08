@@ -90,7 +90,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $config, $site_actions;
+	global $site_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -188,7 +188,7 @@ function form_actions() {
 }
 
 function site_export() {
-	global $site_actions, $config;
+	global $site_actions;
 
 	site_process_page_variables();
 
@@ -280,8 +280,6 @@ function site_remove($id) {
    --------------------- */
 
 function site_remove_confirm() {
-	global $config;
-
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
@@ -534,7 +532,7 @@ function get_site_records(&$total_rows, &$rowspp, $apply_limits = TRUE) {
 }
 
 function site($refresh = true) {
-	global $site_actions, $config;
+	global $site_actions;
 
 	$table = New html_table;
 

@@ -41,8 +41,6 @@ function input_validate_input_regex($value, $regex) {
 }
 
 function die_html_input_error() {
-	global $config;
-
 	?>
 	<table width="100%" align="center">
 		<tr>

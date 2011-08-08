@@ -241,7 +241,6 @@ if ($action == 'login') {
      the pre-defined error messages
    @param $message - the actual text of the error message to display */
 function auth_display_custom_error_message($message) {
-	global $config;
 	/* kill the session */
 	setcookie(session_name(),"",time() - 3600,"/");
 	/* print error */

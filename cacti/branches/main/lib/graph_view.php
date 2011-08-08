@@ -787,7 +787,6 @@ function get_graph_preview_content() {
 }
 
 function graph_view_timespan_selector($mode = "tree") {
-	global $config;
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
 
 	?>

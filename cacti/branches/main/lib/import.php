@@ -23,7 +23,7 @@
 */
 
 function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = array()) {
-	global $config, $hash_type_codes, $hash_version_codes;
+	global $hash_type_codes, $hash_version_codes;
 
 	include_once(CACTI_BASE_PATH . "/lib/xml.php");
 
@@ -1028,7 +1028,7 @@ function check_hash_type($hash_type) {
 }
 
 function check_hash_version($hash_version) {
-	global $hash_version_codes, $config;
+	global $hash_version_codes;
 
 	$i = 0;
 

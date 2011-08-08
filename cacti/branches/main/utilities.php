@@ -233,7 +233,7 @@ function memory_readable($val) {
 
 
 function utilities_view_tech($tabs = false) {
-	global $config, $rrdtool_versions;
+	global $rrdtool_versions;
 
 	if ($tabs) {
 		$tabs = array(
@@ -294,8 +294,6 @@ function utilities_view_tech($tabs = false) {
 }
 
 function display_php() {
-	global $config;
-
 	$php_info = utilities_php_modules();
 
 	html_start_box(__("PHP Module Information"), "100", "3", "center", "");
@@ -307,7 +305,7 @@ function display_php() {
 }
 
 function display_general() {
-	global $config, $rrdtool_versions;
+	global $rrdtool_versions;
 	require(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
 	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
 
@@ -537,7 +535,7 @@ function display_general() {
 }
 
 function display_database() {
-	global $config, $rrdtool_versions;
+	global $rrdtool_versions;
 
 	/* Get table status */
 	$table_status = db_fetch_assoc("SHOW TABLE STATUS");
@@ -588,7 +586,7 @@ function display_database() {
 }
 
 function display_database_processes() {
-	global $config, $rrdtool_versions;
+	global $rrdtool_versions;
 
 	/* Get table status */
 	$db_processes = db_fetch_assoc("SHOW PROCESSLIST");
@@ -628,7 +626,7 @@ function display_database_processes() {
 }
 
 function display_languages() {
-	global $config, $cacti_textdomains, $lang2locale, $i18n_modes, $cacti_locale;
+	global $cacti_textdomains, $lang2locale, $i18n_modes, $cacti_locale;
 
 	$loaded_extensions = get_loaded_extensions();
 

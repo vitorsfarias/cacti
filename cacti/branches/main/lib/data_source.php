@@ -178,8 +178,6 @@ function data_source_disable_multi($local_data_ids) {
  * @return unknown_type
  */
 function reapply_suggested_data_source_title($local_data_id) {
-	global $config;
-
 	$data_template_data_id = db_fetch_cell("select id from data_template_data where local_data_id=$local_data_id");
 	if (empty($data_template_data_id)) {
 		return;

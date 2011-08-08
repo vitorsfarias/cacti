@@ -673,8 +673,6 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	  $values["sg"][data_query_id][data_template_id]["data_template"][field_name] = $value  // data template (w/ data query)
 	  $values["sg"][data_query_id][data_template_id]["data_template_item"][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
 function create_complete_graph_from_template($graph_template_id, $device_id, $snmp_query_array, &$suggested_values_array) {
-	global $config;
-
 	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
 
 	/* create the graph */

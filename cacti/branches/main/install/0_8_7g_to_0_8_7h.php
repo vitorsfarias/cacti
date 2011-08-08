@@ -23,8 +23,7 @@
 */
 
 function upgrade_to_0_8_7h() {
-	global $config;
-	require_once($config["base_path"] . "/lib/poller.php");
+	require_once(CACTI_BASE_PATH . "/lib/poller.php");
 
 	/* speed up the reindexing */
 	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");

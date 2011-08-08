@@ -210,8 +210,6 @@ function reset_session_variables($pre_tree) {
      DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC (2) - alphabetic sorting
      DATA_QUERY_INDEX_SORT_TYPE_NUMERIC (3) - numeric sorting */
 function sort_tree($sort_type, $item_id, $sort_style) {
-	global $config;
-
 	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
 	require_once(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_constants.php");
 	include_once(CACTI_BASE_PATH . "/lib/sort.php");
@@ -452,7 +450,6 @@ function tree_add_tree_names_to_actions_array() {
  */
 function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
 	$device_id, $device_grouping_type, $sort_children_type, $propagate_changes) {
-	global $config;
 	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
 
 	input_validate_input_number($tree_id);
