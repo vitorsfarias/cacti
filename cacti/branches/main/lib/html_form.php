@@ -965,12 +965,12 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
    @param string $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
-	<table align="center" cellpadding="1" cellspacing="0" border="0" bgcolor="#B61D22" width="60%">
+	<table align="center" cellpadding="1" cellspacing="0" border="0" width="60%">
 		<tr>
-			<td bgcolor="#B61D22" colspan="10">
+			<td clspan="10">
 				<table width="100%" cellpadding="3" cellspacing="0">
 					<tr>
-						<td bgcolor="#B61D22" class="textHeaderDark"><?php print $title_text;?></td>
+						<td class="textHeaderDark"><?php print $title_text;?></td>
 					</tr>
 					<?php
 					form_area($body_text);
@@ -989,7 +989,7 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
-		<td bgcolor="#E1E1E1">
+		<td>
 			<a href="<?php print $cancel_url;?>"><img src="<?php print CACTI_URL_PATH; ?>images/button_cancel.gif" alt="<?php print __("Cancel");?>" align="middle"></a>
 			<a href="<?php print $action_url . "&confirm=yes";?>"><img src="<?php print CACTI_URL_PATH ?>images/button_delete.gif" alt="<?php print __("Delete");?>" align="middle"></a>
 		</td>
@@ -1050,7 +1050,7 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	</script>
 	<table align='center' width='100%' style='background-color: #ffffff; border: 1px solid #bbbbbb;'>
 		<tr>
-			<td bgcolor="#f5f5f5" align="right">
+			<td align="right" style="text-align:right;">
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
 				<input type='submit' value='<?php print $alt;?>'>
@@ -1069,12 +1069,12 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
    @param string $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_alt($title_text, $body_text, $cancel_url, $action_url) { ?>
 		<br>
-		<table align="center" cellpadding="1" cellspacing="0" border="0" bgcolor="#B61D22" width="60%">
+		<table align="center" cellpadding="1" cellspacing="0" border="0" width="60%">
 			<tr>
-				<td bgcolor="#B61D22" colspan="10">
+				<td colspan="10">
 					<table width="100%" cellpadding="3" cellspacing="0">
 						<tr>
-							<td bgcolor="#B61D22" class="textHeaderDark"><?php print $title_text;?></td>
+							<td class="textHeaderDark"><?php print $title_text;?></td>
 						</tr>
 						<?php
 						form_area($body_text);
@@ -1201,7 +1201,7 @@ function form_return_button($title = "") {
 	?>
 	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
-		<td align="right">
+		<td align="right" style="text-align:right;">
 			<input type='button' value='<?php print __("Return");?>' onClick='javascript:$("#cdialog").dialog("close")' name='cancel'>
 		</td>
 	</tr>
@@ -1215,7 +1215,7 @@ function form_return_button($title = "") {
 function form_cancel_button() {
 	?>
 	<tr>
-		<td align="right">
+		<td align="right" style="text-align:right">
 			<input type='button' value='<?php print __("Cancel");?>' onClick='window.history.back()' name='cancel'>
 		</td>
 	</tr>
@@ -1231,7 +1231,7 @@ function form_continue($item_list, $drp_action = "none", $title = "", $form_id =
 	?>
 	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
-		<td align="right">
+		<td align="right" style="text-align:right">
 			<div><input type='hidden' name='action' value='actions'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
@@ -1270,7 +1270,7 @@ function form_continue($item_list, $drp_action = "none", $title = "", $form_id =
 function form_continue2($item_list, $action = "none", $title = "") {
 	?>
 	<tr>
-		<td align="right">
+		<td align="right" style="text-align:right">
 			<div><input type='hidden' name='action' value='<?php print $action;?>'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
 			<input type='submit' value='<?php print __("Continue");?>' name='yes' title='<?php print $title;?>'>
@@ -1286,7 +1286,7 @@ function form_continue2($item_list, $action = "none", $title = "") {
 function form_confirm_buttons_alt() {
 	?>
 	<tr>
-		<td bgcolor="#E1E1E1">
+		<td>
 			<input type='submit' value='<?php print __("Cancel");?>' name='cancel'>
 			<input type='submit' value='<?php print __("Delete");?>' name='delete'>
 		</td>

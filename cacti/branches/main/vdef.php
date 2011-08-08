@@ -451,7 +451,7 @@ function vdef_edit() {
 					<td>
 						<em><?php $vdef_item_type = $vdef_item["type"]; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item["id"]);?></strong>
 					</td>
-					<td align="right">
+					<td align="right" style="text-align:right">
 						<a href="<?php print htmlspecialchars("vdef.php?action=item_remove&id=" . $vdef_item["id"] . "&vdef_id=" . $vdef["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php

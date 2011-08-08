@@ -378,10 +378,8 @@ function xaxis_edit() {
 				form_selectable_cell((isset($xaxis_item["lpr"]) ? $xaxis_item["lpr"] : 0), $xaxis_item["id"]);
 				form_selectable_cell((isset($xaxis_item["lfm"]) ? $xaxis_item["lfm"] : __("None")), $xaxis_item["id"]);
 				?>
-				<td align="right"><a
-					href="<?php print htmlspecialchars("xaxis_presets.php?action=item_remove&id=" . $xaxis_item["id"] . "&xaxis_id=" . $xaxis["id"]);?>"><img
-					class="buttonSmall" src="images/delete_icon.gif"
-					alt="<?php print __("Delete");?>" align='middle'></a>
+				<td align="right" style="text-align:right;">
+					<a href="<?php print htmlspecialchars("xaxis_presets.php?action=item_remove&id=" . $xaxis_item["id"] . "&xaxis_id=" . $xaxis["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 				</td>
 				<?php
 				$i++;

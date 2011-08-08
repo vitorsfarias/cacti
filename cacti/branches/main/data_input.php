@@ -442,9 +442,9 @@ function data_edit() {
 				<td>
 					<?php print $field["name"];?>
 				</td>
-				<td align="right">
+				<td align="right" style="text-align:right">
 					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>">
-						<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='right'>
+						<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align="right">
 					</a>
 				</td>
 		<?php
@@ -484,9 +484,9 @@ function data_edit() {
 				<td>
 					<?php print html_boolean_friendly($field["update_rra"]);?>
 				</td>
-				<td align="right">
+				<td align="right" style="text-align:right">
 					<a href="<?php print htmlspecialchars("data_input.php?action=field_remove&id=" . $field["id"] . "&data_input_id=" . $_GET["id"]);?>">
-						<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='right'>
+						<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align="right">
 					</a>
 				</td>
 		<?php

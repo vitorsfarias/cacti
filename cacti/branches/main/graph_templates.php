@@ -623,7 +623,7 @@ function graph_template_display_items() {
 			<td>
 				<a class="linkEditMain" href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>'><?php print $item["name"];?></a>
 			</td>
-			<td align="right">
+			<td align="right" style="text-align:right">
 				<a href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>'>
 					<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='right'>
 				</a>
