@@ -72,15 +72,46 @@ foreach($parms as $parameter) {
 }
 echo __("Repairing All Cacti Database Tables") . "\n";
 
-db_execute("UNLOCK TABLES");
+/* verify correct database connection */
+$db_conn = $database_sessions[$database_default];
+if (!$db_conn) {
+	echo __("Database settings are wrong. No database connect possible." . "\n");
+	return FALSE;
+} 
 
+/* run on all tables of database, thus including all plugin tables */
+db_execute("UNLOCK TABLES");
 $tables = db_fetch_assoc("SHOW TABLES FROM " . $database_default);
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
-		echo __("Repairing Table -> '%s'", $table['Tables_in_' . $database_default]);
-		$status = db_execute("REPAIR TABLE " . $table['Tables_in_' . $database_default] . $form);
-		echo ($status == 0 ? __(" Failed") : __(" Successful")) . "\n";
+		/* try to access table to verify status */
+		echo __("Checking Table -> '%s': ", $table['Tables_in_' . $database_default]);
+		$status = db_execute("SELECT * FROM " . $table['Tables_in_' . $database_default] . $form . " LIMIT 1");
+		$en = mysql_errno($db_conn);
+		$error = mysql_error($db_conn);
+		
+		switch ($en) {
+		case 0:
+			/* everything is fine */
+			echo __("Ok, no repair required" . "\n");
+			continue;
+			break;
+			
+		case 1194:
+			/* database is corrupt, so run a repair */
+			echo $error;
+			$status = db_execute("REPAIR TABLE " . $table['Tables_in_' . $database_default] . $form);
+			$en = mysql_errno($db_conn);
+			$error = mysql_error($db_conn);
+			echo ($status == 0 ? __(" -> Repair failed") : __(" -> Repair successful")) . "\n";
+			break;
+			
+		default:
+			/* don't know what happens, print error to user */
+			echo __("Unknown database error %s when trying to verify table. Message: %s", $en, $error) . "\n";
+			
+		}
 	}
 }
 
@@ -185,9 +216,9 @@ if ($rows > 0) {
 }
 
 if ($total_rows > 0 && !$force) {
-	echo "\n" . __("WARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove\n
-					the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n
-	 				should contact your support organization prior to proceeding with that repair.") . "\n\n";
+	echo "\n" . __("WARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove" .
+			"the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you" .
+			"should contact your support organization prior to proceeding with that repair.") . "\n\n";
 }elseif ($total_rows == 0) {
 	echo __("NOTE: No Invalid Cacti Template Records found in your Database") . "\n\n";
 }
