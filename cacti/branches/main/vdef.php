@@ -45,10 +45,14 @@ switch ($_REQUEST["action"]) {
 		form_actions();
 
 		break;
+	case 'item_remove_confirm':
+		item_remove_confirm();
+
+		break;
 	case 'item_remove':
 		item_remove();
 
-		header("Location: vdef.php?action=edit&id=" . $_GET["vdef_id"]);
+//		header("Location: vdef.php?action=edit&id=" . $_GET["vdef_id"]);
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -56,6 +60,10 @@ switch ($_REQUEST["action"]) {
 		item_edit();
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		break;
+	case 'ajax_edit':
+		vdef_edit();
+
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
@@ -258,13 +266,63 @@ function form_actions() {
     VDEF Item Functions
    -------------------------- */
 
-function item_remove() {
+function item_remove_confirm() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
+	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
+
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("vdef_id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("vdef_id"));
 	/* ==================================================== */
 
-	db_execute("delete from vdef_items where id=" . get_request_var("vdef_id"));
+	print "<form id='delete' action='vdef.php' name='delete' method='post'>\n";
+
+	html_start_box("", "100", "3", "center", "");
+
+	$vdef       = db_fetch_row("SELECT * FROM vdef WHERE id=" . get_request_var_request("id"));
+	$vdef_item  = db_fetch_row("SELECT * FROM vdef_items WHERE id=" . get_request_var_request("vdef_id"));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __("When you click 'Continue', the following VDEF item will be deleted.");?></p>
+			<p>VDEF Name: '<?php print $vdef["name"];?>'<br>
+			<em><?php $vdef_item_type = $vdef_item["type"]; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item["id"]);?></strong></p>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __("Continue");?>' name='continue' title='<?php print __("Remove VDEF Item");?>'>
+		</td>
+	</tr>
+	</form>
+	<?php
+
+	html_end_box();
+
+	?>
+	</form>
+	<script type='text/javascript'>
+	$('#continue').click(function(data) {
+		$.post('vdef.php?action=item_remove', { vdef_id: <?php print get_request_var("vdef_id");?>, id: <?php print get_request_var("id");?> }, function(data) {
+			$('#cdialog').dialog('close');
+			$.get('vdef.php?action=ajax_edit&id=<?php print get_request_var("id");?>', function(data) {
+				$('#content').html(data);
+			});
+		});
+        });
+        </script>
+	<?php
+}
+		
+function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post("id"));
+	input_validate_input_number(get_request_var_post("vdef_id"));
+	/* ==================================================== */
+
+	db_execute("DELETE FROM vdef_items WHERE id=" . get_request_var_post("vdef_id"));
 }
 
 function item_edit() {
@@ -452,7 +510,7 @@ function vdef_edit() {
 						<em><?php $vdef_item_type = $vdef_item["type"]; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item["id"]);?></strong>
 					</td>
 					<td align="right" style="text-align:right">
-						<a href="<?php print htmlspecialchars("vdef.php?action=item_remove&id=" . $vdef_item["id"] . "&vdef_id=" . $vdef["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
+						<img id="<?php print $vdef["id"] . "_" . $vdef_item["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" title="<?php print __("Delete VDEF Item");?>" align="middle">
 					</td>
 			<?php
 			form_end_row();
@@ -463,8 +521,9 @@ function vdef_edit() {
 		html_end_box();
 	}
 	form_save_button("vdef.php", "return");
-?>
-<script type="text/javascript">
+
+	?>
+	<script type="text/javascript">
 	$('#vdef_item').tableDnD({
 		onDrop: function(table, row) {
 			$.get('vdef.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&'+$.tableDnD.serialize(), function(data) {
@@ -474,9 +533,17 @@ function vdef_edit() {
 			});
 		}
 	});
-</script>
-<?php
 
+	$('.delete').click(function (data) {
+                id = $(this).attr('id').split("_");
+		request = "vdef.php?action=item_remove_confirm&id="+id[0]+"&vdef_id="+id[1];
+                $.get(request, function(data) {
+                        $('#cdialog').html(data);
+                        $('#cdialog').dialog({ title: "<?php print __("Delete CDEF Item");?>", minHeight: 80, minWidth: 500 });
+                });
+        }).css("cursor", "pointer");
+	</script>
+	<?php
 }
 
 function vdef_filter() {
@@ -584,6 +651,7 @@ function vdef($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		)
 	);

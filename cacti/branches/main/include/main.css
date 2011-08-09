@@ -802,6 +802,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', end
 	color: #ffffff !important;
 	text-decoration: none !important;
 	white-space: nowrap;
+	padding-right:9px !important;
 }
 
 .textSubHeaderDark th {
