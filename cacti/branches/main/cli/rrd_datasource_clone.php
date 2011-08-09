@@ -184,7 +184,7 @@ function display_help($me) {
 	echo __("usage: ") . $me . " --rra= [--data-template-id=] [--data-source-id=] [--rrd=]\n";
 	echo "       [--delim=] [--sep=] [-d]\n\n";
 	echo __("Required:") . "\n";
-	echo "   --rra                   " . __("specifies the rra to be deleted.") . "\n";
+	echo "   --rra                   " . __("specifies the rra to be cloned.") . "\n";
 	echo "                           " . __("Format is 'cf:rows:pdp_per_row:xff [;cf:rows:pdp_per_row:xff ...]'") . "\n";
 	echo __("One of [%s|%s|%s] must be given.", '--data-template-id', '--data-source-id', '--rrd') . "\n";
 	echo __("Write permissions to the files is required.") . "\n";
