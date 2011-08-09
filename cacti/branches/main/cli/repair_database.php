@@ -215,10 +215,20 @@ if ($rows > 0) {
 	}
 }
 
+/* remove invalid VDEF Items from the Database */
+$rows = db_fetch_cell("SELECT count(*) FROM vdef_items LEFT JOIN vdef ON vdef_items.vdef_id=vdef.id WHERE vdef.id IS NULL");
+$total_rows += $rows;
+if ($rows > 0) {
+	if ($force) {
+		db_execute("DELETE FROM vdef_items WHERE vdef_id NOT IN (SELECT id FROM vdef)");
+		echo __("NOTE: %d Invalid VDEF Item Rows Removed from Graph Templates", $rows). "\n";
+	}else {
+		echo __("NOTE: %d Invalid VDEF Item Rows Found in Graph Templates", $rows) . "\n";
+	}
+}
+
 if ($total_rows > 0 && !$force) {
-	echo "\n" . __("WARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove" .
-			"the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you" .
-			"should contact your support organization prior to proceeding with that repair.") . "\n\n";
+	echo "\n" . __("WARNING: Serious Cacti Template Problems found in your Database.  Using the '--force' option will remove the invalid records. However, these changes can be catastrophic to existing data sources. Therefore, you should contact your support organization prior to proceeding with that repair.") . "\n\n";
 }elseif ($total_rows == 0) {
 	echo __("NOTE: No Invalid Cacti Template Records found in your Database") . "\n\n";
 }
