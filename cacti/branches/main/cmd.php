@@ -225,7 +225,10 @@ if (isset($polling_interval)) {
 
 /* script server is required if either a script server script or a script server reindex is required */
 $script_server_calls += db_fetch_cell("SELECT count(*) from poller_reindex WHERE action IN (" . POLLER_ACTION_SCRIPT_PHP . "," . POLLER_ACTION_SCRIPT_PHP_COUNT . ")");
-cacti_log("Script Server Calls detected: " . $script_server_calls, $stdout);
+
+if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH || $debug) {
+	cacti_log("Script Server Calls detected: " . $script_server_calls, $stdout);
+}
 
 if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == CHECKED)) {
 	$failure_type = "";
