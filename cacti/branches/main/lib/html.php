@@ -1288,7 +1288,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
 		print "<td style='$this_row_style'>" . ((!empty($item["consolidation_function_id"])) ? $consolidation_functions{$item["consolidation_function_id"]} : __("None")) . "</td>\n";
 		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["cdef_name"],0,30) : __("None")) . "</td>\n";
-		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["gprint_name"],0,30) : __("None")) . "</td>\n";
+		print "<td style='$this_row_style'>" . ((strlen($item["gprint_name"]) > 0) ? substr($item["gprint_name"],0,30) : __("None")) . "</td>\n";
 		print "<td style='$this_row_style'"  . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . ">&nbsp;</td>\n";
 
 		if ($disable_controls == false) {
