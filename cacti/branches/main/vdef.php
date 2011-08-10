@@ -52,14 +52,12 @@ switch ($_REQUEST["action"]) {
 	case 'item_remove':
 		item_remove();
 
-//		header("Location: vdef.php?action=edit&id=" . $_GET["vdef_id"]);
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		item_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 	case 'ajax_edit':
 		vdef_edit();
@@ -67,12 +65,11 @@ switch ($_REQUEST["action"]) {
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		vdef_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
-	case 'ajax_item_dnd':
+	case 'ajax_dnd':
 		vdef_item_dnd();
 
 		break;
@@ -82,10 +79,9 @@ switch ($_REQUEST["action"]) {
 		break;
 	default:
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		vdef();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
 		break;
 }
 
@@ -526,7 +522,7 @@ function vdef_edit() {
 	<script type="text/javascript">
 	$('#vdef_item').tableDnD({
 		onDrop: function(table, row) {
-			$.get('vdef.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&'+$.tableDnD.serialize(), function(data) {
+			$.get('vdef.php?action=ajax_dnd&id=<?php isset($_GET["id"]) ? print get_request_var("id") : print 0;?>&'+$.tableDnD.serialize(), function(data) {
 				if (data) {
 					$('#preview').html(data);
 				}
@@ -539,7 +535,7 @@ function vdef_edit() {
 		request = "vdef.php?action=item_remove_confirm&id="+id[0]+"&vdef_id="+id[1];
                 $.get(request, function(data) {
                         $('#cdialog').html(data);
-                        $('#cdialog').dialog({ title: "<?php print __("Delete CDEF Item");?>", minHeight: 80, minWidth: 500 });
+                        $('#cdialog').dialog({ title: "<?php print __("Delete VDEF Item");?>", minHeight: 80, minWidth: 500 });
                 });
         }).css("cursor", "pointer");
 	</script>
