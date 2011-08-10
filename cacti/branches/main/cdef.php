@@ -587,6 +587,7 @@ function cdef($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		)
 	);

@@ -390,6 +390,7 @@ function poller($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		),
 		"nosort1" => array(

@@ -1040,6 +1040,7 @@ function data_query($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		),
 		"image" => array(
