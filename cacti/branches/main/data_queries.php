@@ -549,7 +549,7 @@ function data_query_item_edit() {
 						<input type="text" name="svds_<?php print $data_template["id"];?>_field" size="15">
 					</td>
 					<td>
-						<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="30">
+						<input type="text" name="svds_<?php print $data_template["id"];?>_text" size="60">
 					</td>
 					<td style="text-align:right;">
 						<input type="submit" value="<?php print __("Add");?>" name="svds_<?php print $data_template["id"];?>_x">
@@ -617,7 +617,7 @@ function data_query_item_edit() {
 				<input type="text" name="svg_field" size="15">
 			</td>
 			<td>
-				<input type="text" name="svg_text" size="30">
+				<input type="text" name="svg_text" size="60">
 			</td>
 			<td style="text-align:right;">
 				<input type="submit" value="<?php print __("Add");?>" name="svg_x">
@@ -932,7 +932,7 @@ function data_queries_filter() {
 						&nbsp;<?php print __("Search:");?>&nbsp;
 					</td>
 					<td width="1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
 						&nbsp;<?php print __("Rows:");?>&nbsp;
