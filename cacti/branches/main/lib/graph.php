@@ -1221,7 +1221,7 @@ function graph_edit() {
 				$("#cancel").removeAttr("disabled");
 		}
 
-		function changeDSState() {
+		function changeGraphState() {
 			if (disabled) {
 				unlockTemplate();
 				$(".lock").html("<?php print __("Template is unlocked");?>");
