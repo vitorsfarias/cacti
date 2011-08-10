@@ -542,7 +542,7 @@ function cdef_edit() {
                 });
 	}).css("cursor", "pointer");
 	</script>
-<?php
+	<?php
 }
 
 function cdef_filter() {

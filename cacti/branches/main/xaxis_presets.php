@@ -50,16 +50,22 @@ switch (get_request_var_request("action")) {
 		xaxis_form_actions();
 
 		break;
+	case 'item_remove_confirm':
+		item_remove_confirm();
+
+		break;
 	case 'item_remove':
 		item_remove();
-
-		header("Location: xaxis_presets.php?action=edit&id=" . $_GET["xaxis_id"]);
 
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 		item_edit();
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_edit':
+		xaxis_edit();
 
 		break;
 	case 'edit':
@@ -274,12 +280,62 @@ function xaxis_form_actions() {
  X-Axis Functions
  --------------------- */
 
-function item_remove() {
+function item_remove_confirm() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
+	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
+
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
+	input_validate_input_number(get_request_var_request("item_id"));
 	/* ==================================================== */
 
-	db_execute("DELETE FROM graph_templates_xaxis_items WHERE id=" . $_GET["id"]);
+	print "<form id='delete' action='xaxis_presets.php' name='delete' method='post'>\n";
+
+	html_start_box("", "100", "3", "center", "");
+
+	$xaxis       = db_fetch_row("SELECT * FROM graph_templates_xaxis WHERE id=" . get_request_var_request("id"));
+	$xaxis_item  = db_fetch_row("SELECT * FROM graph_templates_xaxis_items WHERE id=" . get_request_var_request("item_id"));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __("When you click 'Continue', the following X-Axis item will be deleted.");?></p>
+			<p>X-Axis Name: '<?php print $xaxis["name"];?>'<br>
+			<em><?php print $xaxis_item["item_name"] . " " . $xaxis_item["timespan"];?></em>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __("Continue");?>' name='continue' title='<?php print __("Remove X-Axis Item");?>'>
+		</td>
+	</tr>
+	</form>
+	<?php
+
+	html_end_box();
+
+	?>
+	</form>
+	<script type='text/javascript'>
+	$('#continue').click(function(data) {
+		$.post('xaxis_presets.php?action=item_remove', { item_id: <?php print get_request_var("item_id");?>, id: <?php print get_request_var("id");?> }, function(data) {
+			$('#cdialog').dialog('close');
+			$.get('xaxis_presets.php?action=ajax_edit&id=<?php print get_request_var("id");?>', function(data) {
+				$('#content').html(data);
+			});
+		});
+        });
+        </script>
+	<?php
+}
+		
+function item_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post("id"));
+	/* ==================================================== */
+
+	db_execute("DELETE FROM graph_templates_xaxis_items WHERE id=" . get_request_var_post("item_id"));
 }
 
 function item_edit() {
@@ -350,13 +406,13 @@ function xaxis_edit() {
 			array("name" => __("Item")),
 			array("name" => __("Name")),
 			array("name" => __("Timespan"), "align" => "right"),
-			array("name" => __("Global Grid Span"), "align" => "right"),
+			array("name" => __("Global Grid Span")),
 			array("name" => __("Steps"), "align" => "right"),
-			array("name" => __("Major Grid Span"), "align" => "right"),
+			array("name" => __("Major Grid Span")),
 			array("name" => __("Steps"), "align" => "right"),
-			array("name" => __("Label Grid Span"), "align" => "right"),
+			array("name" => __("Label Grid Span")),
 			array("name" => __("Steps"), "align" => "right"),
-			array("name" => __("Relative Label Position")),
+			array("name" => __("Relative Label Position"), "align" => "right"),
 			array("name" => __("Label Format"))
 		);
 		print "<tr><td>";
@@ -368,18 +424,18 @@ function xaxis_edit() {
 				form_alternate_row_color('line' . $xaxis_item["id"], true);
 				form_selectable_cell("<a style='white-space:nowrap;' class='linkEditMain' href='" . htmlspecialchars("xaxis_presets.php?action=item_edit&id=" . $xaxis_item["id"] . "&xaxis_id=" . $_GET["id"]) . "'>Item# $i</a>", $xaxis_item["id"]);
 				form_selectable_cell((isset($xaxis_item["item_name"]) ? $xaxis_item["item_name"] : ''), $xaxis_item["id"]);
-				form_selectable_cell((isset($xaxis_item["timespan"]) ? $xaxis_item["timespan"] : 0), $xaxis_item["id"]);
+				form_selectable_cell((isset($xaxis_item["timespan"]) ? $xaxis_item["timespan"] : 0), $xaxis_item["id"], '', '', 'right');
 				form_selectable_cell((isset($rrd_xaxis_timespans[$xaxis_item["gtm"]]) ? $rrd_xaxis_timespans[$xaxis_item["gtm"]] : __("None")), $xaxis_item["id"]);
-				form_selectable_cell((isset($xaxis_item["gst"]) ? $xaxis_item["gst"] : 0), $xaxis_item["id"]);
+				form_selectable_cell((isset($xaxis_item["gst"]) ? $xaxis_item["gst"] : 0), $xaxis_item["id"], '', '', 'right');
 				form_selectable_cell((isset($rrd_xaxis_timespans[$xaxis_item["mtm"]]) ? $rrd_xaxis_timespans[$xaxis_item["mtm"]] : __("None")), $xaxis_item["id"]);
-				form_selectable_cell((isset($xaxis_item["mst"]) ? $xaxis_item["mst"] : 0), $xaxis_item["id"]);
+				form_selectable_cell((isset($xaxis_item["mst"]) ? $xaxis_item["mst"] : 0), $xaxis_item["id"], '', '', 'right');
 				form_selectable_cell((isset($rrd_xaxis_timespans[$xaxis_item["ltm"]]) ? $rrd_xaxis_timespans[$xaxis_item["ltm"]] : __("None")), $xaxis_item["id"]);
-				form_selectable_cell((isset($xaxis_item["lst"]) ? $xaxis_item["lst"] : 0), $xaxis_item["id"]);
-				form_selectable_cell((isset($xaxis_item["lpr"]) ? $xaxis_item["lpr"] : 0), $xaxis_item["id"]);
+				form_selectable_cell((isset($xaxis_item["lst"]) ? $xaxis_item["lst"] : 0), $xaxis_item["id"], '', '', 'right');
+				form_selectable_cell((isset($xaxis_item["lpr"]) ? $xaxis_item["lpr"] : 0), $xaxis_item["id"], '', '', 'right');
 				form_selectable_cell((isset($xaxis_item["lfm"]) ? $xaxis_item["lfm"] : __("None")), $xaxis_item["id"]);
 				?>
 				<td align="right" style="text-align:right;">
-					<a href="<?php print htmlspecialchars("xaxis_presets.php?action=item_remove&id=" . $xaxis_item["id"] . "&xaxis_id=" . $xaxis["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
+					<img id="<?php print $xaxis_item["id"] . "_" . $xaxis["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" title="<?php print __("Delete X-Axis Preset Item");?>" align='middle'></a>
 				</td>
 				<?php
 				$i++;
@@ -395,6 +451,20 @@ function xaxis_edit() {
 	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
 	form_hidden_box("save_component_xaxis", "1", "");
 	form_save_button("xaxis_presets.php", "return");
+
+        ?>
+        <script type="text/javascript">
+        $('.delete').click(function (data) {
+                id = $(this).attr('id').split("_");
+                request = "xaxis_presets.php?action=item_remove_confirm&item_id="+id[0]+"&id="+id[1];
+                $.get(request, function(data) {
+                        $('#cdialog').html(data);
+                        $('#cdialog').dialog({ title: "<?php print __("Delete X-Axis Preset Item");?>", minHeight: 80, minWidth: 500 });
+                });
+        }).css("cursor", "pointer");
+        </script>
+<?php
+
 }
 
 function xaxis_filter() {
@@ -457,7 +527,7 @@ function xaxis_filter() {
 function get_xaxis_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
-		$sql_where = "WHERE (cdef.name LIKE '%%" . html_get_page_variable("filter") . "%%')";
+		$sql_where = "WHERE (name LIKE '%%" . html_get_page_variable("filter") . "%%')";
 	}else{
 		$sql_where = "";
 	}
