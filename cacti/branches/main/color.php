@@ -41,12 +41,13 @@ switch (get_request_var_request("action")) {
 		header ("Location: color.php");
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		color_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
+	case 'ajax_view':
+		color();
+
+		break;	
 	default:
 		if (isset($_REQUEST["export_x"])) {
 			export_colors();
@@ -502,6 +503,25 @@ function color() {
 	var selectedColors = new Array();
 	var newselectedColors = new Array();
 
+	function selectAll() {
+		selectedColors = new Array();
+
+		$('[id^="hex_"]').each(function(data) {
+			id=$(this).attr('id').split('_');
+			toggleSelect(id[1]);
+		});
+	}
+
+	function deselectAll() {
+		selectedColors = new Array();
+
+		$('[id^="hex_"]').each(function(data) {
+			id=$(this).attr('id').split('_');
+			$("#hex_" + id[1]).css("background-color", "");
+			$("#check_" + id[1]).css("background-color", "");
+		});
+	}
+
 	function toggleSelect(colorHex) {
 		var newselectedColors = new Array();
 		var action = 'check';
@@ -523,11 +543,11 @@ function color() {
 
 		if (action == 'check') {
 			newselectedColors[i] = colorHex
-			$("#_hex" + colorHex).css("background-color", "yellow");
-			$("#_check" + colorHex).css("background-color", "yellow");
+			$("#hex_" + colorHex).css("background-color", "yellow");
+			$("#check_" + colorHex).css("background-color", "yellow");
 		}else{
-			$("#_hex" + colorHex).css("background-color", "white");
-			$("#_check" + colorHex).css("background-color", "white");
+			$("#hex_" + colorHex).css("background-color", "");
+			$("#check_" + colorHex).css("background-color", "");
 		}
 
 		selectedColors = newselectedColors;
@@ -611,8 +631,10 @@ function color() {
 						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
 					</td>
 					<td class="w1">
-						<input type="submit" Value="<?php print __("Import");?>" name="import_x" align="middle">
-						<input type="submit" Value="<?php print __("Export");?>" name="export_x" align="middle">
+						<input type="submit" value="<?php print __("Import");?>" name="import_x" align="middle">
+						<input type="submit" value="<?php print __("Export");?>" name="export_x" align="middle">
+						<input type="button" value="<?php print __("Select All");?>" onClick="selectAll();" align="middle">
+						<input type="button" value="<?php print __("Deselect All");?>" onClick="deselectAll();" align="middle">
 						<input type="hidden" id="selectedColors" name="selectedColors">
 					</td>
 				</tr>
@@ -628,7 +650,13 @@ function color() {
 	print "<tr class='rowSubHeader'>";
 	$i = 0;
 
-	while ($i < get_request_var_request("columns")) {
+	if ($_REQUEST['columns'] == -1) {
+		$columns = COLOR_COLUMNS;
+	}else{
+		$columns = $_REQUEST["columns"];
+	}
+
+	while ($i < $columns) {
 		print "<th id='Hex$i' class='textSubHeaderDark'>" . __("Hex") . "</th>"
 		. "<th id='Class$i' class='textSubHeaderDark'>" . __("Color") . "</th>"
 		. "<th id='spacer$i' class='textSubHeaderDark'>&nbsp;</th>";
@@ -668,32 +696,33 @@ function color() {
 		$j=0; ## even/odd counter
 		foreach ($color_list as $color) {
 			$j++;
-			if ($j % get_request_var_request("columns") == 1) {
+			if ($j % $columns == 1) {
+				//color.php?action=edit&id=$color["id"]);
 				form_alternate_row_color();
 					?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
-						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
+					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=1;
-			}elseif ($j != $_REQUEST["columns"]) {
+			}elseif ($j != $columns) {
 					?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
-						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
+					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
-						<a class="linkEditMain" href="<?php print htmlspecialchars("color.php?action=edit&id=" . $color["id"]);?>"><?php print $color["hex"];?></a>
+						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
-					<td bgcolor="#<?php print $color['hex'];?>" onClick="toggleSelect('<?php print $color['hex'];?>')" width="10%">&nbsp;</td>
+					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
@@ -704,9 +733,26 @@ function color() {
 
 		/* check for completion of odd number second column */
 		if ($j == 1) {
-			print "<td colspan=" . ($_REQUEST["columns"] * 3) . "></td>";
+			print "<td colspan=" . ($columns * 3) . "></td>";
 			form_end_row();
 		}
 	}
 	html_end_box();
+
+	?>
+	<script type='text/javascript'>
+	$('[id^="hex_"]').click(function() {
+		id=$(this).attr('id').split('_');
+		toggleSelect(id[1]);
+	});
+	$('[id^="check_"]').click(function() {
+		id=$(this).attr('id').split('_');
+		toggleSelect(id[1]);
+	});
+	$('[id^="color_"]').click(function() {
+		id=$(this).attr('id').split('_');
+		toggleSelect(id[1]);
+	});
+	</script>
+	<?php
 }
