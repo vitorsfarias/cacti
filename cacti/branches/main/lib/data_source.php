@@ -941,8 +941,8 @@ function data_source_edit() {
 		function lockTemplate() {
 				$("input").attr("disabled","disabled")
 				$("select").attr("disabled","disabled")
+				$("#save").attr("disabled", "disabled");
 				$("#cancel").removeAttr("disabled");
-				$("#save").removeAttr("disabled");
 		}
 
 		function changeDSState() {
