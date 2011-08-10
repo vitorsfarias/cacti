@@ -316,11 +316,11 @@ function item_remove_confirm() {
 		
 function item_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("cdef_id"));
+	input_validate_input_number(get_request_var_post("id"));
+	input_validate_input_number(get_request_var_post("cdef_id"));
 	/* ==================================================== */
 
-	db_execute("delete from cdef_items where id=" . $_GET["id"]);
+	db_execute("DELETE FROM cdef_items WHERE id=" . get_request_var_post("cdef_id"));
 }
 
 function cdef_dnd(){
