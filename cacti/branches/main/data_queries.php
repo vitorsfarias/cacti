@@ -1038,11 +1038,6 @@ function data_query($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"align" => "right",
-			"order" => "ASC"
-		),
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,
@@ -1053,6 +1048,11 @@ function data_query($refresh = true) {
 		"data_input_method" => array(
 			"name" => __("Data Input Method"),
 			"filter" => true,
+			"order" => "ASC"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		)
 	);

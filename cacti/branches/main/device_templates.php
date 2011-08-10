@@ -1197,10 +1197,6 @@ function device_template($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"order" => "ASC"
-		),
 		"nosort" => array(
 			"name" => __("Availbility/SNMP Settings"),
 			"function" => "display_device_template_control",
@@ -1213,6 +1209,11 @@ function device_template($refresh = true) {
 			"function" => "device_template_display_image",
 			"params" => array("image"),
 			"align" => "center"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
+			"order" => "ASC"
 		)
 	);
 

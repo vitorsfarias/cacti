@@ -617,6 +617,7 @@ function data($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		)
 	);
