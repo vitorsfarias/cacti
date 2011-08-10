@@ -726,6 +726,7 @@ function data_source_template($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		),
 		"data_input_method" => array(

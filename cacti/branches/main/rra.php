@@ -336,6 +336,7 @@ function rra($refresh = true) {
 		),
 		"id" => array(
 			"name" => __("ID"),
+			"align" => "right",
 			"order" => "ASC"
 		),
 		"x_files_factor" => array(
