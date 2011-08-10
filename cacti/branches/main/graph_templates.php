@@ -817,16 +817,18 @@ function template($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"order" => "ASC"
-		),
 		"image" => array(
 			"name" => __("Image"),
 			"sort" => false,
 			"function" => "graph_template_display_image",
 			"params" => array("image"),
-			"align" => "center")
+			"align" => "center"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
+			"order" => "ASC"
+		)
 	);
 
 	/* initialize page behavior */

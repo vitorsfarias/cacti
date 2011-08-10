@@ -388,11 +388,6 @@ function poller($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"align" => "right",
-			"order" => "ASC"
-		),
 		"nosort1" => array(
 			"name" => __("Status"),
 			"function" => "get_colored_poller_status",
@@ -435,6 +430,11 @@ function poller($refresh = true) {
 			"name" => __("Last Updated"),
 			"order" => "ASC",
 			"align" => "right"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
+			"order" => "ASC"
 		)
 	);
 

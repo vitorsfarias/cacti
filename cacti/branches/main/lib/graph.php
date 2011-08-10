@@ -1635,11 +1635,6 @@ function graph($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
-		"local_graph_id" => array(
-			"name" => __("ID"),
-			"order" => "ASC",
-			"align" => "right"
-		),
 		"name" => array(
 			"name" => __("Template Name"),
 			"filter" => true,
@@ -1651,6 +1646,11 @@ function graph($refresh = true) {
 			"function" => "display_graph_size",
 			"params" => array("height", "width"),
 			"sort" => false,
+			"align" => "right"
+		),
+		"local_graph_id" => array(
+			"name" => __("ID"),
+			"order" => "ASC",
 			"align" => "right"
 		)
 	);

@@ -1367,11 +1367,6 @@ function data_source($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"local_data_id" => array(
-			"name" => __("ID"),
-			"order" => "ASC",
-			"align" => "right"
-		),
 		"data_input_name" => array(
 			"name" => __("Data Input Method"),
 			"function" => "display_data_input_name",
@@ -1395,6 +1390,11 @@ function data_source($refresh = true) {
 			"name" => __("Template Name"),
 			"filter" => true,
 			"order" => "ASC"
+		),
+		"local_data_id" => array(
+			"name" => __("ID"),
+			"order" => "ASC",
+			"align" => "right"
 		)
 	);
 

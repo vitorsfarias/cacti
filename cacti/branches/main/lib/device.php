@@ -1614,11 +1614,6 @@ function device($refresh = true) {
 			"filter" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"align" => "right",
-			"order" => "ASC"
-		),
 		"total_graphs" => array(
 			"name" => __("Graphs"),
 			"order" => "ASC",
@@ -1666,6 +1661,11 @@ function device($refresh = true) {
 			"order" => "DESC",
 			"format" => "round,2",
 			"align" => "right"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
+			"order" => "ASC"
 		)
 	);
 

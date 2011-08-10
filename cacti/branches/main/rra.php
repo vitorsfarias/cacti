@@ -334,11 +334,6 @@ function rra($refresh = true) {
 			"link" => true,
 			"order" => "ASC"
 		),
-		"id" => array(
-			"name" => __("ID"),
-			"align" => "right",
-			"order" => "ASC"
-		),
 		"x_files_factor" => array(
 			"name" => __("X Files Factor"),
 			"order" => "ASC",
@@ -358,6 +353,11 @@ function rra($refresh = true) {
 			"name" => __("Timespan"),
 			"order" => "ASC",
 			"align" => "right"
+		),
+		"id" => array(
+			"name" => __("ID"),
+			"align" => "right",
+			"order" => "ASC"
 		)
 	);
 
