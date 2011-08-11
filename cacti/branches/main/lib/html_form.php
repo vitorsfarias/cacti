@@ -1223,6 +1223,46 @@ function form_cancel_button() {
 	<?php
 }
 
+/** form_ajax_save - draws a simple Save/Cancel button at the bottom of an html edit form
+   @param string $title 	- the title for the form
+   @param string $form_id 	- the id of the form to post prior to returning control
+ */
+function form_ajax_save($title, $form_id, $text = "") {
+
+	if ($text == "") {
+		$text = __("Save");
+	}
+
+	html_start_box("", "100", "3", "center", "");
+
+	?>
+	<br>
+	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
+	<tr>
+		<td align="right" style="text-align:right">
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='save' type='button' value='<?php print $text;?>' name='save' title='<?php print $text . " [ " . $title . "]";?>'>
+		</td>
+	</tr>
+	</form>
+        <script type='text/javascript'>
+        $('#save').click(function(data) {
+		$var = $('#<?php print $form_id;?>');
+		if ($var.attr('method') == 'post') {
+			$.post($var.attr('action'), $var.serialize(), function(data) {
+				$('#cdialog').dialog('close');
+				$.get($var.attr('action')+'?action=ajax_view', function(data) {
+					$('#content').html(data);
+				});
+			});
+		}
+        });
+        </script>
+	<?php
+
+	html_end_box();
+}
+
 /** form_continue - draws a Continue/Cancel button at the bottom of an html edit form
    @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected

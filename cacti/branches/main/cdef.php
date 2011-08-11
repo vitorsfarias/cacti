@@ -313,7 +313,7 @@ function item_remove_confirm() {
         </script>
 	<?php
 }
-		
+
 function item_remove() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("id"));
