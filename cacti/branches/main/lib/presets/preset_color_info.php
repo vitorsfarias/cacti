@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function &preset_color_form_list() {
+function preset_color_form_list() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_color_forms.php");
 
 	return $fields_color_edit;

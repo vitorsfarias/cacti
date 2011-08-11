@@ -30,6 +30,7 @@ $fields_color_edit = array(
 		"description" => __("The hex value for this color; valid range: 000000-FFFFFF."),
 		"value" => "|arg1:hex|",
 		"max_length" => "6",
+		"size" => "7",
 		"class" => "colortags",
 		),
 	"id" => array(

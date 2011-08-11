@@ -35,10 +35,13 @@ switch (get_request_var_request("action")) {
 		form_save();
 
 		break;
+	case 'remove_confirm':
+		remove_confirm();
+
+		break;
 	case 'remove':
 		color_remove();
 
-		header ("Location: color.php");
 		break;
 	case 'edit':
 		color_edit();
@@ -47,7 +50,7 @@ switch (get_request_var_request("action")) {
 	case 'ajax_view':
 		color();
 
-		break;	
+		break;
 	default:
 		if (isset($_REQUEST["export_x"])) {
 			export_colors();
@@ -420,19 +423,63 @@ function export_colors() {
 	}
 }
 
-function color_remove() {
+function remove_confirm() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var_request("id"));
 	/* ==================================================== */
 
-	if (sizeof(db_fetch_assoc("SELECT * FROM graph_templates_item WHERE color_id=" . get_request_var("id") . " LIMIT 1"))) {
-		$message = "<i>Color " . get_request_var("id") . " is in use and can not be removed</i>\n";
+	print "<form id='delete' action='color.php' name='delete' method='post'>\n";
+
+	html_start_box("", "100", "3", "center", "");
+
+	$color = db_fetch_row("SELECT * FROM colors WHERE id=" . get_request_var_request("id"));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __("When you click 'Continue', the following Color item will be deleted.");?></p>
+			<p>Color HEX: <b><?php print $color["hex"];?></b><br>Color: <b style='width:30px;background-color:#<?php print $color["hex"];?>;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><br>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __("Continue");?>' name='continue' title='<?php print __("Remove CDEF Item");?>'>
+		</td>
+	</tr>
+	</form>
+	<?php
+
+	html_end_box();
+
+	?>
+	</form>
+	<script type='text/javascript'>
+	$('#continue').click(function(data) {
+		$.post('color.php', { action: "remove", id: <?php print get_request_var("id");?> }, function(data) {
+			$('#cdialog').dialog('close');
+			$.get('color.php?action=ajax_view', function(data) {
+				$('#content').html(data);
+			});
+		});
+        });
+        </script>
+	<?php
+}
+
+function color_remove() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post("id"));
+	/* ==================================================== */
+
+	if (sizeof(db_fetch_assoc("SELECT * FROM graph_templates_item WHERE color_id=" . get_request_var_post("id") . " LIMIT 1"))) {
+		$message = "<i>Color " . get_request_var_post("id") . " is in use and can not be removed</i>\n";
 
 		$_SESSION['sess_message_color_ref_int'] = array('message' => "<font size=-2>$message</font>", 'type' => 'info');
 
 		raise_message('color_ref_int');
 	}else{
-		db_execute("delete from colors where id=" . $_GET["id"]);
+		db_execute("DELETE FROM colors WHERE id=" . get_request_var_post("id"));
 	}
 }
 
@@ -445,24 +492,18 @@ function color_edit() {
 
 	if (!empty($_GET["id"])) {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
-		$header_label = __("[edit: ") . $color["hex"] . "]";
-	}else{
-		$header_label = __("[new]");
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='color_edit'>\n";
-	html_start_box(__("Colors") . " $header_label", "100", 0, "center", "");
+	print "<form id='color_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='color_edit'>\n";
 
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables(preset_color_form_list(), (isset($color) ? $color : array()))
 		));
 
-	html_end_box();
-
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 
-	form_save_button_alt();
+	form_ajax_save("Edit Color", "color_edit");
 }
 
 function color() {
@@ -697,7 +738,6 @@ function color() {
 		foreach ($color_list as $color) {
 			$j++;
 			if ($j % $columns == 1) {
-				//color.php?action=edit&id=$color["id"]);
 				form_alternate_row_color();
 					?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
@@ -705,7 +745,7 @@ function color() {
 					</td>
 					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
+						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=1;
 			}elseif ($j != $columns) {
@@ -715,7 +755,7 @@ function color() {
 					</td>
 					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
+						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 				<?php	$j=$j++;
 			} else { ?>
@@ -724,7 +764,7 @@ function color() {
 					</td>
 					<td id="<?php print 'color_' . $color['hex'];?>" bgcolor="#<?php print $color['hex'];?>" width="10%">&nbsp;</td>
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
-						<a href="<?php print htmlspecialchars("color.php?action=remove&id=" . $color["id"]);?>"><img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
+						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
 			<?php
 			form_end_row();
@@ -741,18 +781,27 @@ function color() {
 
 	?>
 	<script type='text/javascript'>
-	$('[id^="hex_"]').click(function() {
-		id=$(this).attr('id').split('_');
-		toggleSelect(id[1]);
-	});
-	$('[id^="check_"]').click(function() {
-		id=$(this).attr('id').split('_');
-		toggleSelect(id[1]);
-	});
 	$('[id^="color_"]').click(function() {
 		id=$(this).attr('id').split('_');
 		toggleSelect(id[1]);
 	});
-	</script>
+	$('[id^="anchor_"]').click(function() {
+		id=$(this).attr('id').split('_');
+		$.get("color.php?action=edit&id="+id[1], function(data) {
+			$('#cdialog').html(data);
+			$('#cdialog').dialog({ title: "<?php print __("Edit Color");?>", minHeight: 80, minWidth: 400 });
+		});
+	});
+
+	$('.delete').click(function (data) {
+		id = $(this).attr('id');
+		request = "color.php?action=remove_confirm&id="+id;
+		$.get(request, function(data) {
+			$('#cdialog').html(data);
+			$('#cdialog').dialog({ title: "<?php print __("Delete Color");?>", minHeight: 80, minWidth: 500 });
+		});
+	}).css("cursor", "pointer");
+        </script>
 	<?php
 }
+
