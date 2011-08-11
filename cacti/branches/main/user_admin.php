@@ -567,7 +567,7 @@ function graph_perms_edit() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("user_admin.php?action=ajax_get_devices_detailed", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("user_admin.php?action=ajax_get_devices_detailed", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_devices").val(data[1]);
@@ -575,7 +575,7 @@ function graph_perms_edit() {
 				$(this).parent().find("#perm_devices").val(0);
 			}
 		});
-		$("#graph").autocomplete("user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#graph").autocomplete("user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#graph").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_graphs").val(data[1]);
@@ -583,7 +583,7 @@ function graph_perms_edit() {
 				$(this).parent().find("#perm_graphs").val(0);
 			}
 		});
-		$("#graph_templates").autocomplete("user_admin.php?action=ajax_get_graph_templates", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#graph_templates").autocomplete("user_admin.php?action=ajax_get_graph_templates", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#graph_templates").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#perm_graph_templates").val(data[1]);
@@ -642,7 +642,7 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='left'>
+	<table style='w100' align='left'>
 		<tr>
 			<td width='40'>
 				<input type="submit" value="<?php print __("Add");?>" name="add_graph_y">
@@ -698,10 +698,10 @@ function graph_perms_edit() {
 	html_end_box(false);
 
 	?>
-	<table align='left'>
+	<table style='w100' align='left'>
 		<tr>
 			<td width='40'>
-				&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_device_y">
+				<input type="submit" value="<?php print __("Add");?>" name="add_device_y">
 			</td>
 			<td align='left' width='1'>
 				<input class="ac_field" type="text" id="device" size="70" value="">
@@ -757,7 +757,7 @@ function graph_perms_edit() {
 	<table align='left'>
 		<tr>
 			<td width='40'>
-				&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_graph_template_y">
+				<input type="submit" value="<?php print __("Add");?>" name="add_graph_template_y">
 			</td>
 			<td align='left' width='1'>
 				<input class="ac_field" type="text" id="graph_templates" size="70" value="">
@@ -813,7 +813,7 @@ function graph_perms_edit() {
 	<table align='left'>
 		<tr>
 			<td width='40'>
-				&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_tree_y">
+				<input type="submit" value="<?php print __("Add");?>" name="add_tree_y">
 			</td>
 			<td align='left' width='1'>
 				<?php form_dropdown("perm_trees",db_fetch_assoc("SELECT id, name FROM graph_tree WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=2 AND user_auth_perms.user_id=".get_request_var("id",0)." ) ORDER BY name"),"name","id","","","");?>
