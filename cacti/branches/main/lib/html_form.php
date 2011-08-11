@@ -468,7 +468,7 @@ function form_autocomplete_box($form_name, $callback_function, $id, $name, $form
 
 	print '<script  type="text/javascript">
 	$().ready(function() {
-		$("#' . $display_id . '").autocomplete("' . $callback_function . '", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#' . $display_id . '").autocomplete("' . $callback_function . '", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#' . $display_id . '").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#' . $form_name . '").val(data[1]);

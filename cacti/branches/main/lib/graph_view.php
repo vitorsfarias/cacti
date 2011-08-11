@@ -30,7 +30,7 @@ function graph_view_filter_table($mode = "mode") {
 	<!--
 
 	$().ready(function() {
-		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
 			if (data) {
 				$(this).parent().find("#device_id").val(data[1]);
@@ -257,7 +257,7 @@ function get_graph_list_content() {
 			<script type="text/javascript">
 			<!--
 			$().ready(function() {
-				$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { max: 12, highlight: false, scroll: true, scrollHeight: 300 });
+				$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 				$("#device").result(function(event, data, formatted) {
 					if (data) {
 						$(this).parent().find("#device_id").val(data[1]);
