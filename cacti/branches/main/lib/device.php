@@ -845,7 +845,7 @@ function device_display_general($device, $device_text) {
 	/* if the device is new, check/set the $device array with some template values */
 	$override_permitted  = true;
 	$propagation_allowed = false;
-	if (!isset($device["id"])) {
+	if (!isset($device["id"]) && isset($_REQUEST["template_id"])) {
 		$template_settings = db_fetch_row("SELECT * FROM device_template WHERE id=" . $_REQUEST["template_id"]);
 		if (sizeof($template_settings)) {
 		foreach($template_settings as $key => $value) {
@@ -874,7 +874,7 @@ function device_display_general($device, $device_text) {
 		}
 		}
 	}else{
-		if (db_fetch_cell("SELECT override_defaults FROM device_template WHERE id=" . $device["device_template_id"]) == CHECKED) {
+		if (isset($device["device_template_id"]) && db_fetch_cell("SELECT override_defaults FROM device_template WHERE id=" . $device["device_template_id"]) == CHECKED) {
 			$propagation_allowed = true;
 		}
 	}
@@ -898,30 +898,12 @@ function device_display_general($device, $device_text) {
 	?>
 	<script type="text/javascript">
 	<!--
-	// default snmp information
-	var snmp_community       = $('#snmp_community').val();
-	var snmp_username        = $('#snmp_username').val();
-	var snmp_password        = $('#snmp_password').val();
-	var snmp_auth_protocol   = $('#snmp_auth_protocol').val();
-	var snmp_priv_passphrase = $('#snmp_priv_passphrase').val();
-	var snmp_priv_protocol   = $('#snmp_priv_protocol').val();
-	var snmp_context         = $('#snmp_context').val();
-	var snmp_port            = $('#snmp_port').val();
-	var snmp_timeout         = $('#snmp_timeout').val();
-	var max_oids             = $('#max_oids').val();
-
-	// default ping methods
-	var ping_method    = $('#ping_method').val();
-	var ping_port      = $('#ping_port').val();
-	var ping_timeout   = $('#ping_timeout').val();
-	var ping_retries   = $('#ping_retries').val();
-
 
 
 	/* set the visibility of the SNMP options available
 	   depending on the SNMP version currently defined */
 	function setSNMPVisibility(snmp_version) {
-		//alert("changeHostForm SNMP Version is '" + snmp_version + "'");
+		//alert("setSNMPVisibility SNMP Version is '" + snmp_version + "'");
 
 		switch(snmp_version) {
 		case "<?php print SNMP_VERSION_NONE;?>": // SNMP none
@@ -1019,11 +1001,11 @@ function device_display_general($device, $device_text) {
 	 */
 	function changeHostForm() {
 		ping_method         = $('#ping_method').val();
-		//alert("Ping Method is '" + ping_method + "'");
+		//alert("changeHostForm Ping Method is '" + ping_method + "'");
 		snmp_version        = $('#snmp_version').val();
-		//alert("SNMP Version is '" + snmp_version + "'");		
+		//alert("changeHostForm SNMP Version is '" + snmp_version + "'");		
 		availability        = $('#availability_method').val();
-		//alert("Availability is '" + availability + "'");
+		//alert("changeHostForm Availability is '" + availability + "'");
 
 
 		switch(availability) {
@@ -1044,7 +1026,13 @@ function device_display_general($device, $device_text) {
 		case "<?php print AVAIL_SNMP;?>": // snmp
 			/* deactivate PING */
 			setPingPortVisibility("<?php print PING_NONE;?>")
-			/* set SNMP */
+			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
+			if (snmp_version == <?php print SNMP_VERSION_NONE;?>) {
+				/* this at least allows for displaying the SNMP versions 
+				   and thus the user may change to values required */
+				snmp_version = <?php print '"' . SNMP_VERSION_1 . '"';?>;
+				$('#snmp_version').val(snmp_version);
+			}
 			setSNMPVisibility(snmp_version)
 
 			break;
@@ -1052,7 +1040,13 @@ function device_display_general($device, $device_text) {
 		case "<?php print AVAIL_SNMP_OR_PING;?>": // ping or snmp
 			/* set PING */
 			setPingPortVisibility(ping_method)
-			/* set SNMP */
+			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
+			if (snmp_version == <?php print SNMP_VERSION_NONE;?>) {
+				/* this at least allows for displaying the SNMP versions 
+				   and thus the user may change to values required */
+				snmp_version = <?php print '"' . SNMP_VERSION_1 . '"';?>;
+				$('#snmp_version').val(snmp_version);
+			}
 			setSNMPVisibility(snmp_version)
 
 			break;
