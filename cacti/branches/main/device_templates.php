@@ -772,7 +772,13 @@ function device_template_display_general($device_template, $header_label) {
 		case "<?php print AVAIL_SNMP;?>": // snmp
 			/* deactivate PING */
 			setPingPortVisibility("<?php print PING_NONE;?>")
-			/* set SNMP */
+			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
+			if (snmp_version == <?php print SNMP_VERSION_NONE;?>) {
+				/* this at least allows for displaying the SNMP versions 
+				   and thus the user may change to values required */
+				snmp_version = <?php print '"' . SNMP_VERSION_1 . '"';?>;
+				$('#snmp_version').val(snmp_version);
+			}
 			setSNMPVisibility(snmp_version)
 
 			break;
@@ -780,7 +786,13 @@ function device_template_display_general($device_template, $header_label) {
 		case "<?php print AVAIL_SNMP_OR_PING;?>": // ping or snmp
 			/* set PING */
 			setPingPortVisibility(ping_method)
-			/* set SNMP */
+			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
+			if (snmp_version == <?php print SNMP_VERSION_NONE;?>) {
+				/* this at least allows for displaying the SNMP versions 
+				   and thus the user may change to values required */
+				snmp_version = <?php print '"' . SNMP_VERSION_1 . '"';?>;
+				$('#snmp_version').val(snmp_version);
+			}
 			setSNMPVisibility(snmp_version)
 
 			break;
