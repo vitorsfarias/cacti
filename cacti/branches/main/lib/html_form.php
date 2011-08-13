@@ -144,6 +144,14 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array["form_id"])) ? $field_array["form_id"] : ""));
 
 		break;
+	case 'multiple_dirpath':
+		form_multiple_dirpath_box($field_name, $field_array["value"], $field_array["textarea_rows"],
+			$field_array["textarea_cols"],
+			((isset($field_array["default"])) ? $field_array["default"] : ""),
+			((isset($field_array["class"])) ? $field_array["class"] : ""),
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+
+		break;
 	case 'textbox_password':
 		form_text_box($field_name, $field_array["value"],
 			((isset($field_array["default"])) ? $field_array["default"] : ""),
@@ -409,6 +417,57 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	print " id='$form_name' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+}
+
+/** form_multiple_dirpath_box - draws a standard html textbox area and provides status of multiple directories existence
+   @param string $form_name - the name of this form element
+   @param string $form_previous_value - the current value of this form element (selected or not)
+   @param string $form_rows - the number of rows in the text area box
+   @param string $form_columns - the number of columns in the text area box
+   @param string $form_default_value - the value of this form element to use if there is
+     no current value available
+   @param string $class - specify a css class
+   @param string $on_change - specify a javascript onchange action */
+function form_multiple_dirpath_box($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value, $class = "", $on_change = "") {
+	if ($form_previous_value == "") {
+		$form_previous_value = $form_default_value;
+	}
+
+	if (isset($_SESSION["sess_error_fields"])) {
+		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
+			$class .= (strlen($class) ? " ":"") . "txtErrorTextBox";
+			unset($_SESSION["sess_error_fields"][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION["sess_field_values"])) {
+		if (!empty($_SESSION["sess_field_values"][$form_name])) {
+			$form_previous_value = $_SESSION["sess_field_values"][$form_name];
+		}
+	}
+
+	$dirs = explode(":", $form_previous_value);
+	if (sizeof($dirs)) {
+		foreach ($dirs as $dir) {
+			if (is_dir($dir)) {
+				$extra_data = "<span class=\"success\"><br>[" . __("OK: DIR FOUND") . "]</span>";
+			}else if (is_file($dir)) {
+				$extra_data = "<span class=\"warning\"><br>[" . __("ERROR: IS FILE") . ": " .$dir . "]</span>";
+			}else{
+				$extra_data = "<span class=\"warning\"><br>[" . __("ERROR: DIR NOT FOUND") . ": " . $dir . "]</span>";
+			}
+		}		
+	}
+
+	if (strlen($class)) {
+		$class = " class='$class' ";
+	}
+
+	if (strlen($on_change)) {
+		$on_change = " onChange='$on_change' ";
+	}
+
+	print "<textarea cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . ">" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>$extra_data\n";
 }
 
 /** form_text_box - draws a standard html textbox

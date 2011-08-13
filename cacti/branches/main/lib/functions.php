@@ -2821,3 +2821,100 @@ function print_debug($message) {
 		print("DEBUG: " . $message . "\n");
 	}
 }
+
+/**
+ * recursively search a dir for filenames
+ * @param string $dir	name of directory
+ * @param bool $debug	debugging mode
+ * @return array		array of all files found
+ */
+function search_dir_recursive($dir, $debug=false) {
+	if ($debug) cacti_log(__FUNCTION__ . " scanning dir: $dir");	
+	$entries = array();
+	
+	/* verify this is a directory */
+	if (!is_dir($dir)) return $entries;
+
+	/* get list of all inodes in this directory */
+	$handle = opendir($dir);
+	while (false !== ($direntry = readdir($handle))) {
+		if ($debug) cacti_log("entry found: $direntry");	
+		if ($direntry == "." || $direntry == "..") continue;
+		$entry = $dir . "/" . $direntry;
+		if (is_dir($entry)) {
+			$entries = array_merge($entries, search_dir_recursive($entry, $debug));			
+		} else {
+			$entries[] = $entry;
+		}
+	}
+	closedir($handle);
+	return $entries;
+}	
+	
+/**
+ * search array of files for given filetypes using the "file" command
+ * @param array $files 		array of files to be searched
+ * @param array $file_types array of file types for matching
+ * @param bool $debug		debugging mode
+ * @return array			array of matching files
+ */
+function search_filetype($files, $file_types, $debug=false) {
+	
+	$entries = array();
+	/* if no files, return */
+	if (sizeof($files) === 0 || !sizeof($file_types)) return $entries;
+	
+	/* scan all entries */
+	foreach ($files as $entry) {
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");	
+		if(is_file($entry)) {
+			/* verify file type or extension */
+			
+			/* do we have a "file" command and want to check the result of it? */
+#			if (function_exists('is_executable') && (is_executable("file"))) {
+				/* get file type file "file" command */
+				$filetype_found = trim(shell_exec("file $entry"));
+				if ($debug) cacti_log("filetype found: $filetype_found");	
+				foreach($file_types as $file_type) {
+					/* if $file_type is part of result from "file" command */
+					if (strpos($filetype_found, $file_type)) {
+						$entries[] = $entry;	
+						if ($debug) cacti_log("filetype match: $file_type");	
+					}
+				}
+#			}
+		}
+	}
+	return $entries;
+}
+
+	
+/**
+ * search array of files for given file "extensions"
+ * @param array $files 				array of files to be searched
+ * @param array $file_extensions 	array of file types for matching
+ * @param bool $debug				debugging mode
+ * @return array					array of matching files
+ */
+function search_fileext($files, $file_extensions, $debug=false) {
+	
+	$matching_entries = array();
+	/* if no files, return */
+	if (sizeof($files) === 0 || !sizeof($file_extensions)) return $matching_entries;
+	
+	/* scan all entries */
+	foreach ($files as $entry) {
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");	
+		if(is_file($entry)) {
+			/* scan all given extensions */
+			foreach($file_extensions as $extension) {
+				/* if filename ends in ".$extension", it's a match */
+				if (preg_match("/\." . $extension . "\$/", $entry)) {
+					$matching_entries[] = $entry;	
+					if ($debug) cacti_log("fileext match: $extension");	
+				}
+			}
+		}
+	}
+	return $matching_entries;
+}

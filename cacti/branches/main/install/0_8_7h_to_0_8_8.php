@@ -27,6 +27,7 @@ function upgrade_to_0_8_8() {
 	require("../include/plugins/plugin_arrays.php");
 	require_once("../lib/plugins.php");
 	require_once("../lib/poller.php");
+	require_once("../lib/utility.php");
 
 	$show_output = true;
 	$drop_items = true;
@@ -1356,6 +1357,9 @@ function upgrade_to_0_8_8() {
 			cacti_log(__FUNCTION__ . " plugin '$plugin' was uninstalled", false);
 		}
 	}
+	
+	/* fill font cache */
+	repopulate_font_cache();
 
 	/* TODO: Upgrade current users and permissions */
 }

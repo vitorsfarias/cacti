@@ -104,10 +104,12 @@ $settings = array(
 			),
 		"path_rrdtool_default_font" => array(
 			"friendly_name" => __("RRDTool Default Font"),
-			"description" => __("For RRDtool 1.2, the path to the True Type Font.") . "<br/>" .
+			"description" => __("For RRDtool 1.2, the full file name of a True Type Font.") . "<br/>" .
 							__("For RRDtool 1.3 and above, the font name conforming to the pango naming convention:") . "<br/>" .
-							__('You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.'),
-			"method" => "font",
+							__('You can to use the full Pango syntax when selecting your font: The font name has the form <br>"[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where <br>FAMILY-LIST is a comma separated list of families optionally terminated by a comma,<br> STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and <br>SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. <br>Any one of the options may be absent.'),
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
+			"id" => "path_rrdtool_default_font",    # some id required for automcomplete form to work
 			"max_length" => "255"
 			),
 		"path_php_binary" => array(
@@ -129,10 +131,18 @@ $settings = array(
 			"max_length" => "255"
 			),
 		"path_fc_list_binary" => array(
-			"friendly_name" => __("fc-list Binary Path"),
+			"friendly_name" => __("fc-list Binary Path (Required for RRDTool 1.3.x and higher)"),
 			"description" => __("The path to your fc-list binary file for listing available fonts."),
 			"method" => "filepath",
 			"max_length" => "255"
+			),
+		"path_font_dir" => array(
+			"friendly_name" => __("System Font Directory (Required for RRDTool 1.2.x and lower)"),
+			"description" => __("The path to the directory, where fonts are stored. Multiple directory names must be separated by ':'"),
+			"method" => "multiple_dirpath",
+			"textarea_rows" => "3",
+			"textarea_cols" => "37",
+			"class" => "textAreaNotes"
 			),
 		"logging_header" => array(
 			"friendly_name" => __("Logging"),
@@ -241,7 +251,9 @@ $settings = array(
 			),
 		"rrdtool_version" => array(
 			"friendly_name" => __("RRDTool Utility Version"),
-			"description" => __("The version of RRDTool that you have installed."),
+			"description" => __("The version of RRDTool that you have installed.") . "<br>" .
+							__("NOTE: If you change this value, you must re-populate the font cache.") . "<br>" .
+							__("See: System Utilities -> Rebuild Font Cache"),
 			"method" => "drop_array",
 			"default" => RRD_VERSION_1_0,
 			"array" => $rrdtool_versions,
@@ -711,10 +723,12 @@ $settings = array(
 		"title_font" => array(
 			"friendly_name" => __("Title Font File"),
 			"description" => __("The font to use for Graph Titles") . "<br/>" .
-							__("For RRDtool 1.2, the path to the True Type Font.") . "<br/>" .
+							__("For RRDtool 1.2, the full file name of a True Type Font.") . "<br/>" .
 							__("For RRDtool 1.3 and above, the font name conforming to the pango naming convention:") . "<br/>" .
-							__('You can to use the full Pango syntax when selecting your font: The font name has the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of families optionally terminated by a comma, STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. Any one of the options may be absent.'),
-			"method" => "font",
+							__('You can to use the full Pango syntax when selecting your font: The font name has the form <br>"[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where <br>FAMILY-LIST is a comma separated list of families optionally terminated by a comma,<br> STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and <br>SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. <br>Any one of the options may be absent.'),
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
+			"id" => "title_font",    # some id required for automcomplete form to work
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),

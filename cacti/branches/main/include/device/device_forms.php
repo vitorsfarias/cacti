@@ -81,7 +81,6 @@ $fields_device_edit = array(
 		"method" => "textarea",
 		"friendly_name" => __("Notes"),
 		"description" => __("Enter notes to this device."),
-		"class" => "textAreaNotes",
 		"value" => "|arg1:notes|",
 		"textarea_rows" => "5",
 		"textarea_cols" => "50",

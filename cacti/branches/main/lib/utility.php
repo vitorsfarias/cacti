@@ -80,7 +80,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 		$field = data_query_field_list($data_input["data_template_data_id"]);
 
 		if (strlen($field["output_type"])) {
-			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id=" . $field["output_type"];
+			$output_type_sql = "and snmp_query_graph_rrd.snmp_query_graph_id='" . $field["output_type"] . "'";
 		}else{
 			$output_type_sql = "";
 		}
@@ -1450,69 +1450,22 @@ function utilities_view_user_log($refresh=true) {
  * update the font cache via browser
  */
 function repopulate_font_cache() {
+require_once(CACTI_BASE_PATH . "/lib/functions.php");
+require_once(CACTI_BASE_PATH . "/lib/fonts.php");
 	
-	$font_table = 'fonts';
+
+if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+	read_config_option("rrdtool_version") == "rrd-1.2.x") {
+
+	# rrdtool 1.0 and 1.2 use font files
+	$success = create_filebased_fontlist();
+
+} else {
+
+	# higher rrdtool versions use pango fonts
+	$success = create_pango_fontlist();	
 	
-	if ((file_exists(read_config_option("path_fc_list_binary"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_fc_list_binary"))))) {
-		
-		cacti_log(__("Updating Cacti Font Table, using fc-list"), false);
-		
-		/* get a list of all fonts found on this system
-		 * output looks like
-			DejaVu Serif:fullname=DejaVu Serif
-			DejaVu Serif:fullname=DejaVu Serif Bold
-			DejaVu Serif:fullname=DejaVu Serif Bold Italic
-			DejaVu Serif:fullname=DejaVu Serif Italic
-			Dingbats
-			FreeMono:fullname=Free Mono Cursiva,Free Mono kurzíva,Free Mono kursiv,Free Mono Πλάγια,Free Monospaced Oblique,Free Mono Kursivoitu,Free Mono Italique,Free Mono Dőlt,
-			Free Mono Corsivo,Free Mono Cursief,Free Mono Kursywa,Free Mono Itálico,Free Mono oblic,Free Mono Курсив,Free Mono İtalik,Free Mono huruf miring,Free Mono похилий,Free
-			 Mono slīpraksts,Free Mono pasvirasis,Free Mono nghiêng,Free Mono Etzana	but initially is unsorted
-		 */
-		$fontlist = explode("\n", shell_exec(cacti_escapeshellcmd(read_config_option("path_fc_list_binary")) . " : family fullname"));
-		
-		$size = sizeof($fontlist);
-		if ($size) {
-			/* empty the font table before inserting to start fresh */
-			db_execute("TRUNCATE TABLE $font_table");
-	
-			/* sort the table for a proper display */
-			sort($fontlist, SORT_LOCALE_STRING);
-			
-			$success = 0;
-			/* scan through all fonts found */
-			foreach ($fontlist as $font) {
-				/* get the fullnames out; this is what we require to name a font */
-				$font = preg_replace("/.*fullname=/", "", $font);
-				/* skip "empty" fonts */
-				if ($font == "") continue;
-				/* a single font may contain several "fullname"s, so explode them */
-cacti_log(__(">>>Font: %s", $font), false);
-				$fontarray = explode(",", $font);
-				
-				/* scan through all fullnames found */
-				foreach($fontarray as $item) {
-					/* escape the fullnames properly, this depends on locale
-					 * so it may erase some items */
-cacti_log(__(">>>Font: %s", $item), false);
-					$item = trim(cacti_escapeshellarg($item, false));
-					if ($item == "") continue;
-					$item = "'" . $item . "'";
-					if (db_execute("INSERT INTO $font_table SET font=$item")) {
-						cacti_log(__("Font successfully inserted: %s", $item), false);
-						$success++;
-					} else {
-						cacti_log(__("Error while inserting font: %s", $item), false);
-					}
-				}
-			}
-			
-			cacti_log(__("%d font items inserted into font table" . "", $success), false);
-		} else {
-			cacti_log(__("No fonts found, existing"), false);		
-		}
-	} else {
-		cacti_log__("Not able to execute the fc-list command. Either fc-list is not available, fc-list path not set or not executable.", false);
-	}
+}
 
 }
 

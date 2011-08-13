@@ -145,6 +145,10 @@ switch (get_request_var_request("action")) {
 		utilities_view_tech(false);
 
 		break;
+	case 'ajax_get_fonts':
+		utilities_ajax_get_fonts();
+		
+		break;
 	case 'view_tech':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 		utilities_view_tech(true);
@@ -289,6 +293,26 @@ function utilities_view_tech($tabs = false) {
 		default:
 
 			break;
+		}
+	}
+}
+
+function utilities_ajax_get_fonts() {
+	/* input validation */
+	if (isset($_REQUEST["q"])) {
+		$q = strtolower(sanitize_search_string(get_request_var("q")));
+	} else return;
+
+	$sql = "SELECT id, font as name
+		FROM fonts
+		WHERE font LIKE '%$q%'
+		ORDER BY font";
+
+	$fonts = db_fetch_assoc($sql);
+
+	if (sizeof($fonts) > 0) {
+		foreach ($fonts as $font) {
+			print $font["name"] . "|" . $font["name"] . "\n";
 		}
 	}
 }
