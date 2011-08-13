@@ -60,28 +60,28 @@ switch (get_request_var_request("action")) {
 		device_form_actions();
 
 		break;
+	case 'add_gt':
+		device_add_gt();
+
+		break;
 	case 'gt_remove':
 		device_remove_gt();
 
-		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
+		break;
+	case 'add_dq':
+		device_add_dq();
 
 		break;
 	case 'query_remove':
 		device_remove_query();
 
-		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
-
 		break;
 	case 'query_reload':
 		device_reload_query();
 
-		header("Location: devices.php?action=edit&id=" . $_GET["device_id"]);
-
 		break;
 	case 'query_verbose':
 		device_reload_query();
-
-		header("Location: devices.php?action=edit&id=" . $_GET["device_id"] . "&display_dq_details=true");
 
 		break;
 	case 'ajax':
