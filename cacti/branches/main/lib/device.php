@@ -46,8 +46,38 @@ function device_ajax_actions() {
 }
 
 /**
- *  The Save Function
+ *  The Save Functions
  */
+function device_add_gt() {
+	if (!empty($_POST["graph_template_id"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("graph_template_id"));
+		/* ==================================================== */
+
+		db_execute("replace into device_graph (device_id,graph_template_id) values (" . get_request_var_post("id") . "," . get_request_var_post("graph_template_id") . ")");
+
+		exit;
+	}
+}
+
+function device_add_dq() {
+	if (!empty($_POST["snmp_query_id"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("snmp_query_id"));
+		input_validate_input_number(get_request_var_post("reindex_method"));
+		/* ==================================================== */
+
+		db_execute("replace into device_snmp_query (device_id,snmp_query_id,reindex_method) values (" . get_request_var_post("id") . "," . get_request_var_post("snmp_query_id") . "," . get_request_var_post("reindex_method") . ")");
+
+		/* recache snmp data */
+		run_data_query(get_request_var_post("id"), get_request_var_post("snmp_query_id"));
+
+		exit;
+	}
+}
+
 function device_form_save() {
 	/*
 	 * loop for all possible changes of reindex_method
@@ -76,34 +106,6 @@ function device_form_save() {
 				$reindex_performed = true;
 			}
 		}
-	}
-
-	if ((!empty($_POST["add_dq_y"])) && (!empty($_POST["snmp_query_id"]))) {
-		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post("id"));
-		input_validate_input_number(get_request_var_post("snmp_query_id"));
-		input_validate_input_number(get_request_var_post("reindex_method"));
-		/* ==================================================== */
-
-		db_execute("replace into device_snmp_query (device_id,snmp_query_id,reindex_method) values (" . get_request_var_post("id") . "," . get_request_var_post("snmp_query_id") . "," . get_request_var_post("reindex_method") . ")");
-
-		/* recache snmp data */
-		run_data_query(get_request_var_post("id"), get_request_var_post("snmp_query_id"));
-
-		header("Location: devices.php?action=edit&id=" . $_POST["id"]);
-		exit;
-	}
-
-	if ((!empty($_POST["add_gt_y"])) && (!empty($_POST["graph_template_id"]))) {
-		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post("id"));
-		input_validate_input_number(get_request_var_post("graph_template_id"));
-		/* ==================================================== */
-
-		db_execute("replace into device_graph (device_id,graph_template_id) values (" . get_request_var_post("id") . "," . get_request_var_post("graph_template_id") . ")");
-
-		header("Location: devices.php?action=edit&id=" . $_POST["id"]);
-		exit;
 	}
 
 	/* save basic device information during first run, device_template should have bee selected */
@@ -162,7 +164,7 @@ function device_form_save() {
 		exit;
 	}
 
-	if ((isset($_POST["save_component_device"])) && (empty($_POST["add_dq_y"]))) {
+	if (isset($_POST["save_component_device"])) {
 		if (get_request_var_post("snmp_version") == 3 && (get_request_var_post("snmp_password") != get_request_var_post("snmp_password_confirm"))) {
 			raise_message(4);
 		}else{
@@ -606,6 +608,15 @@ function device_reload_query() {
 	/* ==================================================== */
 
 	run_data_query(get_request_var("device_id"), get_request_var("id"));
+
+	if ((isset($_GET["action"]) && $_GET["action"] == "query_verbose") && (isset($_SESSION["debug_log"]["data_query"]))) {
+		print "<div style='overflow:auto;height:300px;'>\n";
+		print "<span class=\"log\">" . debug_log_return("data_query") . "</span>";
+		print "</div>";
+		print "<div align='right'><input type='button' onClick='javascript:$(\"#cdialog\").dialog(\"close\");(\"#cdialog\").empty();' value='Close'></div>\n";
+	}
+
+	debug_log_clear("data_query");
 }
 
 /**
@@ -649,6 +660,8 @@ function device_edit($tab = false) {
 			"datasources" => __("Data Sources")
 		);
 
+		$device_tabs = plugin_hook_function('device_tabs_init', $device_tabs);
+
 		/* draw the categories tabs on the top of the page */
 		print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
 		print "<td><div id='tabs_device'>";
@@ -669,7 +682,11 @@ function device_edit($tab = false) {
 				case 'datasources':
 					print "<li><a href='" . htmlspecialchars("devices.php?action=data_sources" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 					break;
+				default:
+					plugin_hook_function('device_tabs_display', $tab_short_name);
+					break;
 				}
+
 
 				if (!isset($_REQUEST["id"])) break;
 			}
@@ -819,7 +836,7 @@ function device_display_general($device, $device_text) {
 
 	html_end_box(FALSE);
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
+	print "<form id='device_edit_settings' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_edit_settings'>\n";
 	html_start_box(__("General Settings"), "100", 0, "center", "", true);
 
 	/* preserve the device template id if passed in via a GET variable */
@@ -1053,7 +1070,6 @@ function device_display_general($device, $device_text) {
 		}
 	}
 
-
 	/* enable/disable setting of 
 	   - availability options
 	   - ping options
@@ -1181,14 +1197,6 @@ function device_display_general($device, $device_text) {
 	</script>
 	<?php
 
-	if ((isset($_GET["display_dq_details"])) && (isset($_SESSION["debug_log"]["data_query"]))) {
-		html_start_box(__("Data Query Debug Information"), "100", "3", "center", "", true);
-
-		print "<tr><td><span class=\"log\">" . debug_log_return("data_query") . "</span></td></tr>";
-
-		html_end_box(false);
-	}
-
 	if (isset($device["id"])) {
 		html_start_box(__("Associated Graph Templates"), "100", 0, "center", "", true);
 		print "<tr><td>";
@@ -1239,7 +1247,7 @@ function device_display_general($device, $device_text) {
 					<?php print (($is_being_graphed == true) ? "<span class=\"success\">" . __("Is Being Graphed") . "</span> (<a href='" . htmlspecialchars("graphs.php?action=edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and device_id=" . get_request_var("id") . " limit 0,1")) . "'>" . __("Edit") . "</a>)" : "<span class=\"unknown\">" . __("Not Being Graphed") . "</span>");?>
 				</td>
 				<td align='right' nowrap>
-					<a href='devices.php?action=gt_remove&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>'><img align='middle' class='buttonSmall' src='images/delete_icon_large.gif' title='<?php print __("Delete Graph Template Association");?>' alt='<?php print __("Delete");?>'></a>
+					<img id='<?php print $_GET["id"] . "_" . $item["id"];?>' align='middle' class='buttonSmall img_filter gremove' src='images/delete_icon_large.gif' title='<?php print __("Delete Graph Template Association");?>' alt='<?php print __("Delete");?>'>
 				</td>
 			<?php
 			form_end_row();
@@ -1256,8 +1264,8 @@ function device_display_general($device, $device_text) {
 					<td><?php print __("Add Graph Template:");?>&nbsp;
 						<?php form_dropdown("graph_template_id",$available_graph_templates,"name","id","","","");?>
 					</td>
-					<td align="right" style="text-align:right;">
-						&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_gt_y" align="middle">
+					<td align="right" style="text-align:right;padding:0px;">
+						&nbsp;<input id="add_gt_y" type="button" value="<?php print __("Add");?>" name="add_gt_y" align="middle">
 					</td>
 					</tr>
 				</table>
@@ -1316,7 +1324,7 @@ function device_display_general($device, $device_text) {
 						<?php print $i;?>) <?php print $item["name"];?>
 					</td>
 					<td>
-						(<a href="devices.php?action=query_verbose&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>"><?php print __("Verbose Query");?></a>)
+						(<span id="<?php print $_GET["id"] . "_" . $item["id"];?>" class="verbose"><?php print __("Verbose Query");?></span>)
 					</td>
 					<td>
 						<?php form_dropdown("reindex_method_device_".get_request_var("id")."_query_".$item["id"]."_method_".$item["reindex_method"],$reindex_types,"","",$item["reindex_method"],"","","","");?>
@@ -1325,8 +1333,8 @@ function device_display_general($device, $device_text) {
 						<?php print (($status == "success") ? "<span class=\"success\">" . __("Success") . "</span>" : "<span class=\"fail\">" . __("Fail") . "</span>");?> [<?php print $num_dq_items;?> <?php print __("Item", $num_dq_items);?>, <?php print $num_dq_rows;?> <?php print __("Row", $num_dq_rows);?>]
 					</td>
 					<td align='right' nowrap>
-						<a href='devices.php?action=query_reload&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>'><img align='middle' class='buttonSmall' src='images/reload_icon_small.gif' title='<?php print __("Reload Data Query");?>' alt='<?php print __("Reload");?>'></a>&nbsp;
-						<a href='devices.php?action=query_remove&amp;id=<?php print $item["id"];?>&amp;device_id=<?php print $_GET["id"];?>'><img align='middle' class='buttonSmall' src='images/delete_icon_large.gif' title='<?php print __("Delete Data Query Association");?>' alt='<?php print __("Delete");?>'></a>
+						<img id='<?php print $_GET["id"] . "_" . $item["id"];?>' class='reload buttonSmall img_filter' align='middle' src='images/reload_icon_small.gif' title='<?php print __("Reload Data Query");?>' alt='<?php print __("Reload");?>'>&nbsp;
+						<img id='<?php print $_GET["id"] . "_" . $item["id"];?>' align='middle' class='img_filter buttonSmall qremove' src='images/delete_icon_large.gif' title='<?php print __("Delete Data Query Association");?>' alt='<?php print __("Delete");?>'>
 					</td>
 				<?php
 				form_end_row();
@@ -1341,15 +1349,15 @@ function device_display_general($device, $device_text) {
 			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<tr>
-					<td><?php print __("Add Data Query:");?>&nbsp;
-						<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
-					</td>
-					<td><?php print __("Re-Index Method:");?>&nbsp;
-						<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
-					</td>
-					<td align="right" style="text-align:right;">
-						&nbsp;<input type="submit" value="<?php print __("Add");?>" name="add_dq_y" align="middle">
-					</td>
+						<td><?php print __("Add Data Query:");?>&nbsp;
+							<?php form_dropdown("snmp_query_id",$available_data_queries,"name","id","","","");?>
+						</td>
+						<td><?php print __("Re-Index Method:");?>&nbsp;
+							<?php form_dropdown("reindex_method",$reindex_types,"","","1","","");?>
+						</td>
+						<td align="right" style="text-align:right;padding:0px;">
+							&nbsp;<input id="add_dq_y" type="button" value="<?php print __("Add");?>" name="add_dq_y" align="middle">
+						</td>
 					</tr>
 				</table>
 			</td>
@@ -1360,6 +1368,62 @@ function device_display_general($device, $device_text) {
 	}
 
 	form_save_button("devices.php", "return");
+
+	?>
+	<script type='text/javascript'>
+	$().ready(function() {
+		$('.verbose').click(function(data) {
+			id=$(this).attr('id').split('_');
+			$.get('devices.php?action=query_verbose&id='+id[1]+'&device_id='+id[0], function(data) {
+				$('#cdialog').html(data);
+				$('#cdialog').dialog({ title: "<?php print __("Data Query Debug Log");?>", minHeight: 80, minWidth: 700, resizable: false });
+			});
+		}).css('cursor', 'pointer');
+		$('.reload').click(function(data) {
+			id=$(this).attr('id').split('_');
+			$(this).attr('src', 'images/indicator.gif');
+			$.get('devices.php?action=query_reload&id='+id[1]+'&device_id='+id[0], function(data) {
+				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
+					$('#content').html(data);
+				});
+			});
+		}).css('cursor', 'pointer');
+		$('.qremove').click(function(data) {
+			id=$(this).attr('id').split('_');
+			$.get('devices.php?action=query_remove&id='+id[1]+'&device_id='+id[0], function(data) {
+				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
+					$('#content').html(data);
+				});
+			});
+		}).css('cursor', 'pointer');
+		$('.gremove').click(function(data) {
+			id=$(this).attr('id').split('_');
+			$.get('devices.php?action=gt_remove&id='+id[1]+'&device_id='+id[0], function(data) {
+				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
+					$('#content').html(data);
+				});
+			});
+		}).css('cursor', 'pointer');
+		$('#add_gt_y').click(function(data) {
+			$('#action').attr('value', 'add_gt');
+			id=$('#id').attr('value');
+			$.post('devices.php?action=add_gt', $('#device_edit_settings').serialize(), function(data) {
+				$.get('devices.php?action=ajax_edit&id='+id, function(data) {
+					$('#content').html(data);
+				});
+			});
+		}); 
+		$('#add_dq_y').click(function(data) {
+			$('#action').attr('value', 'add_dq');
+			id=$('#id').attr('value');
+			$.post('devices.php?action=add_dq', $('#device_edit_settings').serialize(), function(data) {
+				$.get('devices.php?action=ajax_edit&id='+id, function(data) {
+					$('#content').html(data);
+				});
+			});
+		}); 
+	});
+	<?php
 }
 
 /**
@@ -1372,7 +1436,7 @@ function device_filter() {
 	?>
 	<tr class='rowAlternate3'>
 		<td>
-			<form action="devices.php" name="form_devices" method="post">
+			<form id="form_devices" action="devices.php" name="form_devices" method="post">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
 					<td class="nw50">

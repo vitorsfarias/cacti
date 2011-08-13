@@ -2640,7 +2640,7 @@ function debug_log_return($type) {
 
 	if (isset($_SESSION["debug_log"][$type])) {
 		for ($i=0; $i<count($_SESSION["debug_log"][$type]); $i++) {
-			$log_text .= "+ " . $_SESSION["debug_log"][$type][$i] . "<br>";
+			$log_text .= $_SESSION["debug_log"][$type][$i] . "<br>";
 		}
 	}
 
