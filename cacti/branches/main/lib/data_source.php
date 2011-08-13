@@ -1104,7 +1104,7 @@ function data_source_filter() {
 	?>
 	<tr class='rowAlternate3'>
 		<td>
-			<form action="data_sources.php" name="form_data_sources">
+			<form id="form_data_sources" action="data_sources.php" name="form_data_sources" onSubmit="javascript:return false">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
 					<td class="nw50">
@@ -1229,7 +1229,7 @@ function data_source_filter() {
 	function clearDSFilterChange(objForm) {
 		strURL = '?filter=';
 		if (objForm.tab) {
-			strURL = strURL + '&tab=' + objForm.tab.value;
+			strURL = strURL + '&action='+objForm.tab.value+'&tab=' + objForm.tab.value;
 			<?php
 			# now look for more parameters
 			if (isset($_REQUEST["device_id"])) {
@@ -1244,13 +1244,23 @@ function data_source_filter() {
 
 		strURL = strURL + '&rows=-1';
 		strURL = strURL + '&method_id=-1';
-		document.location = strURL;
+
+		$loc = $('#form_data_sources').closest('div[id^="ui-tabs"]');
+		if ($loc) {
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
 	}
 
 	function applyDSFilterChange(objForm) {
 		strURL = '?filter=' + objForm.filter.value;
 		if (objForm.tab) {
-			strURL = strURL + '&tab=' + objForm.tab.value;
+			strURL = strURL + '&action='+objForm.tab.value+'&tab=' + objForm.tab.value;
 		}
 		if (objForm.device_id.value) {
 			strURL = strURL + '&device_id=' + objForm.device_id.value;
@@ -1264,7 +1274,17 @@ function data_source_filter() {
 		}
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		strURL = strURL + '&method_id=' + objForm.method_id.value;
-		document.location = strURL;
+
+		$loc = $('#form_data_sources').closest('div[id^="ui-tabs"]');
+		if ($loc) {
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
 	}
 	-->
 	</script>
