@@ -513,7 +513,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	}
 
 	/* some basic field values that ALL graphs should have */
-cacti_log(__FUNCTION__ . " graph list: " . serialize($graph_list), false, "TEST");	
 	$save["id"] = (isset($graph_list["id"]) ? $graph_list["id"] : 0);
 	$save["local_graph_template_graph_id"] = $template_graph_list["id"];
 	$save["local_graph_id"] = $local_graph_id;
