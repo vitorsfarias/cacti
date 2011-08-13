@@ -674,13 +674,13 @@ function device_edit($tab = false) {
 					print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 					break;
 				case 'newgraphs':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=graphs_new" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					print "<li><a href='" . htmlspecialchars("devices.php?action=newgraphs" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 					break;
 				case 'graphs':
 					print "<li><a href='" . htmlspecialchars("devices.php?action=graphs" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 					break;
 				case 'datasources':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=data_sources" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+					print "<li><a href='" . htmlspecialchars("devices.php?action=datasources" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 					break;
 				default:
 					plugin_hook_function('device_tabs_display', $tab_short_name);

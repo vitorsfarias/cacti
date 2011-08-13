@@ -45,7 +45,6 @@ $device_actions = plugin_hook_function('device_action_array', $device_actions);
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
-//print_r($_REQUEST);
 
 switch (get_request_var_request("action")) {
 	case 'save':
@@ -102,11 +101,11 @@ switch (get_request_var_request("action")) {
 		graph();
 
 		break;
-	case 'data_sources':
+	case 'datasources':
 		data_source();
 
 		break;
-	case 'graphs_new':
+	case 'newgraphs':
 		graphs_new();
 
 		break;
@@ -115,15 +114,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		if (!isset($_REQUEST["tab"])) {
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-			device();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		}else{
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
-			device_edit(true);
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		}
+		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		device();
+		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
 }

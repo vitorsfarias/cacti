@@ -1420,7 +1420,7 @@ function graphs_filter() {
 	?>
 	<tr class='rowAlternate3'>
 		<td>
-			<form name="form_graph_id" action="graphs.php">
+			<form id="form_graph_id" name="form_graph_id" action="graphs.php">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
 					<td>
@@ -1517,7 +1517,7 @@ function graphs_filter() {
 	function clearGraphsFilterChange(objForm) {
 		strURL = '?filter=';
 		if (objForm.tab) {
-			strURL = strURL + '&tab=' + objForm.tab.value;
+			strURL = strURL + '&action='+objForm.tab.value+'&tab=' + objForm.tab.value;
 			<?php
 			# now look for more parameters
 			if (isset($_REQUEST["device_id"])) {
@@ -1531,13 +1531,23 @@ function graphs_filter() {
 		}
 
 		strURL = strURL + '&rows=-1';
-		document.location = strURL;
+
+		if (objForm.tab) {
+			$loc = $('#form_graph_id').closest('div');
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
 	}
 
 	function applyGraphsFilterChange(objForm) {
 		strURL = '?filter=' + objForm.filter.value;
 		if (objForm.tab) {
-			strURL = strURL + '&tab=' + objForm.tab.value;
+			strURL = strURL + '&action='+objForm.tab.value+'&tab=' + objForm.tab.value;
 		}
 		if (objForm.device_id.value) {
 			strURL = strURL + '&device_id=' + objForm.device_id.value;
@@ -1550,7 +1560,17 @@ function graphs_filter() {
 			<?php print (isset($_REQUEST["template_id"]) ? "strURL = strURL + '&template_id=" . html_get_page_variable("template_id") . "&id=" . html_get_page_variable("template_id") . "';" : "strURL = strURL + '&template_id=-1';");?>
 		}
 		strURL = strURL + '&rows=' + objForm.rows.value;
-		document.location = strURL;
+
+		if (objForm.tab) {
+			$loc = $('#form_graph_id').closest('div');
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
 	}
 	-->
 	</script>
@@ -2051,11 +2071,35 @@ function graphs_new() {
 	<script type="text/javascript">
 	<!--
 	function applyGraphsNewFilterChange(objForm) {
-		strURL = '?action=edit&tab=newgraphs';
+		strURL = '?action=newgraphs&tab=newgraphs';
 		strURL = strURL + '&graph_type=' + objForm.graph_type.value;
 		strURL = strURL + '&device_id=' + objForm.device_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;;
-		document.location = strURL;
+
+		$loc = $('#form_graphs_new').closest('div[id^="ui-tabs"]');
+		if ($loc) {
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
+	}
+
+	function clearFilter() {
+		strURL = '?clear_x=true&action=newgraphs&tab=newgraphs';
+		$loc = $('#form_graphs_new').closest('div[id^="ui-tabs"]');
+		if ($loc) {
+			$.get(strURL, function(data) {
+				$loc.html(data);
+			});
+		}else{
+			$.get(strURL, function(data) {
+				$('#content').html(data);
+			});
+		}
 	}
 	-->
 	</script>
@@ -2066,7 +2110,7 @@ function graphs_new() {
 	?>
 	<tr class='rowAlternate3'>
 		<td>
-			<form name="form_graphs_new" method="post" action="<?php print $file2;?>">
+			<form id="form_graphs_new" name="form_graphs_new" method="post" action="<?php print $file2;?>" onSubmit="javascript:return false;">
 			<table cellpadding="0" align="left">
 				<tr>
 					<?php if (!isset($_REQUEST["tab"])) { ?>
@@ -2121,8 +2165,8 @@ function graphs_new() {
 						<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td align="left" class="nw120">
-						&nbsp;<input type="submit" name="go" value="<?php print __("Go");?>" align="middle">
-						<input type="submit" name="clear_x" value="<?php print __("Clear");?>" align="middle">
+						&nbsp;<input type="button" name="go" onClick="applyGraphsNewFilterChange(document.form_graphs_new)" value="<?php print __("Go");?>" align="middle">
+						<input type="button" onClick="clearFilter()" value="<?php print __("Clear");?>" align="middle">
 						<input type="hidden" name="action" value="edit">
 						<input type="hidden" name="tab" value="newgraphs">
 					</td>
