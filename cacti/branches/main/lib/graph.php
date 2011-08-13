@@ -1682,7 +1682,7 @@ function graph($refresh = true) {
 
 function graphs_new_form_save() {
 	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
+		$file = "devices.php?action=edit&id=" . $_REQUEST["device_id"] . "#ui-tabs-2";
 	}else{
 		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
 	}
