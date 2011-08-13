@@ -31,15 +31,14 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
+require_once(CACTI_BASE_PATH . "/lib/functions.php");
+require_once(CACTI_BASE_PATH . "/lib/fonts.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
 $me = array_shift($parms);
 
-global $debug;
-
 $debug = FALSE;
-$font_table  = "fonts";
 $force = FALSE;
 
 foreach($parms as $parameter) {
@@ -63,70 +62,25 @@ foreach($parms as $parameter) {
 	}
 }
 
+if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+	read_config_option("rrdtool_version") == "rrd-1.2.x") {
 
+	# rrdtool 1.0 and 1.2 use font files
+	$success = create_filebased_fontlist($debug);
 
-if ((file_exists(read_config_option("path_fc_list_binary"))) && ((function_exists('is_executable')) && (is_executable(read_config_option("path_fc_list_binary"))))) {
-	
-	echo __("Updating Cacti Font Table, using fc-list") . "\n";
-	
-	/* get a list of all fonts found on this system
-	 * output looks like
-		DejaVu Serif:fullname=DejaVu Serif
-		DejaVu Serif:fullname=DejaVu Serif Bold
-		DejaVu Serif:fullname=DejaVu Serif Bold Italic
-		DejaVu Serif:fullname=DejaVu Serif Italic
-		Dingbats
-		FreeMono:fullname=Free Mono Cursiva,Free Mono kurzíva,Free Mono kursiv,Free Mono Πλάγια,Free Monospaced Oblique,Free Mono Kursivoitu,Free Mono Italique,Free Mono Dőlt,
-		Free Mono Corsivo,Free Mono Cursief,Free Mono Kursywa,Free Mono Itálico,Free Mono oblic,Free Mono Курсив,Free Mono İtalik,Free Mono huruf miring,Free Mono похилий,Free
-		 Mono slīpraksts,Free Mono pasvirasis,Free Mono nghiêng,Free Mono Etzana	but initially is unsorted
-	 */
-	$fontlist = explode("\n", shell_exec(cacti_escapeshellcmd(read_config_option("path_fc_list_binary")) . " : family fullname"));
-	
-	$size = sizeof($fontlist);
-	if ($size) {
-		/* empty the font table before inserting to start fresh */
-		db_execute("TRUNCATE TABLE $font_table");
-
-		/* sort the table for a proper display */
-		sort($fontlist, SORT_LOCALE_STRING);
-		
-		$success = 0;
-		/* scan through all fonts found */
-		foreach ($fontlist as $font) {
-			/* get the fullnames out; this is what we require to name a font */
-			$font = preg_replace("/.*fullname=/", "", $font);
-			/* skip "empty" fonts */
-			if ($font == "") continue;
-			/* a single font may contain several "fullname"s, so explode them */
-			$fontarray = explode(",", $font);
-			
-			/* scan through all fullnames found */
-			foreach($fontarray as $item) {
-				/* escape the fullnames properly, this depends on locale
-				 * so it may erase some items */
-				$item = trim(cacti_escapeshellarg($item, false));
-				if ($item == "") continue;
-				$item = "'" . $item . "'";
-				if ($item == "''") continue;
-				if (db_execute("INSERT INTO $font_table SET font=$item")) {
-					print __("Font successfully inserted: %s\n", $item);
-					$success++;
-				} else {
-					print __("Error while inserting font: %s\n", $item);
-				}
-			}
-		}
-		
-		print __("%d font items inserted into font table" . "\n", $success);
-	} else {
-		print __("No fonts found, existing" . "\n");		
-	}
 } else {
-	print __("Not able to execute the fc-list command. Either fc-list is not available, fc-list path not set or not executable." . "\n");
+
+	# higher rrdtool versions use pango fonts
+	$success = create_pango_fontlist($debug);	
+	
 }
 
 
-
+if ($success) {	
+	print __("%d font items inserted into font table.", $success) . "\n";
+} else {
+	print __("No fonts found.") . "\n";
+}	
 
 
 /*	display_help - displays the usage of the function */

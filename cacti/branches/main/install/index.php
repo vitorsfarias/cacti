@@ -907,6 +907,25 @@ function install_file_paths () {
 		}
 	}
 
+	/* Font Dir Path */
+	$input["path_font_dir"] = $settings["path"]["path_font_dir"];
+
+	if (CACTI_SERVER_OS == "unix") {
+
+		if (config_value_exists("path_font_dir")) {
+			$input["path_font_dir"]["default"] = read_config_option("path_font_dir");
+		} else{
+			$input["path_font_dir"]["default"] = "/usr/share/fonts";
+		}
+	} elseif (CACTI_SERVER_OS == "win32") {
+
+		if (config_value_exists("path_font_dir")) {
+			$input["path_font_dir"]["default"] = read_config_option("path_font_dir");
+		} else{
+			$input["path_font_dir"]["default"] = "c:/usr/share/fonts";
+		}
+	}
+
 	/* snmpwalk Binary Path */
 	$input["path_snmpwalk"] = $settings["path"]["path_snmpwalk"];
 

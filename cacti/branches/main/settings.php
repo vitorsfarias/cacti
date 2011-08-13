@@ -75,6 +75,8 @@ case 'ajax_view':
 				}
 
 				$form_array[$field_name]["items"][$sub_field_name]["value"] = db_fetch_cell("select value from settings where name='$sub_field_name'");
+				/* for autocomplete fields, we need the "name" as well */
+				$form_array[$field_name]["items"][$sub_field_name]["name"] = $form_array[$field_name]["items"][$sub_field_name]["value"];
 			}
 		}else{
 			if (config_value_exists($field_name)) {
@@ -82,6 +84,8 @@ case 'ajax_view':
 			}
 
 			$form_array[$field_name]["value"] = db_fetch_cell("select value from settings where name='$field_name'");
+			/* for autocomplete fields, we need the "name" as well */
+			$form_array[$field_name]["name"] = $form_array[$field_name]["value"];
 		}
 	}
 
