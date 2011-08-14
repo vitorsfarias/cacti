@@ -1238,6 +1238,7 @@ function data_source_filter() {
 			print "strURL = strURL + '&template_id=-1';";
 			?>
 		}else {
+			strURL = strURL + '&action=ajax_view';
 			strURL = strURL + '&device_id=-1';
 			strURL = strURL + '&template_id=-1';
 		}
@@ -1246,7 +1247,7 @@ function data_source_filter() {
 		strURL = strURL + '&method_id=-1';
 
 		$loc = $('#form_data_sources').closest('div[id^="ui-tabs"]');
-		if ($loc) {
+		if ($loc.attr('id')) {
 			$.get(strURL, function(data) {
 				$loc.html(data);
 			});
@@ -1261,6 +1262,8 @@ function data_source_filter() {
 		strURL = '?filter=' + objForm.filter.value;
 		if (objForm.tab) {
 			strURL = strURL + '&action='+objForm.tab.value+'&tab=' + objForm.tab.value;
+		}else{
+			strURL = strURL + '&action=ajax_view';
 		}
 		if (objForm.device_id.value) {
 			strURL = strURL + '&device_id=' + objForm.device_id.value;
@@ -1276,7 +1279,7 @@ function data_source_filter() {
 		strURL = strURL + '&method_id=' + objForm.method_id.value;
 
 		$loc = $('#form_data_sources').closest('div[id^="ui-tabs"]');
-		if ($loc) {
+		if ($loc.attr('id')) {
 			$.get(strURL, function(data) {
 				$loc.html(data);
 			});
