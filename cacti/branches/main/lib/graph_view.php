@@ -930,7 +930,7 @@ function graph_view_timespan_selector($mode = "tree") {
 							$end_val = sizeof($graph_timeshifts)+1;
 							if (sizeof($graph_timeshifts) > 0) {
 								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-									print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts[$shift_value]["localized"], 40) . "</option>\n";
+									print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts_localized[$shift_value], 40) . "</option>\n";
 								}
 							}
 							?>

@@ -1637,7 +1637,7 @@ $settings_graphs = array(
 			"friendly_name" => __("Default Graph View Timeshift"),
 			"description" => __("The default timeshift you wish to be displayed when you display graphs"),
 			"method" => "drop_array",
-			"array" => $graph_timeshifts,
+			"array" => $graph_timeshifts_localized,
 			"default" => GTS_1_DAY
 			),
 		"allow_graph_dates_in_future" => array(

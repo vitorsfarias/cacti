@@ -272,5 +272,5 @@ function set_timeshift() {
 		$_SESSION["custom"] = 0;
 	}
 
-	return $timeshift = $graph_timeshifts[$_SESSION["sess_current_timeshift"]]["native"];
+	return $timeshift = $graph_timeshifts[$_SESSION["sess_current_timeshift"]];
 }
