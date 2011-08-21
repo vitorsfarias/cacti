@@ -787,7 +787,7 @@ class html_table {
 				}
 				form_alternate_row_color('line' . $row[$this->key_field], true, $row_classes);
 
-				$checkbox_title = "";
+				$checkbox_title = __("Check to select Row");
 				foreach($this->table_format as $column => $data) {
 					$text  = "";
 					$class = "";
