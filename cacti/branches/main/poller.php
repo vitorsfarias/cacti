@@ -115,8 +115,6 @@ if (function_exists("pcntl_signal")) {
 	pcntl_signal(SIGINT, "sig_handler");
 }
 
-plugin_hook('poller_top');
-
 /* record the start time */
 list($micro,$seconds) = explode(" ", microtime());
 $poller_start         = $seconds + $micro;
@@ -229,7 +227,13 @@ $poller_runs_completed = 0;
 $poller_items_total    = 0;
 $polling_devices       = array_merge(array(0 => array("id" => "0")), db_fetch_assoc("SELECT id FROM device WHERE disabled = '' " . ($poller_id == 1 ? "" : "AND poller_id=$poller_id ") . " ORDER BY id"));
 
+/* now run the poller for the required amount of times */
 while ($poller_runs_completed < $poller_runs) {
+	/* before starting regular polling, run the poller_top hook, but only once for each poller cycle (poller_id == 1) */
+	if ($poller_id == 1) {
+		plugin_hook('poller_top');
+	}
+
 	/* record the start time for this loop */
 	list($micro,$seconds) = explode(" ", microtime());
 	$loop_start = $seconds + $micro;
@@ -482,12 +486,12 @@ while ($poller_runs_completed < $poller_runs) {
 			echo "Total Time is: " . round($loop_end - $poller_start, 2) . "\n";
  		}
 
-		/* sleep the appripriate amount of time */
+		/* sleep the appropriate amount of time */
 		if ($poller_id == 1) {
+			/* multiple pollers: run the poller bottom hook for the first poller only */
+			plugin_hook('poller_bottom');
 			if ($poller_runs_completed < $poller_runs) {
-				plugin_hook('poller_bottom');
 				usleep($sleep_time * 1000000);
-				plugin_hook('poller_top');
 			}
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
