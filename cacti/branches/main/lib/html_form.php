@@ -1325,6 +1325,8 @@ function form_ajax_save($title, $form_id, $text = "") {
 /** form_continue - draws a Continue/Cancel button at the bottom of an html edit form
    @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected
+   @param string $title			- title of the popup displayed for confirmation
+   @param string $form_id		- id of the form which we try to reload using call to function "ajax_view"
  */
 function form_continue($item_list, $drp_action = "none", $title = "", $form_id = "") {
 	?>
