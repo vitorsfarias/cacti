@@ -193,10 +193,10 @@ function htmlStartBoxFilterChange(id, initialize) {
 	if (document.getElementById(id+'_twisty')) {
 		if (filter == "c") {
 			document.getElementById(id).style.display  = "none";
-			document.getElementById(id+'_twisty').src  = "images/tw_close.gif";
+			document.getElementById(id+'_twisty').src  = document.getElementById(id+'_twisty').src.split('tw_open').join('tw_close');
 		}else{
 			document.getElementById(id).style.display  = "";
-			document.getElementById(id+'_twisty').src  = "images/tw_open.gif";
+			document.getElementById(id+'_twisty').src  = document.getElementById(id+'_twisty').src.split('tw_close').join('tw_open');
 		}
 	}
 }
