@@ -110,7 +110,7 @@ if (file_exists($path2catalogue) & file_exists($path2calendar)) {
 
 /* search the correct textdomains for all plugins being installed */
 $plugins = db_fetch_assoc("SELECT `directory` FROM `plugin_config` ORDER BY sequence ASC");
-if(sizeof($plugins)>0) {
+if($plugins && sizeof($plugins)>0) {
 	foreach($plugins as $plugin) {
 
 		$plugin = $plugin['directory'];
