@@ -24,6 +24,8 @@
 
 include_once(CACTI_BASE_PATH . "/lib/time.php");
 
+global $lang2locale;
+
 $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 
 /* store the current tab */
