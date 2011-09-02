@@ -72,7 +72,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-<?php print (read_config_option('i18n_language_support') != 0) ? CACTI_LANGUAGE_FILE : "english_usa";?>.js"></script>
 	<?php initializeCookieVariable(); plugin_hook('page_head'); ?>
 </head>
-<body class='body'>
+<body id='body'>
 <div id='header'>
 	<div id='logobar'></div>
 	<div id='navbar'>
