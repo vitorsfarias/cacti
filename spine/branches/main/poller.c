@@ -565,7 +565,11 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					if (row[1] != NULL) reindex->action        = atoi(row[1]);
 
 					if (row[2] != NULL) snprintf(reindex->op,           sizeof(reindex->op),           "%s", row[2]);
-					if (row[3] != NULL) snprintf(reindex->assert_value, sizeof(reindex->assert_value), "%s", row[3]);
+
+					if (row[3] != NULL) {
+						db_escape(&mysql, reindex->assert_value, row[3]);
+					}
+
 					if (row[4] != NULL) snprintf(reindex->arg1,         sizeof(reindex->arg1),         "%s", row[4]);
 
 					/* shortcut assertion checks if a data query reindex has already been queued */
@@ -1010,7 +1014,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 				/* process the result */
 				if (IS_UNDEFINED(poll_result)) {
-					snprintf(poller_items[i].result, RESULTS_BUFFER, "%s", poll_result);
+					SET_UNDEFINED(poller_items[i].result);
 				}else if ((is_numeric(poll_result)) || (is_multipart_output(trim(poll_result)))) {
 					snprintf(poller_items[i].result, RESULTS_BUFFER, "%s", poll_result);
 				}else if (is_hexadecimal(snmp_oids[j].result, TRUE)) {
@@ -1026,7 +1030,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					}
 				}
 
-				free(poll_result);
+				if (poll_result) free(poll_result);
 
 				SPINE_LOG_MEDIUM(("Device[%i] TH[%i] DS[%i] SCRIPT: %s, output: %s", device_id, device_thread, poller_items[i].local_data_id, poller_items[i].arg1, poller_items[i].result));
 
@@ -1045,7 +1049,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 				/* process the output */
 				if (IS_UNDEFINED(poll_result)) {
-					snprintf(poller_items[i].result, RESULTS_BUFFER, "%s", poll_result);
+					SET_UNDEFINED(poller_items[i].result);
 				}else if ((is_numeric(poll_result)) || (is_multipart_output(trim(poll_result)))) {
 					snprintf(poller_items[i].result, RESULTS_BUFFER, "%s", poll_result);
 				}else if (is_hexadecimal(snmp_oids[j].result, TRUE)) {
@@ -1061,13 +1065,13 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					}
 				}
 
-				free(poll_result);
+				if (poll_result) free(poll_result);
 
 				SPINE_LOG_MEDIUM(("Device[%i] TH[%i] DS[%i] SS[%i] SERVER: %s, output: %s", device_id, device_thread, poller_items[i].local_data_id, php_process, poller_items[i].arg1, poller_items[i].result));
 
 				if (poller_items[i].result != NULL) {
 					/* insert a NaN in place of the actual value if the snmp agent restarts */
-					if ((spike_kill) && (!strstr(poller_items[i].result,":"))) {
+					if ((spike_kill) && (!STRIMATCH(poller_items[i].result,":"))) {
 						SET_UNDEFINED(poller_items[i].result);
 					}
 				}
@@ -1170,6 +1174,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					strncat(query12, posuffix, strlen(posuffix));
 
 					db_insert(&mysql, query12);
+
 					query12[0] = '\0';
 					strncat(query12, query11, strlen(query11));
 				}
@@ -1240,6 +1245,8 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 	/* record the polling time for the device */
 	poll_time = get_time_as_double() - poll_time;
+	SPINE_LOG_MEDIUM(("Host[%i] TH[%i] Total Time: %5.2g Seconds", device_id, device_thread, poll_time));
+
 	query1[0] = '\0';
 	snprintf(query1, BUFSIZE, "UPDATE device SET polling_time='%g' WHERE id=%i", poll_time, device_id);
 	db_query(&mysql, query1);
