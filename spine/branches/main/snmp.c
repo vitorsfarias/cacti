@@ -341,6 +341,8 @@ char *snmp_get(device_t *current_device, char *snmp_oid) {
 
 		/* poll device */
 		status = snmp_sess_synch_response(current_device->snmp_session, pdu, &response);
+		/* add status to host structure */
+		current_device->snmp_status = status;
 
 		/* liftoff, successful poll, process it!! */
 		if (status == STAT_SUCCESS) {
@@ -422,6 +424,9 @@ char *snmp_getnext(device_t *current_device, char *snmp_oid) {
 
 		/* poll device */
 		status = snmp_sess_synch_response(current_device->snmp_session, pdu, &response);
+
+		/* add status to host structure */
+		current_device->snmp_status = status;
 
 		/* liftoff, successful poll, process it!! */
 		if (status == STAT_SUCCESS) {
@@ -511,6 +516,8 @@ int snmp_count(device_t *current_device, char *snmp_oid) {
 
 			/* do the request, use thread safe call */
 			status = snmp_sess_synch_response(current_device->snmp_session, pdu, &response);
+			/* add status to host structure */
+			current_device->snmp_status = status;
 
 			//SPINE_LOG_DEBUG(("TRACE: Status %i Response %i", status, response->errstat));
 

@@ -198,7 +198,6 @@
 #define POLLER_ACTION_SCRIPT_COUNT 11
 #define POLLER_ACTION_PHP_SCRIPT_SERVER_COUNT 12
 
-
 /* reindex constants */
 #define POLLER_COMMAND_REINDEX 1
 
@@ -226,6 +225,8 @@
 #define AVAIL_SNMP 2
 #define AVAIL_PING 3
 #define AVAIL_SNMP_OR_PING 4
+#define AVAIL_SNMP_GET_UPTIME 5
+#define AVAIL_SNMP_GET_SYSDESC 6
 
 #define PING_ICMP 1
 #define PING_UDP 2
@@ -462,6 +463,7 @@ typedef struct device_struct {
 	double availability;
 	int    ignore_device;
 	void   *snmp_session;
+	int    snmp_status;
 } device_t;
 
 /*! Device Reindex Structure

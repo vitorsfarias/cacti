@@ -749,7 +749,7 @@ int all_digits(const char *string) {
 	/* empty string is not all digits */
 	if ( *string == '\0' ) return FALSE;
 
-	while ( isdigit(*string) )
+	while ( isdigit((int)*string) )
 		string++;
 
 	return *string == '\0';
@@ -767,7 +767,7 @@ int all_digits(const char *string) {
  */
 int is_ipaddress(const char *string) {
 	while (*string) {
-		if ((isdigit(*string)) ||
+		if ((isdigit((int)*string)) ||
 			(*string == '.') ||
 			(*string == ':')) {
 			string++;
@@ -819,6 +819,7 @@ int is_numeric(const char *string) {
 		end_ptr_long = NULL;
 	}
 
+ 	/* check for a float */
 	errno = 0;
 	local_dval = strtod(string, &end_ptr_double);
 	if (errno != ERANGE) {
@@ -830,10 +831,14 @@ int is_numeric(const char *string) {
 	}
 
 	if (!errno) {
-		return TRUE;
+		if (STRIMATCH(string," ")) {
+			return FALSE;
+		}else{
+			return TRUE;
+		}
 	}else{
 		return FALSE;
- 	}
+	}
 }
 
 /*! \fn int is_hexadecimal(const char *str, const short ignore_space)
@@ -845,6 +850,8 @@ int is_numeric(const char *string) {
  *
  */
 int is_hexadecimal(const char * str, const short ignore_space) {
+	int i = 0;
+
 	if (!str) return FALSE;
 
 	while (*str) {
@@ -863,7 +870,10 @@ int is_hexadecimal(const char * str, const short ignore_space) {
 			return FALSE;
 		}
 		str++;
+		i++;
 	}
+
+	if (i < 3) return FALSE;
 
 	return TRUE;
 }
@@ -881,7 +891,7 @@ char *strip_alpha(char *string) {
 	i = strlen(string);
 
 	while (i >= 0) {
-		if (isdigit(string[i])) {
+		if (isdigit((int)string[i])) {
 			break;
 		}else{
 			string[i] = '\0';
@@ -910,8 +920,8 @@ char *add_slashes(char *string) {
 	}
 	return_str[0] = '\0';
 
-	length = strlen(string);
-	position = 0;
+	length       = strlen(string);
+	position     = 0;
 	new_position = 0;
 
 	/* simply return on blank string */

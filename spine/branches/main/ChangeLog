@@ -1,14 +1,16 @@
 ﻿The Cacti Group | spine
 
 SVN
--feature: Clean up directory, update bootstrap
 -feature#0001550: Record the polling time for each host to optimize polling times
 -feature#0001852: Another 10% speedup in spine 
 -feature#0001878: Add Linux Capabilities to Spine
+-feature: Add additional ping methods to allow more precise snmp pings
 -feature: Implement new file based datetime format in the spine log function
+-feature: Clean up directory, update bootstrap
 -bug#0001669: Problems with getting data from script using SPINE on Windows Server 2003 x32 
 -bug#0001829: Wrong string numerical value got from Spine SNMP poller 
 -bug#0001899: spine treats undef replies as 0
+-bug#0001968: Spine Error with Cisco FWSM firewalls
 -bug#0001974: PRIV_PROC_EXEC is required for Spine on Solaris 10 
 -bug: Net-snmp API issues cause spine crashes with some SNMP agents
 -bug: Host list not properly initialized
@@ -17,12 +19,12 @@ SVN
 -bug: Use safer Non Net-SNMP string parsing calls for snmpget and snmpgetnext
 -bug: be smart for SNMP V3 and use AuthNoPriv when privacy passphrase is empty
 -bug: Do not fail on insert for a duplicate record
+-bug: Script server results with special characters can cause segfaults
 
 0.8.7g
 -feature: Multi threaded host polling
 
 0.8.7f
-
 -bug#0001653: Transient ICMP Socket create failures causing spine to die
 -bug#0001657: Spine output shows drop of latest bit from hex value 
 -feature#0001629: Implement the snmp clientaddr option to bind spine to a specific local ip address
