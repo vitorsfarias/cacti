@@ -249,6 +249,7 @@ function form_actions() {
 		}
 	}else{
 		print "<tr><td class='topBoxAlt'><p>" . __("You must select at least one CDEF.") . "</p></td></tr>\n";
+		$title = __("Error");
 	}
 
 	if (!isset($cdef_array) || get_request_var_post("drp_action") === ACTION_NONE) {
@@ -548,7 +549,7 @@ function cdef_edit() {
 function cdef_filter() {
 	global $item_rows;
 
-	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php?action=edit", true);
+	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php", true);
 	?>
 	<tr class='rowAlternate3'>
 		<td>
