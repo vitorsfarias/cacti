@@ -22,11 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+global $menu;
 $using_guest_account = false;
 $show_console_tab = true;
 
-$oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($oper_mode != OPER_MODE_RESKIN) {
+$oper_mode = api_plugin_hook_function('top_graph_header', OPER_MODE_NATIVE);
+if ($oper_mode == OPER_MODE_RESKIN) {
+	return;
+}
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var_request("local_graph_id"));
@@ -70,7 +73,11 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		print "<meta http-equiv=refresh content='99999'>\r\n";
 	}else{
 		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
-		print "<meta http-equiv=refresh content='" . $refresh . "'>\r\n";
+		if (is_array($refresh)) {
+			print "<meta http-equiv=refresh content='" . $refresh["seconds"] . "; url=" . $refresh["page"] . "'>\r\n";
+		}else{
+			print "<meta http-equiv=refresh content='" . $refresh . "'>\r\n";
+		}
 	}
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
@@ -188,5 +195,3 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 		<?php } ?>
 		<td valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><div style='position:static;' id='main'>
-<?php
-}

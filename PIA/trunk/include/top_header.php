@@ -22,10 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-global $colors, $config, $refresh;
+global $colors, $config, $menu, $refresh;
 
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($oper_mode != OPER_MODE_RESKIN) {
+if ($oper_mode == OPER_MODE_RESKIN) {
+	return;
+}
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
 
@@ -33,7 +35,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title><?php echo $page_title; ?></title>
 	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
@@ -100,18 +102,17 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 	</tr>
 	<tr>
-		<td valign="top" colspan="1" rowspan="2" width="135" style="padding: 5px; border-right: #aaaaaa 1px solid;" bgcolor='#f5f5f5'>
-			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0">
+		<td valign="top" colspan="1" rowspan="2" width="135" style="width:135px;padding:5px;border-right:#aaaaaa 1px solid;" bgcolor='#f5f5f5'>
+			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0" style="width:135px;">
 				<?php draw_menu();?>
 			</table>
 
 			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
-			<p align="center"><a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a></p>
+			<p style="width:135px;" align="center"><a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a></p>
 			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
 		</td>
 		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php }else{ ?>
 	<tr>
 		<td width="100%" valign="top"><?php display_output_messages();?>
-<?php }
-} ?>
+<?php } ?>
