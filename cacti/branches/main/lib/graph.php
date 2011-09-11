@@ -1307,12 +1307,13 @@ function graph_edit() {
 		array(
 			"config" => array(),
 			"fields" => $form_array
-			)
-		);
+		)
+	);
 
 	html_end_box();
 
 #	print "<form method='post' action='graphs.php'>\n";
+
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graphs["graph_template_id"])) {
 		html_start_box(__("Supplemental Graph Template Data"), "100", "0", "center", "");
@@ -1329,27 +1330,27 @@ function graph_edit() {
 	}
 
 	if (!empty($_GET["id"])) {
-		print "<div id=\"center\">";
-		print "<img src=" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . " alt=\"" . get_request_var("id") . "\">";
+		print "<div id='center'>";
+		print "<img src='" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . "'>";
 		
 		if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
-					$graph_data_array = array();
-					$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
-					/* make rrdtool_function_graph to only print the command without executing it */
-					$graph_data_array["print_source"] = 1;
+			$graph_data_array = array();
+			$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
+			/* make rrdtool_function_graph to only print the command without executing it */
+			$graph_data_array["print_source"] = 1;
 						
-		print "<br><span class=\"textInfo\">" .  __("RRDTool Command:") . "</span><br>";
-					print "<pre>";
-					print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
-					print "</pre>";
-		print "<span class=\"textInfo\">" . __("RRDTool Says:") . "</span><br>";
+			print "<br><span class=\"textInfo\">" .  __("RRDTool Command:") . "</span><br>";
+			print "<pre>";
+			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+			print "</pre>";
+			print "<span class=\"textInfo\">" . __("RRDTool Says:") . "</span><br>";
 		
-		/* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
-		unset($graph_data_array["print_source"]);
-		print "<pre>";
-		print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
-		print "</pre>";
-				}
+			/* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
+			unset($graph_data_array["print_source"]);
+			print "<pre>";
+			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+			print "</pre>";
+		}
 	}
 
 	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
@@ -1359,11 +1360,13 @@ function graph_edit() {
 		html_start_box(__("Labels"), "100", "0", "center", "", true);
 		draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
+
 		/* TODO: we should not use rrd version in the code, when going data-driven */
 		if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 			html_start_box(__("Right Axis Settings"), "100", "0", "center", "", true, "table_graph_template_right_axis");
 			draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $graphs, $use_graph_template);
 		}
+
 		html_end_box(false);
 		html_start_box(__("Graph Template Size"), "100", "0", "center", "", true, "table_graph_template_size");
 		draw_template_edit_form('header_graph_size', graph_size_form_list(), $graphs, $use_graph_template);

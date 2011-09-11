@@ -73,31 +73,31 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 		-->
 		</script>
 	<?php } ?>
-		<table cellpadding="0" cellspacing="0" align="<?php print $align;?>" class="ui-corner-top startBoxHeader <?php print "wp$width"?> startBox0" >
-			<?php if ($title != "") {?><tr class="rowHeader">
-				<td colspan="100">
-					<table cellpadding="0" cellspacing="0" class="startBox0">
+		<table cellpadding='0' cellspacing='0' align='<?php print $align;?>' class='startBoxHeader <?php print 'wp' . $width;?> startBox0'>
+			<?php if ($title != '') {?><tr class='rowHeader'>
+				<td colspan='100'>
+					<table cellpadding='0' cellspacing='0' class='startBox0'>
 						<tr>
 							<td>
-								<table cellpadding="0" cellspacing="0" class="startBox0" <?php print $ani;?>>
+								<table cellpadding='0' cellspacing='0' class='startBox0' <?php print $ani;?>>
 									<tr>
-										<?php if ($collapsing) {?><td class="textHeaderDark nw9">
-											<img id="<?php print $item_id . '_twisty';?>" src="<?php print CACTI_URL_PATH; ?>images/tw_open.gif" alt="<?php print __("Filter");?>" align="middle">
+										<?php if ($collapsing) {?><td class='textHeaderDark nw9'>
+											<img id='<?php print $item_id . '_twisty';?>' src='<?php print CACTI_URL_PATH; ?>images/tw_open.gif' alt='<?php print __('Filter');?>' align='middle'>
 										</td><?php } ?>
-										<td onMouseDown='return false' class="textHeaderDark"><?php print $title;?>
+										<td onMouseDown='return false' class='textHeaderDark'><?php print $title;?>
 										</td>
 									</tr>
 								</table>
 							</td>
 							<?php
-							if ($add_text != "") {
-								if (strpos($add_text, "menu::") !== false) {
-										list($menu_title, $menu_id, $menu_class, $ajax_parameters) = explode(":", str_replace("menu::", "", $add_text));?>
-							<td class="textHeaderDark w1 right">
-								<a href="#" name="<?php print $menu_title;?>" id="<?php print $menu_id;?>" class="<?php print $menu_class;?>" rel="<?php print htmlspecialchars($ajax_parameters);?>"><img src="<?php print CACTI_URL_PATH; ?>images/cog.png" id="cog" width="16" height="16" alt="cog"></a>
+							if ($add_text != '') {
+								if (strpos($add_text, 'menu::') !== false) {
+										list($menu_title, $menu_id, $menu_class, $ajax_parameters) = explode(':', str_replace('menu::', '', $add_text));?>
+							<td class='textHeaderDark w1 right'>
+								<a href='#' name='<?php print $menu_title;?>' id='<?php print $menu_id;?>' class='<?php print $menu_class;?>' rel='<?php print htmlspecialchars($ajax_parameters);?>'><img src='<?php print CACTI_URL_PATH; ?>images/cog.png' id='cog' width='16' height='16' alt='cog'></a>
 							</td><?php
 								}else {	?>
-							<td class="textHeaderDark w1 right">
+							<td class='textHeaderDark w1 right'>
 								<input type='button' onClick='<?php print $function_name;?>' style='font-size:10px;' value='Add'>
 							</td><?php
 								}
@@ -109,32 +109,32 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 			<?php }?>
 			<tr style='border: 0px;' id='<?php print $item_id;?>'>
 				<td>
-					<table cellpadding=0 cellspacing=1 <?php print $table_id;?> class="startBox<?php print $cell_padding;?>"><?php
+					<table cellpadding='0' cellspacing='1' <?php print $table_id;?> class='startBox<?php print $cell_padding;?>'><?php
 }
 
 function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width, $cell_padding, $align) {
-	$temp_string = str_replace("strong", "", $query_name);
-	if (strpos($temp_string, "[")) {
-		$temp_string = substr($temp_string, 0, strpos($temp_string, "[")-1);
+	$temp_string = str_replace('strong', '', $query_name);
+	if (strpos($temp_string, '[')) {
+		$temp_string = substr($temp_string, 0, strpos($temp_string, '[')-1);
 	}
 
-	if ($query_name != "") {
+	if ($query_name != '') {
 		$item_id = clean_up_name($temp_string);
 	}else{
-		$item_id = "item_" . rand(255, 65535);
+		$item_id = 'item_' . rand(255, 65535);
 	}
 
 	?>
-		<table cellpadding=0 cellspacing=0 align='<?php print $align;?>' class='startBoxHeader startBox0'>
+		<table cellpadding='0' cellspacing='0' align='<?php print $align;?>' class='startBoxHeader startBox0'>
 			<tr class='rowHeader'>
 				<td style='padding:0px 5px 0px 5px;' colspan='<?php print $colspan+1;?>'>
-					<table cellpadding=0 cellspacing=1 class="startBox0" >
+					<table cellpadding='0' cellspacing='1' class='startBox0' >
 						<tr>
 							<td class='textHeaderDark'>
-								<?php print __("Data Query");?> [<?php print $query_name; ?>]
+								<?php print __('Data Query');?> [<?php print $query_name; ?>]
 							</td>
 							<td class='right nw'>
-								<a href='graphs_new.php?action=query_reload&amp;id=<?php print $query_id;?>&amp;device_id=<?php print $device_id;?>'><img class='buttonSmall' src='images/reload_icon_small.gif' alt='<?php print __("Reload");?>' title='<?php print __("Reload Associated Query");?>' align='middle'></a>
+								<a href='graphs_new.php?action=query_reload&amp;id=<?php print $query_id;?>&amp;device_id=<?php print $device_id;?>'><img class='buttonSmall' src='images/reload_icon_small.gif' alt='<?php print __('Reload');?>' title='<?php print __('Reload Associated Query');?>' align='middle'></a>
 							</td>
 						</tr>
 					</table>
@@ -142,7 +142,7 @@ function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width,
 			</tr>
 			<tr style='border: 0px;' id='<?php print $item_id;?>'>
 				<td colspan='<?php print $colspan+1;?>'>
-					<table cellpadding=0 cellspacing=1 class="startBox<?php print $cell_padding;?>"><?php
+					<table cellpadding='0' cellspacing='1' class='startBox<?php print $cell_padding;?>'><?php
 }
 
 /* html_end_box - draws the end of an HTML box
@@ -153,7 +153,7 @@ function html_end_box($trailing_br = true) { ?>
 				</td>
 			</tr>
 		</table>
-		<?php if ($trailing_br == true) { print "<br>"; } ?>
+		<?php if ($trailing_br == true) { print '<br>'; } ?>
 <?php }
 
 /* html_graph_start_box - draws the start of an HTML graph view box
@@ -180,80 +180,80 @@ function html_graph_end_box() {
    @param $no_graphs_message - display this message if no graphs are found in $graph_array
    @param $extra_url_args - extra arguments to append to the url
    @param $header - html to use as a header */
-function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
+function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '') {
 	$i = 0;
 	if (sizeof($graph_array) > 0) {
-		if ($header != "") {
+		if ($header != '') {
 			print $header;
 		}
 
 		foreach ($graph_array as $graph) {
-			if (isset($graph["graph_template_name"])) {
+			if (isset($graph['graph_template_name'])) {
 				if (isset($prev_graph_template_name)) {
-					if ($prev_graph_template_name != $graph["graph_template_name"]) {
+					if ($prev_graph_template_name != $graph['graph_template_name']) {
 						$print  = true;
-						$prev_graph_template_name = $graph["graph_template_name"];
+						$prev_graph_template_name = $graph['graph_template_name'];
 					}else{
 						$print = false;
 					}
 				}else{
 					$print  = true;
-					$prev_graph_template_name = $graph["graph_template_name"];
+					$prev_graph_template_name = $graph['graph_template_name'];
 				}
 
 				if ($print) {
 					print "\t\t<tr class='rowSubHeader'>
 						<td colspan='3' class='textHeaderDark'>
-							" . __("Graph Template:") . " " . $graph["graph_template_name"] . "
+							" . __('Graph Template:') . " " . $graph['graph_template_name'] . "
 						</td>
 					</tr>";
 				}
-			}elseif (isset($graph["data_query_name"])) {
+			}elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
-					if ($prev_data_query_name != $graph["data_query_name"]) {
+					if ($prev_data_query_name != $graph['data_query_name']) {
 						$print  = true;
-						$prev_data_query_name = $graph["data_query_name"];
+						$prev_data_query_name = $graph['data_query_name'];
 					}else{
 						$print = false;
 					}
 				}else{
 					$print  = true;
-					$prev_data_query_name = $graph["data_query_name"];
+					$prev_data_query_name = $graph['data_query_name'];
 				}
 
 				if ($print) {
-					print "\t\t\t<tr class='rowSubHeaderAlt'><td colspan='3' class='textHeaderLight'>" . __("Data Query:") . " " . $graph["data_query_name"] . "</td></tr>";
+					print "\t\t\t<tr class='rowSubHeaderAlt'><td colspan='3' class='textHeaderLight'>" . __('Data Query:') . " " . $graph['data_query_name'] . "</td></tr>";
 				}
 				print "<tr class='rowSubHeader'>
 					<td colspan='3' class='textHeaderDark'>
-						" . $graph["sort_field_value"]. "
+						" . $graph['sort_field_value']. "
 					</td>
 				</tr>";
 			}
 
 			?>
-			<tr align='center' style='background-color: #<?php print ($i % 2 == 0 ? "f9f9f9" : "ffffff");?>;'>
+			<tr align='center' style='background-color: #<?php print ($i % 2 == 0 ? 'f9f9f9' : 'ffffff');?>;'>
 				<td>
 					<table cellpadding='0'>
 						<tr>
 							<td>
 								<?php
-								if ($graph["image_format_id"] == IMAGE_TYPE_PNG || $graph["image_format_id"] == IMAGE_TYPE_GIF) {
+								if ($graph['image_format_id'] == IMAGE_TYPE_PNG || $graph['image_format_id'] == IMAGE_TYPE_GIF) {
 									?>
-									<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;">
-									<a href='<?php print htmlspecialchars("graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'>
-										<img class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>'
-											src='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0&graph_height=" . $graph["height"] . "&graph_width=" . $graph["width"] . "&title_font_size=" . ((read_graph_config_option("custom_fonts") == "on") ? read_graph_config_option("title_size") : read_config_option("title_size")) . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
-											border='0' alt='<?php print $graph["title_cache"];?>'>
+									<div style='min-height: <?php echo (1.6 * $graph['height']) . 'px'?>;'>
+									<a href='<?php print htmlspecialchars('graph.php?action=view&local_graph_id=' . $graph['local_graph_id'] . '&rra_id=all');?>'>
+										<img class='graphimage' id='graph_<?php print $graph['local_graph_id'] ?>'
+											src='<?php print htmlspecialchars('graph_image.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0&graph_height=' . $graph['height'] . '&graph_width=' . $graph['width'] . '&title_font_size=' . ((read_graph_config_option('custom_fonts') == 'on') ? read_graph_config_option('title_size') : read_config_option('title_size')) . (($extra_url_args == '') ? '' : "&$extra_url_args"));?>'
+											border='0' alt='<?php print $graph['title_cache'];?>'>
 									</a></div>
 									<?php
-								} elseif ($graph["image_format_id"] == IMAGE_TYPE_SVG) {
+								} elseif ($graph['image_format_id'] == IMAGE_TYPE_SVG) {
 									?>
-									<div style="min-height: <?php echo (1.6 * $graph["height"]) . "px"?>;">
-									<a href='<?php print htmlspecialchars("graph.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=all");?>'>
-										<object class='graphimage' id='graph_<?php print $graph["local_graph_id"] ?>'
+									<div style='min-height: <?php echo (1.6 * $graph['height']) . 'px'?>;'>
+									<a href='<?php print htmlspecialchars('graph.php?action=view&local_graph_id=' . $graph['local_graph_id'] . '&rra_id=all');?>'>
+										<object class='graphimage' id='graph_<?php print $graph['local_graph_id'] ?>'
 											type='svg+xml'
-											data='<?php print htmlspecialchars("graph_image.php?local_graph_id=" . $graph["local_graph_id"] . "&rra_id=0" . (($extra_url_args == "") ? "" : "&$extra_url_args"));?>'
+											data='<?php print htmlspecialchars('graph_image.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0' . (($extra_url_args == '') ? '' : "&$extra_url_args"));?>'
 											border='0'>
 											Can't display SVG
 										</object>;
@@ -261,7 +261,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 									<?php
 									#print "<object class='graphimage' id='graph_" . $graph["local_graph_id"] . "' type='svg+xml' data='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=" . $graph["local_graph_id"] . "&rra_id=" . $rra["id"]) . "' border='0'>Can't display SVG</object>";
 								}
-								print (read_graph_config_option("show_graph_title") == CHECKED ? "<p style='font-size: 10;' align='center'>" . $graph["title_cache"] . "</p>" : "");
+								print (read_graph_config_option('show_graph_title') == CHECKED ? "<p style='font-size: 10;' align='center'>" . $graph['title_cache'] . "</p>" : "");
 								?>
 							</td>
 							<td valign='top' style='align: left; padding: 3px;' class='noprint'>
@@ -471,7 +471,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$selected_sort_class = "sort_desc";
 	}
 
-	print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader nodrag nodrop'>\n";
+	print "\t\t<table cellpadding='0' cellspacing='0' $table_id class='hover striped resizable startBoxHeader startBox3'><thead><tr class='rowSubHeader nodrag nodrop'>\n";
 
 	$pathname = html_get_php_pathname();
 	foreach($header_items as $column => $item) {
@@ -575,13 +575,13 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (($column == "") || (isset($item["sort"]) && $item["sort"] == false)) {
 			$width = html_get_column_width($pathname, "hhscrand_$rand_id");
 
-			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp$width nodrag nodrop' style='$align'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
+			print "\t\t\t<th id='hhsc_$rand_id' class='textSubHeaderDark wp" . $width . " nodrag nodrop' style='$align'><a style='display:block;' href='#'>" . $display_text . "</a></th>\n";
 
 			$rand_id++;
 		}else{
 			$width = html_get_column_width($pathname, $column);
 
-			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp$width nodrag nodrop' style='$align'>";
+			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp" . $width . " nodrag nodrop' style='$align'>";
 			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
@@ -609,9 +609,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
 
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding='0' cellspacing='0' $table_id class='hover striped resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=0 $table_id class='hover striped startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+		print "\t\t<table cellpadding='0' cellspacing='0' $table_id class='hover striped startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
 	}
 
 	$i = 0;
@@ -656,9 +656,9 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
-		print "\t\t<table cellpadding=0 cellspacing=1 $table_id class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding='0' cellspacing='1' $table_id class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}else{
-		print "\t\t<table cellpadding=0 cellspacing=1 class='hover striped startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
+		print "\t\t<table cellpadding='0' cellspacing='1' class='hover striped startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
 	}
 
 	$i = 0;
@@ -1152,7 +1152,7 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
 		$nav = "
 			<tr class='rowHeader'>
 				<td colspan='$columns'>
-					<table cellpadding=0 cellspacing=1 class='startBox0'>
+					<table cellpadding='0' cellspacing='1' class='startBox0'>
 						<tr>
 							<td class='textHeaderDark wp15 left'>";
 								if ($current_page > 1) {
@@ -1181,7 +1181,7 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
 		$nav = "
 			<tr class='rowHeader'>
 				<td colspan='$columns'>
-					<table cellpadding=0 cellspacing=1 class='startBox0'>
+					<table cellpadding='0' cellspacing='1' class='startBox0'>
 						<tr>
 							<td class='textHeaderDark wp15 center'>No Rows Found</td>
 						</tr>
@@ -1364,11 +1364,11 @@ function draw_header_tab($name, $title, $location, $image = "") {
 }
 
 function html_selected_tab($name, $location) {
-	if (get_request_var_request("toptab") == $name) {
+	if (get_request_var_request('toptab') == $name) {
 		return true;
-	}elseif ($name == "graphs" && preg_match("/(graph_settings|tree|preview|list)/", get_request_var_request("toptab"))) {
+	}elseif ($name == 'graphs' && preg_match('/(graph_settings|tree|preview|list)/', get_request_var_request('toptab'))) {
 		return true;
-	}elseif (get_request_var_request("toptab") == "graphs" && get_request_var_request("action") == $name) {
+	}elseif (get_request_var_request('toptab') == 'graphs' && get_request_var_request('action') == $name) {
 		return true;
 	}elseif (!plugin_hook_function('top_tab_selected', array($name, $location))) {
 		return true;
@@ -1384,22 +1384,22 @@ function html_escape($html) {
 /* html_get_php_pathname() - extracts the name of the php file without the
    extention.  This value is used to store and retriev cookie values */
 function html_get_php_pathname() {
-	$path = $_SERVER["PHP_SELF"];
+	$path = $_SERVER['PHP_SELF'];
 
-	while (($location = strpos($path, "/")) !== FALSE) {
+	while (($location = strpos($path, '/')) !== FALSE) {
 		$path = substr($path, $location + 1);
 	}
 
-	return str_replace(".php", "", $path);
+	return str_replace('.php', '', $path);
 }
 
 function html_get_column_width($name, $element) {
 	$width = html_read_cookie_element($name, $element);
 
 	if (!strlen($width)) {
-		return "auto";
+		return 'auto';
 	}else{
-		return $width . "px";
+		return $width . 'px';
 	}
 }
 
@@ -1408,14 +1408,14 @@ function html_get_column_width($name, $element) {
    @param $element - the name of the cookie element to be searched for. */
 function html_read_cookie_element($name, $element) {
 	if (isset($_COOKIE[$name])) {
-		$parts = explode("!", $_COOKIE[$name]);
+		$parts = explode('!', $_COOKIE[$name]);
 
 		foreach ($parts as $part) {
-			$name_value = explode("@@", $part);
+			$name_value = explode('@@', $part);
 
 			if ($name_value[0] == $element) {
-				if ($name_value[1] == "NaN") {
-					return "";
+				if ($name_value[1] == 'NaN') {
+					return '';
 				}else{
 					return $name_value[1];
 				}
@@ -1423,11 +1423,11 @@ function html_read_cookie_element($name, $element) {
 		}
 	}
 
-	return "";
+	return '';
 }
 
 /* draw_menu - draws the cacti menu for display in the console */
-function draw_menu($user_menu = "") {
+function draw_menu($user_menu = '') {
 	global $user_auth_realms, $user_auth_realm_filenames, $menu;
 
 	if (strlen($user_menu == 0)) {
@@ -1435,9 +1435,9 @@ function draw_menu($user_menu = "") {
 	}
 
 	/* list all realms that this user has access to */
-	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
-		$user_realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $_SESSION["sess_user_id"]);
-		$user_realms = array_rekey($user_realms, "realm_id", "realm_id");
+	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
+		$user_realms = db_fetch_assoc('select realm_id from user_auth_realm where user_id=' . $_SESSION['sess_user_id']);
+		$user_realms = array_rekey($user_realms, 'realm_id', 'realm_id');
 	}else{
 		$user_realms = $user_auth_realms;
 	}
@@ -1448,7 +1448,7 @@ function draw_menu($user_menu = "") {
 	while (list($header_id, $header_array) = each($user_menu)) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
-		while (list($item_url, $item_title) = each($header_array["items"])) {
+		while (list($item_url, $item_title) = each($header_array['items'])) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
 			if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
@@ -1456,22 +1456,22 @@ function draw_menu($user_menu = "") {
 			}
 		}
 
-		reset($header_array["items"]);
+		reset($header_array['items']);
 
 		if ($show_header_items == true) {
 			if (!$first_ul) {
-				print "</ul></div>";
+				print '</ul></div>';
 			}else{
 				$first_ul = false;
 			}
 
 			$id = clean_up_name(strtolower($header_id));
-			print "<div id='$id" . "_div" . "' class='menuMain'>" . $header_array["description"] . "</div><div>
+			print "<div id='$id" . "_div" . "' class='menuMain'>" . $header_array['description'] . "</div><div>
 				<ul id='$id' class='menuSubMain'>";
 		}
 
 		/* pass 2: loop through each top level item and render it */
-		while (list($item_url, $item_title) = each($header_array["items"])) {
+		while (list($item_url, $item_title) = each($header_array['items'])) {
 			$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
 
 			/* if this item is an array, then it contains sub-items. if not, is just
@@ -1481,7 +1481,7 @@ function draw_menu($user_menu = "") {
 
 				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* if the current page exists in the sub-items array, draw each sub-item */
-					if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
+					if (array_key_exists(basename($_SERVER['PHP_SELF']), $item_title) == true) {
 						$draw_sub_items = true;
 					}else{
 						$draw_sub_items = false;
@@ -1492,30 +1492,30 @@ function draw_menu($user_menu = "") {
 
 						/* indent sub-items */
 						if ($i > 0) {
-							$prepend_string = "--- ";
+							$prepend_string = '--- ';
 						}else{
-							$prepend_string = "";
+							$prepend_string = '';
 						}
 
 						/* do not put a line between each sub-item */
 						if (($i == 0) || ($draw_sub_items == false)) {
-							$background = CACTI_URL_PATH . "images/menu_line.gif";
+							$background = CACTI_URL_PATH . 'images/menu_line.gif';
 						}else{
-							$background = "";
+							$background = '';
 						}
 
 						/* draw all of the sub-items as selected for ui grouping reasons. we can use the 'bold'
 						or 'not bold' to distinguish which sub-item is actually selected */
-						if ((basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) || ($draw_sub_items)) {
-							$td_class = "textMenuItemSelected";
+						if ((basename($_SERVER['PHP_SELF']) == basename($item_sub_url)) || ($draw_sub_items)) {
+							$td_class = 'textMenuItemSelected';
 						}else{
-							$td_class = "textMenuItem";
+							$td_class = 'textMenuItem';
 						}
 
 						/* always draw the first item (parent), only draw the children if we are viewing a page
 						that is contained in the sub-items array */
 						if (($i == 0) || ($draw_sub_items)) {
-							if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
+							if (basename($_SERVER['PHP_SELF']) == basename($item_sub_url)) {
 								print "<li class='menuSubMainSelected'><a href='$item_sub_url'>$prepend_string$item_sub_title</a></li>";
 							}else{
 								print "<li><a href='$item_sub_url'>$prepend_string$item_sub_title</a></li>";
@@ -1529,7 +1529,7 @@ function draw_menu($user_menu = "") {
 				if ((isset($user_realms[$current_realm_id])) || (!isset($user_auth_realm_filenames{basename($item_url)}))) {
 					/* draw normal (non sub-item) menu item */
 					$item_url = CACTI_URL_PATH . $item_url;
-					if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
+					if (basename($_SERVER['PHP_SELF']) == basename($item_url)) {
 						print "<li class='menuSubMainSelected'><a href='$item_url'>$item_title</a></li>";
 					}else{
 						print "<li><a href='$item_url'>$item_title</a></li>";
@@ -1538,19 +1538,14 @@ function draw_menu($user_menu = "") {
 			}
 		}
 	}
-	print "</ul></div>";
+	print '</ul></div>';
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	<!--
 	$('.menuMain').each(function(index) {
 		changeMenuState($(this),true);
 		$(this).click(function() {
 			changeMenuState($(this));
-//			if ($(this).next().is(":hidden")) {
-//				$(this).next().show("fast");
-//			} else {
-//				$(this).next().slideUp("fast");
-//			}
 		});
 		$(this).disableSelection();
 	});
@@ -1572,11 +1567,11 @@ function draw_actions_dropdown($actions_array) {
 				<img src='<?php echo CACTI_URL_PATH; ?>images/arrow.gif' alt='' align='middle'>&nbsp;
 			</td>
 			<td class='right'>
-				<?php print __("Choose an action:");?>
-				<?php form_dropdown("drp_action",$actions_none+$actions_array,"","",ACTION_NONE,"","");?>
+				<?php print __('Choose an action:');?>
+				<?php form_dropdown('drp_action',$actions_none+$actions_array,'','',ACTION_NONE,'','');?>
 			</td>
 			<td class='w1 right'>
-				<input id='go' type='button' value='<?php print __("Go");?>' name='go'>
+				<input id='go' type='button' value='<?php print __('Go');?>' name='go'>
 			</td>
 		</tr>
 	</table>
@@ -1600,16 +1595,16 @@ function draw_actions_dropdown($actions_array) {
  * Deprecated functions
  */
 
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = "left") { ?>
-		<td height="1" style="text-align:<?php print $align;?>;" colspan="<?php print $column_span;?>">
-			<font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font>
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = 'left') { ?>
+		<td height='1' style='text-align:<?php print $align;?>;' colspan='<?php print $column_span;?>'>
+			<font color='#<?php print $matrix_text_color;?>'><?php print $matrix_name;?></font>
 		</td>
 <?php
 }
 
 function form_area($text) { ?>
 	<tr>
-		<td bgcolor="#E1E1E1" class="textArea">
+		<td bgcolor='#E1E1E1' class='textArea'>
 			<?php print $text;?>
 		</td>
 	</tr>
