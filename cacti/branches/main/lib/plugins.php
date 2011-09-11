@@ -130,6 +130,7 @@ function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false
 		/* "normal" and "unique" keys, multi-key columns are allowed, multiple keys per run are allowed as well */
 		if (isset($data['keys'])) {
 			foreach ($data['keys'] as $key) {
+				if (!is_array($key) || !isset($key['columns'])) continue;
 				$sql .= ",\n " . plugin_db_format_key_sql($key);
 			}
 		}
