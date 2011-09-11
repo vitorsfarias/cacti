@@ -167,7 +167,7 @@ function html_boolean_friendly($html_boolean) {
      variables.  If the variables have changed, the page variable, if found
      will be set to 1.
 
-     @param $_pageVars - The filter variables used the the caller
+     @param $_pageVars - The filter variables used by the caller
         type => numeric or string
         method => get, request, or post
         sessionvar => to be used if the variable does not use a common session prefix
