@@ -862,7 +862,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 			switch(poller_items[i].action) {
 			case POLLER_ACTION_SNMP: /* raw SNMP poll */
 				/* initialize or reinitialize snmp as required */
-				if (!device->snmp_session) {
+				if (i == 0) {
 					last_snmp_port = poller_items[i].snmp_port;
 					last_snmp_version = poller_items[i].snmp_version;
 
@@ -873,7 +873,9 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					STRNCOPY(last_snmp_priv_passphrase, poller_items[i].snmp_priv_passphrase);
 					STRNCOPY(last_snmp_priv_protocol,   poller_items[i].snmp_priv_protocol);
 					STRNCOPY(last_snmp_context,         poller_items[i].snmp_context);
+				}
 
+				if (!device->snmp_session) {
 					device->snmp_session = snmp_host_init(device->id, poller_items[i].hostname,
 						poller_items[i].snmp_version, poller_items[i].snmp_community,
 						poller_items[i].snmp_username, poller_items[i].snmp_password,
