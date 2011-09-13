@@ -23,7 +23,8 @@
 */
 
 function upgrade_to_0_8_7h() {
-	require_once(CACTI_BASE_PATH . "/lib/poller.php");
+	global $config;
+	require_once($config["base_path"] . "/lib/poller.php");
 
 	/* speed up the reindexing */
 	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");
@@ -57,20 +58,11 @@ function upgrade_to_0_8_7h() {
 		cacti_log(__FUNCTION__ . " upgrade table data_template_rrd", false, "UPGRADE");
 	}
 
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM data_input_fields"), "Key_name", "Key_name");
-	if (!in_array("data_input_id_data_name_input_output", $_keys)) {
-		db_install_execute("0.8.7h", "ALTER TABLE `data_input_fields` ADD UNIQUE INDEX `data_input_id_data_name_input_output` USING BTREE (`data_input_id`,`data_name`,`input_output`)");
-		cacti_log(__FUNCTION__ . " upgrade table data_input_fields", false, "UPGRADE");
-	}
-
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
-	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
-	if (sizeof($host_snmp_query) > 0) {
-		foreach ($host_snmp_query as $item) {
-			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
-			cacti_log(__FUNCTION__ . " update_reindex_cache for Host[" . $item["host_id"] . "] DQ[" . $item["snmp_query_id"] . "]", false, "UPGRADE");
-		}
-	}
+	$command_string = read_config_option("path_php_binary");
+	$extra_args = "-q \"" . $config["base_path"] . "/cli/poller_reindex_hosts.php\" --id=all";
+	exec_background($command_string, "$extra_args");
+	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, "UPGRADE");
 
 }
 ?>
