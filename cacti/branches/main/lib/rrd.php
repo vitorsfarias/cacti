@@ -252,9 +252,16 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = 
 		if ( $data_source["data_source_type_id"] == DATA_SOURCE_TYPE_COMPUTE ) {
 			$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" . (empty($data_source["rrd_compute_rpn"]) ? "U" : $data_source["rrd_compute_rpn"]) . RRD_NL;
 		} else {
+			if (empty($data_source["rrd_maximum"])) {
+				$data_source["rrd_maximum"] = "U";
+			} elseif (strpos($data_source["rrd_maximum"], "|query_") !== false) {
+				$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=" . $local_data_id);
+				$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["device_id"], $data_local["snmp_query_id"], $data_local["snmp_index"], 0, false);
+			} elseif ((int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
+				$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
+			}	
 			$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source["data_source_type_id"]} . ":" .
-							$data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" .
-							(empty($data_source["rrd_maximum"]) ? "U" : ((int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"] ? (int)$data_source["rrd_minimum"]+1 : $data_source["rrd_maximum"])) . RRD_NL;
+							$data_source["rrd_heartbeat"] . ":" . $data_source["rrd_minimum"] . ":" . $data_source["rrd_maximum"] . RRD_NL;
 		}
 	}
 	}
