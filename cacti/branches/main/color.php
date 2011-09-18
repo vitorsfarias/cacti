@@ -44,7 +44,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
+		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+
 		color_edit();
+
+		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
