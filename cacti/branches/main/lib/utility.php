@@ -92,7 +92,8 @@ function update_poller_cache($local_data_id, $commit = false) {
 			where snmp_query_graph_rrd.data_template_rrd_id=data_template_rrd.local_data_template_rrd_id
 			$output_type_sql
 			and snmp_query_graph_rrd.data_template_id=" . $data_input["data_template_id"] . "
-			and data_template_rrd.local_data_id=$local_data_id");
+			and data_template_rrd.local_data_id=$local_data_id
+			order by data_template_rrd.id");
 	}
 
 	if ($data_input["active"] == CHECKED) {
@@ -763,7 +764,7 @@ function duplicate_data_query($data_query_id, $data_query_name) {
 			$_data_query_graph["snmp_query_id"] = $_data_query_id;
 			$_data_query_graph["hash"] = get_hash_data_query(0, "data_query_graph");
 			$_data_query_graph_id = sql_save($_data_query_graph, "snmp_query_graph");
-			
+
 			/* create new entry(s): snmp_query_graph_rrd, mimic from original data_query_graph */
 			$_data_query_graph_rrds = db_fetch_assoc("select * from snmp_query_graph_rrd where snmp_query_graph_id=$_data_query_graph_id_orig");
 			if (sizeof($_data_query_graph_rrds) > 0) {
@@ -772,7 +773,7 @@ function duplicate_data_query($data_query_id, $data_query_name) {
 					$_data_query_graph_rrd_id = sql_save($_data_query_graph_rrd, "snmp_query_graph_rrd"); # in fact, there is no such id
 				}
 			}
-			
+
 			/* create new entry(s): snmp_query_graph_rrd_sv, mimic from original data_query_graph */
 			$_data_query_graph_rrd_svs = db_fetch_assoc("select * from snmp_query_graph_rrd_sv where snmp_query_graph_id=$_data_query_graph_id_orig");
 			if (sizeof($_data_query_graph_rrd_svs) > 0) {
@@ -783,7 +784,7 @@ function duplicate_data_query($data_query_id, $data_query_name) {
 					$_data_query_graph_rrd_sv_id = sql_save($_data_query_graph_rrd_sv, "snmp_query_graph_rrd_sv");
 				}
 			}
-			
+
 			/* create new entry(s): snmp_query_graph_sv, mimic from original data_query_graph */
 			$_data_query_graph_svs = db_fetch_assoc("select * from snmp_query_graph_sv where snmp_query_graph_id=$_data_query_graph_id_orig");
 			if (sizeof($_data_query_graph_svs) > 0) {
@@ -1185,14 +1186,14 @@ function utilities_clear_user_log() {
 
 function utilities_format_timestamp($date) {
 	/* return the timestamp in the format defined by the user (if any) */
-	return __date("D, " . date_time_format() . " T", strtotime($date));	
+	return __date("D, " . date_time_format() . " T", strtotime($date));
 }
 
 function utilities_format_authentication_result($type) {
 #	require_once(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 	global $auth_log_messages;
 	/* return the authentication type in a human readable format */
-	return $auth_log_messages["$type"];	
+	return $auth_log_messages["$type"];
 }
 
 function userlog_filter() {
@@ -1408,14 +1409,14 @@ function utilities_view_user_log($refresh=true) {
 		"time" => array(
 			"name" => __("Date"),
 			"function" => "utilities_format_timestamp",
-			"params" => array("time"),			
+			"params" => array("time"),
 			"filter" => true,
 			"order" => "ASC"
 		),
 		"result" => array(
 			"name" => __("Authentication Type"),
 			"function" => "utilities_format_authentication_result",
-			"params" => array("result"),			
+			"params" => array("result"),
 			"order" => "ASC"
 		),
 		"ip" => array(
@@ -1452,7 +1453,7 @@ function utilities_view_user_log($refresh=true) {
 function repopulate_font_cache() {
 require_once(CACTI_BASE_PATH . "/lib/functions.php");
 require_once(CACTI_BASE_PATH . "/lib/fonts.php");
-	
+
 
 if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 	read_config_option("rrdtool_version") == "rrd-1.2.x") {
@@ -1463,8 +1464,8 @@ if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 } else {
 
 	# higher rrdtool versions use pango fonts
-	$success = create_pango_fontlist();	
-	
+	$success = create_pango_fontlist();
+
 }
 
 }
