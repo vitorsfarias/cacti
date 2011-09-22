@@ -541,33 +541,26 @@ function display_output_messages() {
 				switch ($messages[$current_message_id]["type"]) {
 				case 'info':
 					if ($error_message == false) {
-						print "<div id='message' class='topBoxAlt textInfo'>$message</div>";
+						print "<div class='message info'>$message</div>";
 
 						/* we don't need these if there are no error messages */
 						kill_session_var("sess_field_values");
 					}
 					break;
+				case 'success':
+					print "<div class='message success'>$message</div>";
+					break;
+				case 'warning':
+					print "<div class='message warning'>$message</div>";
+					break;
 				case 'error':
-					print "<div class='topBoxError textError'>" . __("Error:") . " $message</div>";
+					print "<div class='message info'>$message</div>";
 					break;
 				}
 			}
 		}else{
 			display_custom_error_message($_SESSION["sess_messages"]);
 		}
-		?>
-		<script type='text/javascript'>
-		<!--
-		$().ready(function() {
-			t = setTimeout("hideMessage()", <?php print(read_config_option("error_display_timeout"));?>);
-		});
-
-		function hideMessage() {
-			$("#message").slideUp("fast");
-		}
-		-->
-		</script>
-		<?php
 	}
 
 	kill_session_var("sess_messages");

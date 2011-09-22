@@ -247,6 +247,7 @@ var iEdgeThreshold  = 10;
 var isMouseDown     = false;
 var vSplitterClosed = false;
 var creatingCookie  = false;
+var myMessages      = ['info','warning','error','success'];
 
 /* tells if on the right border or not */
 function isOnBorderRight(type, object, event) {
@@ -702,9 +703,45 @@ $().ready(function() {
 	/* stripe stripable tables */
 	$(".striped tbody tr:even").addClass("rowAlternate2").removeClass("rowAlternate1");
 
+	/* hide all messages */
+	hideMessages();
+
+	/* show messages */
+	for (var i=0;i<myMessages.length;i++) {
+		showMessage(myMessages[i]);
+	}
+
+	/* when message is clicked, hide it */
+	$('.message').click(function() {
+		$(this).slideUp('medium');
+	});            
+
 	/* restore the page visibility */
 	$('#wrapper').css("opacity", "1");
+
+	/* show messages breifly */
+	t = setTimeout("hideMessage()", 3000);
 });
+
+function hideMessage() {
+	$(".message").slideUp("fast");
+}
+
+function showMessage(type) {
+	$('.'+ type +'-trigger').click(function(){
+		hideAllMessages();
+		$('.'+type).animate({top:"300"}, 500);
+	});
+}
+
+function hideMessages() {
+	var messagesHeights = new Array(); // this array will store height for each
+
+	for (i=0; i<myMessages.length; i++) {
+		messagesHeights[i] = $('.' + myMessages[i]).outerHeight(); // fill array
+		$('.' + myMessages[i]).css('top', -messagesHeights[i]); //move element outside viewport
+	}
+}
 
 function sizeContentDivs() {
 	var top    = document.getElementById("wrapper").offsetTop;

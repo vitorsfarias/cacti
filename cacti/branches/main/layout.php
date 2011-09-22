@@ -55,4 +55,8 @@ switch (get_request_var_request("action")) {
 		ajax_get_devices_brief();
 
 		break;
+	case 'ajax_get_messages':
+		ajax_get_messages();
+
+		break;
 }
