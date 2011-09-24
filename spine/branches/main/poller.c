@@ -130,6 +130,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	int    rows_processed = 0;
 	int    i = 0;
 	int    j = 0;
+	int    k = 0;
 	int    num_oids = 0;
 	int    snmp_poller_items = 0;
 	size_t out_buffer;
@@ -147,7 +148,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	char last_snmp_password[50];
 	char last_snmp_auth_protocol[5];
 	char last_snmp_priv_passphrase[200];
-	char last_snmp_priv_protocol[6];
+	char last_snmp_priv_protocol[7];
 	char last_snmp_context[65];
 	double poll_time = get_time_as_double();
 
@@ -857,12 +858,12 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 		/* log an informative message */
 		SPINE_LOG_MEDIUM(("Device[%i] TH[%i] NOTE: There are '%i' Polling Items for this Device", device_id, device_thread, num_rows));
 
-		i = 0;
+		i = 0; k = 0;
 		while ((i < num_rows) && (!device->ignore_device)) {
 			switch(poller_items[i].action) {
 			case POLLER_ACTION_SNMP: /* raw SNMP poll */
 				/* initialize or reinitialize snmp as required */
-				if (i == 0) {
+				if (k == 0) {
 					last_snmp_port = poller_items[i].snmp_port;
 					last_snmp_version = poller_items[i].snmp_version;
 
@@ -873,15 +874,15 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 					STRNCOPY(last_snmp_priv_passphrase, poller_items[i].snmp_priv_passphrase);
 					STRNCOPY(last_snmp_priv_protocol,   poller_items[i].snmp_priv_protocol);
 					STRNCOPY(last_snmp_context,         poller_items[i].snmp_context);
-				}
 
-				if (!device->snmp_session) {
 					device->snmp_session = snmp_host_init(device->id, poller_items[i].hostname,
 						poller_items[i].snmp_version, poller_items[i].snmp_community,
 						poller_items[i].snmp_username, poller_items[i].snmp_password,
 						poller_items[i].snmp_auth_protocol, poller_items[i].snmp_priv_passphrase,
 						poller_items[i].snmp_priv_protocol, poller_items[i].snmp_context,
 						poller_items[i].snmp_port, poller_items[i].snmp_timeout);
+
+					k++;
 				}
 
 				/* catch snmp initialization issues */
@@ -893,13 +894,15 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 				/* some snmp data changed from poller item to poller item.  therefore, poll device and store data */
 				if ((last_snmp_port != poller_items[i].snmp_port) ||
 					(last_snmp_version != poller_items[i].snmp_version) ||
-					(strcmp(last_snmp_community,       poller_items[i].snmp_community)       != 0) ||
-					(strcmp(last_snmp_username,        poller_items[i].snmp_username)        != 0) ||
-					(strcmp(last_snmp_password,        poller_items[i].snmp_password)        != 0) ||
-					(strcmp(last_snmp_auth_protocol,   poller_items[i].snmp_auth_protocol)   != 0) ||
-					(strcmp(last_snmp_priv_passphrase, poller_items[i].snmp_priv_passphrase) != 0) ||
-					(strcmp(last_snmp_priv_protocol,   poller_items[i].snmp_priv_protocol)   != 0) ||
-					(strcmp(last_snmp_context,         poller_items[i].snmp_context)         != 0)) {
+					((poller_items[i].snmp_version < 3) && 
+					(!STRMATCH(last_snmp_community, poller_items[i].snmp_community))) ||
+					((poller_items[i].snmp_version > 2) && 
+					(!STRMATCH(last_snmp_username, poller_items[i].snmp_username)) ||
+					(!STRMATCH(last_snmp_password, poller_items[i].snmp_password)) ||
+					(!STRMATCH(last_snmp_auth_protocol, poller_items[i].snmp_auth_protocol)) ||
+					(!STRMATCH(last_snmp_priv_passphrase, poller_items[i].snmp_priv_passphrase)) ||
+					(!STRMATCH(last_snmp_priv_protocol, poller_items[i].snmp_priv_protocol)) ||
+					(!STRMATCH(last_snmp_context, poller_items[i].snmp_context)))) {
 
 					if (num_oids > 0) {
 						snmp_get_multi(device, snmp_oids, num_oids);
