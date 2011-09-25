@@ -1250,7 +1250,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 
 	/* record the polling time for the device */
 	poll_time = get_time_as_double() - poll_time;
-	SPINE_LOG_MEDIUM(("Host[%i] TH[%i] Total Time: %5.2g Seconds", device_id, device_thread, poll_time));
+	SPINE_LOG_MEDIUM(("Device[%i] TH[%i] Total Time: %5.2g Seconds", device_id, device_thread, poll_time));
 
 	query1[0] = '\0';
 	snprintf(query1, BUFSIZE, "UPDATE device SET polling_time='%g' WHERE id=%i", poll_time, device_id);
