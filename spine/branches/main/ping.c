@@ -461,7 +461,7 @@ int ping_icmp(device_t *device, ping_t *ping) {
 				thread_mutex_unlock(LOCK_SETEUID);
 			}
 			#endif
-			return HOST_DOWN;
+			return DEVICE_DOWN;
 		}
 	}else{
 		snprintf(ping->ping_response, SMALL_BUFSIZE, "ICMP: Destination address not specified");
