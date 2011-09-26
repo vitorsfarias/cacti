@@ -25,8 +25,8 @@
  $.fn.DropDownMenu = function(options) {
 
 	var defaults = {
-		title: 			'',
-		subtitle: 		'',
+		title: 			false,
+		subtitle: 		false,
 		name: 			'myName',
 		maxHeight: 		300,
 		width: 			'auto',
@@ -36,8 +36,7 @@
 		offsetX: 		0,
 		offsetY: 		0,
 		simultaneous: 	false,
-		textAlign:		'left',
-		rel: 			''
+		textAlign:		'left'
 	};
 
 	var timerref 		= null;
@@ -46,12 +45,10 @@
 	var options 		= $.extend(defaults, options);
 	var contentHeight	= 0;
 
-	// do nothing if requested menu is still loaded
-	if($('#' + options.name).is(":visible")) {
-		return;
-	}
+	/* do nothing if requested menu is still loaded */
+	if($('#' + options.name).is(":visible")) { return; }
 
-	// remove all open menus from DOM if they should not stay in front at the same time
+	/* remove all open menus from DOM if they should not stay in front at the same time */
 	var oldMenus = $(".cacti_dd_menu");
 	if(options.simultaneous == false) {
 		oldMenus.css({'overflow-y':'hidden'}).slideUp('200');
@@ -68,16 +65,16 @@
 	});
 
 	function _init_menu(initiator){
-		// integrate a base frame
-		$("<div id='" + options.name + "' style='display: none;' class='cacti_dd_menu'>"
-			+ "<div id='" + options.name + "_title' class='title'><h6>" + options.title + "</h6></div>"
-			+ "<div id='" + options.name + "_back' class='back'></div>"
-			+ "<div id='" + options.name + "_content' class='content'></div>"
-			+ "<div id='" + options.name + "_subtitle' class='subtitle'><h6>" + options.subtitle + "</h6></div>"
+		/* create the main menu structure */
+		$("<div id='" + options.name + "' style='display: none;' class='cacti_dd_menu ui-widget ui-corner-all'>"
+			+ "<div id='" + options.name + "_title' class='title ui-state-default ui-corner-top'><h6>" + options.title + "</h6></div>"
+			+ "<div id='" + options.name + "_back' class='back ui-state-active'></div>"
+			+ "<div id='" + options.name + "_content' class='content ui-widget-content ui-state-highlight " + ((options.subtitle !== false) ? "" : "ui-corner-bottom" ) + "'></div>"
+			+ "<div id='" + options.name + "_subtitle' class='subtitle ui-state-default ui-corner-bottom'><h6>" + options.subtitle + "</h6></div>"
 			+ "<div id='" + options.name + "_html' class='html'></div>"
 		+ "</div>").appendTo("body");
 
-		// define a reference to the menu and the different sections
+		/* define references to the menu and its different sections */
 		menu 			= $('#' + options.name);
 		menu_head 		= $('#' + options.name + '_title');
 		menu_content 	= $('#' + options.name + '_content');
@@ -85,72 +82,59 @@
 		menu_subhead 	= $('#' + options.name + '_subtitle');
 		menu_html 		= $('#' + options.name + '_html');
 
-		// "_html" holds the raw data
+		/* while div container "myName_html" holds the raw data ... */
 		menu_html.append(options.html);
 		i=1;
 		menu_html.find("h6:has(div)").each(function() {
 			var subMenu = $(this);
-			var subMenuID = options.name + '_' + i;
+			var subMenuClass = options.name + '_' + i;
 			var subMenuTitle = subMenu.find('a:first').html();
-			subMenu.attr('id', subMenuID);
-			subMenu.click( function() {
-				 _toggle_subMenu( subMenuID);
-			});
+			subMenu.addClass(subMenuClass);
+			$('.'+subMenuClass).die().live("click", function(){ _switch_layer( subMenuClass); } );
 			subMenu.children("div").hide();
-			subMenu.find('a:first').html(subMenuTitle + '&nbsp;<img src="' + options.rel + '/images/tw_close.gif" class="icon">');
+			subMenu.find('a:first').html('<span style="float:left; min-width:80%;">' + subMenuTitle + '</span><span class="ui-icon ui-icon-triangle-1-e" style="float:right;"></span>');
 			i++;
 		});
 
-		// "_content" holds the visible menu data
-		menu_content.append(options.html);
+		/* ... "myName_content" will have the visible menu data */
+		menu_content.append(menu_html.html());
 
-		// hide every submenu and its items
-		i=1;
-		menu_content.find("h6:has(div)").each(function() {
-			var subMenu = $(this);
-			var subMenuID = options.name + '_' + i;
-			var subMenuTitle = subMenu.find('a:first').html();
-			subMenu.attr('id', subMenuID);
-			subMenu.click( function() {
-				 _toggle_subMenu( subMenuID);
-			} );
-			subMenu.children("div").hide();
-			subMenu.find('a:first').html(subMenuTitle + '&nbsp;<img src="' + options.rel + '/images/tw_close.gif" class="icon">');
-			i++;
-		});
+		/* if necessary show title, subtitle ... */
+		if(options.title 	!== false) { menu_head.show(); }
+		if(options.subtitle !== false) { menu_subhead.show(); }
 
-		// if necessary show the title, subtitle ...
-		if(options.title != '') { menu_head.show(); }
-		if(options.subtitle != '') { menu_subhead.show(); }
-
-		// make content visible
+		/* make content visible */
 		menu_content.show();
 
-		//reduce height to a minimum for best fit
-		menuHeight = (menu.height() > options.maxHeight) ? options.maxHeight : menu.height();
+		/* reduce height to a minimum for best fit */
+		menuHeight = (menu.outerHeight() > options.maxHeight) ? options.maxHeight : menu.outerHeight();
 
-		//set the width to a fixed value
+		/* set the width to a fixed value */
 		if(!isNaN(parseInt(options.width))) {
-			menu.css({	'min-width' : options.width + 'px',
-						'max-width' : options.width + 'px'
-					});
+			menu.css({
+				'min-width' : options.width + 'px',
+				'max-width' : options.width + 'px'
+			});
 			menu.width(options.width);
-
 		}else {
-			// use real width plus 20px
-			var width = menu.outerWidth(true)*1.1;
-			menu.css({	'min-width' : width + 'px',
-						'max-width' : width + 'px'
+			// use real width plus 15 percent
+			var width = menu.outerWidth(true)*1.15;
+			menu.css({
+				'min-width' : width + 'px',
+				'max-width' : width + 'px'
 			});
 			menu.width(width);
 		}
 
-		// default position of the menu container
-		menu.css({	'left' 			: initiator.offset().left + options.offsetX + 'px',	// x-position in relation to the initiator
-					'top' 			: initiator.offset().top + initiator.height() + options.offsetY + 'px'	// y-position in relation to the initiator
-				});
+		/* default position of the menu container */
+		menu.css({
+			// x-position in relation to the initiator
+			'left'	: initiator.offset().left + options.offsetX + 'px',
+			// y-position in relation to the initiator
+			'top' 	: initiator.offset().top + initiator.height() + options.offsetY + 'px'
+		});
 
-		//change the orientation from right to left if width exceeds the windows size
+		/* change the orientation from right to left if width exceeds the windows size */
 		if((initiator.offset().left + initiator.width() + options.offsetX + menu.outerWidth(true)) > $(window).width()) {
 			menu.css({'left' : (initiator.offset().left + initiator.width() - menu.outerWidth(true)) + 'px'});
 		}
@@ -161,41 +145,35 @@
 		return menu;
 	}
 
-	function _toggle_subMenu(subMenuID){
 
-		if(subMenuID == null) {
+	function _switch_layer(subMenuClass){
+		if(subMenuClass == null) {
 			var content = menu_html;
 			menu_back.empty().hide();
 			menu_content.height(contentHeight);
 		}else {
-			var content = menu_html.find('#' + subMenuID).find("div").eq(0);
+			var content = menu_html.find('.' + subMenuClass + ' div:first');
 			menu_back.show();
 		}
 
-		menu_back.empty().append(menu_html.find('#' + subMenuID).find('a:first').html());
-		menu_back.find('img').remove();
-		menu_back.unbind('click');
+		parentClass = menu_html.find('.' + subMenuClass).parents('h6').attr('class');
 
-		parentID = menu_html.find('#' + subMenuID).parents('h6').attr('id');
-
-		menu_back.click( function() { _toggle_subMenu( parentID); });
+		menu_back.empty().append( menu_html.find('.' + subMenuClass + ' a:first').html() );
+		menu_back.find('span:last').removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+		menu_back.unbind('click').click( function() { _switch_layer( parentClass); });
 
 		menu_content.empty().append(content.html());
-		menu_content.find("h6:has(div)").each(function() {
-			var subMenu = $(this)
-			var subsubMenuID = subMenu.attr('id');
-			subMenu.click( function() {
-				_toggle_subMenu( subsubMenuID);
-			} );
-			subMenu.children("div").hide();
-		});
 
-		//re-calculate content height if back-button is hidden
-		if(subMenuID != null) {
-			menu_content.height(menu.height() - menu_head.height() - menu_back.height() - menu_subhead.height() - 16);
+		/* re-calculate content height */
+		if(subMenuClass != null) {
+				menu_head_height	= menu_head.is(":visible")		? menu_head.outerHeight()		: 0;
+				menu_back_height	= menu_back.is(":visible")		? menu_back.outerHeight()		: 0;
+				menu_subhead_height	= menu_subhead.is(":visible")	? menu_subhead.outerHeight()	: 0;
+
+				menu_content.height(menuHeight - menu_head_height - menu_back_height - menu_subhead_height);
 		}
 
-		//return false to suppress unwanted click events
+		/* return false to suppress unwanted click events*/
 		return false;
 	}
 
@@ -228,7 +206,12 @@
 				obj.show().animate({height: menuHeight}, menuHeight*3);
 
 				//setup contentHeight;
-				menu_content.height(menuHeight - menu_head.height() - menu_back.height() - menu_subhead.height()-4);
+				menu_head_height	= menu_head.is(":visible")		? menu_head.outerHeight()		: 0;
+				menu_back_height	= menu_back.is(":visible")		? menu_back.outerHeight()		: 0;
+				menu_subhead_height	= menu_subhead.is(":visible")	? menu_subhead.outerHeight()	: 0;
+
+				menu_content.height(menuHeight - menu_head_height - menu_back_height - menu_subhead_height);
+
 				contentHeight = $('#' + options.name + '_content').height();
 				$('#' + options.name + '_content').css({'overflow-y':'auto'});
 
