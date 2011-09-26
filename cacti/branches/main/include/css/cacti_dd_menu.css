@@ -1,100 +1,78 @@
 /* drop down menu styles */
 .cacti_dd_menu{
+	font-family: Helvetica, Arial, Verdana, sans-serif;
 	position: absolute;
-	z-index: 999;
-	background: #363636;
-	border: 1px solid #7F7F99;
-	padding: 2px;
+	border: 1px solid grey;
+	background-color: #fff;
+	z-index: auto;
+	padding: 0.1em;
+	padding-bottom: 0.2em;
 	text-decoration: none;
 	overflow: hidden;
-	text-align: left;
 }
 
 .cacti_dd_menu .title{
 	display: none;
-	color: #ffffff;
 	padding: 2px 2px;
 	overflow: hidden;
-	background: transparent url('../../images/rowSubHeader2.png') repeat-x scroll left top;
 }
 
 .cacti_dd_menu .title h6{
-	font-family: Arial, Verdana, Helvetica, sans-serif;
 	font-size: small;
 	font-weight: 600;
-	margin: 0; padding: 0px;
+	margin: 0.3em; padding: 0;
 }
 
 .cacti_dd_menu .back{
 	cursor: pointer;
 	display: none;
 	overflow: hidden;
-	color: #ffffff;
-	font-family: Arial, Verdana, Helvetica, sans-serif;
 	font-size: small;
 	font-weight: bold;
 	padding: 2px 2px;
 	margin: 0px;
-	background: transparent url('../../images/tabSelected.png') repeat-x scroll left top;
 }
-
 
 .cacti_dd_menu .content {
 	overflow: hidden;
 }
 
 .cacti_dd_menu .content h6 {
-	font-family: Arial, Verdana, Helvetica, sans-serif;
+	clear: both;
 	font-size: small;
 	font-weight: 500;
-	margin: 0; padding: 0px;
+	margin: 0; padding: 0;
 }
 
 .cacti_dd_menu .content h6 a{
   	display: block;
   	margin: 0;
+  	margin-left: 0.3em;
 	padding: 3px 2px;
-	color:#c3c3c3;
-	width: auto;
 	text-decoration: none;
 	white-space: nowrap;
-}
-
-.cacti_dd_menu .content h6 a:visited {
-	color:#c3c3c3;
+	vertical-align:baseline;
 }
 
 .cacti_dd_menu .content h6 a:hover {
-	color:#ffffff;
 	font-size:small;
 	font-weight: 600;
 	text-decoration: none;
-	background: transparent url('../../images/tabDefault.png') repeat-x scroll left top;
 }
 
 .cacti_dd_menu .subtitle{
 	display: none;
-	color: #c1c1c1;
-	border-top: 1px solid #7F7F99;
-	margin-top: 1px;
-	margin-bottom: 1px;
 	overflow: hidden;
 }
 
 .cacti_dd_menu .subtitle h6{
-	font-family: Arial, Verdana, Helvetica, sans-serif;
-	font-size: small;
+	font-size: x-small;
 	font-weight: 500;
-	margin: 0; padding: 0px;
+	margin: 0.3em; padding: 0;
+
 }
 
 .cacti_dd_menu .html{
 	display: none;
 	overflow: hidden;
-}
-
-.cacti_dd_menu .icon{
-	vertical-align:middle;
-	width: 11px;
-	height: 12px;
 }
