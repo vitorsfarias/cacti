@@ -26,14 +26,20 @@ include("./include/auth.php");
 
 /* Clear session */
 setcookie(session_name(),"",time() - 3600,"/");
+session_destroy();
 
 /* Check to see if we are using Web Basic Auth */
 if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
+	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+		exit;
+	}
 
 	?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title>Logout of Cacti</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}
@@ -47,7 +53,7 @@ if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
 <body>
 <table align="center">
 	<tr>
-		<td><img src="images/auth_logout.gif" alt="logout"></td>
+		<td><img src="images/auth_logout.gif" border="0" alt=""></td>
 	</tr><tr>
 		<td><br><?php print __("To end your Cacti session please close your web browser.");?><br><br><a href="index.php"><?php print __("Return to Cacti");?></a></td>
 	</tr>
