@@ -128,10 +128,12 @@ if ($action == 'login') {
 
 	case AUTH_METHOD_BUILTIN:
 	default:
-		/* Builtin Auth */
-		if ((!$user_auth) && (!$ldap_error)) {
-			/* if auth has not occured process for builtin - AKA Ldap fall through */
-			$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND password = '" . md5(get_request_var_post("login_password")) . "' AND realm = 0");
+		if (!api_plugin_hook_function('login_process', false)) {
+			/* Builtin Auth */
+			if ((!$user_auth) && (!$ldap_error)) {
+				/* if auth has not occured process for builtin - AKA Ldap fall through */
+				$user = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $username . "' AND password = '" . md5(get_request_var_post("login_password")) . "' AND realm = 0");
+			}
 		}
 	}
 	/* end of switch */
@@ -244,6 +246,7 @@ function auth_display_custom_error_message($message) {
 	/* kill the session */
 	setcookie(session_name(),"",time() - 3600,"/");
 	/* print error */
+	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	print "<html>\n<head>\n";
 	print "     <title>" . "Cacti" . "</title>\n";
 	print "     <link href=\"" . CACTI_URL_PATH . "include/main.css\" rel=\"stylesheet\" type=\"text/css\">";
@@ -253,6 +256,9 @@ function auth_display_custom_error_message($message) {
 	print "</body>\n</html>\n";
 }
 
+if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+	return;
+}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
