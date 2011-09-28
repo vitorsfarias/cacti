@@ -33,7 +33,7 @@
      corner of the box ("" for no 'Add' link) */
 function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text) {
 	global $colors; ?>
-	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=1 cellspacing=0 border=0 bgcolor="#<?php print $background_color;?>">
+	<table align="<?php print $align;?>" width="<?php print $width;?>" cellpadding=0 cellspacing=0 border=0 class="cactiTable" bgcolor="#<?php print $background_color;?>">
 		<tr>
 			<td>
 				<table cellpadding=<?php print $cell_padding;?> cellspacing=0 border=0 bgcolor="#<?php print $colors["form_background_dark"];?>" width="100%">
@@ -380,9 +380,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $display_text . "</td>\n";
+			print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $display_text . "</td>\n";
 		}else{
-			print "<td " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
+			print "<td class='tableSubHeaderColumn' " . ((($i) == count($header_items)) ? "colspan='$last_item_colspan'>" : ">");
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</td>\n";
 		}
@@ -430,15 +430,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<td class='textSubHeaderDark'>" . $display_text . "</td>\n";
+			print "<td class='tableSubHeaderColumn'>" . $display_text . "</td>\n";
 		}else{
-			print "<td>";
+			print "<td class='tableSubHeaderColumn'>";
 			print "<a class='textSubHeaderDark' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $db_column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
 			print "</td>\n";
 		}
 	}
 
-	print "<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<form name='chk' method='post' action='$form_action'>\n":"");
+	print "<td width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<td style='display:none;'><form name='chk' method='post' action='$form_action'></td>\n":"");
 	print "</tr>\n";
 }
 
@@ -451,7 +451,7 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='textSubHeaderDark'>" . $header_items[$i] . "</td>\n";
+		print "<td " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . "class='tableSubHeaderColumn'>" . $header_items[$i] . "</td>\n";
 	}
 
 	print "</tr>\n";
@@ -470,10 +470,10 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
 
 	for ($i=0; $i<count($header_items); $i++) {
-		print "<td class='textSubHeaderDark'>" . $header_items[$i] . "</td>\n";
+		print "<td class='tableSubHeaderColumn'>" . $header_items[$i] . "</td>\n";
 	}
 
-	print "<td width='1%' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<form name='chk' method='post' action='$form_action'>\n":"");
+	print "<td width='1%' class='tableSubHeaderColumn tdSelectAll' align='right' bgcolor='#819bc0' style='" . get_checkbox_style() . "'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='SelectAll(\"chk_\",this.checked)'></td>\n" . ($include_form ? "<td style='display:none;'><form name='chk' method='post' action='$form_action'></td>\n":"");
 	print "</tr>\n";
 }
 
@@ -796,7 +796,7 @@ function draw_actions_dropdown($actions_array) {
  */
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { ?>
-		<td style="height:1px;" colspan="<?php print $column_span;?>">
+		<td class="tableSubHeaderColumn" style="height:1px;" colspan="<?php print $column_span;?>">
 			<strong><font color="#<?php print $matrix_text_color;?>"><?php print $matrix_name;?></font></strong>
 		</td>
 <?php }
