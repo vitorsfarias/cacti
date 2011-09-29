@@ -87,20 +87,6 @@ switch (get_request_var_request("action")) {
 
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 		break;
-	case 'clear_poller_cache':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
-		/* obtain timeout settings */
-		$max_execution = ini_get("max_execution_time");
-
-		ini_set("max_execution_time", "0");
-		repopulate_poller_cache();
-		ini_set("max_execution_time", $max_execution);
-
-		utilities_view_poller_cache();
-
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
-		break;
 	case 'view_snmp_cache':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
@@ -1314,14 +1300,6 @@ function utilities() {
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled device.");?>
-		</td>
-	</tr>
-	<tr class="rowAlternate1">
-		<td class="textAreaNotes e">
-			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'><?php print __("Rebuild Poller Cache");?></a>
-		</td>
-		<td class="textAreaNotes v">
-			<?php print __("The poller cache will be cleared and re-generated if you select this option. Sometimes device/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.");?>
 		</td>
 	</tr>
 
