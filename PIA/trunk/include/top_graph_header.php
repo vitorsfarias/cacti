@@ -131,9 +131,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 						<?php echo draw_navigation_text();?>
 					</td>
 					<td align="right">
-						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { ?>
+						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { api_plugin_hook('nav_login_before'); ?>
 						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
-						<?php } ?>
+						<?php api_plugin_hook('nav_login_after'); } ?>
 					</td>
 				</tr>
 			</table>

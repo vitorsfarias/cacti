@@ -27,10 +27,8 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 
 ?>
 			</div>
-			</br>
 		</td>
 	</tr>
-
 </table>
 <?php api_plugin_hook('page_bottom');?>
 </body>
