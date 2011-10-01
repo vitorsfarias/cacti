@@ -30,7 +30,7 @@ session_destroy();
 
 /* Check to see if we are using Web Basic Auth */
 if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
-	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+	if (plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 		exit;
 	}
 
