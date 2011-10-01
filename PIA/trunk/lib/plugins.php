@@ -184,8 +184,6 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 		if (db_execute($sql)) {
 			db_execute("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES ('$plugin', '$table', 'create')");
 		}
-	} else {
-		db_execute("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES ('$plugin', '$table', 'create')");
 	}
 }
 
