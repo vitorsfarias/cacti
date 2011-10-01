@@ -76,7 +76,7 @@ case 'changepassword':
 	break;
 }
 
-if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+if (plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	exit;
 }
 

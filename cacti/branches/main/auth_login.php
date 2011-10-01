@@ -128,7 +128,7 @@ if ($action == 'login') {
 
 	case AUTH_METHOD_BUILTIN:
 	default:
-		if (!api_plugin_hook_function('login_process', false)) {
+		if (!plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
 				/* if auth has not occured process for builtin - AKA Ldap fall through */
@@ -256,7 +256,7 @@ function auth_display_custom_error_message($message) {
 	print "</body>\n</html>\n";
 }
 
-if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+if (plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	return;
 }
 ?>
