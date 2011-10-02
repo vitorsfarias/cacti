@@ -488,6 +488,7 @@ function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $loc
 	}
 
 	$save["id"] 				= $id;
+	$save["parent_id"]			= $parent_tree_item_id;
 	$save["graph_tree_id"] 		= $tree_id;
 	$save["title"] 				= form_input_validate($title, "title", "", ($type == TREE_ITEM_TYPE_HEADER ? false : true), 3);
 	$save["order_key"] 			= $order_key;
