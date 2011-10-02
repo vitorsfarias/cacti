@@ -1552,7 +1552,7 @@ function device_filter() {
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		strURL = strURL + '&poller=' + objForm.poller.value;
 		strURL = strURL + '&site=' + objForm.site.value;
-		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&action=edit&tab=" . html_get_page_variable("tab") . "';\n" : "");?>
+		<?php print (isset($_REQUEST["tab"]) ? "strURL = strURL + '&id=' + objForm.template_id.value + '&action=edit&tab=" . html_get_page_variable("tab") . "';\n" : "");?>
 		document.location = strURL;
 	}
 	-->
@@ -1583,27 +1583,27 @@ function get_device_records(&$total_rows, &$rowspp) {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " (device.status=" . html_get_page_variable("status") . " AND device.disabled = '')";
 	}
 
-	if (get_request_var_request("template_id") == "-1") {
+	if (html_get_page_variable("template_id") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("template_id") == "0") {
+	}elseif (html_get_page_variable("template_id") == "0") {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.device_template_id=0";
-	}elseif (!empty($_REQUEST["template_id"])) {
+	}elseif (strlen(html_get_page_variable("template_id"))) {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.device_template_id=" . html_get_page_variable("template_id");
 	}
 
-	if (get_request_var_request("poller") == "-1") {
+	if (html_get_page_variable("poller") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("poller") == "0") {
+	}elseif (html_get_page_variable("poller") == "0") {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.poller_id=0";
-	}elseif (!empty($_REQUEST["poller"])) {
+	}elseif (strlen(html_get_page_variable("poller"))) {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.poller_id=" . html_get_page_variable("poller");
 	}
 
-	if (get_request_var_request("site") == "-1") {
+	if (html_get_page_variable("site") == "-1") {
 		/* Show all items */
-	}elseif (get_request_var_request("site") == "0") {
+	}elseif (html_get_page_variable("site") == "0") {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.site_id=0";
-	}elseif (!empty($_REQUEST["site"])) {
+	}elseif (strlen(html_get_page_variable("site"))) {
 		$sql_where .= (strlen($sql_where) ? " AND":"WHERE") . " device.site_id=" . html_get_page_variable("site");
 	}
 
