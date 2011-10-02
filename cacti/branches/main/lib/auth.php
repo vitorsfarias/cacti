@@ -40,14 +40,14 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 
 	/* Check get template users array */
 	$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = " . $template_realm);
-	if (! isset($user_auth)) {
+	if (!isset($user_auth["id"])) {
 		return false;
 	}
 	$template_id = $user_auth["id"];
 
 	/* Create update/insert for new/existing user */
 	$user_exist = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = " . $new_realm);
-	if (isset($user_exist)) {
+	if (isset($user_exist["id"])) {
 		if ($overwrite) {
 			/* Overwrite existing user */
 			$user_auth["id"] = $user_exist["id"];
