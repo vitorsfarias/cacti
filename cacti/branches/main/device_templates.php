@@ -578,7 +578,7 @@ function device_template_edit($tabs = false) {
 		input_validate_input_number(get_request_var("id"));
 		/* ==================================================== */
 
-		if (!empty($_REQUEST["id"])) {
+		if (!empty($_REQUEST["id"]) && $_REQUEST["id"] > 0) {
 			$device_template = db_fetch_row("select * from device_template where id=" . $_REQUEST["id"]);
 			$header_label = __("[edit: ") . $device_template["name"] . "]";
 		}else{
