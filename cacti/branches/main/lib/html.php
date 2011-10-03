@@ -94,7 +94,7 @@ function html_start_box($title, $width, $cell_padding, $align, $add_text = "", $
 								if (strpos($add_text, 'menu::') !== false) {
 										list($menu_title, $menu_id, $menu_class, $ajax_parameters) = explode(':', str_replace('menu::', '', $add_text));?>
 							<td class='textHeaderDark w1 right'>
-								<a href='#' name='<?php print $menu_title;?>' id='<?php print $menu_id;?>' class='<?php print $menu_class;?>' rel='<?php print htmlspecialchars($ajax_parameters);?>'><img src='<?php print CACTI_URL_PATH; ?>images/cog.png' id='cog' width='16' height='16' alt='cog'></a>
+								<span name='<?php print $menu_title;?>' id='<?php print $menu_id;?>' class='<?php print $menu_class;?>' rel='<?php print htmlspecialchars($ajax_parameters);?>'><img src='<?php print CACTI_URL_PATH; ?>images/cog.png' id='cog' width='16' height='16' alt='cog'></span>
 							</td><?php
 								}else {	?>
 							<td class='textHeaderDark w1 right'>
