@@ -90,7 +90,7 @@ plugin_hook('page_head');
 		<div style='float:right'>
 		<?php	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 					if(read_config_option('i18n_timezone_support') != 0) {
-						?><a href='#' id='menu_timezones' rel='<?php echo CACTI_URL_PATH; ?>'><span id='date_time_format'><strong><?php echo __date("D, " . date_time_format() . " T");?></strong></span></a><?php
+						?><span id='menu_timezones' rel='<?php echo CACTI_URL_PATH; ?>' class='cacti_dd_link'><span id='date_time_format'><strong><?php echo __date("D, " . date_time_format() . " T");?></strong></span></span><?php
 					}else {
 						?><span id='date_time_format'><strong><?php echo __date("D, " . date_time_format() . " T");?></strong></span><?php
 					}
@@ -100,7 +100,7 @@ plugin_hook('page_head');
 		</div>
 		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
-			<a href='#' id='menu_languages' rel='<?php echo CACTI_URL_PATH; ?>'><img src='<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif' alt='<?php print CACTI_COUNTRY;?>' align='top'>&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></a>
+			<span id='menu_languages' rel='<?php echo CACTI_URL_PATH; ?>' class='cacti_dd_link'><img src='<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif' alt='<?php print CACTI_COUNTRY;?>' align='top'>&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></span>
 		</div>
 		<div id='loading' style='display:none; float:right'><img src='<?php echo CACTI_URL_PATH; ?>images/load_small.gif' align='top' alt='<?php print __("loading");?>'>LOADING</div>
 		<?php }?>
@@ -118,3 +118,4 @@ plugin_hook('page_head');
 	</div>
 	<div id='content'>
 	<?php display_output_messages();
+

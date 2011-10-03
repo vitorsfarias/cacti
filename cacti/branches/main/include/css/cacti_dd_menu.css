@@ -1,4 +1,8 @@
 /* drop down menu styles */
+.cacti_dd_link{
+	cursor: pointer;
+}
+
 .cacti_dd_menu{
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	position: absolute;
