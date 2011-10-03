@@ -58,8 +58,7 @@ $(document).ready(function(){
 				html: html,
 				width: 150,
 				title: '<?php print __('Time zones');?>',
-				offsetY: 5,
-				rel: '<?php print CACTI_URL_PATH;?>'
+				offsetY: 5
 			});}
 		});
 	}
@@ -68,10 +67,11 @@ $(document).ready(function(){
 	// Ajax request for generic menus used in combination with a html_start_box
 	$('.html_start_box').click(
 		function() {
-			var menu_id = '#' + this.id;
-			var menu_title = this.name;
+			var menu_id		= '#' + $(this).attr('id');
+			var menu_title	= $(this).attr('name');
+			var menu_rel	= $(this).attr('rel');
 			$.ajax({
-					method: "get",url: "<?php print CACTI_URL_PATH; ?>layout.php?action=ajax_get_data_dd_menus&" + this.rel,
+					method: "get",url: "<?php print CACTI_URL_PATH; ?>layout.php?action=ajax_get_data_dd_menus&" + menu_rel,
 					success: function(html){
 						$(menu_id).DropDownMenu({
 						timeout: 500,
