@@ -448,7 +448,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 }
 
 /* html_header_sort - draws a header row suitable for display inside of a box element.  When
-     a user selects a column header, the collback function "filename" will be called to handle
+     a user selects a column header, the callback function "filename" will be called to handle
      the sort the column and display the altered results.
    @param $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
@@ -456,8 +456,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
    @param $sort_column - the value of current sort column.
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
-   @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = '') {
+   @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row 
+   @param $table_id - table id
+   */
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "") {
 	static $rand_id = 0;
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
@@ -525,7 +527,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @param $sort_column - the value of current sort column.
    @param $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
-   @param $form_action - the url to post the 'select all' form to */
+   @param $form_action - the url to post the 'select all' form to 
+   @param $table_id - table_id
+*/
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "") {
 	static $rand_id = 0;
 
@@ -538,10 +542,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$selected_sort_class = "sort_desc";
 	}
 
+	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
+
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
-
-	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
 
 	print "<form name='chk' method='post' action='$form_action'>\n";	# properly place form outside table
 	print "\t<table $table_id class='hover striped resizable startBoxHeader startBox3'>\n";
@@ -653,7 +657,8 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
-
+           
+	print "<form name='chk' method='post' action='$form_action'>\n";	# properly place form outside table
 	if ($resizable) {
 		$pathname = html_get_php_pathname();
 		print "\t\t<table cellpadding='0' cellspacing='1' $table_id class='hover striped resizable startBox0 $tclass'><thead><tr class='rowSubHeader $trclass'>\n";
@@ -678,7 +683,7 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 		$rand_id++;
 	}
 
-	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 lastColumn'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n<form name='chk' method='post' action='$form_action'>\n";
+	print "\t\t\t<th id='checkbox' class='textSubHeaderDark nw14 lastColumn'><input type='checkbox' style='margin: 0px;' name='all' title='Select All' onClick='selectAll(\"chk_\",this.checked)'></th>\n";
 	print "\t\t</tr></thead><tbody>\n";
 }
 
@@ -757,8 +762,12 @@ class html_table {
 				html_header_checkbox($this->table_format, "", false, $this->table_id);
 			}
 		}elseif ($this->sortable) {
+			/* html_header_sort does not define a form but we need one in case of a filtered table */
+			print "<form name='chk' method='post' action='" . basename($_SERVER["PHP_SELF"]) . "'>\n";	# properly place form outside table
 			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), 1, $this->table_id);
 		}else{
+			/* html_header does not define a form but we need one in case of a filtered table */
+			print "<form name='chk' method='post' action='" . basename($_SERVER["PHP_SELF"]) . "'>\n";	# properly place form outside table
 			html_header($this->table_format, 1, false, $this->table_id);
 		}
 
@@ -884,7 +893,7 @@ class html_table {
 			draw_actions_dropdown($this->actions);
 		}
 
-		print "</form>\n";	# end form of html_header_sort_checkbox
+		print "</form>\n";	# end form of html_header*
 	}
 }
 
