@@ -334,10 +334,11 @@ function plugins_load_temp_table() {
 }
 
 function update_show_current () {
-	global $plugins, $pluginslist, $colors, $plugin_architecture, $config, $status_names, $actions;
+	global $plugins, $pluginslist, $colors, $plugin_architecture, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -358,10 +359,12 @@ function update_show_current () {
 	/* if the user pushed the 'clear' button */
 	if (isset($_REQUEST["clear_x"])) {
 		kill_session_var("sess_plugins_filter");
+		kill_session_var("sess_plugins_rows");
 		kill_session_var("sess_plugins_sort_column");
 		kill_session_var("sess_plugins_sort_direction");
 
 		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
 		unset($_REQUEST["filter"]);
 		unset($_REQUEST["sort_column"]);
 		unset($_REQUEST["sort_direction"]);
@@ -370,11 +373,24 @@ function update_show_current () {
 
 	/* remember these search fields in session vars so we don't have to keep passing them around */
 	load_current_session_value("filter", "sess_plugins_filter", "");
+	load_current_session_value("rows", "sess_plugins_rows", "-1");
 	load_current_session_value("sort_column", "sess_plugins_sort_column", "name");
 	load_current_session_value("sort_direction", "sess_plugins_sort_direction", "ASC");
 	load_current_session_value("page", "sess_plugins_current_page", "1");
 
 	$table = plugins_load_temp_table();
+
+	?>
+	<script type="text/javascript">
+	<!--
+	function applyFilterChange(objForm) {
+		strURL = '?rows=' + objForm.rows.value;
+		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+	-->
+	</script>
+	<?php
 
 	html_start_box("<strong>Plugin Management</strong> (Cacti Version: " . $config["cacti_version"] .
 		(isset($plugin_architecture['version']) ? ", Plugin Architecture Version: " . $plugin_architecture['version']:"") .
@@ -384,7 +400,7 @@ function update_show_current () {
 	<tr bgcolor="#<?php print $colors['panel'];?>">
 		<td class="noprint">
 		<form name="form_plugins" method="get" action="plugins.php">
-			<table width="100%" cellpadding="0" cellspacing="0">
+			<table cellpadding="0" cellspacing="0">
 				<tr class="noprint">
 					<td nowrap style='white-space: nowrap;' width="50">
 						Search:&nbsp;
@@ -392,9 +408,26 @@ function update_show_current () {
 					<td width="1">
 						<input type="text" name="filter" size="40" value="<?php print get_request_var_request("filter");?>">
 					</td>
+					<td nowrap style='white-space: nowrap;' width="50">
+						&nbsp;Rows:&nbsp;
+					</td>
+					<td width="1">
+						<select name="rows" onChange="applyFilterChange(document.form_plugins)">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
 					<td nowrap style='white-space: nowrap;'>
 						&nbsp;<input type="submit" value="Go" title="Set/Refresh Filters">
-						<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+					</td>
+					<td nowrap style='white-space: nowrap;'>
+						&nbsp;<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
 					</td>
 				</tr>
 			</table>
@@ -426,6 +459,12 @@ function update_show_current () {
 		$sortd = get_request_var_request("sort_direction");
 	}
 
+	if ($_REQUEST['rows'] == '-1') {
+		$rows = read_config_option('num_rows_device');
+	}else{
+		$rows = get_request_var_request('rows');
+	}
+
 	$total_rows = db_fetch_cell("SELECT
 		count(*)
 		FROM $table
@@ -435,12 +474,12 @@ function update_show_current () {
 		FROM $table
 		$sql_where
 		ORDER BY " . $sortc . " " . $sortd . "
-		LIMIT " . (read_config_option("num_rows_device")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_device"));
+		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows);
 
 	db_execute("DROP TABLE $table");
 
 	/* generate page list */
-	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, read_config_option("num_rows_device"), $total_rows, "plugins.php?filter=" . get_request_var_request("filter"));
+	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, $rows, $total_rows, "plugins.php?filter=" . get_request_var_request("filter"));
 
 	if ($total_rows == 0) {
 		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
@@ -454,7 +493,7 @@ function update_show_current () {
 					</table>
 				</td>
 			</tr>\n";
-	}elseif ($total_rows < read_config_option("num_rows_device")) {
+	}elseif ($total_rows < $rows) {
 		$nav = "<tr bgcolor='#" . $colors["header"] . "'>
 				<td colspan='9'>
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
@@ -475,10 +514,10 @@ function update_show_current () {
 								<strong>&lt;&lt; "; if (get_request_var_request("page") > 1) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("plugins.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")-1)) . "'>"; } $nav .= "Previous"; if (get_request_var_request("page") > 1) { $nav .= "</a>"; } $nav .= "</strong>
 							</td>\n
 							<td align='center' class='textHeaderDark'>
-								Showing Rows " . ((read_config_option("num_rows_device")*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < read_config_option("num_rows_device")) || ($total_rows < (read_config_option("num_rows_device")*get_request_var_request("page")))) ? $total_rows : (read_config_option("num_rows_device")*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
+								Showing Rows " . (($rows*(get_request_var_request("page")-1))+1) . " to " . ((($total_rows < $rows) || ($total_rows < ($rows*get_request_var_request("page")))) ? $total_rows : ($rows*get_request_var_request("page"))) . " of $total_rows [$url_page_select]
 							</td>\n
 							<td align='right' class='textHeaderDark'>
-								<strong>"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("plugins.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * read_config_option("num_rows_device")) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
+								<strong>"; if ((get_request_var_request("page") * $rows) < $total_rows) { $nav .= "<a class='linkOverDark' href='" . htmlspecialchars("plugins.php?filter=" . get_request_var_request("filter") . "&page=" . (get_request_var_request("page")+1)) . "'>"; } $nav .= "Next"; if ((get_request_var_request("page") * $rows) < $total_rows) { $nav .= "</a>"; } $nav .= " &gt;&gt;</strong>
 							</td>\n
 						</tr>
 					</table>
