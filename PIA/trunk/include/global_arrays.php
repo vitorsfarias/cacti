@@ -692,7 +692,7 @@ $graph_datechar = array(
 	);
 
 $plugin_architecture = array(
-	'version' => '3.0'
+	'version' => '3.1'
 	);
 
 api_plugin_hook('config_arrays');
