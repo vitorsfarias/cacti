@@ -1315,7 +1315,28 @@ function strip_quotes($result) {
  * @param $hexstr - the string to test
  * @param 1 if the argument is hex, 0 otherwise, and FALSE on error */
 function is_hexadecimal($hexstr) {
-	return preg_match('/^[a-fA-F0-9: \t]*$/', $hexstr);
+	$hexstr = trim($hexstr);
+	$i      = 0;
+	$length = strlen($hexstr);
+	while ($i < $length) {
+		$part = substr($hexstr,$i,2);
+		$i += 2;
+
+		if (!preg_match('/[a-fA-F0-9]/', $part)) {
+			return false;
+		} elseif ($i < $length) {
+			if (substr($hexstr,$i,1) != ":") {
+				return false;
+			}elseif ($i + 1 == $length) {
+				return false;
+			}
+			$i++;
+		}else{
+			$i++;
+		}
+	}
+
+	return true;
 }
 
 /**
