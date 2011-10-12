@@ -57,10 +57,14 @@ function form_save() {
 		while (list($field_name, $field_array) = each($tab_fields)) {
 			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-					db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', '" . (isset($_POST[$sub_field_name]) ? $_POST[$sub_field_name] : "") . "')");
+					if (isset($_POST[$sub_field_name])) {
+						$value = qstr(get_request_var_post($sub_field_name));
+						db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$sub_field_name', $value)");
+					}
 				}
-			}else{
-				db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', '" . (isset($_POST[$field_name]) ? $_POST[$field_name] : "") . "')");
+			}elseif (isset($_POST[$field_name])) {
+				$value = qstr(get_request_var_post($field_name));
+				db_execute("replace into settings_graphs (user_id,name,value) values (" . $_SESSION["sess_user_id"] . ",'$field_name', $value)");
 			}
 		}
 	}
