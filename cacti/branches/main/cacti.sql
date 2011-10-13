@@ -2100,21 +2100,19 @@ CREATE TABLE graph_tree_items (
   title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
   site_id mediumint(8) unsigned NOT NULL default '0',
   device_id mediumint(8) unsigned NOT NULL default '0',
-  order_key varchar(100) NOT NULL default '0',
   device_grouping_type tinyint(3) unsigned NOT NULL default '1',
   sort_children_type tinyint(3) unsigned NOT NULL default '1',
   PRIMARY KEY  (id),
   KEY graph_tree_id (graph_tree_id),
   KEY device_id (device_id),
-  KEY local_graph_id (local_graph_id),
-  KEY order_key (order_key)
+  KEY local_graph_id (local_graph_id)
 ) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `graph_tree_items`
 --
 
-INSERT INTO graph_tree_items VALUES (7,0,1,0,0,'',1,'001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',1,1);
+INSERT INTO graph_tree_items VALUES (7,0,1,0,0,'',0,1,1,1);
 
 --
 -- Table structure for table `device`
