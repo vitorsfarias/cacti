@@ -2098,6 +2098,7 @@ CREATE TABLE graph_tree_items (
   local_graph_id mediumint(8) unsigned NOT NULL default '0',
   rra_id smallint(8) unsigned NOT NULL default '0',
   title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
+  site_id mediumint(8) unsigned NOT NULL default '0',
   device_id mediumint(8) unsigned NOT NULL default '0',
   order_key varchar(100) NOT NULL default '0',
   device_grouping_type tinyint(3) unsigned NOT NULL default '1',
