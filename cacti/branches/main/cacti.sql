@@ -2092,19 +2092,31 @@ INSERT INTO graph_tree VALUES (1,0,1,'Default Tree');
 --
 
 CREATE TABLE graph_tree_items (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  parent_id mediumint(8) unsigned NOT NULL DEFAULT '0',
-  graph_tree_id smallint(5) unsigned NOT NULL default '0',
-  local_graph_id mediumint(8) unsigned NOT NULL default '0',
-  rra_id smallint(8) unsigned NOT NULL default '0',
-  title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
-  site_id mediumint(8) unsigned NOT NULL default '0',
-  device_id mediumint(8) unsigned NOT NULL default '0',
-  device_grouping_type tinyint(3) unsigned NOT NULL default '1',
-  sort_children_type tinyint(3) unsigned NOT NULL default '1',
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `parent_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `position` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `level` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `left` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `right` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `graph_tree_id` smallint(5) unsigned NOT NULL default '0',
+  `local_graph_id` mediumint(8) unsigned NOT NULL default '0',
+  `rra_id` smallint(8) unsigned NOT NULL default '0',
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
+  `site_id` smallint(8) unsigned NOT NULL default '0',
+  `device_id` mediumint(8) unsigned NOT NULL default '0',
+  `device_grouping_type` tinyint(3) unsigned NOT NULL default '1',
+  `sort_children_type` tinyint(3) unsigned NOT NULL default '1',
+  `plugin_name` varchar(12) NOT NULL default '',
+  `plugin_value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY graph_tree_id (graph_tree_id),
   KEY device_id (device_id),
+  KEY `level` (`level`),
+  KEY `position` (`position`),
+  KEY `left` (`left`),
+  KEY `right` (`right`),
+  KEY site_id (site_id),
+  KEY plugin_name (plugin_name),
   KEY local_graph_id (local_graph_id)
 ) ENGINE=MyISAM;
 
@@ -2112,7 +2124,7 @@ CREATE TABLE graph_tree_items (
 -- Dumping data for table `graph_tree_items`
 --
 
-INSERT INTO graph_tree_items VALUES (7,0,1,0,0,'',0,1,1,1);
+INSERT INTO graph_tree_items VALUES (7,0,1,0,0,'',0, 1,1,1);
 
 --
 -- Table structure for table `device`

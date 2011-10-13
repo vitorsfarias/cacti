@@ -487,8 +487,14 @@ function upgrade_to_0_8_8() {
 
 	/* upgrade to the graph tree items */
 	unset($columns);
-	$columns[] = array('name' => 'parent_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
-	$columns[] = array('name' => 'site_id', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'title');
+	$columns[] = array('name' => 'parent_id', 'type' => 'bigint(20)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'id');
+	$columns[] = array('name' => 'position', 'type' => 'bigint(20)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'parent_id');
+	$columns[] = array('name' => 'level', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'position');
+	$columns[] = array('name' => 'left', 'type' => 'bigint(20)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'level');
+	$columns[] = array('name' => 'right', 'type' => 'bigint(20)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'right');
+	$columns[] = array('name' => 'site_id', 'type' => 'smallint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'title');
+	$columns[] = array('name' => 'plugin_name', 'type' => 'varchar(12)', 'NULL' => false, 'default' => '', 'after' => 'sort_children_type');
+	$columns[] = array('name' => 'plugin_value', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'plugin_name');
 	plugin_upgrade_columns('0.8.8', 'graph_tree_items', $columns, $show_output, $no_drop_items);
 
 	/* add the poller id for devices to allow for multiple pollers */
@@ -616,8 +622,13 @@ function upgrade_to_0_8_8() {
 	$key[] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
 	$key[] = array('name' => 'graph_tree_id', 'columns' => 'graph_tree_id');
 	$key[] = array('name' => 'device_id', 'columns' => 'device_id');
+	$key[] = array('name' => 'site_id', 'columns' => 'site_id');
 	$key[] = array('name' => 'local_graph_id', 'columns' => 'local_graph_id');
-	$key[] = array('name' => 'order_key', 'columns' => 'order_key');
+	$key[] = array('name' => 'position', 'columns' => 'position');
+	$key[] = array('name' => 'level', 'columns' => 'level');
+	$key[] = array('name' => 'left', 'columns' => 'left');
+	$key[] = array('name' => 'right', 'columns' => 'right');
+	$key[] = array('name' => 'plugin_name', 'columns' => 'plugin_name');
 	plugin_upgrade_keys('0.8.8', 'graph_tree_items', $key, $show_output, $drop_items);
 
 	unset($key);
@@ -747,6 +758,7 @@ function upgrade_to_0_8_8() {
 
 	/* get all nodes whose parent_id is not 0 */
 	$tree_items = db_fetch_assoc("SELECT * FROM graph_tree_items WHERE order_key NOT LIKE '___000%'");
+	$sort_types = array_rekey(db_fetch_assoc("SELECT id, sort_type FROM graph_trees"), "id", "sort_type");
 	if (sizeof($tree_items)) {
 		foreach($tree_items AS $item) {
 			$translated_key = rtrim($item["order_key"], "0\r\n");
@@ -758,7 +770,9 @@ function upgrade_to_0_8_8() {
 			$parent_key     = substr($translated_key, 0, $parent_key_len);
 			$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
 			if ($parent_id != "") {
-				db_execute("UPDATE graph_tree_items SET parent_id=$parent_id WHERE id=" . $item["id"]);
+				/* get order */
+				$position = db_fetch_cell("SELECT MAX(position) FROM graph_tree_items WHERE tree_id=" . $item['tree_id'] . " AND parent_id=" . $parent_id) + 1;
+				db_execute("UPDATE graph_tree_items SET parent_id=$parent_id, position=$position WHERE id=" . $item["id"]);
 			}else{
 				cacti_log("Some error occurred processing children", false);
 			}
