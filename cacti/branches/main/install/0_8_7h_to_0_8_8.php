@@ -748,22 +748,23 @@ function upgrade_to_0_8_8() {
 	/* get all nodes whose parent_id is not 0 */
 	$tree_items = db_fetch_assoc("SELECT * FROM graph_tree_items WHERE order_key NOT LIKE '___000%'");
 	if (sizeof($tree_items)) {
-	foreach($tree_items AS $item) {
-		$translated_key = rtrim($item["order_key"], "0\r\n");
-		$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
-		if ($missing_len > 0) {
-			$translated_key .= substr("000", 0, $missing_len);
-		}
-		$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
-		$parent_key     = substr($translated_key, 0, $parent_key_len);
-		$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
-		if ($parent_id != "") {
-			db_execute("UPDATE graph_tree_items SET parent_id=$parent_id WHERE id=" . $item["id"]);
-		}else{
-			cacti_log("Some error occurred processing children", false);
+		foreach($tree_items AS $item) {
+			$translated_key = rtrim($item["order_key"], "0\r\n");
+			$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+			if ($missing_len > 0) {
+				$translated_key .= substr("000", 0, $missing_len);
+			}
+			$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
+			$parent_key     = substr($translated_key, 0, $parent_key_len);
+			$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
+			if ($parent_id != "") {
+				db_execute("UPDATE graph_tree_items SET parent_id=$parent_id WHERE id=" . $item["id"]);
+			}else{
+				cacti_log("Some error occurred processing children", false);
+			}
 		}
 	}
-	}
+	db_install_execute("0.8.8", "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 
 	/* insert the default poller into the database */
 	db_install_execute("0.8.8", "REPLACE INTO `poller` VALUES (1,'','Main Poller','localhost',0,0,0,0,'0000-00-00 00:00:00');");
