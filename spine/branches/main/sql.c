@@ -71,6 +71,18 @@ int db_insert(MYSQL *mysql, const char *query) {
 					}
 
 					continue;
+				}else if (error == 2006) {
+					SPINE_LOG(("WARNING: SQL Failed! Error:'%i', Message:'%s', Attempting to Reconnect", error, mysql_error(mysql)));
+					db_disconnect(mysql);
+					usleep(50000);
+					db_connect(set.dbdb, mysql);
+					error_count++;
+
+					if (error_count > 30) {
+						die("FATAL: Too many Reconnect Attempts!\n");
+					}
+
+					continue;
 				}else{
 					SPINE_LOG(("ERROR: SQL Failed! Error:'%i', Message:'%s', SQL Fragment:'%s'", error, mysql_error(mysql), query_frag));
 					return FALSE;
@@ -120,6 +132,18 @@ MYSQL_RES *db_query(MYSQL *mysql, const char *query) {
 
 				if (error_count > 30) {
 					die("FATAL: Too many Lock/Deadlock errors occurred!, SQL Fragment:'%s'\n", query_frag);
+				}
+
+				continue;
+			}else if (error == 2006) {
+				SPINE_LOG(("WARNING: SQL Failed! Error:'%i', Message:'%s', Attempting to Reconnect", error, mysql_error(mysql)));
+				db_disconnect(mysql);
+				usleep(50000);
+				db_connect(set.dbdb, mysql);
+				error_count++;
+
+				if (error_count > 30) {
+					die("FATAL: Too many Reconnect Attempts!\n");
 				}
 
 				continue;
