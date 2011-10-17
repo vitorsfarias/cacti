@@ -42,6 +42,9 @@ $overwrite = FALSE;
 $oldrrd    = "";
 $newrrd    = "";
 $finrrd    = "";
+$time      = time();
+
+global $debug;
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -82,7 +85,7 @@ foreach($parms as $parameter) {
 	case "--finrrd":
 		$finrrd = $value;
 
-		if (!is_writable($finrrd)) {
+		if (!is_writable(dirname($finrrd)) || (file_exists($finrrd) && !is_writable($finrrd))) {
 			echo "FATAL: File '$finrrd' is not writable by this account.\n";
 			exit(-8);
 		}
@@ -164,18 +167,23 @@ $seed = mt_rand();
 if (substr_count(PHP_OS, "WIN")) {
 	$tempdir  = getenv("TEMP");
 	$oldxmlfile = $tempdir . "/" . str_replace(".rrd", "", basename($oldrrd)) . ".dump." . $seed;
+	$seed++;
 	$newxmlfile = $tempdir . "/" . str_replace(".rrd", "", basename($newrrd)) . ".dump." . $seed;
 }else{
 	$tempdir = "/tmp";
 	$oldxmlfile = "/tmp/" . str_replace(".rrd", "", basename($oldrrd)) . ".dump." . $seed;
+	$seed++;
 	$newxmlfile = "/tmp/" . str_replace(".rrd", "", basename($newrrd)) . ".dump." . $seed;
 }
-$finrrd = dirname($newrrd) . "/" . basename($newrrd) . ".new";
+
+if ($finrrd == '') {
+	$finrrd = dirname($newrrd) . "/" . basename($newrrd) . ".new";
+}
 
 /* execute the dump command */
-echo "NOTE: Creating XML file '$oldxmlfile' from '$oldrrd'\n";
+debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
 shell_exec("rrdtool dump $oldrrd > $oldxmlfile");
-echo "NOTE: Creating XML file '$newxmlfile' from '$newrrd'\n";
+debug("Creating XML file '$newxmlfile' from '$newrrd'");
 shell_exec("rrdtool dump $newrrd > $newxmlfile");
 
 /* read the xml files into arrays */
@@ -185,7 +193,7 @@ if (file_exists($oldxmlfile)) {
 	/* remove the temp file */
 	unlink($oldxmlfile);
 }else{
-	echo "FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!\n";
+	echo "FATAL: RRDtool Command Failed on '$oldrrd'.  Please insure your RRDtool install is valid!\n";
 	exit(-12);
 }
 
@@ -195,30 +203,44 @@ if (file_exists($newxmlfile)) {
 	/* remove the temp file */
 	unlink($newxmlfile);
 }else{
-	echo "FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!\n";
+	echo "FATAL: RRDtool Command Failed on '$newrrd'.  Please insure your RRDtool install is valid!\n";
 	exit(-12);
 }
 
+echo "NOTE: RRDfile will be written to '$finrrd'\n";
+
 /* process the xml file and remove all comments */
+debug("Reading XML From '$oldrrd'");
 $old_output = preProcessXML($old_output);
 $old_rrd    = processXML($old_output);
+
+debug("Reading XML From '$newrrd'");
 $new_output = preProcessXML($new_output);
 $new_rrd    = processXML($new_output);
 
 #print_r($old_rrd);
 #print_r($new_rrd);
 
+debug("Splicing RRDfiles");
 spliceRRDs($new_rrd, $old_rrd);
+
+debug("Re-Creating XML File");
 $new_xml = recreateXML($new_rrd);
+
+debug("Writing XML File to Disk");
 file_put_contents($newxmlfile, $new_xml);
 
 /* finally update the file XML file and Reprocess the RRDfile */
 if (!$dryrun) {
+	debug("Creating New RRDfile");
 	createRRDFileFromXML($newxmlfile, $finrrd);
 }
 
 /* remove the temp file */
 unlink($newxmlfile);
+
+/* change ownership */
+chown($finrrd, "apache");
 
 memoryUsage();
 
@@ -380,14 +402,18 @@ function recreateXML($new_rrd) {
 }
 
 function memoryUsage() {
+	global $time;
+
 	$mem_usage = memory_get_usage(true);
 
 	if ($mem_usage < 1024)
-		echo $mem_usage . " B\n";
+		$memstr = $mem_usage . " B";
 	elseif ($mem_usage < 1048576)
-		echo round($mem_usage/1024,2) . " KB\n";
+		$memstr = round($mem_usage/1024,2) . " KB";
 	else
-		echo round($mem_usage/1048576,2) . " MB\n";
+		$memstr = round($mem_usage/1048576,2) . " MB";
+
+	echo "NOTE: Time:" . (time()-$time) . ", RUsage:" . $memstr . "\n";
 }
 
 function processXML($output) {
