@@ -1631,6 +1631,7 @@ function get_graph_title($local_graph_id) {
 		and graph_local.id=$local_graph_id");
 
 	if ((strstr($graph["title"], "|")) && (!empty($graph["device_id"]))) {
+		$graph["title"] = substitute_data_input_data($graph["title"], $graph, 0);
 		return expand_title($graph["device_id"], $graph["snmp_query_id"], $graph["snmp_index"], $graph["title"]);
 	}else{
 		return $graph["title"];
@@ -2843,28 +2844,28 @@ function print_debug($message) {
  * @return array		array of all files found
  */
 function search_dir_recursive($dir, $debug=false) {
-	if ($debug) cacti_log(__FUNCTION__ . " scanning dir: $dir");	
+	if ($debug) cacti_log(__FUNCTION__ . " scanning dir: $dir");
 	$entries = array();
-	
+
 	/* verify this is a directory */
 	if (!is_dir($dir)) return $entries;
 
 	/* get list of all inodes in this directory */
 	$handle = opendir($dir);
 	while (false !== ($direntry = readdir($handle))) {
-		if ($debug) cacti_log("entry found: $direntry");	
+		if ($debug) cacti_log("entry found: $direntry");
 		if ($direntry == "." || $direntry == "..") continue;
 		$entry = $dir . "/" . $direntry;
 		if (is_dir($entry)) {
-			$entries = array_merge($entries, search_dir_recursive($entry, $debug));			
+			$entries = array_merge($entries, search_dir_recursive($entry, $debug));
 		} else {
 			$entries[] = $entry;
 		}
 	}
 	closedir($handle);
 	return $entries;
-}	
-	
+}
+
 /**
  * search array of files for given filetypes using the "file" command
  * @param array $files 		array of files to be searched
@@ -2873,27 +2874,27 @@ function search_dir_recursive($dir, $debug=false) {
  * @return array			array of matching files
  */
 function search_filetype($files, $file_types, $debug=false) {
-	
+
 	$entries = array();
 	/* if no files, return */
 	if (sizeof($files) === 0 || !sizeof($file_types)) return $entries;
-	
+
 	/* scan all entries */
 	foreach ($files as $entry) {
-		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");	
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");
 		if(is_file($entry)) {
 			/* verify file type or extension */
-			
+
 			/* do we have a "file" command and want to check the result of it? */
 #			if (function_exists('is_executable') && (is_executable("file"))) {
 				/* get file type file "file" command */
 				$filetype_found = trim(shell_exec("file $entry"));
-				if ($debug) cacti_log("filetype found: $filetype_found");	
+				if ($debug) cacti_log("filetype found: $filetype_found");
 				foreach($file_types as $file_type) {
 					/* if $file_type is part of result from "file" command */
 					if (strpos($filetype_found, $file_type)) {
-						$entries[] = $entry;	
-						if ($debug) cacti_log("filetype match: $file_type");	
+						$entries[] = $entry;
+						if ($debug) cacti_log("filetype match: $file_type");
 					}
 				}
 #			}
@@ -2902,7 +2903,7 @@ function search_filetype($files, $file_types, $debug=false) {
 	return $entries;
 }
 
-	
+
 /**
  * search array of files for given file "extensions"
  * @param array $files 				array of files to be searched
@@ -2911,21 +2912,21 @@ function search_filetype($files, $file_types, $debug=false) {
  * @return array					array of matching files
  */
 function search_fileext($files, $file_extensions, $debug=false) {
-	
+
 	$matching_entries = array();
 	/* if no files, return */
 	if (sizeof($files) === 0 || !sizeof($file_extensions)) return $matching_entries;
-	
+
 	/* scan all entries */
 	foreach ($files as $entry) {
-		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");	
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");
 		if(is_file($entry)) {
 			/* scan all given extensions */
 			foreach($file_extensions as $extension) {
 				/* if filename ends in ".$extension", it's a match */
 				if (preg_match("/\." . $extension . "\$/", $entry)) {
-					$matching_entries[] = $entry;	
-					if ($debug) cacti_log("fileext match: $extension");	
+					$matching_entries[] = $entry;
+					if ($debug) cacti_log("fileext match: $extension");
 				}
 			}
 		}
