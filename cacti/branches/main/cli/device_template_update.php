@@ -58,6 +58,7 @@ foreach($parms as $parameter) {
 
 	switch ($arg) {
 	case "--device-template":
+	case "--device-template-id":
 		$template = $value;
 		break;
 	case "--device-id":
@@ -67,17 +68,12 @@ foreach($parms as $parameter) {
 		displayHostTemplates(getHostTemplates());
 		exit(0);
 	case "-d":
+	case "--debug":
 		$debug = TRUE;
 		break;
 	case "-h":
-		display_help($me);
-		exit;
 	case "-v":
-		display_help($me);
-		exit;
 	case "--version":
-		display_help($me);
-		exit;
 	case "--help":
 		display_help($me);
 		exit;
@@ -152,11 +148,11 @@ if (db_fetch_cell("SELECT id FROM device_template WHERE id=$template") > 0) {
 /*	display_help - displays the usage of the function */
 function display_help($me) {
 	echo "Cacti Device Template Update Script 1.0" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
-	echo __("usage: ") . $me . " -device-id=[device-id|All] [--device-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
+	echo __("usage: ") . $me . " --device-id=[device-id|All] [--device-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
 	echo "   --device-id        " . __("the numerical ID of the device") . "\n";
 	echo "   --device-template  " . __("The Device Template to Refresh") . "\n\n";
 	echo __("Optional:") . "\n";
-	echo "   -d                      " . __("Display verbose output during execution") . "\n";
+	echo "   -d | --debug            " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version            " . __("Display this help message") . "\n";
 	echo "   -h --help               " . __("Display this help message") . "\n";
 	echo __("List Options:") . "\n\n";
