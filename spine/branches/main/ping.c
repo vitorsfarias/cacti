@@ -164,9 +164,7 @@ int ping_snmp(device_t *device, ping_t *ping) {
 	if (device->snmp_session) {
 		if ((strlen(device->snmp_community) != 0) || (device->snmp_version == 3)) {
 			/* by default, we look at sysUptime */
-			if (device->availability_method == AVAIL_SNMP_GET_UPTIME) {
-				oid = strdup(".1.3.6.1.2.1.1.3.0");
-			}else if (device->availability_method == AVAIL_SNMP_GET_NEXT) {
+			if (device->availability_method == AVAIL_SNMP_GET_NEXT) {
 				oid = strdup(".1.3");
 			}else if (device->availability_method == AVAIL_SNMP_GET_SYSDESC) {
 				oid = strdup(".1.3.6.1.2.1.1.1.0");
@@ -194,8 +192,6 @@ int ping_snmp(device_t *device, ping_t *ping) {
 
 			/* do positive test cases first */
 			if (device->snmp_status == SNMPERR_UNKNOWN_OBJID) {
-
-			if ((strlen(poll_result) == 0) || IS_UNDEFINED(poll_result)) {
 				snprintf(ping->snmp_response, SMALL_BUFSIZE, "Device responded to SNMP");
 				snprintf(ping->snmp_status, 50, "%.5f", total_time);
 				free(poll_result);
