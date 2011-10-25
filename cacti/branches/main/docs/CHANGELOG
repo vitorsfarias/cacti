@@ -68,6 +68,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001995: $_SERVER["REQUEST_URI"] not properly escaped in graph_view.php for preview mode 
 -bug#0002005: Saving Script Server or Script Data Input Method Results in SQL Error
 -bug#0002027: Technical Support columns too small
+-bug#0002040: ICMP ping errors for Win7 & PHP 5.3
 -bug#0002060: NAN values in hdd utilisation graphs (Poller Output Table not Empty)
 -bug#0002062: Multiple security vunerbilities
 -bug#0002063: multiple value poller output incorrectly interpreted as hexadecimal value
