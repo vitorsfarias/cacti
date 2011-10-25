@@ -560,6 +560,13 @@ function graph_perms_edit() {
 
 		$header_label = __("[edit: ") . db_fetch_cell("SELECT username FROM user_auth WHERE id = " . get_request_var("id")) . "]";
 	}else{
+		$policy = array(
+			'policy_graphs'  => '1',
+			'policy_trees'   => '1',
+			'policy_devices' => '1',
+			'policy_graph_templates' => '1'
+		);
+
 		$header_label = __("[new]");
 	}
 
@@ -968,7 +975,7 @@ function user_edit($tabs = false) {
 			$user = array();
 			$header_label = __("[new]");
 		}
-	
+
 		plugin_hook_function('user_admin_edit', (isset($user) ? get_request_var("id") : 0));
 
 		print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='user_edit'>\n";
@@ -1010,7 +1017,7 @@ function user_edit($tabs = false) {
 			foreach (array_keys($user_tabs) as $tab_short_name) {
 				print "<li><a id='tabs-$i' href='" . htmlspecialchars("user_admin.php?action=$tab_short_name&tab=" . $tab_short_name . "&id=" . get_request_var("id")) . "'>" . $user_tabs[$tab_short_name]["name"] . "</a></li>";
 				$i++;
-	
+
 				if (empty($_GET["id"])) break;
 			}
 			print "</ul>";
