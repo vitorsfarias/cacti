@@ -80,6 +80,9 @@ int ping_device(device_t *device, ping_t *ping) {
 
 	/* snmp test */
 	if ((device->availability_method == AVAIL_SNMP) ||
+		(device->availability_method == AVAIL_SNMP_GET_UPTIME) ||
+		(device->availability_method == AVAIL_SNMP_GET_SYSDESC) ||
+		(device->availability_method == AVAIL_SNMP_GET_NEXT) ||
 		(device->availability_method == AVAIL_SNMP_AND_PING) ||
 		((device->availability_method == AVAIL_SNMP_OR_PING) && (ping_result != DEVICE_UP))) {
 		snmp_result = ping_snmp(device, ping);
@@ -119,6 +122,9 @@ int ping_device(device_t *device, ping_t *ping) {
 				return DEVICE_DOWN;
 			}
 		case AVAIL_SNMP:
+		case AVAIL_SNMP_GET_NEXT:
+		case AVAIL_SNMP_GET_UPTIME:
+		case AVAIL_SNMP_GET_SYSDESC:
 			if (snmp_result == DEVICE_UP) {
 				return DEVICE_UP;
 			}else{
@@ -158,20 +164,26 @@ int ping_snmp(device_t *device, ping_t *ping) {
 	if (device->snmp_session) {
 		if ((strlen(device->snmp_community) != 0) || (device->snmp_version == 3)) {
 			/* by default, we look at sysUptime */
-			if ((oid = strdup(".1.3")) == NULL) {
-				die("ERROR: malloc(): strdup() oid ping.c failed");
+			if (device->availability_method == AVAIL_SNMP_GET_UPTIME) {
+				oid = strdup(".1.3.6.1.2.1.1.3.0");
+			}else if (device->availability_method == AVAIL_SNMP_GET_NEXT) {
+				oid = strdup(".1.3");
+			}else if (device->availability_method == AVAIL_SNMP_GET_SYSDESC) {
+				oid = strdup(".1.3.6.1.2.1.1.1.0");
+			}else {
+				oid = strdup(".1.3.6.1.2.1.1.3.0");
 			}
 
+			if (oid == NULL) die("ERROR: malloc(): strdup() oid ping.c failed");
+
 			/* record start time */
-			retry:
 			begin_time = get_time_as_double();
 
-			if (num_oids_checked == 0) {
+			if (device->availability_method == AVAIL_SNMP_GET_NEXT) {
 				poll_result = snmp_getnext(device, oid);
 			} else {
 				poll_result = snmp_get(device, oid);
 			}
-
 
 			/* record end time */
 			end_time = get_time_as_double();
@@ -180,28 +192,19 @@ int ping_snmp(device_t *device, ping_t *ping) {
 
 			total_time = (end_time - begin_time) * one_thousand;
 
-			if ((strlen(poll_result) == 0) || IS_UNDEFINED(poll_result)) {
-				if (num_oids_checked <= 1) {
-					if (num_oids_checked == 0) {
-						/* use sysUptime as a backup if the generic OID fails */
-						if ((oid = strdup(".1.3.6.1.2.1.1.3.0")) == NULL) {
-							die("ERROR: malloc(): strdup() oid ping.c failed");
-						}
-					}else{
-						/* use sysDescription as a backup if sysUptime fails */
-						if ((oid = strdup(".1.3.6.1.2.1.1.1.0")) == NULL) {
-							die("ERROR: malloc(): strdup() oid ping.c failed");
-						}
-					}
+			/* do positive test cases first */
+			if (device->snmp_status == SNMPERR_UNKNOWN_OBJID) {
 
-					free(poll_result);
-					num_oids_checked++;
-					goto retry;
-				}else{
-					snprintf(ping->snmp_response, SMALL_BUFSIZE, "Device did not respond to SNMP");
-					free(poll_result);
-					return DEVICE_DOWN;
-				}
+			if ((strlen(poll_result) == 0) || IS_UNDEFINED(poll_result)) {
+				snprintf(ping->snmp_response, SMALL_BUFSIZE, "Device responded to SNMP");
+				snprintf(ping->snmp_status, 50, "%.5f", total_time);
+				free(poll_result);
+				return DEVICE_UP;
+			}else if (device->snmp_status != SNMPERR_SUCCESS) {
+				SPINE_LOG_MEDIUM(("Host[%i] SNMP Ping Error: %s", device->id, snmp_api_errstring(device->snmp_status)));
+				snprintf(ping->snmp_response, SMALL_BUFSIZE, "Device did not respond to SNMP");
+				free(poll_result);
+				return DEVICE_DOWN;
 			}else{
 				snprintf(ping->snmp_response, SMALL_BUFSIZE, "Device responded to SNMP");
 				snprintf(ping->snmp_status, 50, "%.5f", total_time);
