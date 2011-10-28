@@ -80,7 +80,6 @@ int ping_device(device_t *device, ping_t *ping) {
 
 	/* snmp test */
 	if ((device->availability_method == AVAIL_SNMP) ||
-		(device->availability_method == AVAIL_SNMP_GET_UPTIME) ||
 		(device->availability_method == AVAIL_SNMP_GET_SYSDESC) ||
 		(device->availability_method == AVAIL_SNMP_GET_NEXT) ||
 		(device->availability_method == AVAIL_SNMP_AND_PING) ||
@@ -123,7 +122,6 @@ int ping_device(device_t *device, ping_t *ping) {
 			}
 		case AVAIL_SNMP:
 		case AVAIL_SNMP_GET_NEXT:
-		case AVAIL_SNMP_GET_UPTIME:
 		case AVAIL_SNMP_GET_SYSDESC:
 			if (snmp_result == DEVICE_UP) {
 				return DEVICE_UP;
