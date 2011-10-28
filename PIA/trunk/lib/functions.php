@@ -313,24 +313,28 @@ function display_output_messages() {
 
 		if (is_array($_SESSION["sess_messages"])) {
 			foreach (array_keys($_SESSION["sess_messages"]) as $current_message_id) {
-				eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
+				if (isset($messages[$current_message_id]["message"])) {
+					eval ('$message = "' . $messages[$current_message_id]["message"] . '";');
 
-				switch ($messages[$current_message_id]["type"]) {
-				case 'info':
-					if ($error_message == false) {
-						print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
-						print "$message";
+					switch ($messages[$current_message_id]["type"]) {
+					case 'info':
+						if ($error_message == false) {
+							print "<div id='message' class='textInfo' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+							print "$message";
+							print "</div>";
+
+							/* we don't need these if there are no error messages */
+							kill_session_var("sess_field_values");
+						}
+						break;
+					case 'error':
+						print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
+						print "Error: $message";
 						print "</div>";
-
-						/* we don't need these if there are no error messages */
-						kill_session_var("sess_field_values");
+						break;
 					}
-					break;
-				case 'error':
-					print "<div id='message' class='textError' style='margin-bottom:5px;padding:5px;background-color:#FFFFFF;border:1px solid #BBBBBB;max-width:100%;position:relative;'>";
-					print "Error: $message";
-					print "</div>";
-					break;
+				}else{
+					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, "WEBUI");
 				}
 			}
 		}else{
