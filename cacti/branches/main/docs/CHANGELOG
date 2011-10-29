@@ -77,6 +77,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0002079: Using input field of a script in graph title doesn't work 
 -bug#0002080: Database password containing "@" does not connect
 -bug#0002083: When adding a new users, apache generates errors
+-bug#0002084: Incorrect normalisation of hrStorageTable values over 2^31
 -bug: Update host template cli script help shows incorrect options
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
