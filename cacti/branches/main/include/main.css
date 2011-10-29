@@ -596,13 +596,13 @@ th a {
 
 .saveBoxAction {
 	width: 100%;
-	background-color: #ffffff;
-	border: 1px solid #ffffff;
+	background-color: #e7e9f2;   /* use color scheme from table (rowAlternate3) */
+	border: 1px solid #e7e9f2;   /* use color scheme from table (rowAlternate3) */
 	text-align: center;
 }
 
 .saveBoxAction td {
-	background-color: #ffffff;
+	background-color: #e7e9f2;   /* use color scheme from table (rowAlternate3) */
 	text-align: right;
 }
 
