@@ -689,22 +689,69 @@ function html_header_checkbox($header_items, $form_action = "", $resizable = fal
 
 class html_table {
 	public function html_table() {
-		$this->resizable      = true;
-		$this->checkbox       = false;
-		$this->sortable       = true;
-		$this->refresh        = true;
-		$this->rows           = array();
-		$this->table_format   = array();
-		$this->total_rows     = 0;
-		$this->rows_per_page  = -1;
-		$this->key_field      = "id";
-		$this->href           = "";
-		$this->actions        = array();
-		$this->page_vars      = array();
-		$this->filter_func    = "";
-		$this->filter_html    = "";
-		$this->session_prefix = "";
-		$this->table_id       = "";
+		$this->resizable      = true;		# are columns resizable?
+		$this->checkbox       = false;		# shall we provide a checkbox for each table row
+		$this->sortable       = true;		# are columns sortable by clicking the column header (ASC, DESC)
+		$this->refresh        = true;		# a filter is provided, so use it
+		$this->rows           = array();	# rows to be provided to the table; array must match layout of table_format below
+		$this->table_format   = array();	# array of parameters to define the table format/layout, like
+											/*
+
+											$table->table_format = array(
+												"name" 		=> array(
+													"name" 	=> __("Rule Title"),
+													"order" => "ASC",
+													"filter" => true,
+													"link" => true,
+													"href_suffix" => "#ui-tabs-1",	# always jump to "general" tab from list
+												),
+												"id"		=> array(
+													"name"	=> __("Rule Id"),
+													"order" => "ASC"
+												),
+												....
+												"enabled"	=> array(
+													"name"	=> __("Enabled"),
+													"order"	=> "ASC",
+													"function" => "display_graph_rules_status",
+													"params" => array("enabled")
+												)
+											);
+											 *
+											 *	each element denotes a table column and is build again as an array, like
+											 *	array (
+											 *		"name"		=> columns name
+											 *		"order"		=> default sort order: ASC or DESC
+											 *		"filter"	=> column data should be highlighted in case a filter matches the content
+											 *		"link"		=> column shall carry a href to this prefix, appended by
+											 *						&id=<key field>
+											 *		"href_suffix" => suffix to be used for any href; e.g. to jump to first tab (#ui_tabs-1)
+											 *		"function"	=> callback to build html content for a specific column (e.g. colorized status)
+											 *		"params"	=> array of parameters denoting those array elements, that shall be passed
+											 *						to the "function"
+											 *	)
+											 */
+		$this->total_rows     = 0;			# total number of rows
+		$this->rows_per_page  = -1;			# how many rows per page shall be drawn
+		$this->key_field      = "id";		# the key field, e.g. used for edit href's to provide this key field to the edit url
+		$this->href           = "";			# a table-wide prefix to create a href e.g. for edit function
+		$this->actions        = array();	# you may provide actions to be drawn at bottom of table as a dropdown
+		$this->page_vars      = array();	# array of page variables, like
+											/*
+
+											$table->page_variables = array(
+												"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+												"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+												"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+												"sort_column"    => array("type" => "string",  "method" => "request", "default" => "name"),
+												"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+											);
+
+											 */
+		$this->filter_func    = "";			# a string that denotes the function to be called to create the filter html
+		$this->filter_html    = "";			# static filter html, use either this or the filter_func 
+		$this->session_prefix = "";			# prefix for session variables to be stored in a cookie
+		$this->table_id       = "";			# id of table to be used for JS/jQuery manipulation
 	}
 
 	function process_page_variables() {
@@ -814,10 +861,12 @@ class html_table {
 							$checkbox_title = $row[$column];
 						}
 						if ( isset( $data["href"] ) ) {
-							$text = "<a class='linkEditMain' href='" . htmlspecialchars($data["href"] . "&id=" . $row[$this->key_field]) . "'>";
+							$url = $data["href"] . "&id=" . $row[$this->key_field];
 						}else{
-							$text = "<a class='linkEditMain' href='" . htmlspecialchars($this->href . "?action=edit&id=" . $row[$this->key_field]) . "'>";
+							$url = $this->href . "?action=edit&id=" . $row[$this->key_field];
 						}
+						$url .=  (isset($data["href_suffix"]) ? $data["href_suffix"] : "");
+						$text = "<a class='linkEditMain' href='" . htmlspecialchars($url) . "'>";
 					}
 
 					/* check to see if this is a filterable column */
