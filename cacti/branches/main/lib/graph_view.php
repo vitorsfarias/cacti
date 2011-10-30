@@ -25,10 +25,9 @@
 function graph_view_filter_table($mode = "mode") {
 	global $current_user;
 	global $graphs_per_page;
+
 	?>
 	<script type='text/javascript'>
-	<!--
-
 	$().ready(function() {
 		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
@@ -76,87 +75,80 @@ function graph_view_filter_table($mode = "mode") {
 		});
 		<?php } ;?>
 	}
-
-	-->
 	</script>
+	<table class='startBox1' cellpadding='0' border='0' cellspacing='3'>
+		<tr class="rowAlternate3 noprint">
+			<td class="noprint">
+				<form name="form_graph_view" method="post" action="graph_view.php">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr class="noprint">
+							<td class="w1">
+								&nbsp;<?php print __("Device:");?>&nbsp;
+							</td>
+							<td class='w1'><?php
+								if (isset($_REQUEST["device_id"])) {
+									$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
+								} else {
+									$hostname = "";
+								}
+								?>
+								<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+								<input type="hidden" id="device_id">
+							</td>
+							<td class='w1'>
+								&nbsp;<?php print __("Template:");?>&nbsp;
+							</td>
+							<td class='w1'>
+								<select name="graph_template_id" onChange="applyGraphFilter(document.form_graph_view)">
+									<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option><?php
+									if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
+										$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
+												"FROM device " .
+												"LEFT JOIN graph_local ON ( device.id = graph_local.device_id ) " .
+												"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
+												"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
+												"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
+												"WHERE graph_templates_graph.graph_template_id > 0 " .
+												(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
+												(empty($sql_where) ? "" : "and $sql_where") .
+												" ORDER BY name");
+									}else{
+										$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
+												"FROM graph_templates " .
+												"INNER JOIN graph_local " .
+												"ON graph_templates.id=graph_local.graph_template_id" .
+												(($_REQUEST["device_id"] > 0) ? " WHERE device_id=" . $_REQUEST["device_id"] :"") .
+												" GROUP BY graph_templates.name " .
+												" ORDER BY name");
+									}
+		
+									if (sizeof($graph_templates) > 0) {
+									foreach ($graph_templates as $template) {
+										print "\t\t\t\t\t\t\t<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
+									}
+									}
+									?>
+								</select>
+							</td>
+							<td class="w1">
+								&nbsp;<?php print __("Search:");?>&nbsp;
+							</td>
+							<td class='w1'>
+								<input type='text' name='filter' size='30' onChange='applyGraphFilter(document.form_graph_view)' value='<?php print $_REQUEST["filter"];?>'>
+							</td>
+							<td class='w1'>
+								<input type='button' Value='<?php print __("Go");?>' name='go' onClick='applyGraphFilter(document.form_graph_view)'>
+							</td>
+							<td class='w1'>
+								<input type='button' Value='<?php print __("Clear");?>' name='clear_x' onClick='clearGraphFilter(document.form_graph_view)'>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</table>
 	<?php
-
-	html_start_box("", "100", "0", "center", "");
-
-	?>
-	<tr class="rowGraphFilter noprint">
-		<td class="noprint">
-			<form name="form_graph_view" method="post" action="graph_view.php">
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tr class="rowGraphFilter noprint">
-					<td class="w1">
-						&nbsp;<?php print __("Device:");?>&nbsp;
-					</td>
-					<td class='w1'>
-						<?php
-						if (isset($_REQUEST["device_id"])) {
-							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
-						} else {
-							$hostname = "";
-						}
-						?>
-						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
-						<input type="hidden" id="device_id">
-					</td>
-					<td class='w1'>
-						&nbsp;<?php print __("Template:");?>&nbsp;
-					</td>
-					<td class='w1'>
-						<select name="graph_template_id" onChange="applyGraphFilter(document.form_graph_view)">
-							<option value="0"<?php if (get_request_var_request("graph_template_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option><?php
-							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
-								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
-										"FROM device " .
-										"LEFT JOIN graph_local ON ( device.id = graph_local.device_id ) " .
-										"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
-										"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
-										"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
-										"WHERE graph_templates_graph.graph_template_id > 0 " .
-										(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
-										(empty($sql_where) ? "" : "and $sql_where") .
-										" ORDER BY name");
-							}else{
-								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
-										"FROM graph_templates " .
-										"INNER JOIN graph_local " .
-										"ON graph_templates.id=graph_local.graph_template_id" .
-										(($_REQUEST["device_id"] > 0) ? " WHERE device_id=" . $_REQUEST["device_id"] :"") .
-										" GROUP BY graph_templates.name " .
-										" ORDER BY name");
-							}
-
-							if (sizeof($graph_templates) > 0) {
-							foreach ($graph_templates as $template) {
-								print "\t\t\t\t\t\t\t<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="w1">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class='w1'>
-						<input type='text' name='filter' size='30' onChange='applyGraphFilter(document.form_graph_view)' value='<?php print $_REQUEST["filter"];?>'>
-					</td>
-					<td class='w1'>
-						&nbsp;<input type='button' Value='<?php print __("Go");?>' name='go' onClick='applyGraphFilter(document.form_graph_view)'>
-						&nbsp;<input type='button' Value='<?php print __("Clear");?>' name='clear_x' onClick='clearGraphFilter(document.form_graph_view)'>
-					</td>
-				</tr>
-			</table>
-			</form>
-		</td>
-	</tr>
-	<?php
-	html_graph_end_box(FALSE);
 }
 
 function get_graph_list_content() {
@@ -248,176 +240,173 @@ function get_graph_list_content() {
 	$_SESSION["sess_graph_view_list_graph_list"] = $graph_list;
 
 	/* display graph view filter selector */
-	html_start_box("", "100", "0", "center", "");
-
 	?>
-
-	<tr class='rowGraphFilter noprint'>
-		<td>
-			<script type="text/javascript">
-			<!--
-			$().ready(function() {
-				$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-				$("#device").result(function(event, data, formatted) {
-					if (data) {
-						$(this).parent().find("#device_id").val(data[1]);
-						applyGraphListFilterChange(document.form_graph_list);
-					}
-				});
-				setSelections();
-			});
-
-			function applyGraphListFilterChange(objForm, strURL) {
-				form_graph(document.chk, document.form_graph_list)
-
-				if (!strURL || strURL == '') {
-					strURL = "?action=ajax_preview&";
-				}else{
-					strURL = strURL + "&action=ajax_list&";
-				}
-
-				strURL = strURL + 'device_id=' + objForm.device_id.value;
-				strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
-				strURL = strURL + '&graphs=' + objForm.graphs.value;
-				strURL = strURL + '&filter=' + objForm.filter.value;
-				strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
-				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
-				$.get("graph_view.php" + strURL, function(data) {
-					$("#graph_content").html(data);
+	<table class='startBox1' cellpadding='0' border='0' cellspacing='3'>
+		<tr class='rowAlternate3 noprint'>
+			<td>
+				<script type="text/javascript">
+				$().ready(function() {
+					$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
+					$("#device").result(function(event, data, formatted) {
+						if (data) {
+							$(this).parent().find("#device_id").val(data[1]);
+							applyGraphListFilterChange(document.form_graph_list);
+						}
+					});
 					setSelections();
 				});
-			}
 
-			function clearFilter(objForm) {
-				strURL = '?clear_x=true';
-				$.get("graph_view.php?action=ajax_list" + strURL, function(data) {
-					$("#graph_content").html(data);
-				});
-			}
+				function applyGraphListFilterChange(objForm, strURL) {
+					form_graph(document.chk, document.form_graph_list)
 
-			function form_graph(objForm,objFormSubmit) {
-				var strAdd = '';
-				var strDel = '';
-				for(var i = 0; i < objForm.elements.length; i++) {
-					if (objForm.elements[i].name.substring(0,4) == 'chk_') {
-						if (objForm.elements[i].checked) {
-							strAdd = strAdd + objForm.elements[i].name.substring(4) + ',';
-						} else {
-							if (objForm.elements[i].value != '') {
+					if (!strURL || strURL == '') {
+						strURL = "?action=ajax_preview&";
+					}else{
+						strURL = strURL + "&action=ajax_list&";
+					}
+
+					strURL = strURL + 'device_id=' + objForm.device_id.value;
+					strURL = strURL + '&graph_template_id=' + objForm.graph_template_id.value;
+					strURL = strURL + '&graphs=' + objForm.graphs.value;
+					strURL = strURL + '&filter=' + objForm.filter.value;
+					strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
+					strURL = strURL + '&graph_add=' + objForm.graph_add.value;
+					$.get("graph_view.php" + strURL, function(data) {
+						$("#graph_content").html(data);
+						setSelections();
+					});
+				}
+
+				function clearFilter(objForm) {
+					strURL = '?clear_x=true';
+					$.get("graph_view.php?action=ajax_list" + strURL, function(data) {
+						$("#graph_content").html(data);
+					});
+				}
+
+				function form_graph(objForm,objFormSubmit) {
+					var strAdd = '';
+					var strDel = '';
+					for(var i = 0; i < objForm.elements.length; i++) {
+						if (objForm.elements[i].name.substring(0,4) == 'chk_') {
+							if (objForm.elements[i].checked) {
+								strAdd = strAdd + objForm.elements[i].name.substring(4) + ',';
+							} else if (objForm.elements[i].value != '') {
 								strDel = strDel + objForm.elements[i].name.substring(4) + ',';
 							}
 						}
 					}
+					strAdd = strAdd.substring(0,strAdd.length - 1);
+					strDel = strDel.substring(0,strDel.length - 1);
+					objFormSubmit.graph_add.value = strAdd;
+					objFormSubmit.graph_remove.value = strDel;
 				}
-				strAdd = strAdd.substring(0,strAdd.length - 1);
-				strDel = strDel.substring(0,strDel.length - 1);
-				objFormSubmit.graph_add.value = strAdd;
-				objFormSubmit.graph_remove.value = strDel;
-			}
 
-			function pageChange(page) {
-				strURL = '?page=' + page;
-				applyGraphListFilterChange(document.form_graph_list, strURL);
-			}
+				function pageChange(page) {
+					strURL = '?page=' + page;
+					applyGraphListFilterChange(document.form_graph_list, strURL);
+				}
 
-			function showGraphs(objForm) {
-				form_graph(document.chk, document.form_graph_list)
-				strURL = '?action=preview';
-				strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
-				strURL = strURL + '&graph_add=' + objForm.graph_add.value;
-				document.location = "graph_view.php" + strURL;
-			}
-
-			//-->
-			</script>
-			<form name="form_graph_list" action="graph_view.php" method="post">
-			<input type='hidden' name='graph_add' value=''>
-			<input type='hidden' name='graph_remove' value=''>
-			<table cellpadding="0" cellspacing="0">
-				<tr>
-					<td class='w1'>
-						&nbsp;<?php print __("Device:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<?php
-						if (isset($_REQUEST["device_id"]) && $_REQUEST["device_id"] > 0) {
-							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
-						} else {
-							$hostname = "";
-						}
-						?>
-						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
-						<input type="hidden" id="device_id">
-					</td>
-					<td class='w1'>
-						&nbsp;<?php print __("Template:");?>&nbsp;
-					</td>
-					<td class='w1'>
-						<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("device_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option>
-							<?php
-							if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
-								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
-									"FROM device " .
-									"LEFT JOIN graph_local ON ( device_id = graph_local.device_id ) " .
-									"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
-									"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
-									"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device_id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
-									"WHERE graph_templates_graph.graph_template_id > 0 " .
-									(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
-									(empty($sql_where) ? "" : "and $sql_where") .
-									" ORDER BY name");
-							}else{
-								$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
-										"FROM graph_templates " .
-										"INNER JOIN graph_local " .
-										"ON graph_templates.id=graph_local.graph_template_id" .
-										(($_REQUEST["device_id"] > 0) ? " WHERE device_id=" . $_REQUEST["device_id"] :"") .
-										" GROUP BY graph_templates.name " .
-										" ORDER BY name");
-							}
-
-							if (sizeof($graph_templates) > 0) {
-							foreach ($graph_templates as $template) {
-								print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="w1">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="graphs" onChange="applyGraphListFilterChange(document.form_graph_list)">
-							<?php
-							if (sizeof($graphs_per_page) > 0) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "\t\t\t\t\t\t\t<option value='" . $key . "'"; if ((isset($_REQUEST["graphs"])) && ($_REQUEST["graphs"] == $key)) { print " selected"; } print ">" . $value . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class='w1'>
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
-					</td>
-					<td class="w1">
-						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
-						&nbsp;<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
-					</td>
-				</tr>
-			</table>
-			</form>
-		</td>
-	</tr>
+				function showGraphs(objForm) {
+					form_graph(document.chk, document.form_graph_list)
+					strURL = '?action=preview';
+					strURL = strURL + '&graph_remove=' + objForm.graph_remove.value;
+					strURL = strURL + '&graph_add=' + objForm.graph_add.value;
+					document.location = "graph_view.php" + strURL;
+				}
+				</script>
+				<form name="form_graph_list" action="graph_view.php" method="post">
+					<input type='hidden' name='graph_add' value=''>
+					<input type='hidden' name='graph_remove' value=''>
+					<table cellpadding="0" cellspacing="0">
+						<tr>
+							<td class='w1'>
+								&nbsp;<?php print __("Device:");?>&nbsp;
+							</td>
+							<td class="w1">
+								<?php
+								if (isset($_REQUEST["device_id"]) && $_REQUEST["device_id"] > 0) {
+									$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
+								} else {
+									$hostname = "";
+								}
+								?>
+								<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+								<input type="hidden" id="device_id">
+							</td>
+							<td class='w1'>
+								&nbsp;<?php print __("Template:");?>&nbsp;
+							</td>
+							<td class='w1'>
+								<select name="graph_template_id" onChange="applyGraphListFilterChange(document.form_graph_list)">
+									<option value="0"<?php print get_request_var_request("filter");?><?php if (get_request_var_request("device_id") == "0") {?> selected<?php }?>><?php print __("Any");?></option>
+									<?php
+									if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
+										$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
+											"FROM device " .
+											"LEFT JOIN graph_local ON ( device_id = graph_local.device_id ) " .
+											"LEFT JOIN graph_templates_graph ON ( graph_templates_graph.local_graph_id = graph_local.id ) " .
+											"LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id) " .
+											"LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (device_id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")) " .
+											"WHERE graph_templates_graph.graph_template_id > 0 " .
+											(($_REQUEST["device_id"] > 0) ? " AND graph_local.device_id=" . $_REQUEST["device_id"] :" AND graph_local.device_id > 0 ") .
+											(empty($sql_where) ? "" : "and $sql_where") .
+											" ORDER BY name");
+									}else{
+										$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_templates.* " .
+											"FROM graph_templates " .
+											"INNER JOIN graph_local " .
+											"ON graph_templates.id=graph_local.graph_template_id" .
+											(($_REQUEST["device_id"] > 0) ? " WHERE device_id=" . $_REQUEST["device_id"] :"") .
+											" GROUP BY graph_templates.name " .
+											" ORDER BY name");
+									}
+		
+									if (sizeof($graph_templates) > 0) {
+									foreach ($graph_templates as $template) {
+										print "<option value='" . $template["id"] . "'"; if (get_request_var_request("graph_template_id") == $template["id"]) { print " selected"; } print ">" . $template["name"] . "</option>\n";
+									}
+									}
+									?>
+								</select>
+							</td>
+							<td class="w1">
+								&nbsp;<?php print __("Rows:");?>&nbsp;
+							</td>
+							<td class="w1">
+								<select name="graphs" onChange="applyGraphListFilterChange(document.form_graph_list)">
+									<?php
+									if (sizeof($graphs_per_page) > 0) {
+									foreach ($graphs_per_page as $key => $value) {
+										print "\t\t\t\t\t\t\t<option value='" . $key . "'"; if ((isset($_REQUEST["graphs"])) && ($_REQUEST["graphs"] == $key)) { print " selected"; } print ">" . $value . "</option>\n";
+									}
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<table cellpadding="0" cellspacing="0">
+						<tr>
+							<td class='w1'>
+								&nbsp;<?php print __("Search:");?>&nbsp;
+							</td>
+							<td class="w1">
+								<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
+							</td>
+							<td class="w1">
+								<input type="button" value="<?php print __("Go");?>" name="go" onClick='applyGraphListFilterChange(document.form_graph_list, "?addgraph=")'>
+							</td>
+							<td class="w1">
+								<input type="button" value="<?php print __("Clear");?>" name="clear" onClick='clearFilter(document.form_graph_list)'>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</table>
 	<?php
-	html_graph_end_box(TRUE);
 
 	/* create filter for sql */
 	$sql_filter = "";
@@ -875,82 +864,81 @@ function graph_view_timespan_selector($mode = "tree") {
 
 	//-->
 	</script>
+	<table class='startBox1' cellpadding='0' border='0' cellspacing='3'>
+		<tr class='rowAlternate3 noprint'>
+			<td class='noprint'>
+				<form name='form_timespan_selector' method='post' action='graph_view.php'>
+					<table border='0' cellpadding='0' cellspacing='0'>
+						<tr>
+							<td class='nw50'>
+								&nbsp;<?php print __("Presets:");?>&nbsp;
+							</td>
+							<td class='nw1'>
+								<select name='predefined_timespan' onChange='request_type="preset";applyTimespanFilterChange(document.form_timespan_selector)'><?php
+									if ($_SESSION["custom"]) {
+										$graph_timespans[GT_CUSTOM] = __("Custom");
+										$start_val = 0;
+										$end_val = sizeof($graph_timespans);
+								} else {
+									if (isset($graph_timespans[GT_CUSTOM])) {
+										asort($graph_timespans);
+										array_shift($graph_timespans);
+									}
+									$start_val = 1;
+									$end_val = sizeof($graph_timespans)+1;
+								}
+	
+								if (sizeof($graph_timespans) > 0) {
+									for ($value=$start_val; $value < $end_val; $value++) {
+										print "\t\t\t\t\t\t\t<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
+									}
+								}
+								?>
+								</select>
+							</td>
+							<td class='nw1'>
+								&nbsp;<?php print __("From:");?>&nbsp;
+							</td>
+							<td class='nw1'>
+								<input type='text' name='date1' id='date1' title='<?php print __("Graph Begin Timestamp");?>' size='20' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
+							</td>
+							<td class='nw1'>
+								&nbsp;<?php print __("To:");?>&nbsp;
+							</td>
+							<td class='nw1'>
+								<input type='text' name='date2' id='date2' title='<?php print __("Graph End Timestamp");?>' size='20' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
+							</td>
+							<td class='nw14'>
+								<img onMouseOver='this.style.cursor="pointer"' onClick='return timeShift(document.form_timespan_selector, "left")' class='img_filter' name='move_left' src='images/move_left.gif' alt='<?php print __("Left");?>' title='<?php print __("Shift Left");?>'>
+							</td>
+							<td class='nw1'>
+								<select name='predefined_timeshift' title='<?php print __("Define Shifting Interval");?>'><?php
+									$start_val = 1;
+									$end_val = sizeof($graph_timeshifts)+1;
+									if (sizeof($graph_timeshifts) > 0) {
+										for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+											print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts_localized[$shift_value], 40) . "</option>\n";
+										}
+									}
+									?>
+								</select>
+							</td>
+							<td class='nw14'>
+								<img onMouseOver='this.style.cursor="pointer"' onClick='return timeShift(document.form_timespan_selector, "right")' class='img_filter' name='move_right' src='images/move_right.gif' alt='<?php print __("Right");?>' title='<?php print __("Shift Right");?>'>
+							</td>
+							<td class="nw1">
+								<input type='button' value='<?php print __("Refresh");?>' name='button_refresh' onclick='request_type="daterange";applyTimespanFilterChange(document.form_timespan_selector)'>
+							</td>
+							<td class="nw1">
+								<input type='button' value='<?php print __("Clear");?>' name='button_clear_x' onclick='clearTimespanFilter()'>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</table>
 	<?php
-	html_start_box("", "100", "0", "center", "");
-	?>
-	<tr class="rowGraphFilter noprint">
-		<td class="noprint">
-			<form name="form_timespan_selector" method="post" action="graph_view.php">
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tr class="rowGraphFilter">
-					<td class="nw50">
-						&nbsp;<?php print __("Presets:");?>&nbsp;
-					</td>
-					<td class="nw120">
-						<select name='predefined_timespan' onChange='request_type="preset";applyTimespanFilterChange(document.form_timespan_selector)'><?php
-							if ($_SESSION["custom"]) {
-								$graph_timespans[GT_CUSTOM] = __("Custom");
-								$start_val = 0;
-								$end_val = sizeof($graph_timespans);
-							} else {
-								if (isset($graph_timespans[GT_CUSTOM])) {
-									asort($graph_timespans);
-									array_shift($graph_timespans);
-								}
-								$start_val = 1;
-								$end_val = sizeof($graph_timespans)+1;
-							}
-
-							if (sizeof($graph_timespans) > 0) {
-								for ($value=$start_val; $value < $end_val; $value++) {
-									print "\t\t\t\t\t\t\t<option value='$value'"; if ($_SESSION["sess_current_timespan"] == $value) { print " selected"; } print ">" . title_trim($graph_timespans[$value], 40) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
-					<td class='nw30'>
-						&nbsp;<?php print __("From:");?>&nbsp;
-					</td>
-					<td class='nw110'>
-						<input type='text' name='date1' id='date1' title='<?php print __("Graph Begin Timestamp");?>' size='16' value='<?php print (isset($_SESSION["sess_current_date1"]) ? $_SESSION["sess_current_date1"] : "");?>'>
-					</td>
-					<td class='nw30'>
-						&nbsp;<?php print __("To:");?>&nbsp;
-					</td>
-					<td class='nw110'>
-						<input type='text' name='date2' id='date2' title='<?php print __("Graph End Timestamp");?>' size='16' value='<?php print (isset($_SESSION["sess_current_date2"]) ? $_SESSION["sess_current_date2"] : "");?>'>
-					</td>
-					<td>
-						&nbsp;<img onMouseOver='this.style.cursor="pointer"' onClick='return timeShift(document.form_timespan_selector, "left")' class='img_filter' name='move_left' src='images/move_left.gif' alt='<?php print __("Left");?>' title='<?php print __("Shift Left");?>'>
-					</td>&nbsp;
-					<td class='nw30'>
-						<select name='predefined_timeshift' title='<?php print __("Define Shifting Interval");?>'><?php
-							$start_val = 1;
-							$end_val = sizeof($graph_timeshifts)+1;
-							if (sizeof($graph_timeshifts) > 0) {
-								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-									print "\t\t\t\t\t\t\t<option value='$shift_value'"; if ($_SESSION["sess_current_timeshift"] == $shift_value) { print " selected"; } print ">" . title_trim($graph_timeshifts_localized[$shift_value], 40) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						&nbsp;<img onMouseOver='this.style.cursor="pointer"' onClick='return timeShift(document.form_timespan_selector, "right")' class='img_filter' name='move_right' src='images/move_right.gif' alt='<?php print __("Right");?>' title='<?php print __("Shift Right");?>'>
-					</td>
-					<td class="nw120">
-						&nbsp;<input type='button' value='<?php print __("Refresh");?>' name='button_refresh' onclick='request_type="daterange";applyTimespanFilterChange(document.form_timespan_selector)'>
-						<input type='button' value='<?php print __("Clear");?>' name='button_clear_x' onclick='clearTimespanFilter()'>
-					</td>
-				</tr>
-			</table>
-			</form>
-		</td>
-	</tr>
-	<?php
-
-	html_graph_end_box(FALSE);
 }
 
 function graph_view_tree_filter() {
@@ -960,13 +948,13 @@ function graph_view_tree_filter() {
 
 	?>
 	<table class="startBoxHeader wp100 startBox0"  cellspacing=0 cellpadding=0>
-		<tr class="rowGraphFilter noprint">
+		<tr class="rowAlternate3 noprint">
 			<td class="noprint">
 				<form name="form_graph_tree" method="get" action="graph_view.php">
 					<table cellspacing="1" cellpadding="0">
 						<tr>
 							<td class="w1">
-								&nbsp;<?php print __("Trees:");?>&nbsp;
+								<?php print __("Trees:");?>
 							</td>
 							<td class="w1">
 								<select id='tree' onchange='window.location.assign("graph_view.php?parent=true&tree_id="+document.getElementById("tree").value)' name='tree'>
@@ -989,7 +977,7 @@ function graph_view_tree_filter() {
 					<table valign='top' cellpadding=0 cellspacing=0 width='100%'>
 						<tr class="rowHeader">
 							<td class="textHeaderDark">
-								&nbsp;<?php print __("Items");?>&nbsp;
+								<?php print __("Items");?>
 							</td>
 						</tr>
 					</table>
@@ -1010,8 +998,6 @@ function graph_view_search_filter() {
 
 	?>
 	<script type='text/javascript'>
-	<!--
-
 	function applyFilter(objForm) {
 		strURL = '?action=ajax_tree_graphs&filter=' + objForm.filter.value;
 		strURL = strURL + '&graphs=' + objForm.graphs.value;
@@ -1027,57 +1013,51 @@ function graph_view_search_filter() {
 			$("#graphs").html(data);
 		});
 	}
-
-	//-->
 	</script>
+	<table class='startBox1' cellpadding='0' border='0' cellspacing='3'>
+		<tr class="rowAlternate3 noprint">
+			<td class="noprint">
+				<form name="form_graph_view" method="get" action="graph_view.php">
+						<table cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="nw1">
+									&nbsp;<?php print __("Search:");?>&nbsp;
+								</td>
+								<td class="nw1">
+									<input type='text' style='display:none;' name='workaround'>
+									<input size='30' style='width:100;' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>' onChange='applyFilter(document.form_graph_view)'>
+								</td>
+								<td class="nw80">
+									<?php print __("Graphs/Page:");?>&nbsp;
+								</td>
+								<td class="w1">
+									<select name="graphs" onChange="applyFilter(document.form_graph_view)">
+										<?php
+										if (sizeof($graphs_per_page) > 0) {
+										foreach ($graphs_per_page as $key => $value) {
+											print "\t\t\t\t\t\t\t<option value='" . $key . "'"; if ((isset($_REQUEST["graphs"])) && ($_REQUEST["graphs"] == $key)) { print " selected"; } print ">" . $value . "</option>\n";
+										}
+										}
+										?>
+									</select>
+								</td>
+								<td class='w10'>
+									<input type="checkbox" name="thumbnails" id="thumbnails" onChange="applyFilter(document.form_graph_view);" <?php print ((isset($_REQUEST['thumbnails'])) && ($_REQUEST['thumbnails'] == "true") ? "checked":"");?>>
+								</td>
+								<td>
+									<label for="thumbnails"><?php print __("Thumbnails:");?></label>
+								</td>
+								<td class='w1'>
+									<input type='button' value='<?php print __("Refresh");?>' name='refresh' onClick='applyFilter(document.form_graph_view)'>
+								</td>
+								<td class='w1'>
+									<input type='button' value='<?php print __("Clear");?>' name='clear_x' onClick='clearFilter(document.form_graph_view)'>
+								</td>
+							</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</table>
 	<?php
-
-	html_start_box("", "100", "0", "center", "");
-	?>
-	<tr class="rowGraphFilter noprint">
-		<td class="noprint">
-			<form name="form_graph_view" method="get" action="graph_view.php">
-				<table cellspacing="0" cellpadding="0">
-					<tr>
-						<td class="nw1">
-							&nbsp;<?php print __("Search:");?>&nbsp;
-						</td>
-						<td class="nw1">
-							<input type='text' style='display:none;' name='workaround'>
-							<input size='30' style='width:100;' name='filter' value='<?php print clean_html_output(get_request_var_request("filter"));?>' onChange='applyFilter(document.form_graph_view)'>
-						</td>
-						<td class="nw80">
-							&nbsp;<?php print __("Graphs/Page:");?>&nbsp;
-						</td>
-						<td class="w1">
-							<select name="graphs" onChange="applyFilter(document.form_graph_view)">
-								<?php
-								if (sizeof($graphs_per_page) > 0) {
-								foreach ($graphs_per_page as $key => $value) {
-									print "\t\t\t\t\t\t\t<option value='" . $key . "'"; if ((isset($_REQUEST["graphs"])) && ($_REQUEST["graphs"] == $key)) { print " selected"; } print ">" . $value . "</option>\n";
-								}
-								}
-								?>
-							</select>
-						</td>&nbsp;
-						<td class='w10'>
-							<input type="checkbox" name="thumbnails" id="thumbnails" onChange="applyFilter(document.form_graph_view);" <?php print ((isset($_REQUEST['thumbnails'])) && ($_REQUEST['thumbnails'] == "true") ? "checked":"");?>>
-						</td>
-						<td>
-							<label for="thumbnails">&nbsp;<?php print __("Thumbnails:");?>&nbsp;</label>
-						</td>
-						<td class='w1'>
-							<input type='button' value='<?php print __("Refresh");?>' name='refresh' onClick='applyFilter(document.form_graph_view)'>
-						</td>
-						<td class='w1'>
-							<input type='button' value='<?php print __("Clear");?>' name='clear_x' onClick='clearFilter(document.form_graph_view)'>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</td>
-	</tr>
-	<?php
-
-	html_graph_end_box();
 }

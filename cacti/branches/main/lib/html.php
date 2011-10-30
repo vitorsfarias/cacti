@@ -159,12 +159,8 @@ function html_end_box($trailing_br = true) { ?>
 /* html_graph_start_box - draws the start of an HTML graph view box
    @param $cellpadding - the table cell padding for the box
    @param $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
-function html_graph_start_box($cellpadding = 3, $leading_br = true) {
-	if ($leading_br == true) {
-		print "<br>\n";
-	}
-
-	print "\t<table class='startBox1' cellpadding='$cellpadding'>\n";
+function html_graph_start_box() {
+	print "\t<table class='startBox1' cellpadding='3'>\n";
 }
 
 /* html_graph_end_box - draws the end of an HTML graph view box */
