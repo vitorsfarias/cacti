@@ -88,6 +88,7 @@ if (plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKI
 	<meta http-equiv="Content-Script-Type" content="text/javascript" >
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<link href="include/main.css" rel="stylesheet" type="text/css">
+	<link rel="shortcut icon" href="images/favicon.ico">
 	<title>Login to cacti</title>
 	<STYLE TYPE="text/css">
 	<!--
