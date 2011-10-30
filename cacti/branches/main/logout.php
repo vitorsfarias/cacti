@@ -40,6 +40,7 @@ if (read_config_option("auth_method") == AUTH_METHOD_WEB) {
 <head>
 	<title>Logout of Cacti</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link rel="shortcut icon" href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico">
 	<STYLE TYPE="text/css">
 	<!--
 		BODY, TABLE, TR, TD {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;}

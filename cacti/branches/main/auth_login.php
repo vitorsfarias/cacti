@@ -267,6 +267,7 @@ if (plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) 
 	<meta http-equiv="Content-Script-Type" content="text/javascript" >
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<link type="text/css" href="include/main.css" rel="stylesheet">
+	<link rel="shortcut icon" href="images/favicon.ico">
 	<title>Login to Cacti</title>
 	<STYLE TYPE="text/css">
 	<!--

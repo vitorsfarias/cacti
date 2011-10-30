@@ -83,6 +83,7 @@ if (read_config_option("auth_method") != 0) {
 				<title>Cacti</title>
 				<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 				<link href="<?php echo CACTI_URL_PATH; ?>include/main.css" rel="stylesheet">
+				<link rel="shortcut icon" href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico">
 			</head>
 			<body>
 			<br><br>
