@@ -44,7 +44,6 @@ img {
 	border-width: 0px;
 	vertical-align: middle;
 	text-align: center;
-	padding-bottom: 5px;
 }
 
 /* main navigation constructor classes */
@@ -563,9 +562,8 @@ th a {
 }
 
 .startBox1 {
-	border: 1px solid #dfdfdf;
 	border-spacing: 0px;
-	padding: 0px;
+	padding: 3px;
 	border-collapse: collapse;
 	width: 100%;
 	text-align: center;
