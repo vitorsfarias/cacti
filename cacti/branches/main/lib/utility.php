@@ -131,7 +131,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				FROM data_input_fields
 				LEFT JOIN data_input_data
 				ON (data_input_fields.id=data_input_data.data_input_field_id and data_input_data.data_template_data_id=" . $data_input["data_template_data_id"] . ")
-				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname'))
+				WHERE ((type_code LIKE 'snmp_%') OR (type_code='hostname') OR (type_code='device_id'))
 				AND data_input_data.value != ''"), "type_code", "value");
 
 			$data_template_fields = array_rekey(db_fetch_assoc("SELECT
@@ -411,7 +411,7 @@ function push_out_device($device_id, $local_data_id = 0, $data_template_id = 0) 
 	/* setup the sql where, and if using a device, get it's device information */
 	if ($device_id != 0) {
 		/* get all information about this device so we can write it to the data source */
-		$devices[$device_id] = db_fetch_row("select * from device where id=$device_id");
+		$devices[$device_id] = db_fetch_row("select id AS device_id, device.* from device where id=$device_id");
 
 		$sql_where .= " AND data_local.device_id=$device_id";
 	}

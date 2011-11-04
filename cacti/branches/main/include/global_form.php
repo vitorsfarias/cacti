@@ -25,7 +25,7 @@
 require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 if (!defined('VALID_HOST_FIELDS')) {
-	$string = plugin_hook_function('valid_device_fields', '(hostname|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
+	$string = plugin_hook_function('valid_device_fields', '(hostname|device_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
 	define('VALID_HOST_FIELDS', $string);
 }
 
