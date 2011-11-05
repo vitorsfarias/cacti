@@ -249,18 +249,6 @@ int main(int argc, char *argv[]) {
 	/* set the default exit code */
 	set.exit_code = 0;
 
-	/* we attempt to support scripts better in cygwin */
-	#if defined(__CYGWIN__)
-	setenv("CYGWIN", "nodosfilewarning", 1);
-	if (file_exists("./sh.exe")) {
-		set.cygwinshloc = 0;
-		printf("NOTE: The Shell Command Exists in the current directory\n");
-	}else{
-		set.cygwinshloc = 1;
-		printf("NOTE: The Shell Command Exists in the /bin directory\n");
-	}
-	#endif
-
 	/* get static defaults for system */
 	config_defaults();
 
@@ -407,6 +395,21 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	/* we attempt to support scripts better in cygwin */
+	#if defined(__CYGWIN__)
+	setenv("CYGWIN", "nodosfilewarning", 1);
+	if (file_exists("./sh.exe")) {
+		set.cygwinshloc = 0;
+		if (set.log_level == POLLER_VERBOSITY_DEBUG) {
+			printf("NOTE: The Shell Command Exists in the current directory\n");
+		}
+	}else{
+		set.cygwinshloc = 1;
+		if (set.log_level == POLLER_VERBOSITY_DEBUG) {
+			printf("NOTE: The Shell Command Exists in the /bin directory\n");
+		}
+	}
+	#endif
 	/* we require either both the first and last devices, or niether device */
 	if ((DEVICEID_DEFINED(set.start_device_id) != DEVICEID_DEFINED(set.end_device_id)) &&
 		(!strlen(set.device_id_list))) {
@@ -823,7 +826,7 @@ int main(int argc, char *argv[]) {
 static void display_help(void) {
 	static const char *const *p;
 	static const char * const helptext[] = {
-		"Usage: spine [options] [[firstid lastid] || [-H/--devicelist='deviceid1, deviceid2,...,deviceidn']]",
+		"Usage: spine [options] [[firstid lastid] || [-H/--devicelist='deviceid1,deviceid2,...,deviceidn']]",
 		"",
 		"Options:",
 		"  -h/--help          Show this brief help listing",
