@@ -756,6 +756,10 @@ th a {
 	padding: 3px;
 }
 
+.textGreyOut {
+	color: #999999;
+}
+
 table.resizable {
 	table-layout: auto;
 	overflow: hidden;
