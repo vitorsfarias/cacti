@@ -91,9 +91,10 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
 	static $class_int  = 0;
 	static $alt_row_id = 0;
 
+	/* be sure to prepend at least one whitespace in case we specify additional class(es) here */
 	if (strlen($row_class)) $row_class = " " . $row_class;
 
-	$class = "rowAlternate$class_int " . $row_class;
+	$class = "rowAlternate$class_int" . $row_class;
 
 	$class_int = ($class_int + 1 ) % 2;
 
