@@ -163,7 +163,11 @@ function substitute_script_query_path($path) {
    @return string 					- the original string with all of the variable substitutions made */
 function substitute_device_data($string, $l_escape_string, $r_escape_string, $device_id, $quote=true) {
 	if (!isset($_SESSION["sess_device_cache_array"][$device_id])) {
-		$device = db_fetch_row("select * from device where id=$device_id");
+		if ($device_id != '') {
+			$device = db_fetch_row("SELECT * FROM device WHERE id=$device_id");
+		} else {
+			$device = "None";
+		}
 		if (array_key_exists("device_template_id", $device) && $device["device_template_id"] == 0) {
 			$device["template"] = "None";
 		} else {
