@@ -454,11 +454,15 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
         will be opposite this direction if the user selects the same named column.
    @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row 
    @param $table_id - table id
+   @param $sort_url - provide url to be used as a base for sort function
    */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "") {
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "", $sort_url) {
 	static $rand_id = 0;
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
+
+	/* revert to previous usage: default the sort_url to basename of current php module */
+	if ($sort_url == '') $sort_url = basename($_SERVER["PHP_SELF"]);
 
 	/* reverse the sort direction */
 	if ($sort_direction == "ASC") {
@@ -505,7 +509,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			$width = html_get_column_width($pathname, $column);
 
 			print "\t\t\t<th nowrap style='width:$width;white-space:nowrap;$align' id='" . $column . "'" . ((($rand_id+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark nodrag nodrop lastColumn'" : "class='textSubHeaderDark nodrag nodrop'") . ">";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			/* in case a '?' is already present, use '&' to append next parameter */
+			$url = $sort_url . (strpos($sort_url,'?') ? '&' : '?') . "sort_column=" . $column;
+			$url .= "&sort_direction=" . $direction;
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($url) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
@@ -525,8 +532,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
         will be opposite this direction if the user selects the same named column.
    @param $form_action - the url to post the 'select all' form to 
    @param $table_id - table_id
+   @param $sort_url - provide url to be used as a base for sort function
 */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "") {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "", $sort_url) {
 	static $rand_id = 0;
 
 	/* reverse the sort direction */
@@ -539,6 +547,9 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
+
+	/* revert to previous usage: default the sort_url to basename of current php module */
+	if ($sort_url == '') $sort_url = basename($_SERVER["PHP_SELF"]);
 
 	/* default to the 'current' file */
 	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
@@ -582,7 +593,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			$width = html_get_column_width($pathname, $column);
 
 			print "\t\t\t<th id='" . $column . "' class='textSubHeaderDark wp" . $width . " nodrag nodrop' style='$align'>";
-			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars(basename($_SERVER["PHP_SELF"]) . "?sort_column=" . $column . "&sort_direction=" . $direction) . "'>" . $display_text . "</a>";
+			/* in case a '?' is already present, use '&' to append next parameter */
+			$url = $sort_url . (strpos($sort_url,'?') ? '&' : '?') . "sort_column=" . $column;
+			$url .= "&sort_direction=" . $direction;
+			print "\n\t\t\t\t<a class='$sort_class' style='display:block;' href='" . htmlspecialchars($url) . "'>" . $display_text . "</a>";
 			print "\n\t\t\t</th>\n";
 		}
 	}
@@ -800,14 +814,14 @@ class html_table {
 		/* draw the header */
 		if ($this->checkbox) {
 			if ($this->sortable) {
-				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), "", $this->table_id);
+				html_header_sort_checkbox($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), "", $this->table_id, $this->href);
 			}else{
 				html_header_checkbox($this->table_format, "", false, $this->table_id);
 			}
 		}elseif ($this->sortable) {
 			/* html_header_sort does not define a form but we need one in case of a filtered table */
 			print "<form name='chk' method='post' action='" . basename($_SERVER["PHP_SELF"]) . "'>\n";	# properly place form outside table
-			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), 1, $this->table_id);
+			html_header_sort($this->table_format, html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"), 1, $this->table_id, $this->href);
 		}else{
 			/* html_header does not define a form but we need one in case of a filtered table */
 			print "<form name='chk' method='post' action='" . basename($_SERVER["PHP_SELF"]) . "'>\n";	# properly place form outside table
