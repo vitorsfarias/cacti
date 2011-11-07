@@ -162,27 +162,25 @@ function substitute_script_query_path($path) {
    @param bool $quote				- enclose substitutions in quotes
    @return string 					- the original string with all of the variable substitutions made */
 function substitute_device_data($string, $l_escape_string, $r_escape_string, $device_id, $quote=true) {
-	if (!isset($_SESSION["sess_device_cache_array"][$device_id])) {
-		if ($device_id != '') {
+	if (!empty($device_id)) {
+		if (!isset($_SESSION["sess_device_cache_array"][$device_id])) {
 			$device = db_fetch_row("SELECT * FROM device WHERE id=$device_id");
-		} else {
-			$device = "None";
+			if (array_key_exists("device_template_id", $device) && $device["device_template_id"] == 0) {
+				$device["template"] = "None";
+			} else {
+				$device["template"] = db_fetch_cell("SELECT name FROM device_template WHERE id=" . $device["device_template_id"]);
+			}
+			$_SESSION["sess_device_cache_array"][$device_id] = $device;
 		}
-		if (array_key_exists("device_template_id", $device) && $device["device_template_id"] == 0) {
-			$device["template"] = "None";
-		} else {
-			$device["template"] = db_fetch_cell("SELECT name FROM device_template WHERE id=" . $device["device_template_id"]);
+
+		# substitute all given device fields and escape specific shell characters
+		foreach ($_SESSION["sess_device_cache_array"][$device_id] as $key => $value) {
+			$string = str_replace($l_escape_string . "device_" . $key . $r_escape_string, cacti_escapeshellarg($value, $quote), $string);
 		}
-		$_SESSION["sess_device_cache_array"][$device_id] = $device;
-	}
 
-	# substitute all given device fields and escape specific shell characters
-	foreach ($_SESSION["sess_device_cache_array"][$device_id] as $key => $value) {
-		$string = str_replace($l_escape_string . "device_" . $key . $r_escape_string, cacti_escapeshellarg($value, $quote), $string);
+		$temp = plugin_hook_function('substitute_device_data', array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'device_id' => $device_id));
+		$string = $temp['string'];
 	}
-
-	$temp = plugin_hook_function('substitute_device_data', array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'device_id' => $device_id));
-	$string = $temp['string'];
 
 	return $string;
 }
