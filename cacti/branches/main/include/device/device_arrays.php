@@ -101,9 +101,11 @@ $snmp_priv_protocols = array(
 
 $availability_options = array(
 	AVAIL_NONE => __("None"),
-	AVAIL_SNMP_AND_PING => __("Ping and SNMP"),
-	AVAIL_SNMP_OR_PING => __("Ping or SNMP"),
-	AVAIL_SNMP => __("SNMP"),
+	AVAIL_SNMP_AND_PING => __("Ping and SNMP sysUptime"),
+	AVAIL_SNMP_OR_PING => __("Ping or SNMP sysUptime"),
+	AVAIL_SNMP => __("SNMP sysUptime"),
+	AVAIL_SNMP_GET_SYSDESC => __("SNMP sysDesc"),
+	AVAIL_SNMP_GET_NEXT => __("SNMP getNext"),
 	AVAIL_PING => __("Ping"),
 	);
 
