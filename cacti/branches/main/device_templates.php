@@ -770,6 +770,8 @@ function device_template_display_general($device_template, $header_label) {
 
 			break;
 		case "<?php print AVAIL_SNMP;?>": // snmp
+		case "<?php print AVAIL_SNMP_GET_SYSDESC;?>": // snmp
+		case "<?php print AVAIL_SNMP_GET_NEXT;?>": // snmp
 			/* deactivate PING */
 			setPingPortVisibility("<?php print PING_NONE;?>")
 			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
