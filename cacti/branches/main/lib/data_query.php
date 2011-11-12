@@ -185,6 +185,7 @@ function query_script_device($device_id, $snmp_query_id) {
  */
 function query_snmp_device($device_id, $snmp_query_id) {
 	include_once(CACTI_BASE_PATH . "/lib/snmp.php");
+	include_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
 
 	$device = db_fetch_row("SELECT
 		hostname,
@@ -250,9 +251,18 @@ function query_snmp_device($device_id, $snmp_query_id) {
 		debug_log_insert("data_query", __("No SNMP data returned"));
 		return false;
 	} else {
+		/* set up null index handling */
+		$nullx = read_config_option("data_query_null_indices");
+		$null_seen = false;		
 		/* show list of indices found */
 		for ($i=0; $i<sizeof($snmp_indexes); $i++) {
-			debug_log_insert("data_query", __("Index found at OID: '%s' value: '%s'", $snmp_indexes[$i]["oid"], $snmp_indexes[$i]["value"]));
+			if ($snmp_indexes[$i]["value"] || !$null_seen) {
+				debug_log_insert("data_query", __("Index found at OID: '%s' value: '%s'", $snmp_indexes[$i], $snmp_indexes[$i]["value"]));
+			} else {
+				if ($nullx != DATA_QUERY_INDEX_IGNORE_NOTHING) {
+					$null_seen = true;
+				}
+			}
 		}
 	}
 
@@ -265,7 +275,7 @@ function query_snmp_device($device_id, $snmp_query_id) {
 
 		for ($i=0; $i<sizeof($snmp_indexes); $i++) {
 			$snmp_indexes[$i]["value"] = preg_replace('/' . $index_parse_regexp . '/', "\\1", $snmp_indexes[$i]["oid"]);
-			debug_log_insert("data_query", __("index_parse at OID: '%s' results: '%s'", $snmp_indexes[$i]["oid"], $snmp_indexes[$i]["value"]));
+			debug_log_insert("data_query", __("Index parse at OID: '%s' results: '%s'", $snmp_indexes[$i]["oid"], $snmp_indexes[$i]["value"]));
 		}
 	}
 
@@ -347,7 +357,21 @@ function query_snmp_device($device_id, $snmp_query_id) {
 			debug_log_insert("data_query", __("Executing SNMP walk for data @ '%s'", $field_array["oid"]));
 
 			if ($field_array["source"] == "value") {
+				/* set up null index handling */
+				$nullx = read_config_option("data_query_null_indices");
+				$null_seen = false;		
 				for ($i=0; $i<sizeof($snmp_data); $i++) {
+					if (!$snmp_data[$i]["value"]) {
+						if ($nullx == DATA_QUERY_INDEX_IGNORE_NULLS) {
+							continue;
+						} elseif ($nullx == DATA_QUERY_INDEX_IGNORE_DUP_NULLS) {
+							if ($null_seen) {
+								continue;
+							} else {
+								$null_seen = true;
+							}
+						}
+					}
 					# Is this preg_replace functional? - JPP
 					$snmp_index = preg_replace('/' . (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . '/', "\\1", $snmp_data[$i]["oid"]);
 

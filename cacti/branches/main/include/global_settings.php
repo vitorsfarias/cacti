@@ -402,7 +402,14 @@ $settings = array(
 			"default" => "3",
 			"max_length" => "10",
 			"size" => "5"
-			)
+			),
+		"data_query_null_indices" => array(
+			"friendly_name" => __("Null Index Handling for SNMP Data Queries"),
+			"description" => __("This setting determines how, or even if to ignore null indices on SNMP Data Queries."),
+			"method" => "drop_array",
+			"default" => DATA_QUERY_INDEX_IGNORE_NOTHING,
+			"array" => $data_query_nullx_options,
+			),
 		),
 	"export" => array(
 		"export_hdr_general" => array(
