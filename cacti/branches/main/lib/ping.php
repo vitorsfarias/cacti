@@ -120,7 +120,7 @@ class Net_Ping
 			$this->device["hostname"] = str_replace("tcp:", "", strtolower($this->device["hostname"]));
 			$this->device["hostname"] = str_replace("udp:", "", strtolower($this->device["hostname"]));
 
-			/* determine the device's ip address 
+			/* determine the device's ip address
 			 * this prevents from command injection as well */
 			if ($this->is_ipaddress($this->device["hostname"])) {
 				$device_ip = $this->device["hostname"];
@@ -139,8 +139,8 @@ class Net_Ping
 			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
-			/* host timeout given in ms, recalculate to sec, but make it an integer 
-			 * we might consider to use escapeshellarh on hostname, 
+			/* host timeout given in ms, recalculate to sec, but make it an integer
+			 * we might consider to use escapeshellarh on hostname,
 			 * but this field has already been verified.
 			 * The other fields are numerical fields only and thus
 			 * not vulnerable for command injection */
@@ -239,74 +239,68 @@ class Net_Ping
 		/* get start time */
 		$this->start_time();
 
-		/* poll sysUptime for status */
-		$retry_count = 0;
-
-		/* getnext does not work in php versions less than 5 */
-		if (version_compare("5", phpversion(), "<")) {
-			$oid = ".1.3";
-		}else{
+		/* by default, we look at sysUptime */
+		if ($this->avail_method == AVAIL_SNMP_GET_NEXT) {
+			if (version_compare("5", phpversion(), "<")) {
+				$oid = ".1.3";
+			}else{
+				$oid = ".1.3.6.1.2.1.1.3.0";
+			}
+		}else if ($this->avail_method == AVAIL_SNMP_GET_SYSDESC) {
+			$oid = ".1.3.6.1.2.1.1.1.0";
+		}else {
 			$oid = ".1.3.6.1.2.1.1.3.0";
 		}
 
-		while (1) {
-			if ($retry_count >= $this->retries) {
-				$this->snmp_status   = "down";
-				$this->snmp_response = "Host did not respond to SNMP";
+		/* getnext does not work in php versions less than 5 */
+		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
+			(version_compare("5", phpversion(), "<"))) {
+			$output = cacti_snmp_getnext($this->device["hostname"],
+				$this->device["snmp_community"],
+				$oid,
+				$this->device["snmp_version"],
+				$this->device["snmp_username"],
+				$this->device["snmp_password"],
+				$this->device["snmp_auth_protocol"],
+				$this->device["snmp_priv_passphrase"],
+				$this->device["snmp_priv_protocol"],
+				$this->device["snmp_context"],
+				$this->device["snmp_port"],
+				$this->device["snmp_timeout"],
+				$this->retries,
+				SNMP_CMDPHP);
+		}else{
+			$output = cacti_snmp_get($this->device["hostname"],
+				$this->device["snmp_community"],
+				$oid,
+				$this->device["snmp_version"],
+				$this->device["snmp_username"],
+				$this->device["snmp_password"],
+				$this->device["snmp_auth_protocol"],
+				$this->device["snmp_priv_passphrase"],
+				$this->device["snmp_priv_protocol"],
+				$this->device["snmp_context"],
+				$this->device["snmp_port"],
+				$this->device["snmp_timeout"],
+				$this->retries,
+				SNMP_CMDPHP);
+		}
 
-				return false;
-			}
+		/* determine total time +- ~10% */
+		$this->time = $this->get_time($this->precision);
 
-			/* getnext does not work in php versions less than 5 */
-			if (version_compare("5", phpversion(), "<")) {
-				$output = cacti_snmp_getnext($this->device["hostname"],
-					$this->device["snmp_community"],
-					$oid,
-					$this->device["snmp_version"],
-					$this->device["snmp_username"],
-					$this->device["snmp_password"],
-					$this->device["snmp_auth_protocol"],
-					$this->device["snmp_priv_passphrase"],
-					$this->device["snmp_priv_protocol"],
-					$this->device["snmp_context"],
-					$this->device["snmp_port"],
-					$this->device["snmp_timeout"],
-					SNMP_CMDPHP);
-			}else{
-				$output = cacti_snmp_get($this->device["hostname"],
-					$this->device["snmp_community"],
-					$oid,
-					$this->device["snmp_version"],
-					$this->device["snmp_username"],
-					$this->device["snmp_password"],
-					$this->device["snmp_auth_protocol"],
-					$this->device["snmp_priv_passphrase"],
-					$this->device["snmp_priv_protocol"],
-					$this->device["snmp_context"],
-					$this->device["snmp_port"],
-					$this->device["snmp_timeout"],
-					SNMP_CMDPHP);
-			}
+		/* check result for uptime */
+		if (strlen($output)) {
+			/* calculte total time */
+			$this->snmp_status   = $this->time*1000;
+			$this->snmp_response = "Host responded to SNMP";
 
-			/* determine total time +- ~10% */
-			$this->time = $this->get_time($this->precision);
+			return true;
+		}else{
+			$this->snmp_status   = "down";
+			$this->snmp_response = "Host did not respond to SNMP";
 
-			/* check result for uptime */
-			if (strlen($output)) {
-				/* calculte total time */
-				$this->snmp_status   = $this->time*1000;
-				$this->snmp_response = "Host responded to SNMP";
-
-				return true;
-			}
-
-			if ($retry_count == 0) {
-				$oid = ".1.3.6.1.2.1.1.3.0";
-			}else{
-				$oid = ".1.3.6.1.2.1.1.1.0";
-			}
-
-			$retry_count++;
+			return false;
 		}
 	} /* ping_snmp */
 
@@ -481,7 +475,7 @@ class Net_Ping
 					}
 
 					$this->close_socket();
-					
+
 					return true; /* "connection refused" says: host is alive (else ping would time out) */
 				case 1:
 					/* connected, so calculate the total time and return */
@@ -523,6 +517,7 @@ class Net_Ping
 		$this->ping_response = "Ping not performed due to setting.";
 		$this->snmp_status   = "down";
 		$this->snmp_response = "SNMP not performed due to setting or ping result.";
+		$this->avail_method  = $avail_method;
 
 		/* short circuit for availability none */
 		if ($avail_method == AVAIL_NONE) {
