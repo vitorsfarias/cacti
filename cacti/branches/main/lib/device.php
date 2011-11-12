@@ -735,6 +735,8 @@ function device_display_general($device, $device_text) {
 		?>
 			<tr class="rowAlternate3">
 				<?php if (($device["availability_method"] == AVAIL_SNMP) ||
+					($device["availability_method"] == AVAIL_SNMP_GET_SYSDESC) ||
+					($device["availability_method"] == AVAIL_SNMP_GET_NEXT) ||
 					($device["availability_method"] == AVAIL_SNMP_AND_PING) ||
 					($device["availability_method"] == AVAIL_SNMP_OR_PING)) { ?>
 				<td class="textInfo">
@@ -1041,6 +1043,8 @@ function device_display_general($device, $device_text) {
 
 			break;
 		case "<?php print AVAIL_SNMP;?>": // snmp
+		case "<?php print AVAIL_SNMP_GET_NEXT;?>": // snmp
+		case "<?php print AVAIL_SNMP_GET_SYSDESC;?>": // snmp
 			/* deactivate PING */
 			setPingPortVisibility("<?php print PING_NONE;?>")
 			/* set SNMP, take care when previous SNMP version was SNMP_VERSION_NONE */
@@ -1142,7 +1146,7 @@ function device_display_general($device, $device_text) {
 		}else{
 			$('#row_template_enabled').show();
 		}
-			}
+	}
 
 	$().ready(function() {
 		//alert('ready function firing');
