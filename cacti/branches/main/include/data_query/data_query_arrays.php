@@ -45,3 +45,10 @@ $tree_sort_types_cli = array(
 	DATA_QUERY_INDEX_SORT_TYPE_NATURAL => __("natural"),
 	DATA_QUERY_INDEX_SORT_TYPE_NUMERIC => __("numeric"),
 	);
+
+$data_query_nullx_options = array(
+	DATA_QUERY_INDEX_IGNORE_NOTHING => __("Disable"),
+	DATA_QUERY_INDEX_IGNORE_NULLS => __("Ignore All Nulls"),
+	DATA_QUERY_INDEX_IGNORE_DUP_NULLS => __("Ignore Only Duplicate Nulls"),
+	);
+	
