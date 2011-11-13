@@ -259,8 +259,8 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = 
 				$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["device_id"], $data_local["snmp_query_id"], $data_local["snmp_index"], 0, false);
 			} elseif (($data_source["rrd_maximum"] != "U") && (int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
 				$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
-			}	
-	
+			}
+
 			/* min==max==0 won't work with rrdtool */
 			if ($data_source["rrd_minimum"] == 0 && $data_source["rrd_maximum"] == 0) {
 				$data_source["rrd_maximum"] = "U";
@@ -462,6 +462,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 						}
 					} else {
 						list($mantisa, $exponent) = explode('e', $matches[$i]);
+						$mantisa = str_replace(",",".",$mantisa);
 						$value = ($mantisa * (pow(10, (float)$exponent)));
 						$fetch_array["values"][$i - 1][$j] = ($value * 1);
 						$max_array[$i - 1] = $value;
@@ -3365,7 +3366,7 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 				<minimal_heartbeat> $min_hb </minimal_heartbeat>
 				<min> $min </min>
 				<max> $max </max>
-	
+
 				<!-- PDP Status -->
 				<last_ds> $last_ds </last_ds>
 				<value> 0.0000000000e+00 </value>
@@ -3417,7 +3418,7 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 				<name> $name </name>
 				<type> $type </type>
 				<cdef> $cdef </cdef>
-	
+
 				<!-- PDP Status -->
 				<last_ds> $last_ds </last_ds>
 				<value> 0.0000000000e+00 </value>
@@ -3501,7 +3502,7 @@ function rrd_append_value($dom) {
 	/* iterate all entries found, equals "number of <rra>" times "number of <ds>" */
 	if ($itemList->length) {
 		foreach ($itemList as $item) {
-			/* $item now points to the next <cdp_prep> XML Element 
+			/* $item now points to the next <cdp_prep> XML Element
 			 * and append new ds entry at end of <cdp_prep> child list */
 			$item->appendChild($new_v);
 		}
@@ -3563,10 +3564,10 @@ function rrd_delete_rra($dom, $rra_parm) {
 		$pdp_per_row = $rra->getElementsByTagName('pdp_per_row')->item(0)->nodeValue;
 		$xff = $rra->getElementsByTagName('xff')->item(0)->nodeValue;
 		$rows = $rra->getElementsByTagName('row')->length;
-		
-		if ($cf 			== $rra_parm['cf'] && 
+
+		if ($cf 			== $rra_parm['cf'] &&
 			$pdp_per_row 	== $rra_parm['pdp_per_row'] &&
-			$xff 			== $rra_parm['xff'] && 
+			$xff 			== $rra_parm['xff'] &&
 			$rows 			== $rra_parm['rows']) {
 			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n", $cf, $rows, $pdp_per_row, $xff));
 			/* we need the parentNode for removal operation */
@@ -3599,10 +3600,10 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 		$_pdp_per_row = $rra->getElementsByTagName('pdp_per_row')->item(0)->nodeValue;
 		$_xff = $rra->getElementsByTagName('xff')->item(0)->nodeValue;
 		$_rows = $rra->getElementsByTagName('row')->length;
-		
-		if ($_cf 			== $rra_parm['cf'] && 
+
+		if ($_cf 			== $rra_parm['cf'] &&
 			$_pdp_per_row 	== $rra_parm['pdp_per_row'] &&
-			$_xff 			== $rra_parm['xff'] && 
+			$_xff 			== $rra_parm['xff'] &&
 			$_rows 			== $rra_parm['rows']) {
 			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n", $cf, $_rows, $_pdp_per_row, $_xff));
 			/* we need the parentNode for append operation */
@@ -3613,7 +3614,7 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 			/* and find the "old" cf */
 			#$old_cf = $new_rra->getElementsByTagName('cf')->item(0);
 			/* now replace old cf with new one */
-			#$old_cf->childNodes->item(0)->replaceData(0,20,$cf);			
+			#$old_cf->childNodes->item(0)->replaceData(0,20,$cf);
 			$new_rra->getElementsByTagName("cf")->item(0)->nodeValue = $cf;
 
 			/* append new rra entry at end of the list */
