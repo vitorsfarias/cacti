@@ -22,6 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
+/** encode given graph template as XML string
+ * @param int $graph_template_id	- id of graph template
+ * @return string					- XML text of encoded graph template
+ */
 function graph_template_to_xml($graph_template_id) {
 	global $export_errors;
 
@@ -143,6 +147,11 @@ function graph_template_to_xml($graph_template_id) {
 	return $xml_text;
 }
 
+
+/** encode given data template as XML string
+ * @param int $data_template_id	- id of data template
+ * @return string				- XML text of encoded data template
+ */
 function data_template_to_xml($data_template_id) {
 	global $export_errors;
 
@@ -264,6 +273,11 @@ function data_template_to_xml($data_template_id) {
 	return $xml_text;
 }
 
+
+/** encode given data input as XML string
+ * @param int $data_input_id	- id of data input
+ * @return string				- XML text of encoded data input
+ */
 function data_input_method_to_xml($data_input_id) {
 	global $export_errors;
 
@@ -328,6 +342,11 @@ function data_input_method_to_xml($data_input_id) {
 	return $xml_text;
 }
 
+
+/** encode given CDEF as XML string
+ * @param int $cdef_id	- id of CDEF
+ * @return string		- XML text of encoded CDEF
+ */
 function cdef_to_xml($cdef_id) {
 	global $export_errors;
 
@@ -368,10 +387,16 @@ function cdef_to_xml($cdef_id) {
 
 		$xml_text .= "\t\t<hash_" . $hash["cdef_item"] . ">\n";
 
+		/* now do the encoding */
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden") && ($field_array["method"] != "spacer")) {
-				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
+				/* check, if an inherited cdef as to be encoded */
+				if (($field_name == "value") && ($item["type"] == CVDEF_ITEM_TYPE_CDEF)) {
+					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+				} else {
+					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
+				}
 			}
 		}
 
@@ -387,6 +412,11 @@ function cdef_to_xml($cdef_id) {
 	return $xml_text;
 }
 
+
+/** encode given VDEF as XML string
+ * @param int $vdef_id	- id of VDEF
+ * @return string		- XML text of encoded VDEF
+ */
 function vdef_to_xml($vdef_id) {
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
 
@@ -442,6 +472,11 @@ function vdef_to_xml($vdef_id) {
 	return $xml_text;
 }
 
+
+/** encode given XAXIS as XML string
+ * @param int $xaxis_id	- id of XAXIS
+ * @return string		- XML text of encoded XAXIS
+ */
 function xaxis_to_xml($xaxis_id) {
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
 
@@ -498,6 +533,11 @@ function xaxis_to_xml($xaxis_id) {
 	return $xml_text;
 }
 
+
+/** encode given gprint preset as XML string
+ * @param int $gprint_preset_id	- id of gprint preset
+ * @return string				- XML text of encoded gprint preset
+ */
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $export_errors;
 
@@ -531,6 +571,11 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	return $xml_text;
 }
 
+
+/** encode given RRA as XML string
+ * @param int $round_robin_archive_id	- id of RRA
+ * @return string						- XML text of encoded RRA
+ */
 function round_robin_archive_to_xml($round_robin_archive_id) {
 	global $export_errors;
 
@@ -585,6 +630,11 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 	return $xml_text;
 }
 
+
+/** encode given device template as XML string
+ * @param int $device_template_id	- id of device template
+ * @return string					- XML text of encoded device template
+ */
 function device_template_to_xml($device_template_id) {
 	global $export_errors;
 	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
@@ -655,6 +705,11 @@ function device_template_to_xml($device_template_id) {
 	return $xml_text;
 }
 
+
+/** encode given data query as XML string
+ * @param int $data_query_id	- id of data query
+ * @return string				- XML text of encoded data query
+ */
 function data_query_to_xml($data_query_id) {
 	global $export_errors;
 
@@ -796,6 +851,13 @@ function data_query_to_xml($data_query_id) {
 	return $xml_text;
 }
 
+
+/** resolve dependencies between all Cacti data types
+ * @param int $type			- type of item, e.g. graph/data/device template
+ * @param int $id			- id of given object
+ * @param int $dep_array	- array of all accumulated dependencies
+ * @return string			- $dep_array
+ */
 function resolve_dependencies($type, $id, $dep_array) {
 	/* make sure we define our variables */
 	if (!isset($dep_array[$type])) {
@@ -805,7 +867,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 	switch ($type) {
 	case 'graph_template':
 		/* dep: data template */
-		$graph_template_items = db_fetch_assoc("select
+		$data_template_items = db_fetch_assoc("select
 			data_template_rrd.data_template_id
 			from (graph_templates_item,data_template_rrd)
 			where graph_templates_item.task_item_id=data_template_rrd.id
@@ -814,8 +876,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 			and graph_templates_item.task_item_id > 0
 			group by data_template_rrd.data_template_id");
 
-		if (sizeof($graph_template_items) > 0) {
-		foreach ($graph_template_items as $item) {
+		if (sizeof($data_template_items) > 0) {
+		foreach ($data_template_items as $item) {
 			if (!isset($dep_array["data_template"]{$item["data_template_id"]})) {
 				$dep_array = resolve_dependencies("data_template", $item["data_template_id"], $dep_array);
 			}
@@ -823,21 +885,52 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: cdef */
-		$graph_template_items = db_fetch_assoc("select cdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and cdef_id > 0 group by cdef_id");
-
-		if (sizeof($graph_template_items) > 0) {
-		foreach ($graph_template_items as $item) {
-			if (!isset($dep_array["cdef"]{$item["cdef_id"]})) {
-				$dep_array = resolve_dependencies("cdef", $item["cdef_id"], $dep_array);
+		$cdef_items = db_fetch_assoc("select cdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and cdef_id > 0 group by cdef_id");
+		
+		$recursive = true;
+		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
+		$search_cdef_items = $cdef_items;
+		if (sizeof($cdef_items) > 0) {
+			while ($recursive) {
+				/* are there any inherited cdef's within those referenced by any graph item? 
+				 * search for all cdef_items of type = CVDEF_ITEM_TYPE_CDEF (inherited cdef) 
+				 * but fetch only those related to already given cdef's */
+				$sql = "SELECT value as cdef_id " .
+					"FROM cdef_items " .
+					"WHERE type = " . CVDEF_ITEM_TYPE_CDEF . " " .
+					"AND " . array_to_sql_or($search_cdef_items, "cdef_id");
+				$inherited_cdef_items = db_fetch_assoc($sql);
+				
+				/* in case we found any */
+				if (sizeof($inherited_cdef_items) > 0) {
+					/* join all cdef's found 
+					 * ATTENTION!
+					 * sequence of parameters matters! 
+					 * we must place the newly found inherited items first
+					 * reason is, that during import, the leafes have to be tackled first,
+					 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
+					 * first during re-import */
+					$cdef_items = array_merge_recursive($inherited_cdef_items, $cdef_items);
+					/* for the next turn, search only new cdef's */
+					$search_cdef_items = $inherited_cdef_items;
+				} else {
+					/* else stop recursion */
+					$recursive = false;
+				}
 			}
-		}
+
+			foreach ($cdef_items as $item) {
+				if (!isset($dep_array["cdef"]{$item["cdef_id"]})) {
+					$dep_array = resolve_dependencies("cdef", $item["cdef_id"], $dep_array);
+				}
+			}
 		}
 
 		/* dep: vdef */
-		$graph_template_items = db_fetch_assoc("select vdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and vdef_id > 0 group by vdef_id");
+		$vdef_items = db_fetch_assoc("select vdef_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and vdef_id > 0 group by vdef_id");
 
-		if (sizeof($graph_template_items) > 0) {
-		foreach ($graph_template_items as $item) {
+		if (sizeof($vdef_items) > 0) {
+		foreach ($vdef_items as $item) {
 			if (!isset($dep_array["vdef"]{$item["vdef_id"]})) {
 				$dep_array = resolve_dependencies("vdef", $item["vdef_id"], $dep_array);
 			}
@@ -845,10 +938,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		/* dep: gprint preset */
-		$graph_template_items = db_fetch_assoc("select gprint_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and gprint_id > 0 group by gprint_id");
+		$gprint_preset_items = db_fetch_assoc("select gprint_id from graph_templates_item where graph_template_id=$id and local_graph_id=0 and gprint_id > 0 group by gprint_id");
 
-		if (sizeof($graph_template_items) > 0) {
-		foreach ($graph_template_items as $item) {
+		if (sizeof($gprint_preset_items) > 0) {
+		foreach ($gprint_preset_items as $item) {
 			if (!isset($dep_array["gprint_preset"]{$item["gprint_id"]})) {
 				$dep_array = resolve_dependencies("gprint_preset", $item["gprint_id"], $dep_array);
 			}
@@ -928,6 +1021,12 @@ function resolve_dependencies($type, $id, $dep_array) {
 	return $dep_array;
 }
 
+/** main procedure to be called during export
+ * @param string $type 		- type of object to be exported
+ * @param int $id 			- id of the object to be exported
+ * @param bool $follow_deps	- whether we shall follow dependencies or not
+ * @return string			- xml for export
+ */
 function get_item_xml($type, $id, $follow_deps) {
 	$xml_text = "";
 	$xml_indent = "";
@@ -990,6 +1089,10 @@ function get_item_xml($type, $id, $follow_deps) {
 	return $xml_text;
 }
 
+/** perform XML encoding
+ * @param string $text	- the text to be encoded
+ * @return string		- encoded text for use with XML
+ */
 function xml_character_encode($text) {
 	if (function_exists("htmlspecialchars")) {
 		return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
