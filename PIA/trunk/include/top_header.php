@@ -102,7 +102,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 		</td>
 	</tr>
 	<tr>
-		<td valign="top" colspan="1" rowspan="2" width="135" style="width:135px;padding:5px;border-right:#aaaaaa 1px solid;" bgcolor='#f5f5f5'>
+		<td valign="top" colspan="1" rowspan="2" style="width:135px;padding:5px;border-right:#aaaaaa 1px solid;" bgcolor='#f5f5f5'>
 			<table bgcolor="#f5f5f5" width="100%" cellpadding="1" cellspacing="0" border="0" style="width:135px;">
 				<?php draw_menu();?>
 			</table>
