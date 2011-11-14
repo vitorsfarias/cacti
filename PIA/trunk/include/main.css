@@ -78,6 +78,7 @@ a:hover {
 .tableSubHeaderColumn {
 	color: #ffffff;
 	font-weight:bold;
+	vertical-align:bottom;
 }
 
 .textArea {
