@@ -152,7 +152,7 @@ function display_help($me) {
 	echo "   --device-id        " . __("the numerical ID of the device") . "\n";
 	echo "   --device-template  " . __("The Device Template to Refresh") . "\n\n";
 	echo __("Optional:") . "\n";
-	echo "   -d | --debug            " . __("Display verbose output during execution") . "\n";
+	echo "   -d --debug            " . __("Display verbose output during execution") . "\n";
 	echo "   -v --version            " . __("Display this help message") . "\n";
 	echo "   -h --help               " . __("Display this help message") . "\n";
 	echo __("List Options:") . "\n\n";
