@@ -486,7 +486,7 @@ function plugin_show($status = 'all', $refresh = true) {
 	$table->refresh        = $refresh;
 	$table->resizable      = true;
 	$table->sortable       = true;
-	$table->table_id       = "plugin_list";
+	$table->table_id       = "plugins";
 	$table->row_function   = "row_plugin_class";
 	$table->row_params     = array("ptype");
 #	$table->actions        = $plugin_actions;

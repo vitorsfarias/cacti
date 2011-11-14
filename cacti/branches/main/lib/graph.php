@@ -445,7 +445,7 @@ function graph_form_save() {
 						db_execute("update graph_local set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where id=$local_graph_id");
 						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where local_graph_id=$local_graph_id");
 
-						header("Location: graphs.php?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
+						header("Location: " . html_get_location("graphs.php") . "action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
 					}
 				}
@@ -511,11 +511,11 @@ function graph_form_save() {
 	}
 
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
-		header("Location: graphs.php?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: " . html_get_location("graphs.php") . "action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: graphs.php?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
+		header("Location: " . html_get_location("graphs.php") . "action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}else{
-		header("Location: graphs.php");
+		header("Location: " . html_get_location("graphs.php"));
 	}
 
 	exit;
@@ -827,6 +827,15 @@ function graph_form_actions() {
 
 		$title = __("Selection Error");
 	}
+
+	if (isset($_POST['tab'])) {
+		form_hidden_box('tab', get_request_var_post('tab'), '');
+		form_hidden_box('table_id', get_request_var_post('table_id'), '');
+		form_hidden_box('id',  get_request_var_post('id'), '');
+	}
+
+	if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
+	if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
 
 	if (!sizeof($graph_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button($title);
@@ -1399,6 +1408,10 @@ function graph_edit() {
 	}
 
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
+
+	if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
+	if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
+
 	form_save_button_alt();
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
@@ -1691,6 +1704,11 @@ function graph($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = array_merge(graph_actions_list(), tree_add_tree_names_to_actions_array());
+	$table->table_id       = "graphs";
+	if (isset($_REQUEST['parent'])) {
+		$table->parent    = get_request_var_request('parent');
+		$table->parent_id = get_request_var_request('parent_id');
+	}
 
 	/* we must validate table variables */
 	$table->process_page_variables();
@@ -1707,13 +1725,6 @@ function graph($refresh = true) {
    -------------------------- */
 
 function graphs_new_form_save() {
-	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=edit&id=" . $_REQUEST["device_id"] . "#ui-tabs-2";
-	}else{
-		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
-	}
-
-
 	if (isset($_POST["save_component_graph"])) {
 		/* summarize the 'create graph from device template/snmp index' stuff into an array */
 		while (list($var, $val) = each($_POST)) {
@@ -1733,14 +1744,14 @@ function graphs_new_form_save() {
 			exit;
 		}
 
-		header("Location: " . $file);
+		header("Location: " . html_get_location("graphs_new.php"));
 		exit;
 	}
 
 	if (isset($_POST["save_component_new_graphs"])) {
 		device_new_graphs_save();
 
-		header("Location: " . $file);
+		header("Location: " . html_get_location("graphs_new.php"));
 		exit;
 	}
 }
@@ -1889,21 +1900,13 @@ function device_new_graphs_save() {
 }
 
 function device_new_graphs($device_id, $device_template_id, $selected_graphs_array) {
-	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
-		$file2 = "devices.php";
-	}else{
-		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
-		$file2 = "graphs_new.php";
-	}
-
 	/* we use object buffering on this page to allow redirection to another page if no
 	fields are actually drawn */
 	ob_start();
 
 	include_once(CACTI_BASE_PATH . "/include/top_header.php");
 
-	print "<form action='" . $file2 . "' method='post'>\n";
+	print "<form action='" . html_get_location("graphs_new.php") . "' method='post'>\n";
 
 	$snmp_query_id = 0;
 	$num_output_fields = array();
@@ -2001,7 +2004,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 
 		device_new_graphs_save();
 
-		header("Location: " . $file);
+		header("Location: " . html_get_location("graphs_new.php"));
 		exit;
 	}
 
@@ -2012,6 +2015,12 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 	form_hidden_box("device_id", $device_id, "0");
 	form_hidden_box("save_component_new_graphs", "1", "");
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
+
+	/* required for sub-tab navigation */
+	form_hidden_box("table_id", "graphs_new", "");
+
+	if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
+	if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
 
 	form_save_button_alt("device_id!$device_id");
 
@@ -2060,14 +2069,6 @@ function graphs_new() {
 	load_current_session_value("graph_type", "sess_graphs_new_graph_type", read_config_option("default_graphs_new_dropdown"));
 	load_current_session_value("filter",     "sess_graphs_new_filter",     "");
 
-	if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-		$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
-		$file2 = "devices.php";
-	}else{
-		$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
-		$file2 = "graphs_new.php";
-	}
-
 	$device       = db_fetch_row("select id,description,hostname,device_template_id from device where id=" . $_REQUEST["device_id"]);
 	$row_limit    = read_config_option("num_rows_data_query");
 	$debug_log    = debug_log_return("new_graphs");
@@ -2077,7 +2078,7 @@ function graphs_new() {
 	<script type="text/javascript">
 	<!--
 	function applyGraphsNewFilterChange(objForm) {
-		strURL = '?action=newgraphs&tab=newgraphs';
+		strURL = '?action=graphs_new&tab=graphs_new';
 		strURL = strURL + '&graph_type=' + objForm.graph_type.value;
 		strURL = strURL + '&device_id=' + objForm.device_id.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;;
@@ -2095,7 +2096,7 @@ function graphs_new() {
 	}
 
 	function clearFilter() {
-		strURL = '?clear_x=true&action=newgraphs&tab=newgraphs';
+		strURL = '?clear_x=true&action=graphs_new&tab=graphs_new';
 		$loc = $('#form_graphs_new').closest('div[id^="ui-tabs"]');
 		if ($loc.attr('id')) {
 			$.get(strURL, function(data) {
@@ -2116,7 +2117,7 @@ function graphs_new() {
 	?>
 	<tr class='rowAlternate3'>
 		<td>
-			<form id="form_graphs_new" name="form_graphs_new" method="post" action="<?php print $file2;?>" onSubmit="javascript:return false;">
+			<form id="form_graphs_new" name="form_graphs_new" method="post" action="<?php print html_get_location("graphs_new.php")?>" onSubmit="javascript:return false;">
 			<table cellpadding="0" align="left">
 				<tr>
 					<?php if (!isset($_REQUEST["tab"])) { ?>
@@ -2136,7 +2137,9 @@ function graphs_new() {
 						?>
 						</select>
 					</td>
-					<?php } ?>
+					<?php }else{ ?>
+					<input type='hidden' id='device_id' name='device_id' value='<?php print get_request_var_request('device_id');?>'>
+					<?php }?>
 					<td class="nw50">
 						&nbsp;<?php print __("Type:");?>&nbsp;
 					</td>
@@ -2174,13 +2177,14 @@ function graphs_new() {
 						&nbsp;<input type="button" name="go" onClick="applyGraphsNewFilterChange(document.form_graphs_new)" value="<?php print __("Go");?>" align="middle">
 						<input type="button" onClick="clearFilter()" value="<?php print __("Clear");?>" align="middle">
 						<input type="hidden" name="action" value="edit">
-						<input type="hidden" name="tab" value="newgraphs">
 					</td>
 					<?php }else{
 					form_hidden_box("device_template_id", $device["device_template_id"], "0");
 					form_hidden_box("filter", get_request_var_request("filter"), "");
 					}
-					form_hidden_box("device_id", $device["id"], "0");
+					form_hidden_box("table_id", "graphs_new", "0");
+					if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
+					if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
 				?>
 				</tr>
 			</table>
@@ -2211,7 +2215,7 @@ function graphs_new() {
 		}
 	}
 
-	print "<form name='chk' method='post' action='" . $file2 . "'>";
+	print "<form name='chk' method='post' action='graphs_new.php" . (isset($_REQUEST['parent']) ? "?parent=" . $_REQUEST['parent'] . "&parent_id=" . $_REQUEST['parent_id']:"") . "'>";
 	print "<script type='text/javascript'>\nvar created_graphs = new Array()\n</script>\n";
 	if (get_request_var_request("graph_type") < 0) {
 
@@ -2457,17 +2461,9 @@ function graphs_new() {
 						load_current_session_value("page" . $query["id"], "sess_graphs_new_page" . $query["id"], "1");
 					}
 
-					if (substr_count($_SERVER["REQUEST_URI"], "/devices.php")) {
-						$file = "devices.php?action=graphs_new&tab=newgraphs&id=" . $_REQUEST["device_id"];
-						$file2 = "devices.php";
-					}else{
-						$file = "graphs_new.php?device_id=". $_REQUEST["device_id"];
-						$file2 = "graphs_new.php";
-					}
-
 					if ($total_rows > $row_limit) {
 						/* generate page list navigation */
-						$nav = html_create_nav($page, MAX_DISPLAY_PAGES, $row_limit, $total_rows, 40, $file, "page" . $snmp_query["id"]);
+						$nav = html_create_nav($page, MAX_DISPLAY_PAGES, $row_limit, $total_rows, 40, html_get_location("graphs_new.php"), "page" . $snmp_query["id"]);
 
 						print $nav;
 					}
@@ -2565,7 +2561,16 @@ function graphs_new() {
 	form_hidden_box("device_id", $device["id"], "0");
 	form_hidden_box("device_template_id", $device["device_template_id"], "0");
 
-	form_save_button_alt("url!" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""));
+	/* required for sub-tab navigation */
+	form_hidden_box("table_id", "graphs_new", "");
+	if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
+	if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
+
+	if (isset($_REQUEST["parent_id"])) {
+		form_save_button_alt("url!" . "graphs_new.php?parent=" . get_request_var_request("parent") . "&parent_id=" . get_request_var_request("parent_id"));
+	}else{
+		form_save_button_alt("url!" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : ""));
+	}
 
 	if (sizeof($onReadyFuncs)) {
 		print "<script type='text/javascript'>\n";

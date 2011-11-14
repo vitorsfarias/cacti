@@ -45,14 +45,9 @@ $device_actions = plugin_hook_function('device_action_array', $device_actions);
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
-
-switch (get_request_var_request("action")) {
+switch (get_request_var_request('action')) {
 	case 'save':
-		if (isset($_REQUEST["save_component_graph"]) || isset($_REQUEST["save_component_new_graphs"])) {
-			graphs_new_form_save();
-		}else{
-			device_form_save();
-		}
+		device_form_save();
 
 		break;
 	case 'actions':
@@ -101,11 +96,11 @@ switch (get_request_var_request("action")) {
 		graph();
 
 		break;
-	case 'datasources':
+	case 'data_sources':
 		data_source();
 
 		break;
-	case 'newgraphs':
+	case 'graphs_new':
 		graphs_new();
 
 		break;
