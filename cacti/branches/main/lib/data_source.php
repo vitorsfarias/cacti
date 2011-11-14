@@ -448,12 +448,13 @@ function data_source_form_save() {
 	}
 
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
-		header("Location: data_sources.php?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: " . html_get_location("data_sources.php") . "action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["hidden_data_template_id"]) || ($_POST["data_input_id"] != $_POST["hidden_data_input_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: data_sources.php?action=edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
+		header("Location: " . html_get_location("data_sources.php") . "action=edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
 	}else{
-		header("Location: data_sources.php");
+		header("Location: " . html_get_location("data_sources.php"));
 	}
+
 	exit;
 }
 
@@ -725,6 +726,11 @@ function data_source_form_actions() {
 		$title = __("Selection Error");
 	}
 
+	if (isset($_POST['tab'])) {
+		form_hidden_box('tab', get_request_var_post('tab'), '');
+		form_hidden_box('id',  get_request_var_post('id'), '');
+	}
+
 	if (!sizeof($ds_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button($title);
 	}else{
@@ -840,7 +846,7 @@ function data_source_rrd_remove() {
 	db_execute("delete from data_template_rrd where id=" . $_GET["id"]);
 	db_execute("update graph_templates_item set task_item_id=0 where task_item_id=" . $_GET["id"]);
 
-	header("Location: data_sources.php?action=edit&id=" . $_GET["local_data_id"]);
+	header("Location: " . html_get_location("data_sources.php") . "action=edit&id=" . $_GET["local_data_id"]);
 	exit;
 }
 
@@ -853,7 +859,7 @@ function data_source_rrd_add() {
 		data_source_name) values (" . get_request_var("id") . ",100,0,600,1,'ds')");
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header("Location: data_sources.php?action=edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
+	header("Location: " . html_get_location("data_sources.php") . "action=edit&id=" . $_GET["id"] . "&view_rrd=$data_template_rrd_id");
 	exit;
 }
 
@@ -877,7 +883,7 @@ function data_source_edit() {
 			$data_template_data = db_fetch_row("select * from data_template_data where data_template_id='" . $data_local["data_template_id"] . "' and local_data_id=0");
 		} else {
 			$_SESSION["sess_messages"] = 'Data Source "' . $_GET["id"] . '" does not exist.';
-			header ("Location: data_sources.php");
+			header ("Location: " . html_get_location("data_sources.php"));
 			exit;
 		}
 
@@ -1213,7 +1219,6 @@ function data_source_filter() {
 	html_end_box(false);
 	?>
 	<script type="text/javascript">
-	<!--
 	$().ready(function() {
 		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#device").result(function(event, data, formatted) {
@@ -1289,7 +1294,6 @@ function data_source_filter() {
 			});
 		}
 	}
-	-->
 	</script>
 	<?php
 }
@@ -1431,6 +1435,11 @@ function data_source($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $ds_actions;
+	$table->table_id       = "data_sources";
+	if (isset($_REQUEST['parent'])) {
+		$table->parent    = get_request_var_request('parent');
+		$table->parent_id = get_request_var_request('parent_id');
+	}
 
 	/* we must validate table variables */
 	$table->process_page_variables();

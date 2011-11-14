@@ -168,6 +168,23 @@ function html_graph_end_box() {
 	print "</table>\n";
 }
 
+/* html_get_location - calculates the return location for nested tables */
+function html_get_location($page) {
+	if (isset($_REQUEST["parent"]) && isset($_REQUEST["parent_id"])) {
+		$parts = explode("?", $page);
+		return get_request_var_request("parent") . ".php?parent=" . get_request_var_request("parent") . "&id=" . get_request_var_request("parent_id") . (isset($parts[1]) ? $parts[1]:"") . (strstr($page, "action=") !== false ? "":"&action=edit");
+		//return $page . (strstr($page, "?") !== false ? "&":"?") . "parent=" . get_request_var_request("parent") . "&parent_id=" . get_request_var_request("parent_id") . (strstr($page, "action=") !== false ? "":"&action=ajax_view");
+	}else{
+		return $page;
+	}
+}
+
+function html_draw_tabs() {
+	if (function_exists("html_" . get_request_var_request("parent") . "_draw_tabs")) {
+		call_user_func("html_" . get_request_var_request("parent") . "_draw_tabs");
+	}
+}
+
 /* html_graph_area - draws an area the contains full sized graphs
    @param $graph_array - the array to contains graph information. for each graph in the
      array, the following two keys must exist
@@ -456,7 +473,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
    @param $table_id - table id
    @param $sort_url - provide url to be used as a base for sort function
    */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "", $sort_url) {
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "", $sort_url = "") {
 	static $rand_id = 0;
 
 	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
@@ -761,7 +778,10 @@ class html_table {
 		$this->filter_func    = "";			# a string that denotes the function to be called to create the filter html
 		$this->filter_html    = "";			# static filter html, use either this or the filter_func 
 		$this->session_prefix = "";			# prefix for session variables to be stored in a cookie
+
 		$this->table_id       = "";			# id of table to be used for JS/jQuery manipulation
+		$this->parent         = "";			# the id of the parent container, if there is one
+		$this->parent_id      = "";			# the parent id for the table referenced by table_id
 	}
 
 	function process_page_variables() {
@@ -803,8 +823,15 @@ class html_table {
 
 		html_start_box("", "100", "0", "center", "");
 
+		/* reclaculate the navigation href based upon the table id if set */
+		if (strlen($this->href)) {
+			if (strlen($this->parent)) {
+				$this->href .= (strstr($this->href, "?") !== false > 0 ? "&":"?") . "parent=" . $this->parent . (strlen($this->parent_id) ? "&parent_id=" . $this->parent_id:"");
+			}
+		}
+
 		/* calculate the navagation bar */
-		$nav = html_create_nav(html_get_page_variable("page"), MAX_DISPLAY_PAGES, $this->rows_per_page, $this->total_rows, $columns, $this->href . (strlen(html_get_page_variable("filter")) ? "?filter=" . html_get_page_variable("filter"):""));
+		$nav = html_create_nav(html_get_page_variable("page"), MAX_DISPLAY_PAGES, $this->rows_per_page, $this->total_rows, $columns, $this->href . (strlen(html_get_page_variable("filter")) ? (strstr($this->href, "?") !== false ? "&":"?") ."filter=" . html_get_page_variable("filter"):""));
 
 		/* display the navigation bar */
 		print $nav;
@@ -870,10 +897,10 @@ class html_table {
 						if (!strlen($checkbox_title)) {
 							$checkbox_title = $row[$column];
 						}
-						if ( isset( $data["href"] ) ) {
+						if (isset($data["href"])) {
 							$url = $data["href"] . "&id=" . $row[$this->key_field];
 						}else{
-							$url = $this->href . "?action=edit&id=" . $row[$this->key_field];
+							$url = $this->href . (strstr($this->href, "?") !== false ? "&":"?") . "action=edit&id=" . $row[$this->key_field];
 						}
 						$url .=  (isset($data["href_suffix"]) ? $data["href_suffix"] : "");
 						$text = "<a class='linkEditMain' href='" . htmlspecialchars($url) . "'>";
@@ -949,7 +976,7 @@ class html_table {
 
 		/* draw the dropdown containing a list of available actions for this form */
 		if (is_array($this->actions) && sizeof($this->actions)) {
-			draw_actions_dropdown($this->actions);
+			draw_actions_dropdown($this->actions, $this->table_id, $this->parent, $this->parent_id);
 		}
 
 		print "</form>\n";	# end form of html_header*
@@ -976,9 +1003,10 @@ class html_table {
    @param $checkbox - Either true or false if this is to be a checkbox table
    @param $sortable - Is the table sortable
    @param $sort_columns - The current sort column array
-   @param $sort_directions - The current sort order array */
+   @param $sort_directions - The current sort order array 
+   @parem $parent - The id to use for the table used */
 function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $page, $key_field = "id", $href = "",
-	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_directions = "", $table_id = "") {
+	$actions = "", $filter = "", $resizable = true, $checkbox = false, $sortable = true, $sort_columns = "", $sort_directions = "", $parent= "") {
 
 	/* generate page list navigation */
 	if ($checkbox) {
@@ -1000,15 +1028,15 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	/* draw the header */
 	if ($checkbox) {
 		if ($sortable) {
-			html_header_sort_checkbox($table_format, $sort_columns, $sort_directions, "", $table_id);
+			html_header_sort_checkbox($table_format, $sort_columns, $sort_directions, "", $parent);
 		}else{
-			html_header_checkbox($table_format, "", false, $table_id);
+			html_header_checkbox($table_format, "", false, $parent);
 		}
 	}else{
 		if ($sortable) {
-			html_header_sort($table_format, $sort_columns, $sort_directions, 1, $table_id);
+			html_header_sort($table_format, $sort_columns, $sort_directions, 1, $parent);
 		}else{
-			html_header($table_format, 1, false, $table_id);
+			html_header($table_format, 1, false, $parent);
 		}
 	}
 
@@ -1626,7 +1654,7 @@ function draw_menu($user_menu = '') {
      on one or more data elements
    @param $actions_array - an array that contains a list of possible actions. this array should
      be compatible with the form_dropdown() function */
-function draw_actions_dropdown($actions_array) {
+function draw_actions_dropdown($actions_array, $table_id = '', $parent = '', $parent_id = '') {
 	global $actions_none;
 	?>
 	<table class='saveBoxAction'>
@@ -1643,7 +1671,9 @@ function draw_actions_dropdown($actions_array) {
 			</td>
 		</tr>
 	</table>
-
+	<?php print ($table_id != '' ? "<input type='hidden' name='table_id' value='" . $table_id . "'>":""); ?>
+	<?php print ($parent != '' ? "<input type='hidden' name='parent' value='" . $parent . "'>":""); ?>
+	<?php print ($parent_id != '' ? "<input type='hidden' name='parent_id' value='" . $parent_id . "'>":""); ?>
 	<input type='hidden' name='action' value='actions'>
 	<script type='text/javascript'>
 	$('#go').click(function(data) {
@@ -1652,7 +1682,7 @@ function draw_actions_dropdown($actions_array) {
 			$('#cdialog').html(data);
 			title=$('#title td').text();
 			$('#title').empty().remove();
-			$('#cdialog').dialog({ title: title, minHeight: 80, minWidth: 500 });
+			$('#cdialog').dialog({ title: title, minHeight: 80, minWidth: 600 });
 		});
 	});
 	</script>
@@ -1662,7 +1692,6 @@ function draw_actions_dropdown($actions_array) {
 /*
  * Deprecated functions
  */
-
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = 'left') { ?>
 		<td height='1' style='text-align:<?php print $align;?>;' colspan='<?php print $column_span;?>'>
 			<font color='#<?php print $matrix_text_color;?>'><?php print $matrix_name;?></font>

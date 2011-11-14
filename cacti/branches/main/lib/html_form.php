@@ -1299,7 +1299,7 @@ function form_ajax_save($title, $form_id, $text = "") {
 	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
 		<td align="right" style="text-align:right">
-			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");$("#cdialog").empty();' name='cancel'>
 			<input id='save' type='button' value='<?php print $text;?>' name='save' title='<?php print $text . " [ " . $title . "]";?>'>
 		</td>
 	</tr>
@@ -1310,6 +1310,7 @@ function form_ajax_save($title, $form_id, $text = "") {
 		if ($var.attr('method') == 'post') {
 			$.post($var.attr('action'), $var.serialize(), function(data) {
 				$('#cdialog').dialog('close');
+				$('#cdialog').empty();
 				$.get($var.attr('action')+'?action=ajax_view', function(data) {
 					$('#content').html(data);
 				});
@@ -1336,6 +1337,8 @@ function form_continue($item_list, $drp_action = "none", $title = "", $form_id =
 			<div><input type='hidden' name='action' value='actions'></div>
 			<div><input type='hidden' name='selected_items' value='<?php print $item_list;?>'></div>
 			<div><input type='hidden' name='drp_action' value='<?php print $drp_action;?>'></div>
+			<?php print (isset($_REQUEST["parent"]) ? "<div><input type='hidden' name='parent' value='" . get_request_var_post("parent") . "'></div>":"");?>
+			<?php print (isset($_REQUEST["parent_id"]) ? "<div><input type='hidden' name='parent_id' value='" . get_request_var_post("parent_id") . "'></div>":"");?>
 			<input id='cancel' type='button' value='<?php print __("Cancel");?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
 			<input id='continue' type='button' value='<?php print __("Continue");?>' name='continue' title='<?php print $title;?>'>
 		</td>
@@ -1349,11 +1352,22 @@ function form_continue($item_list, $drp_action = "none", $title = "", $form_id =
 		}else{
 			$var = $('#<?php print $form_id;?>');
 		}
+
 		if ($var.attr('method') == 'post') {
+			$myReturn = $('#<?php print get_request_var_request('table_id');?>').closest('.ui-tabs-panel');
+
+			action = $var.attr('action')+'?action=ajax_view';
+			<?php print (isset($_REQUEST["parent"]) ? "action += '&parent=" . get_request_var_post("parent") . "'":"");?>;
+			<?php print (isset($_REQUEST["parent_id"]) ? "action += '&parent_id=" . get_request_var_post("parent_id") . "'":"");?>;
 			$.post($var.attr('action'), $var.serialize(), function(data) {
 				$('#cdialog').dialog('close');
-				$.get($var.attr('action')+'?action=ajax_view', function(data) {
-					$('#content').html(data);
+				$('#cdialog').empty();
+				$.get(action, function(data) {
+					if ($myReturn.attr('id')) {
+						$myReturn.html(data);
+					}else{ 
+						$('#content').html(data);
+					}
 				});
 			});
 		}else{

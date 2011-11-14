@@ -589,6 +589,8 @@ function device_form_actions() {
 		$title = __("Selection Error");
 	}
 
+	form_hidden_box("tab", "devices", "");
+
 	if (!isset($device_array) || get_request_var_post("drp_action") === ACTION_NONE) {
 		form_return_button($title);
 	}else{
@@ -644,6 +646,59 @@ function device_remove_gt() {
 }
 
 /**
+ * Device Sub-Tabs
+ */
+function html_devices_draw_tabs() {
+	$parent_id = get_request_var_request("parent_id");
+
+	$device_tabs = array(
+		"general" => __("General"),
+		"graphs_new" => __("New Graphs"),
+		"graphs" => __("Graphs"),
+		"data_sources" => __("Data Sources")
+	);
+
+	$device_tabs = plugin_hook_function('device_tabs_init', $device_tabs);
+
+	/* draw the categories tabs on the top of the page */
+	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
+	print "<td><div id='tabs_device'>";
+
+	if (sizeof($device_tabs) > 0) {
+		print "<ul>";
+		foreach (array_keys($device_tabs) as $tab_short_name) {
+			switch ($tab_short_name) {
+			case 'general':
+				print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['parent_id']) ? "&id=" . $_REQUEST['parent_id']: "") . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			case 'graphs_new':
+				print "<li><a href='" . htmlspecialchars("graphs_new.php?action=ajax_view" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&parent=devices&parent_id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			case 'graphs':
+				print "<li><a href='" . htmlspecialchars("graphs.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			case 'data_sources':
+				print "<li><a href='" . htmlspecialchars("data_sources.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			default:
+				plugin_hook_function('device_tabs_display', $tab_short_name);
+				break;
+			}
+
+			if (!isset($_REQUEST["id"])) break;
+		}
+		print "</ul>";
+	}
+
+	print "</div></td></tr></table>
+	<script type='text/javascript'>
+		$().ready(function() {
+			$('#tabs_device').tabs({ cookie: { expires: 30 } });
+			});
+	</script>\n";
+}
+
+/**
  * Edit a device
  */
 function device_edit($tab = false) {
@@ -653,52 +708,9 @@ function device_edit($tab = false) {
 	/* ==================================================== */
 
 	if ($tab) {
-		$device_tabs = array(
-			"general" => __("General"),
-			"newgraphs" => __("New Graphs"),
-			"graphs" => __("Graphs"),
-			"datasources" => __("Data Sources")
-		);
-
-		$device_tabs = plugin_hook_function('device_tabs_init', $device_tabs);
-
-		/* draw the categories tabs on the top of the page */
-		print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-		print "<td><div id='tabs_device'>";
-
-		if (sizeof($device_tabs) > 0) {
-			print "<ul>";
-			foreach (array_keys($device_tabs) as $tab_short_name) {
-				switch ($tab_short_name) {
-				case 'general':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
-					break;
-				case 'newgraphs':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=newgraphs" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
-					break;
-				case 'graphs':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=graphs" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
-					break;
-				case 'datasources':
-					print "<li><a href='" . htmlspecialchars("devices.php?action=datasources" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
-					break;
-				default:
-					plugin_hook_function('device_tabs_display', $tab_short_name);
-					break;
-				}
-
-
-				if (!isset($_REQUEST["id"])) break;
-			}
-			print "</ul>";
-		}
-
-		print "</div></td></tr></table>
-		<script type='text/javascript'>
-			$().ready(function() {
-				$('#tabs_device').tabs({ cookie: { expires: 30 } });
-			});
-		</script>\n";
+		html_devices_draw_tabs();
+	}elseif(isset($_REQUEST["parent"])) {
+		html_draw_tabs();
 	}else{
 		if (!empty($_REQUEST["id"])) {
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
@@ -908,6 +920,7 @@ function device_display_general($device, $device_text) {
 	form_hidden_box("hidden_device_template_id", (isset($device["device_template_id"]) ? $device["device_template_id"] : "0"), "");
 	form_hidden_box("save_basic_device", "1", "");
 	form_hidden_box("save_component_device", "1", "");
+	form_hidden_box("tab", "devices", "");
 	form_hidden_box("override_permitted", ($override_permitted ? "true":"false"), "");
 	form_hidden_box("propagation_allowed", ($propagation_allowed ? "true":"false"), "");
 
@@ -1740,6 +1753,11 @@ function device($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = array_merge($device_actions, tree_add_tree_names_to_actions_array());
+	$table->table_id       = "devices";
+	if (isset($_REQUEST['parent'])) {
+		$table->parent    = $_REQUEST['parent'];
+		$table->parent_id = get_request_var_request('id');
+	}
 
 	/* we must validate table variables */
 	$table->process_page_variables();
