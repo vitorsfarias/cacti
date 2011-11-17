@@ -922,7 +922,7 @@ function install_file_paths () {
 		if (config_value_exists("path_font_dir")) {
 			$input["path_font_dir"]["default"] = read_config_option("path_font_dir");
 		} else{
-			$input["path_font_dir"]["default"] = "c:/usr/share/fonts";
+			$input["path_font_dir"]["default"] = "%WINDIR%/Fonts";
 		}
 	}
 
