@@ -416,8 +416,8 @@ function query_snmp_device($device_id, $snmp_query_id) {
 			}elseif (substr($field_array["source"], 0, 13) == "VALUE/REGEXP:") {
 				for ($i=0; $i<sizeof($snmp_data); $i++) {
 					$value = preg_replace("/" . str_replace("VALUE/REGEXP:", "", $field_array["source"]) . "/", "\\1", $snmp_data[$i]["value"]);
-					$snmp_index = preg_replace("/" . $index_parse_regexp . "/", "\\1", $snmp_data[$i]["oid"]);
-					$oid = $field_array["oid"] .  "." . $value;
+					$snmp_index = preg_replace('/' . (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . '/', "\\1", $snmp_data[$i]["oid"]);
+					$oid = $field_array["oid"] . "." . $snmp_index;
 
 					debug_log_insert("data_query", __("Found item [%s='%s'] index: %s [from regexp value parse]", $field_name, $value, $snmp_index));
 
