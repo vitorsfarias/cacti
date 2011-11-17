@@ -83,6 +83,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0002087: PHP recache problems due to missing slashes in reindex table
 -bug#0002093: unit exponent value of 0 not imported with graph template
 -bug#0002094: CDEF: "another cdef" references not included in template export
+-bug#0002097: cacti.sql import error
 -bug: Update host template cli script help shows incorrect options
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
