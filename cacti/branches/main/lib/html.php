@@ -551,7 +551,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @param $table_id - table_id
    @param $sort_url - provide url to be used as a base for sort function
 */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "", $sort_url) {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "", $sort_url = '') {
 	static $rand_id = 0;
 
 	/* reverse the sort direction */
