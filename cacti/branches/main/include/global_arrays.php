@@ -209,7 +209,7 @@ $menu = array(
 	"configuration"  => array(
 		"description"	=> __("Configuration"),
 		"items"			=> array(
-			"settings.php" 	=> __("Settings"),
+			"settings.php#ui-tabs-1" 	=> __("Settings"),
 			"plugins.php" 	=> __("Plugin Management"),
 			),
 		),
