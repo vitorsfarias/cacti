@@ -1034,26 +1034,6 @@ function user_edit($tabs = false) {
 
 }
 
-/**
- * process page variables to govern table display
- * e.g. page number we're on, total number of rows ...
- */
-function user_process_page_variables() {
-	$page_variables = array(
-		"page" => array("type" => "numeric", "method" => "request", "default" => "1"),
-		"rows" => array("type" => "numeric", "method" => "request", "default" => "-1"),
-		"filter" => array("type" => "string", "method" => "request", "default" => ""),
-		"sort_column" => array("type" => "string", "method" => "request", "default" => "username"),
-		"sort_direction" => array("type" => "string", "method" => "request", "default" => "ASC"));
-
-	if (isset($_REQUEST["clear"])) {
-		$clear = true;
-	}else{
-		$clear = false;
-	}
-
-	html_verify_request_variables($page_variables, "sess_user_admin", $clear);
-}
 
 /**
  * draw the filter(s) that are displayed on the page
@@ -1090,11 +1070,12 @@ function user_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="button" onClick="applyFilterChange(document.form_user_admin)" value="<?php echo __('Go');?>" name="go" align="middle">
-						<input type="submit" value="<?php echo __('Clear');?>" name="clear" align="middle">
+						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle" onClick="applyFilterChange(document.form_user_admin)">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFilterChange(document.form_user_admin)">
 					</td>
 				</tr>
 			</table>
+			<div><input type='hidden' name='page' value='1'></div>
 			</form>
 		</td>
 	</tr>
@@ -1106,6 +1087,12 @@ function user_filter() {
 	function applyFilterChange(objForm) {
 		strURL = '?rows=' + objForm.rows.value;
 		strURL = strURL + '&filter=' + objForm.filter.value;
+		document.location = strURL;
+	}
+
+	function clearFilterChange(objForm) {
+		strURL = '?rows=' + '&rows=-1';
+		strURL = strURL + '&filter=';
 		document.location = strURL;
 	}
 	-->
@@ -1122,7 +1109,7 @@ function user_filter() {
 function user_get_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(html_get_page_variable("filter"))) {
-		$sql_where = "WHERE (user_auth.username LIKE '%" . html_get_page_variable("filter") . "%' OR user_auth.full_name LIKE '%" . html_get_page_variable("filter") . "%')";
+		$sql_where = "WHERE (user_auth.username LIKE '%%" . html_get_page_variable("filter") . "%%' OR user_auth.full_name LIKE '%%" . html_get_page_variable("filter") . "%%')";
 	}else{
 		$sql_where = "";
 	}
@@ -1152,7 +1139,7 @@ function user_get_records(&$total_rows, &$rowspp) {
 		enabled,
 		policy_graphs,
 		time,
-		max(time) as dtime
+		IFNULL(MAX(time), '0') as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
@@ -1171,7 +1158,8 @@ function user_get_table_format() {
 			"name" => __("User Name"),
 			"link" => true,
 			"filter" => true,
-			"order" => "ASC"
+			"order" => "ASC",
+			"href_suffix" => "#ui-tabs-1",	# always jump to "general" tab from list
 		),
 		"full_name" => array(
 			"name" => __("Full Name"),
@@ -1209,19 +1197,44 @@ function user_get_table_format() {
 /**
  * display the user list
  */
-function user() {
-	global $user_actions;
+function user($refresh = true) {
+	global $user_actions, $item_rows;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
-	$total_rows = 0; $rowspp = 0;
+	$table = New html_table;
 
-	user_process_page_variables();
-	user_filter();
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "username"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
 
-	$rows = user_get_records($total_rows, $rowspp);
+	$table->table_format = user_get_table_format();
 
-	html_draw_table(user_get_table_format(), $rows, $total_rows, $rowspp, html_get_page_variable("page"), "id", "user_admin.php",
-		$user_actions, html_get_page_variable("filter"), true, true, true,
-		html_get_page_variable("sort_column"), html_get_page_variable("sort_direction"));
+	/* initialize page behavior */
+	$table->href           = "user_admin.php";
+	$table->session_prefix = "sess_user_admin";
+	$table->filter_func    = "user_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->checkbox       = true;
+	$table->sortable       = true;
+	$table->actions        = $user_actions;
+	$table->table_id       = "user_admin";
+	if (isset($_REQUEST['parent'])) {
+		$table->parent    = $_REQUEST['parent'];
+		$table->parent_id = get_request_var_request('id');
+	}
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = user_get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
 }
 
