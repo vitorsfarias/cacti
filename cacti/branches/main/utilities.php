@@ -680,12 +680,12 @@ function display_languages() {
 
 
 	html_start_box(__("Language Information"), "100", "3", "center", "");
-	html_header(array(array("name" => __("General Information"))), 2,'','','left','');
+	html_header(array(array("name" => __("General Information"))), 2,'','','left wp100','');
 	print "<tr class='rowAlternate1'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Current Language") . "</td>\n";
 	print "		<td class='textAreaNotes v'>". $language . "</td>\n";
 	print "</tr>\n";
-	print "<tr class='rowAlternate3'>\n";
+	print "<tr class='rowAlternate2'>\n";
 	print "		<td class='textAreaNotes e'>" . __("Language Mode") . "</td>\n";
 	print "		<td class='textAreaNotes v'>" . $i18n_modes[read_config_option('i18n_language_support')] . "</td>\n";
 	print "</tr>\n";
@@ -1252,7 +1252,7 @@ function utilities() {
 
 	<tr class="rowAlternate1">
 		<td class="textAreaNotes e">
-			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_tech&tab=general");?>'><?php print __("Technical Support");?></a>
+			<a class='linkEditMain' href='<?php print htmlspecialchars("utilities.php?action=view_tech#ui-tabs-1");?>'><?php print __("Technical Support");?></a>
 		</td>
 		<td class="textAreaNotes v">
 			<?php print __("Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.");?>
