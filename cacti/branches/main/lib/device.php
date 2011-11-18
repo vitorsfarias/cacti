@@ -675,10 +675,10 @@ function html_devices_draw_tabs() {
 				print "<li><a href='" . htmlspecialchars("graphs_new.php?action=ajax_view" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&parent=devices&parent_id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 				break;
 			case 'graphs':
-				print "<li><a href='" . htmlspecialchars("graphs.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				print "<li><a href='" . htmlspecialchars("graphs.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 				break;
 			case 'data_sources':
-				print "<li><a href='" . htmlspecialchars("data_sources.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				print "<li><a href='" . htmlspecialchars("data_sources.php?action=ajax_view&parent=devices&parent_id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id'] . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 				break;
 			default:
 				plugin_hook_function('device_tabs_display', $tab_short_name);
@@ -714,12 +714,12 @@ function device_edit($tab = false) {
 	}else{
 		if (!empty($_REQUEST["id"])) {
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-			$device_text    = $device["description"] . "(" . $device["hostname"] . ")";
+			$device_text    = $device["description"] . " [" . $device["hostname"] . "]";
 			$header_label = __("[edit: ") . $device["description"] . "]";
 		}elseif (!empty($_GET["device_id"])) {
 			$_REQUEST["id"]   = $_REQUEST["device_id"];
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
-			$device_text    = $device["description"] . "(" . $device["hostname"] . ")";
+			$device_text    = $device["description"] . " [" . $device["hostname"] . "]";
 			$header_label = __("[edit: ") . $device["description"] . "]";
 		}else{
 			$header_label = __("[new]");
@@ -1682,7 +1682,8 @@ function device($refresh = true) {
 			"name" => __("Description"),
 			"link" => true,
 			"filter" => true,
-			"order" => "ASC"
+			"order" => "ASC",
+			"href_suffix" => "#ui-tabs-1",	# always jump to "general" tab from list
 		),
 		"device.hostname" => array(
 			"name" => __("Hostname"),
