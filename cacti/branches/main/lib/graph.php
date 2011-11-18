@@ -2112,7 +2112,7 @@ function graphs_new() {
 	</script>
 	<?php
 
-	html_start_box($device["description"] . "(" . $device["hostname"] . ") " . db_fetch_cell("select name from device_template where id=" . $device["device_template_id"]), "100", "3", "center", "");
+	html_start_box($device["description"] . " [" . $device["hostname"] . "]: " . db_fetch_cell("select name from device_template where id=" . $device["device_template_id"]), "100", "3", "center", "");
 
 	?>
 	<tr class='rowAlternate3'>
