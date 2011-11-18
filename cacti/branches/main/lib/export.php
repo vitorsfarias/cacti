@@ -388,6 +388,7 @@ function cdef_to_xml($cdef_id) {
 		$xml_text .= "\t\t<hash_" . $hash["cdef_item"] . ">\n";
 
 		/* now do the encoding */
+		$fields_cdef_item_edit = preset_cdef_item_form_list();
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
 			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden") && ($field_array["method"] != "spacer")) {
