@@ -230,6 +230,6 @@ include_once($config["library_path"] . "/auth.php");
 api_plugin_hook("config_insert");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.7h";
+$config["cacti_version"] = "0.8.7i";
 
 ?>
