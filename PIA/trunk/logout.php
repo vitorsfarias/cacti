@@ -24,9 +24,13 @@
 
 include("./include/auth.php");
 
+api_plugin_hook_function('logout_pre_session_destroy');
+
 /* Clear session */
 setcookie(session_name(),"",time() - 3600,"/");
 session_destroy();
+
+api_plugin_hook_function('logout_post_session_destroy');
 
 /* Check to see if we are using Web Basic Auth */
 if (read_config_option("auth_method") == "2") {

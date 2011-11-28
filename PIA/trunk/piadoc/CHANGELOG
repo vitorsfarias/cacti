@@ -1,5 +1,7 @@
  --- 3.1 ---
  bug: If a plugin does not properly define a message, the Cacti UI will break
+ feature: Add new hook 'logout_pre_session_destroy', logout.php
+ feature: Add new hook 'logout_post_session_destroy', logout.php
 
  --- 2.9 - 3.0 ---
  bug: Prevent filters from affecting plugin links, data_sources.php
