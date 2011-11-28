@@ -2,9 +2,9 @@
 
     Author ......... Jimmy Conner
     Contact ........ jimmy@sqmail.org
-    Home Site ...... http://cactiusers.org
+    Home Site ...... http://www.cacti.net
     Program ........ Plugin Architecture
-    Version ........ 3.0
+    Version ........ 3.1
     Purpose ........ Provides users with the ability to write or use plugins with Cacti
 
 *******************************************************************************/
