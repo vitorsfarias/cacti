@@ -6,6 +6,10 @@
  feature: Add hooks for removing Devices, Graphs, Data Sources and Users
  feature: Add new hook 'logout_pre_session_destroy', logout.php
  feature: Add new hook 'logout_post_session_destroy', logout.php
+ feature: Add new hook 'nav_login_before', top_header.php, top_graph_header.php
+ feature: Add new hook 'nav_login_after', top_header.php, top_graph_header.php
+ feature: Improve Searching from Plugin Management Interface
+ feature: Add Rows Selector to Plugin Management Interface
 
  --- 2.9 - 3.0 ---
  bug: Prevent filters from affecting plugin links, data_sources.php
