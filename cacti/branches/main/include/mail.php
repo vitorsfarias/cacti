@@ -880,6 +880,7 @@ class Mailer {
 				1 => array("pipe", "w"),
 				2 => array("pipe", "w")
 			);
+			$pipes = array();
 			$process = proc_open($this->Config["Mail"]["DirectInject_Path"], $desc_spec, $pipes, NULL, NULL);
 			if (! is_resource($process)) {
 				$this->Error = "Unable to open DirectInject executable process: (" . $errno . ") " . $errstr;
