@@ -86,7 +86,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @param $row_id 	- used to allow js and ajax actions on this object
    @param $hover		- use onMouse events
    @param $row_class 	- additional class attributes, e.g. "nodrag nodrop"
-   @returns 		- the background color used for this particular row */
+   @returns 			- print a <tr> using the appropriate css class */
 function form_alternate_row_color($row_id = "", $hover = false, $row_class = "") {
 	static $class_int  = 0;
 	static $alt_row_id = 0;
