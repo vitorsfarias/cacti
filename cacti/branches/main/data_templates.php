@@ -61,9 +61,13 @@ switch (get_request_var_request("action")) {
 
 		header("Location: data_templates.php");
 		break;
+	case 'ajax_edit':
+		data_source_template_edit(false);
+
+		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-		data_source_template_edit();
+		data_source_template_edit(true);
 		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
@@ -423,82 +427,84 @@ function template_rrd_add() {
 /**
  * data_source_template_edit	- edit the data template
  */
-function data_source_template_edit() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("view_rrd"));
-	/* ==================================================== */
+function data_source_template_edit($tabs = false) {
+	if ($tabs) {
+		$data_template_tabs = array(
+			"general" 		=> __("General"),
+			"items" 		=> __("Items"),
+			"datasources" 	=> __("Data Sources")
+		);
 
-	$data_template_tabs = array(
-		"general" 		=> __("General"),
-		"items" 		=> __("Items"),
-		"datasources" 	=> __("Data Sources")
-	);
+		/* draw the categories tabs on the top of the page */
+		print "<div id='tabs_dtemplate'>\n";
+		print "<ul>\n";
 
-	if (!empty($_GET["id"])) {
-		$data_template = db_fetch_row("SELECT * FROM data_template WHERE id=" . $_REQUEST["id"]);
-		$header_label = __("[edit: ") . $data_template["name"] . "]";
-		if (!db_fetch_cell("SELECT COUNT(*) FROM data_local WHERE data_template_id=" . $_REQUEST["id"])) {
-			unset($data_template_tabs["datasources"]);
-		}
-	}else{
-		$data_template = array();
-		$header_label = __("[new]");
-		unset($data_template_tabs["datasources"]);
-	}
+		$i = 0;
+		if (sizeof($data_template_tabs) > 0) {
+			foreach (array_keys($data_template_tabs) as $tab_short_name) {
+				print "<li><a id='tabs-$i' href='" . htmlspecialchars("data_templates.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$data_template_tabs[$tab_short_name]</a></li>";
+				$i++;
 
-	/* set the default settings category */
-	if (!isset($_REQUEST["tab"])) {
-		/* there is no selected tab; select the first one */
-		$current_tab = array_keys($data_template_tabs);
-		$current_tab = $current_tab[0];
-	}else{
-		$current_tab = $_REQUEST["tab"];
-	}
-
-	/* draw the categories tabs on the top of the page */
-	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
-	print "<td><div class='tabs'>";
-
-	if (sizeof($data_template_tabs) > 0) {
-		foreach (array_keys($data_template_tabs) as $tab_short_name) {
-			print "<div class='tabDefault'><a " . (($tab_short_name == $current_tab) ? "class='tabSelected'" : "class='tabDefault'") . " href='" . htmlspecialchars("data_templates.php?action=edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$data_template_tabs[$tab_short_name]</a></div>";
-
-			if (!isset($_REQUEST["id"])) break;
-		}
-	}
-	print "</div></td></tr></table>";
-
-	if (!isset($_REQUEST["tab"])) {
-		$_REQUEST["tab"] = "general";
-	}
-
-	switch (get_request_var_request("tab")) {
-		case "datasources":
-			include_once(CACTI_BASE_PATH . "/lib/data_source/data_source_form.php");
-			include_once(CACTI_BASE_PATH . "/lib/utility.php");
-			include_once(CACTI_BASE_PATH . "/lib/graph.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-			include_once(CACTI_BASE_PATH . "/lib/template.php");
-			include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-			include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-			include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-
-			data_source();
-
-			break;
-
-		case "items":
-			/* graph item list goes here */
-			if (!empty($_GET["id"])) {
-				data_template_display_items();
+				if (!isset($_REQUEST["id"])) break;
 			}
+		}
+		print "</ul>\n";
+		print "</div>";
 
-			break;
-		default:
-			data_source_template_display_general($data_template, $header_label);
-
-			break;
+		print "<script type='text/javascript'>
+			$().ready(function() {
+				$('#tabs_dtemplate').tabs({ cookie: { expires: 30 } });
+			});
+		</script>\n";
+	}else{
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var("id"));
+		input_validate_input_number(get_request_var("view_rrd"));
+		/* ==================================================== */
+	
+		if (!empty($_GET["id"])) {
+			$data_template = db_fetch_row("SELECT * FROM data_template WHERE id=" . $_REQUEST["id"]);
+			$header_label = __("[edit: ") . $data_template["name"] . "]";
+#			if (!db_fetch_cell("SELECT COUNT(*) FROM data_local WHERE data_template_id=" . $_REQUEST["id"])) {
+#				unset($data_template_tabs["datasources"]);
+#			}
+		}else{
+			$data_template = array();
+			$header_label = __("[new]");
+#			unset($data_template_tabs["datasources"]);
+		}
+	
+		if (!isset($_REQUEST["tab"])) {
+			$_REQUEST["tab"] = "general";
+		}
+	
+		switch (get_request_var_request("tab")) {
+			case "datasources":
+				include_once(CACTI_BASE_PATH . "/lib/data_source.php");
+				include_once(CACTI_BASE_PATH . "/lib/utility.php");
+				include_once(CACTI_BASE_PATH . "/lib/graph.php");
+				include_once(CACTI_BASE_PATH . "/lib/data_source.php");
+				include_once(CACTI_BASE_PATH . "/lib/template.php");
+				include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
+				include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+				include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	
+				data_source();
+	
+				break;
+	
+			case "items":
+				/* graph item list goes here */
+				if (!empty($_GET["id"])) {
+					data_template_display_items();
+				}
+	
+				break;
+			default:
+				data_source_template_display_general($data_template, $header_label);
+	
+				break;
+		}
 	}
 }
 
