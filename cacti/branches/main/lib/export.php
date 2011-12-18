@@ -860,6 +860,8 @@ function data_query_to_xml($data_query_id) {
  * @return string			- $dep_array
  */
 function resolve_dependencies($type, $id, $dep_array) {
+	require_once(CACTI_BASE_PATH . "/include/presets/preset_cdef_constants.php");
+
 	/* make sure we define our variables */
 	if (!isset($dep_array[$type])) {
 		$dep_array[$type] = array();
