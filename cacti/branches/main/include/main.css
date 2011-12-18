@@ -724,6 +724,10 @@ th a {
 	background-color: #e7e9f2;
 }
 
+.rowAlternate3 td {
+	padding: 3px 9px 0px 3px;
+}
+
 .rowSelected {
 	background-color: #f5f5d2;
 }
