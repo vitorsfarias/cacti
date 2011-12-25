@@ -175,7 +175,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 		</div>
 		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
-			<span id='menu_languages' class='cacti_dd_link'><img src='<?php echo CACTI_URL_PATH; ?>images/flag_icons/<?php print CACTI_COUNTRY;?>.gif' alt='<?php print CACTI_COUNTRY;?>' align='top'>&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></span>
+			<span id='menu_languages' class='cacti_dd_link'><img src='<?php echo CACTI_URL_PATH; ?>images/icons/flags/<?php print CACTI_COUNTRY;?>.gif' alt='<?php print CACTI_COUNTRY;?>' align='top'>&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></span>
 		</div>
 		<div id='loading' style='display:none; float:right'><img src='<?php echo CACTI_URL_PATH; ?>images/load_small.gif' align='top' alt='<?php print __("loading");?>'>LOADING</div>
 		<?php }?>

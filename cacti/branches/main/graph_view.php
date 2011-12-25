@@ -149,7 +149,7 @@ case 'tree':
 					"default" : {
 						"valid_children" : "none",
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.png";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/folder.png";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -159,7 +159,7 @@ case 'tree':
 					"graph" : {
 						"valid_children" : "none",
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/graph.gif";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/graph.gif";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -169,7 +169,7 @@ case 'tree':
 					"device" : {
 						"valid_children" : [ "graph", "dqi", "dq", "gt" ] ,
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/device.gif";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/device.gif";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -179,7 +179,7 @@ case 'tree':
 					"header" : {
 						"valid_children" : [ "device", "graph" ],
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.png";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/folder.png";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -189,7 +189,7 @@ case 'tree':
 					"dq" : {
 						"valid_children" : "dqi",
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/dataquery.gif";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/dataquery.gif";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -199,7 +199,7 @@ case 'tree':
 					"dqi" : {
 						"valid_children" : "graph",
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/folder.gif";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/folder.gif";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
@@ -209,7 +209,7 @@ case 'tree':
 					"gt" : {
 						"valid_children" : "graph",
 						"icon" : {
-							"image" : "<?php print CACTI_URL_PATH . "images/tree_icons/template.gif";?>"
+							"image" : "<?php print CACTI_URL_PATH . "images/icons/tree/template.gif";?>"
 						},
 						"start_drag" : false,
 						"move_node" : false,
