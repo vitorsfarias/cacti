@@ -1169,9 +1169,9 @@ function device_template_update_cache($id, $image) {
 
 function device_template_get_image($image) {
 	if ($image == '') {
-		return CACTI_BASE_PATH . "/images/tree_icons/device.gif";
-	}elseif (file_exists(CACTI_BASE_PATH . "/images/tree_icons/$image")){
-		return CACTI_BASE_PATH . "/images/tree_icons/$image";
+		return CACTI_BASE_PATH . "/images/icons/tree/device.gif";
+	}elseif (file_exists(CACTI_BASE_PATH . "/images/icons/tree/$image")){
+		return CACTI_BASE_PATH . "/images/icons/tree/$image";
 	}elseif (file_exists(CACTI_CACHE_PATH . "/images/$image")) {
 		return CACTI_BASE_PATH . "/images/$image";
 	}else{

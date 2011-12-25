@@ -816,9 +816,9 @@ function data_query_update_cache($id, $image) {
 
 function data_query_get_image($image) {
 	if ($image == '') {
-		return CACTI_BASE_PATH . "/images/tree_icons/dataquery.png";
-	}elseif (file_exists(CACTI_BASE_PATH . "/images/tree_icons/$image")){
-		return CACTI_BASE_PATH . "/images/tree_icons/$image";
+		return CACTI_BASE_PATH . "/images/icons/tree/dataquery.png";
+	}elseif (file_exists(CACTI_BASE_PATH . "/images/icons/tree/$image")){
+		return CACTI_BASE_PATH . "/images/icons/tree/$image";
 	}elseif (file_exists(CACTI_CACHE_PATH . "/images/$image")) {
 		return CACTI_BASE_PATH . "/images/$image";
 	}else{

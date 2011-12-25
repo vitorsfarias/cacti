@@ -202,7 +202,7 @@ function get_graph_tree_items() {
 					break;
 				case "graph":
 					$children = false;
-					$icon     = CACTI_URL_PATH . "images/tree_icons/graph.gif";
+					$icon     = CACTI_URL_PATH . "images/icons/tree/graph.gif";
 					break;
 				case "device":
 					if (read_graph_config_option("expand_devices") == CHECKED) {
@@ -210,7 +210,7 @@ function get_graph_tree_items() {
 					}else{
 						$children = false;
 					}
-					$icon     = CACTI_URL_PATH . "images/tree_icons/device.gif";
+					$icon     = CACTI_URL_PATH . "images/icons/tree/device.gif";
 					break;
 				case "header":
 					$children = true;
@@ -220,7 +220,7 @@ function get_graph_tree_items() {
 					$children = true;
 					$icon     = "";
 					$node_id .= "_" . $item["type"] . "_" . $item["id"];
-					$icon     = CACTI_URL_PATH . "images/tree_icons/dataquery.png";
+					$icon     = CACTI_URL_PATH . "images/icons/tree/dataquery.png";
 					break;
 				case "dqi":
 					$children = false;
@@ -230,7 +230,7 @@ function get_graph_tree_items() {
 				case "gt":
 					$children = false;
 					$node_id .= "_" . $item["type"] . "_" . $item["id"];
-					$icon     = CACTI_URL_PATH . "images/tree_icons/template.png";
+					$icon     = CACTI_URL_PATH . "images/icons/tree/template.png";
 					break;
 				default:
 			}
