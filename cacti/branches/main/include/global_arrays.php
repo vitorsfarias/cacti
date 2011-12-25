@@ -307,7 +307,7 @@ $user_auth_realms = array(
 	17   => __("Import Data"),
 	1    => __("User Administration"),
 	15   => __("Global Settings"),
-	101  => __("Plugin Management")		# todo: verify, if 101 is correct (this should be the realm used for PIA in pre088 releases)
+	101  => __("Plugin Management")		//FIXME: verify, if 101 is correct (this should be the realm used for PIA in pre088 releases)
 	);
 
 $user_auth_realm_filenames = array(
