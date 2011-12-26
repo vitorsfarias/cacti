@@ -23,7 +23,7 @@
 */
 
 function send_mail($to, $from, $subject, $message, $filename = '', $headers = '') {
-	include_once(CACTI_BASE_PATH . "/include/mail.php");
+	include_once(CACTI_BASE_PATH . "/lib/CactiMailer.php");
 
 	$message = str_replace('<SUBJECT>', $subject, $message);
 	$message = str_replace('<TO>', $to, $message);
@@ -33,11 +33,11 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 	if ($how < 0 || $how > 2)
 		$how = 0;
 	if ($how == 0) {
-		$Mailer = new Mailer(array(
+		$Mailer = new CactiMailer(array(
 			'Type' => 'PHP'));
 	} else if ($how == 1) {
 		$sendmail = read_config_option('settings_sendmail_path');
-		$Mailer = new Mailer(array(
+		$Mailer = new CactiMailer(array(
 			'Type' => 'DirectInject',
 			'DirectInject_Path' => $sendmail));
 	} else if ($how == 2) {
@@ -46,7 +46,7 @@ function send_mail($to, $from, $subject, $message, $filename = '', $headers = ''
 		$smtp_username = read_config_option("settings_smtp_username");
 		$smtp_password = read_config_option("settings_smtp_password");
 
-		$Mailer = new Mailer(array(
+		$Mailer = new CactiMailer(array(
 			'Type' => 'SMTP',
 			'SMTP_Host' => $smtp_host,
 			'SMTP_Port' => $smtp_port,

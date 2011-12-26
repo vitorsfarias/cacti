@@ -23,7 +23,7 @@
 */
 
 /* Mailer class for MIME email functionality */
-class Mailer {
+class CactiMailer {
 
 	const EOL = "\r\n";
 
