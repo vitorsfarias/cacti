@@ -271,21 +271,12 @@ while ($poller_runs_completed < $poller_runs) {
 	db_execute("DELETE FROM poller_time WHERE poller_id=$poller_id");
 
 	$issues_limit = 20;
-	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output WHERE poller_id=$poller_id LIMIT " . ($issues_limit + 1));
+	$issues = db_fetch_assoc("SELECT local_data_id, rrd_name FROM poller_output WHERE poller_id=$poller_id LIMIT " . $issues_limit);
 	
 	if (sizeof($issues)) {
 		$issue_list = "";
-		$count = 0;
 		foreach($issues as $issue) {
-			if ($count > $issues_limit) {
-				break;
-			}
-			if ($count == 0) {
-				$issue_list .= $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
-			}else{
-				$issue_list .= ", " . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
-			}
-			$count++;
+			$issue_list .= (strlen($issue_list) ? ", " : "") . $issue["rrd_name"] . "(DS[" . $issue["local_data_id"] . "])";
 		}
 
 		if ($count > $issues_limit) {
