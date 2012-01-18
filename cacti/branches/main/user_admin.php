@@ -31,7 +31,9 @@ $user_actions = array(
 	"2" => __("Copy"),
 	"3" => __("Enable"),
 	"4" => __("Disable"),
-	"5" => __("Batch Copy")
+	"5" => __("Batch Copy"),
+	"6" => __("Add Realm"),
+	"7" => __("Remove Realm")
 	);
 
 switch (get_request_var_request("action")) {
@@ -92,7 +94,7 @@ switch (get_request_var_request("action")) {
  * perform different actions
  */
 function form_actions() {
-	global $user_actions;
+	global $user_actions, $user_auth_realms;
 	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
 
 	/* if we are to save this form, instead of display it */
@@ -181,6 +183,28 @@ function form_actions() {
 			}
 		}
 
+		if (get_request_var_post("drp_action") == "6") { /* add realm */
+			$new_realm = get_request_var_post("new_realm", 0);
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				db_execute("REPLACE user_auth_realm SET user_id = $selected_items[$i], realm_id=$new_realm");
+			}
+		}
+
+		if (get_request_var_post("drp_action") == "7") { /* remove realm */
+			$old_realm = get_request_var_post("old_realm", 0);
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				db_execute("DELETE FROM user_auth_realm WHERE user_id = $selected_items[$i] AND realm_id=$old_realm");
+			}
+		}
+	
 		exit;
 	}
 
@@ -311,6 +335,40 @@ function form_actions() {
 			</tr>\n";
 
 		$title = __("Re-Template User(s)");
+	}
+
+	if ((get_request_var_post("drp_action") == "6") && (sizeof($user_array))) { /* add realm */
+
+		print "
+			<tr>
+				<td class='textArea'>
+					<p>" . __("When you click 'Continue' the Realm Permission selected below will be <strong>added</strong> to selected users") . "</p>
+					<div class='action_list'><ul>$user_list</ul></div>
+				</td>
+			</tr><tr>
+				<td class='textArea'>" . __("New Realm:") . " \n";
+		print form_dropdown("new_realm", $user_auth_realms, "", "", "", "", 0);
+		print "	</td>
+			</tr>\n";
+
+		$title = __("Add Realm Permission to User(s)");
+	}
+
+	if ((get_request_var_post("drp_action") == "7") && (sizeof($user_array))) { /* remove realm */
+
+		print "
+			<tr>
+				<td class='textArea'>
+					<p>" . __("When you click 'Continue' the Realm Permission selected below will be <strong>removed</strong> from selected users") . "</p>
+					<div class='action_list'><ul>$user_list</ul></div>
+				</td>
+			</tr><tr>
+				<td class='textArea'>" . __("Realm to be removed:") . " \n";
+		print form_dropdown("old_realm", $user_auth_realms, "", "", "", "", 0);
+		print "	</td>
+			</tr>\n";
+
+		$title = __("Remove Realm Permission from User(s)");
 	}
 
 	if (!isset($user_array) || get_request_var_post("drp_action") === ACTION_NONE) {
