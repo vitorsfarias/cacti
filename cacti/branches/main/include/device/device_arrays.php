@@ -114,3 +114,6 @@ $ping_methods = array(
 	PING_TCP => __("TCP Ping"),
 	PING_UDP => __("UDP Ping"),
 	);
+
+/* snmp_line_break knows all characters, where we want break SNMP sysDescr string; order matters! */
+$snmp_line_break = array(" ","#","-",":");

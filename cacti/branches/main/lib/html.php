@@ -1198,14 +1198,26 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
          the correct break location.
    @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	$string = trim($string);
 	$new_string = "";
 	$j    = 0;
 	$done = false;
 
-	while (!$done) {
+	/* introduce a break on different characters */
+	$search = "";
+	/* search_array knows all characters, where we want break; order matters */
+	foreach ($snmp_line_break as $item) {
+		if (strpos($string,$item) > 0) {
+			$search = $item;
+			break;
+		}
+	}
+ 
+	while (!$done && $search !== "") {
 		if (strlen($string) > $length) {
 			for($i = 0; $i < $forgiveness; $i++) {
-				if (substr($string, $length-$i, 1) == " ") {
+				if (substr($string, $length-$i, 1) === $search) {
 					$new_string .= substr($string, 0, $length-$i) . "<br>";
 
 					break;
@@ -1222,7 +1234,11 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 		if ($j > 4) break;
 	}
 
-	return $new_string;
+	if ((strlen($new_string) >= strlen($string))) {
+		return $new_string;
+	} else {
+		return $string;
+	}
 }
 
 /* html_create_nav - creates page select navigation html
