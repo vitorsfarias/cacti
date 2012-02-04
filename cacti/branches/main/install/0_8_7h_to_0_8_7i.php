@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-function &preset_rra_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_forms.php");
+function upgrade_to_0_8_7i() {
 
-	return $fields_rra_edit;
 }
+
+?>
