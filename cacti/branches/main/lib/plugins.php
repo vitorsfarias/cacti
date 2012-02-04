@@ -778,6 +778,8 @@ function plugin_db_check_columns($result, $columns, $drop_columns=false) {
 				if (strtolower($column['type']) != strtolower($c['Type'])) {
 					$ok = FALSE;
 				}
+				
+				
 				if (isset($column['NULL']) && (($column['NULL'] == FALSE && $c['Null'] != 'NO') || ($column['NULL'] == TRUE && $c['Null'] != 'YES'))) {
 					$ok = FALSE;
 				}
@@ -786,8 +788,10 @@ function plugin_db_check_columns($result, $columns, $drop_columns=false) {
 				} else if (isset($c['Extra']) && $c['Extra'] == 'auto_increment' && !isset($column['auto_increment'])) {
 					$ok = FALSE;
 				}
-				if (isset($column['unsigned']) && $column['unsigned'] != $c['unsigned']) {   #todo: undefined index: unsigned
-					$ok = FALSE;
+				if (in_array('unsigned', $column) && in_array('unsigned', $c)) {
+					if ($column['unsigned'] != $c['unsigned']) {   #todo: undefined index: unsigned
+						$ok = FALSE;
+					}
 				}
 				if (isset($column['default']) && $column['default'] != $c['Default']) {
 					$ok = FALSE;
