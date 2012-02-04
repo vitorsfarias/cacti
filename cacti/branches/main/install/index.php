@@ -51,6 +51,7 @@ switch (get_request_var_request("step")) {
 	case "3":
 		break;
 	case "4":
+		break;
 		if (isset($_POST['database_default'])) {
 			if (install_write_config ()) {
 				include('../include/config.php');
