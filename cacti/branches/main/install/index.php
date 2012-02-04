@@ -179,7 +179,7 @@ switch (get_request_var_request("step")) {
 						upgrade_to_0_8_7i();
 					} elseif ($cacti_versions[$i] == "1.0.0") {
 						include ("0_8_7i_to_1_0_0.php");
-						upgrade_to_0_8_8();
+						upgrade_to_1_0_0();
 					}
 				}
 			}
