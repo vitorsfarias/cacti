@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2011 The Cacti Group                                 |
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -570,7 +570,7 @@ function device_template_edit($tabs = false) {
 
 		print "<script type='text/javascript'>
 			$().ready(function() {
-				$('#tabs_dt').tabs({ cookie: { expires: 30 } });
+				$('#tabs_dt').tabs({cookie:{}});
 			});
 		</script>\n";
 	}else{
@@ -911,6 +911,7 @@ function device_template_display_general($device_template, $header_label) {
 
 
 function device_template_display_gt($device_template, $header_label) {
+
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_gt_edit'>\n";
 	html_start_box(__("Associated Graph Templates") . " $header_label", "100", "3", "center", "", true);
 	print "<tr><td>";
@@ -983,7 +984,7 @@ function device_template_display_dq($device_template, $header_label) {
 	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_dq_edit'>\n";
-	html_start_box(__("Associated Data Queries") . " $header_label", "100", "0", "center", "", true);
+	html_start_box(__("Associated Data Queries") . " $header_label", "100", "3", "center", "", true);
 	print "<tr><td>";
 	html_header(array(array("name" => __("Data Query Name")), array("name" => __("Re-Index Method"))), 2);
 
@@ -1026,8 +1027,8 @@ function device_template_display_dq($device_template, $header_label) {
 				<td align='right' nowrap><input
 					type='button'
 					value='<?php print __("Remove");?>'
-					onClick='document.location="<?php print htmlspecialchars("device_templates.php?action=item_remove_dq&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>'
-					title='<?php print __("Delete Graph Template Association");?>'>
+					onClick='document.location="<?php print htmlspecialchars("device_templates.php?action=item_remove_dq&id=" . $item["id"] . "&device_template_id=" . $device_template["id"]);?>"'
+					title='<?php print __("Delete Data Query Association");?>'>
 				</td>
 			<?php
 			form_end_row();
