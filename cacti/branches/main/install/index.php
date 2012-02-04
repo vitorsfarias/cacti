@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2011 The Cacti Group                                 |
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -85,8 +85,8 @@ switch (get_request_var_request("step")) {
 			if (get_request_var_request("install_type") == "3") {
 				$cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
 					'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
-					'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h',
-					'0.8.8');
+					'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h', '0.8.7i',
+					'1.0.0');
 	
 
 				if(!$database_empty) {
@@ -1651,7 +1651,7 @@ function install_write_config () {
 	fwrite($file, '<?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2011 The Cacti Group                                 |
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |

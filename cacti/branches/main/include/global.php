@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2011 The Cacti Group                                 |
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -131,8 +131,8 @@ define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');
 error_reporting(E_ALL);
 
 /* current cacti version */
-define("CACTI_VERSION", "0.8.8");
-define('CACTI_WIKI_URL', "http://docs.cacti.net/reference:088:");
+define("CACTI_VERSION", "1.0.0");
+define('CACTI_WIKI_URL', "http://docs.cacti.net/reference:100:");
 
 /* include base modules */
 //include(CACTI_BASE_PATH . "/lib/adodb/adodb.inc.php");
