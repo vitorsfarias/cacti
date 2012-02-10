@@ -170,11 +170,29 @@ function update_reindex_cache($device_id, $data_query_id) {
 			 * so we have to enclose the whole list of parameters in double tics: "
 			 * */
 
-			/* the assert_value counts the number of distinct indexes currently available device_snmp_cache
-			 * we do NOT make use of <oid_num_indexes> or the like!
-			 * this works, even if no <oid_num_indexes> was given
-			 */
-			$assert_value = sizeof(db_fetch_assoc("select snmp_index from device_snmp_cache where device_id=$device_id and snmp_query_id=$data_query_id group by snmp_index"));
+			if ($device["snmp_version"] > 0 && isset($data_query_xml["oid_num_indexes"])) {
+				/* in case we have an OID for num_indexes, use it */
+				$assert_value = cacti_snmp_get($device["hostname"],
+					$device["snmp_community"],
+					$data_query_xml["oid_num_indexes"],
+					$device["snmp_version"],
+					$device["snmp_username"],
+					$device["snmp_password"],
+					$device["snmp_auth_protocol"],
+					$device["snmp_priv_passphrase"],
+					$device["snmp_priv_protocol"],
+					$device["snmp_context"],
+					$device["snmp_port"],
+					$device["snmp_timeout"],
+					SNMP_POLLER);
+			}else{
+				/* in case we do not have SNMP support
+				 * or we do not have an OID for num_indexes
+				 * the assert_value counts the number of distinct indexes currently available in host_snmp_cache
+				 * TODO: no SNMP support BUT arg_num_indexes available (SCRIPT DATA QUERY)!
+ 				 */
+ 				$assert_value = sizeof(db_fetch_assoc("select snmp_index from device_snmp_cache where host_id=$device_id and snmp_query_id=$data_query_id group by snmp_index"));
+			}
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
 			 * the result of those commands will be compared to the assert_value we have just computed
