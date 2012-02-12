@@ -661,6 +661,7 @@ function vdef($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $vdef_actions;
+	$table->table_id       = "vdef";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

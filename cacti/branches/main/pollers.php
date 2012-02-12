@@ -101,7 +101,6 @@ function form_save() {
 
 function form_actions() {
 	global $poller_actions;
-
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
@@ -178,7 +177,7 @@ function form_actions() {
 
 	html_start_box("", "100", "3", "center", "");
 
-	if (sizeof($poller_array)) {
+	if (isset($poller_array) && sizeof($poller_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
 			print "	<tr>
 						<td class='textArea'>
@@ -447,6 +446,7 @@ function poller($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $poller_actions;
+	$table->table_id       = "pollers";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

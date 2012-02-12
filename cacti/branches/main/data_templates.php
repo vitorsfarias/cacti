@@ -757,6 +757,7 @@ function data_source_template($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $ds_template_actions;
+	$table->table_id       = "data_templates";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

@@ -1324,6 +1324,8 @@ function form_ajax_save($title, $form_id, $text = "") {
 }
 
 /** form_continue - draws a Continue/Cancel button at the bottom of an html edit form
+ * requires, that a REQUEST variable of 'table_id' denotes the place where to return
+ * TODO: we should pass this variable via parameter list!
    @param string $item_list 	- serialized device array
    @param string $drp_action 	- if specified, will direct the system what to do if "No" is selected
    @param string $title			- title of the popup displayed for confirmation

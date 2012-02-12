@@ -840,6 +840,7 @@ function template($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $graph_template_actions;
+	$table->table_id       = "graph_templates";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

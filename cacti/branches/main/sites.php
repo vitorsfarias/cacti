@@ -555,6 +555,7 @@ function site($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $site_actions;
+	$table->table_id       = "sites";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

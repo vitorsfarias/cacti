@@ -631,6 +631,7 @@ function data($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $di_actions;
+	$table->table_id       = "data_input";
 
 	/* we must validate table variables */
 	$table->process_page_variables();
