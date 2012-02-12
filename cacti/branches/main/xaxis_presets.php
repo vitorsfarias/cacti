@@ -585,6 +585,7 @@ function xaxis($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $xaxis_actions;
+	$table->table_id       = "xaxis_presets";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

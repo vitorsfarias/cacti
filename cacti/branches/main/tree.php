@@ -624,6 +624,7 @@ function tree($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $tree_actions;
+	$table->table_id       = "tree";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

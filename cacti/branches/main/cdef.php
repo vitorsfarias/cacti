@@ -549,7 +549,7 @@ function cdef_edit() {
 function cdef_filter() {
 	global $item_rows;
 
-	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php", true);
+	html_start_box(__("CDEF's"), "100", "3", "center", "cdef.php?action=edit", true);
 	?>
 	<tr class='rowAlternate3'>
 		<td>
@@ -665,6 +665,7 @@ function cdef($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $cdef_actions;
+	$table->table_id       = "cdef";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

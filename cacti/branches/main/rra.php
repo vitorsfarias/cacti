@@ -370,6 +370,7 @@ function rra($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $rra_actions;
+	$table->table_id       = "rra";
 
 	/* we must validate table variables */
 	$table->process_page_variables();

@@ -1066,6 +1066,7 @@ function data_query($refresh = true) {
 	$table->checkbox       = true;
 	$table->sortable       = true;
 	$table->actions        = $dq_actions;
+	$table->table_id       = "data_queries";
 
 	/* we must validate table variables */
 	$table->process_page_variables();
