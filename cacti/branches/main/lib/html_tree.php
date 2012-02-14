@@ -848,16 +848,16 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 	$title_delimeter = "";
 	$search_key      = "";
 
-	$leaf      = db_fetch_row("SELECT order_key, title, device_id, device_grouping_type
+	$leaf      = db_fetch_row("SELECT title, device_id, device_grouping_type
 					FROM graph_tree_items
 					WHERE id=$leaf_id");
 
 	$leaf_type = get_tree_item_type($leaf_id);
 
 	/* get the "starting leaf" if the user clicked on a specific branch */
-	if (!empty($leaf_id)) {
-		$search_key = substr($leaf["order_key"], 0, (tree_tier($leaf["order_key"]) * CHARS_PER_TIER));
-	}
+	//if (!empty($leaf_id)) {
+	//	$search_key = substr($leaf["order_key"], 0, (tree_tier($leaf["order_key"]) * CHARS_PER_TIER));
+	//}
 
 	/* graph permissions */
 	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
@@ -960,7 +960,6 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 			graph_tree_items.title,
 			graph_tree_items.local_graph_id,
 			graph_tree_items.rra_id,
-			graph_tree_items.order_key,
 			graph_templates_graph.height,
 			graph_templates_graph.width,
 			graph_templates_graph.title_cache as title_cache,
@@ -970,11 +969,9 @@ function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 			$sql_join
 			WHERE graph_tree_items.graph_tree_id=$tree_id
 			AND graph_local.id=graph_templates_graph.local_graph_id
-			AND graph_tree_items.order_key like '$search_key" . str_repeat('_', CHARS_PER_TIER) . str_repeat('0', (MAX_TREE_DEPTH * CHARS_PER_TIER) - (strlen($search_key) + CHARS_PER_TIER)) . "'
 			AND graph_tree_items.local_graph_id>0
 			$sql_where
-			GROUP BY graph_tree_items.id
-			ORDER BY graph_tree_items.order_key");
+			GROUP BY graph_tree_items.id");
 	}elseif ($leaf_type == "device") {
 		/* graph template grouping */
 		if ($leaf["device_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
