@@ -927,17 +927,17 @@ function data_queries_filter() {
 		<td class="noprint">
 			<form name="form_graph_id" action="data_queries.php">
 			<table cellpadding="0" cellspacing="3">
-				<tr class="noprint">
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
+				<tr>
+					<td class="w1">
+						<?php print __("Search:");?>
 					</td>
-					<td width="1">
+					<td class="w1">
 						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Rows:");?>
 					</td>
-					<td width="1">
+					<td class="w1">
 						<select name="rows" onChange="applyFilterChange(document.form_graph_id)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
@@ -949,8 +949,8 @@ function data_queries_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+					<td class="w1">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
 						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
 					</td>
 				</tr>

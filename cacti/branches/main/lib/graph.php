@@ -1439,8 +1439,37 @@ function graphs_filter() {
 			<form id="form_graph_id" name="form_graph_id" action="graphs.php">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td>
-						&nbsp;<?php print __("Host:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>" onChange="applyGraphsFilterChange(document.form_graph_id)">
+					</td>
+					<td class="w1">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="w1">
+						<input type="button" Value="<?php print __("Go");?>" name="go" onClick="applyGraphsFilterChange(document.form_graph_id)">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" onClick="clearGraphsFilterChange(document.form_graph_id)">
+					</td>
+				</tr>
+				<tr>
+					<td class="w1">
+						<?php print __("Host:");?>
+					</td>
+					<td class="w1">
 						<?php
 						if (isset($_REQUEST["device_id"])) {
 							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=" . html_get_page_variable("device_id") . " ORDER BY description,hostname");
@@ -1451,8 +1480,10 @@ function graphs_filter() {
 						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
-					<td>
-						&nbsp;<?php print __("Template:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Template:");?>
+					</td>
+					<td class="w1">
 						<select name="template_id" onChange="applyGraphsFilterChange(document.form_graph_id)">
 							<option value="-1"<?php if (html_get_page_variable("template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 							<option value="0"<?php if (html_get_page_variable("template_id") == "0") {?> selected<?php }?>><?php print __("None");?></option>
@@ -1476,29 +1507,6 @@ function graphs_filter() {
 							if (sizeof($templates) > 0) {
 							foreach ($templates as $template) {
 								print "<option value='" . $template["id"] . "'"; if (html_get_page_variable("template_id") == $template["id"]) { print " selected"; } print ">" . title_trim($template["name"], 40) . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-					<td class="nw120">
-						&nbsp;<input type="button" Value="<?php print __("Go");?>" name="go" onClick="applyGraphsFilterChange(document.form_graph_id)">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" onClick="clearGraphsFilterChange(document.form_graph_id)">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						&nbsp;<?php print __("Search:");?>&nbsp;
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>" onChange="applyGraphsFilterChange(document.form_graph_id)">
-					</td>
-					<td>
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-						<select name="rows" onChange="applyGraphsFilterChange(document.form_graph_id)">
-							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
-							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
 							}
 							}
 							?>
@@ -2122,7 +2130,7 @@ function graphs_new() {
 				<tr>
 					<?php if (!isset($_REQUEST["tab"])) { ?>
 					<td class="nw50">
-						&nbsp;Host:&nbsp;
+						Host:
 					</td>
 					<td width="1">
 						<select name="device_id" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
@@ -2141,7 +2149,7 @@ function graphs_new() {
 					<input type='hidden' id='device_id' name='device_id' value='<?php print get_request_var_request('device_id');?>'>
 					<?php }?>
 					<td class="nw50">
-						&nbsp;<?php print __("Type:");?>&nbsp;
+						<?php print __("Type:");?>
 					</td>
 					<td width="1">
 						<select name="graph_type" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
@@ -2168,13 +2176,13 @@ function graphs_new() {
 					</td>
 					<?php if (get_request_var_request("graph_type") > 0) {?>
 					<td class="nw50">
-						&nbsp;Search:&nbsp;
+						Search:
 					</td>
 					<td>
 						<input type="text" name="filter" size="30" width="200" value="<?php print $_REQUEST["filter"];?>">
 					</td>
 					<td align="left" class="nw120">
-						&nbsp;<input type="button" name="go" onClick="applyGraphsNewFilterChange(document.form_graphs_new)" value="<?php print __("Go");?>" align="middle">
+						<input type="button" name="go" onClick="applyGraphsNewFilterChange(document.form_graphs_new)" value="<?php print __("Go");?>" align="middle">
 						<input type="button" onClick="clearFilter()" value="<?php print __("Clear");?>" align="middle">
 						<input type="hidden" name="action" value="edit">
 					</td>

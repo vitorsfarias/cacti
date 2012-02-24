@@ -683,28 +683,34 @@ function graph_templates_filter() {
 		<form name="form_graph_template" action='<?php print basename($_SERVER["PHP_SELF"]);?>'>
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
-					<td class="w1"><input type="text" name="filter" size="40"
-						value="<?php print html_get_page_variable("filter");?>"></td>
-					<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
-					<td class="w1"><select name="rows"
-						onChange="applyFilterChange(document.form_graph_template)">
-						<option value="-1"
-						<?php if (html_get_page_variable("rows") == "-1") {?> selected
-						<?php }?>>Default</option>
-						<?php
-						if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+					<td class="w1">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="w1">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows"	onChange="applyFilterChange(document.form_graph_template)">
+							<option value="-1"
+							<?php if (html_get_page_variable("rows") == "-1") {?> selected
+							<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+								}
 							}
-						}
-						?>
-					</select></td>
-					<td style='white-space: nowrap; width: 120px;'>&nbsp;<input
-						type="submit" Value="<?php print __("Go");?>" name="go"
-						align="middle"> <input type="submit"
-						Value="<?php print __("Clear");?>" name="clear" align="middle">
-					<div><input type='hidden' name='page' value='1'></div>
+							?>
+						</select></td>
+					<td class="w1">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
+					<div>
+						<input type='hidden' name='page' value='1'>
+					</div>
 					</td>
 				</tr>
 			</table>

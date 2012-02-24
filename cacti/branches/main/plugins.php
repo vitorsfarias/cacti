@@ -366,18 +366,14 @@ function plugin_filter() {
 			<form action="plugins.php" name="form_plugins" method="post">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Search:");?>
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearPluginFilterChange(document.form_plugins)">
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Rows:");?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyPluginFilterChange(document.form_plugins)">
@@ -390,6 +386,10 @@ function plugin_filter() {
 							}
 							?>
 						</select>
+					</td>
+					<td class="w1">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearPluginFilterChange(document.form_plugins)">
 					</td>
 				</tr>
 			</table>

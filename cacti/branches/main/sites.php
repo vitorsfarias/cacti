@@ -363,13 +363,17 @@ function sites_filter() {
 			<form method='get' action='<?php print basename($_SERVER["PHP_SELF"]);?>' name='form_sites'>
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td>
-						&nbsp;<?php print __("Search:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
 						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td>
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-					<select name="rows" onChange="applySiteFilterChange(document.form_sites)">
+					<td class="w1">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applySiteFilterChange(document.form_sites)">
 							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
 							<?php
 							if (sizeof($item_rows) > 0) {
@@ -380,22 +384,22 @@ function sites_filter() {
 							?>
 						</select>
 					</td>
-					<td>
-						&nbsp;<input type="checkbox" id="detail" name="detail" <?php if ((html_get_page_variable("detail") == "true") || (html_get_page_variable("detail") == CHECKED)) print ' checked';?> onClick="applySiteFilterChange(document.form_sites)">
+					<td class="w1">
+						<input type="checkbox" id="detail" name="detail" <?php if ((html_get_page_variable("detail") == "true") || (html_get_page_variable("detail") == CHECKED)) print ' checked';?> onClick="applySiteFilterChange(document.form_sites)">
 						<label for="detail"><?php print __("Details");?></label>
 					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+					<td class="w1">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
 						<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
 					</td>
 				</tr>
 			<?php
 			if (!(html_get_page_variable("detail") == "false")) { ?>
-			</table>
-			<table cellpadding="0" cellspacing="3">
 				<tr>
 					<td>
-						&nbsp;<?php print __("Site:");?>
+						<?php print __("Site:");?>
+					</td>
+					<td>
 						<select id="site_id" name="site_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("site_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
@@ -409,7 +413,9 @@ function sites_filter() {
 						</select>
 					</td>
 					<td>
-						&nbsp;<?php print __("Device Template:");?>
+						<?php print __("Device Template:");?>
+					</td>
+					<td>
 						<select id="device_template_id" name="device_template_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("device_template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
