@@ -480,27 +480,32 @@ function xaxis_filter() {
 		<form action="xaxis_presets.php" name="form_xaxis" method="post">
 		<table cellpadding="0" cellspacing="3">
 			<tr>
-				<td class="nw50">&nbsp;<?php print __("Search:");?>&nbsp;</td>
-				<td class="w1"><input type="text" name="filter" size="40"
-					value="<?php print html_get_page_variable("filter");?>"></td>
-				<td class="nw50">&nbsp;<?php print __("Rows:");?>&nbsp;</td>
-				<td class="w1"><select name="rows"
-					onChange="applyFilterChange(document.form_xaxis)">
-					<option value="-1"
-					<?php if (html_get_page_variable("rows") == "-1") {?> selected
-					<?php }?>>Default</option>
-					<?php
-					if (sizeof($item_rows) > 0) {
-						foreach ($item_rows as $key => $value) {
-							print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+				<td class="w1">
+					<?php print __("Search:");?>
+				</td>
+				<td class="w1">
+					<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
+				</td>
+				<td class="w1">
+					<?php print __("Rows:");?>
+				</td>
+				<td class="w1">
+					<select name="rows" onChange="applyFilterChange(document.form_xaxis)">
+						<option value="-1"
+						<?php if (html_get_page_variable("rows") == "-1") {?> selected
+						<?php }?>>Default</option>
+						<?php
+						if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
 						}
-					}
-					?>
-				</select></td>
-				<td class="nw120">&nbsp;<input type="submit"
-					Value="<?php print __("Go");?>" name="go" align="middle"> <input
-					type="submit" Value="<?php print __("Clear");?>" name="clear"
-					align="middle"></td>
+						?>
+					</select></td>
+				<td class="w1">
+					<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+					<input type="submit" Value="<?php print __("Clear");?>" name="clear" align="middle">
+				</td>
 			</tr>
 		</table>
 		<div><input type='hidden' name='page' value='1'></div>

@@ -1113,8 +1113,37 @@ function data_source_filter() {
 			<form id="form_data_sources" action="data_sources.php" name="form_data_sources" onSubmit="javascript:return false">
 			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Host:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>" onChange="applyDSFilterChange(document.form_data_sources)">
+					</td>
+					<td class="w1">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyDSFilterChange(document.form_data_sources)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="w1">
+						<input type="button" value="<?php print __("Go");?>" name="go" align="middle" onClick="applyDSFilterChange(document.form_data_sources)">
+					</td>
+					<td class="w1">
+						<input type="button" value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearDSFilterChange(document.form_data_sources)">
+					</td>
+				</tr>
+				<tr>
+					<td class="w1">
+						<?php print __("Host:");?>
 					</td>
 					<td class="w1">
 						<?php
@@ -1127,8 +1156,8 @@ function data_source_filter() {
 						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Template:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Template:");?>
 					</td>
 					<td class="w1">
 						<select name="template_id" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1151,14 +1180,8 @@ function data_source_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw120">
-						&nbsp;<input type="button" value="<?php print __("Go");?>" name="go" align="middle" onClick="applyDSFilterChange(document.form_data_sources)">
-						<input type="button" value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearDSFilterChange(document.form_data_sources)">
-					</td>
-				</tr>
-				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Method:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Method:");?>
 					</td>
 					<td class="w1">
 						<select name="method_id" onChange="applyDSFilterChange(document.form_data_sources)">
@@ -1180,31 +1203,6 @@ function data_source_filter() {
 							}
 							?>
 						</select>
-					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<select name="rows" onChange="applyDSFilterChange(document.form_data_sources)">
-							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>><?php print __("Default");?></option>
-							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-			</table>
-			<table cellpadding="1" cellspacing="3">
-				<tr>
-					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
-					</td>
-					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>" onChange="applyDSFilterChange(document.form_data_sources)">
 					</td>
 				</tr>
 			</table>
