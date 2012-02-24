@@ -85,6 +85,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0002094: CDEF: "another cdef" references not included in template export
 -bug#0002097: cacti.sql import error
 -bug#0002106: 'cli/add_device.php' doesn't accept "None" for host template
+-bug#0002161: Graph management "graph()" function conflicts
 -bug: Update host template cli script help shows incorrect options
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
