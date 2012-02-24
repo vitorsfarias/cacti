@@ -1650,7 +1650,7 @@ function get_graph_records(&$total_rows, &$rowspp) {
 		" LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp);
 }
 
-function graph($refresh = true) {
+function cacti_graph($refresh = true) {
 	global $item_rows;
 	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
 

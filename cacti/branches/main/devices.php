@@ -93,7 +93,7 @@ switch (get_request_var_request('action')) {
 
 		break;
 	case 'graphs':
-		graph();
+		cacti_graph();
 
 		break;
 	case 'data_sources':
