@@ -342,15 +342,16 @@ function sites_filter() {
 	<!--
 	function applySiteFilterChange(objForm) {
 		strURL = '?report=sites';
-		if (objForm.hidden_device_template_id) {
+		if (objForm.detail.checked) {
+			if (typeof objForm.device_template_id !== "undefined") strURL = strURL + '&device_template_id=' + objForm.device_template_id.value;
+			if (typeof objForm.site_id !== "undefined") strURL = strURL + '&site_id=' + objForm.site_id.value;
+			if (typeof objForm.filter !== "undefined") strURL = strURL + '&filter=' + objForm.filter.value;
+		}else{
 			strURL = strURL + '&device_template_id=-1';
 			strURL = strURL + '&site_id=-1';
-		}else{
-			strURL = strURL + '&device_template_id=' + objForm.device_template_id.value;
-			strURL = strURL + '&site_id=' + objForm.site_id.value;
+			strURL = strURL + '&filter=';
 		}
 		strURL = strURL + '&detail=' + objForm.detail.checked;
-		strURL = strURL + '&filter=' + objForm.filter.value;
 		strURL = strURL + '&rows=' + objForm.rows.value;
 		document.location = strURL;
 	}
@@ -395,7 +396,7 @@ function sites_filter() {
 				<tr>
 					<td>
 						&nbsp;<?php print __("Site:");?>
-						<select name="site_id" onChange="applySiteFilterChange(document.form_sites)">
+						<select id="site_id" name="site_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("site_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
 						$sites = db_fetch_assoc("SELECT * FROM sites ORDER BY sites.name");
@@ -409,7 +410,7 @@ function sites_filter() {
 					</td>
 					<td>
 						&nbsp;<?php print __("Device Template:");?>
-						<select name="device_template_id" onChange="applySiteFilterChange(document.form_sites)">
+						<select id="device_template_id" name="device_template_id" onChange="applySiteFilterChange(document.form_sites)">
 						<option value="-1"<?php if (html_get_page_variable("device_template_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
 						<?php
 						$device_templates = db_fetch_assoc("SELECT DISTINCT device_template.id,
@@ -431,10 +432,6 @@ function sites_filter() {
 			<div>
 				<input type='hidden' name='page' value='1'>
 				<input type='hidden' name='report' value='sites'>
-				<?php
-				if (html_get_page_variable("detail") == "false") { ?>
-				<input type='hidden' name='hidden_device_template_id' value='-1'>
-				<?php }?>
 			</div>
 			</form>
 		</td>
