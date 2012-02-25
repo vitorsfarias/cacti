@@ -1105,16 +1105,16 @@ function user_filter() {
 	<tr class='rowAlternate3'>
 		<td>
 			<form name="form_user_admin" action="user_admin.php">
-			<table cellpadding="0" cellspacing="0">
+			<table cellpadding="0" cellspacing="3">
 				<tr>
-					<td class="nw50">
-						<?php print __("Search:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Search:");?>
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
-					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+					<td class="w1">
+						<?php print __("Rows:");?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyFilterChange(document.form_user_admin)">
@@ -1128,8 +1128,8 @@ function user_filter() {
 							?>
 						</select>
 					</td>
-					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle" onClick="applyFilterChange(document.form_user_admin)">
+					<td class="w1">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle" onClick="applyFilterChange(document.form_user_admin)">
 						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFilterChange(document.form_user_admin)">
 					</td>
 				</tr>
