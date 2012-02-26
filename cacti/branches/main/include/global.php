@@ -180,6 +180,7 @@ include_once(CACTI_BASE_PATH . "/lib/variables.php");
 include_once(CACTI_BASE_PATH . "/lib/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/ajax.php");
 
+plugin_load_realms();
 plugin_hook('config_arrays');
 plugin_hook('config_settings');
 plugin_hook('config_form');
