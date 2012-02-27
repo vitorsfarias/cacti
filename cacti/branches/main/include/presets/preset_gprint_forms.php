@@ -24,26 +24,26 @@
 
 /* file: grprint_presets.php, action: edit */
 $fields_gprint_presets_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Name"),
-		"description" => __("Enter a name for this GPRINT preset, make sure it is something you recognize."),
-		"value" => "|arg1:name|",
-		"max_length" => "50",
-		),
-	"gprint_text" => array(
-		"method" => "textbox",
-		"friendly_name" => __("GPRINT Text"),
-		"description" => __("Enter the custom GPRINT string here."),
-		"value" => "|arg1:gprint_text|",
-		"max_length" => "50",
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_gprint_presets" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Name'),
+		'description' => __('Enter a name for this GPRINT preset, make sure it is something you recognize.'),
+		'value' => '|arg1:name|',
+		'max_length' => '50',
+	),
+	'gprint_text' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('GPRINT Text'),
+		'description' => __('Enter the custom GPRINT string here.'),
+		'value' => '|arg1:gprint_text|',
+		'max_length' => '50',
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_gprint_presets' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	)
+);

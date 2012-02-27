@@ -22,10 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-define("RRD_XAXIS_SECOND",		"SECOND");
-define("RRD_XAXIS_MINUTE",		"MINUTE");
-define("RRD_XAXIS_HOUR",		"HOUR");
-define("RRD_XAXIS_DAY",			"DAY");
-define("RRD_XAXIS_WEEK",		"WEEK");
-define("RRD_XAXIS_MONTH",		"MONTH");
-define("RRD_XAXIS_YEAR",		"YEAR");
+define('RRD_XAXIS_SECOND', 'SECOND');
+define('RRD_XAXIS_MINUTE', 'MINUTE');
+define('RRD_XAXIS_HOUR', 'HOUR');
+define('RRD_XAXIS_DAY', 'DAY');
+define('RRD_XAXIS_WEEK', 'WEEK');
+define('RRD_XAXIS_MONTH', 'MONTH');
+define('RRD_XAXIS_YEAR', 'YEAR');
+

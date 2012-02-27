@@ -38,12 +38,16 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<?php
-	if (isset($_SESSION["custom"])) {
+	if (isset($_SESSION['custom']))
+	{
 		print "<meta http-equiv=refresh content='99999'>\r\n";
-	}else{
+	}
+	else
+	{
 		$refresh = plugin_hook_function('top_general_refresh', '0');
 
-		if ($refresh > 0) {
+		if ($refresh > 0)
+		{
 			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
 		}
 	}
@@ -78,18 +82,18 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<div id='navbar'>
 		<div id='navbar_l'>
 			<ul>
-				<?php echo draw_header_tab("console", __("Console"), CACTI_URL_PATH . "index.php");?>
-				<?php echo draw_header_tab("graphs", __("Graphs"), CACTI_URL_PATH . "graph_view.php");?>
-				<?php plugin_hook('top_header_tabs');?>
+				<?php echo draw_header_tab('console', __('Console'), CACTI_URL_PATH . 'index.php'); ?>
+				<?php echo draw_header_tab('graphs', __('Graphs'), CACTI_URL_PATH . 'graph_view.php'); ?>
+				<?php plugin_hook('top_header_tabs'); ?>
 			</ul>
 		</div>
 	</div>
 	<div id='navbrcrumb'>
 		<div style='float:left'>
-			<?php echo draw_navigation_text();?>
+			<?php echo draw_navigation_text(); ?>
 		</div>
 		<div style='float:right'>
-			<a href="<?php echo cacti_wiki_url();?>" target="_blank">
+			<a href="<?php echo cacti_wiki_url(); ?>" target="_blank">
 			<img src="<?php echo CACTI_URL_PATH; ?>images/help.gif" title="<?php print __("Help");?>" alt="<?php print __("Help");?>" align="top">
 			</a>
 		</div>
@@ -106,9 +110,9 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 		</div>
 		<?php if(read_config_option('i18n_language_support') != 0) {?>
 		<div style='float:right;'>
-			<span id="menu_languages" class="cacti_dd_link"><img src="<?php echo CACTI_URL_PATH; ?>images/icons/flags/<?php print CACTI_COUNTRY;?>.gif" alt="<?php print CACTI_COUNTRY;?>" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]["language"];?></span>
+			<span id="menu_languages" class="cacti_dd_link"><img src="<?php echo CACTI_URL_PATH; ?>images/icons/flags/<?php print CACTI_COUNTRY;?>.gif" alt="<?php print CACTI_COUNTRY; ?>" align="top">&nbsp;<?php print $lang2locale[CACTI_LOCALE]['language']; ?></span>
 		</div>
-		<div id="loading" style="display:none; float:right"><img src="<?php echo CACTI_URL_PATH; ?>images/load_small.gif" align="top" alt="<?php print __("loading");?>">LOADING</div>
+		<div id="loading" style="display:none; float:right"><img src="<?php echo CACTI_URL_PATH; ?>images/load_small.gif" align="top" alt="<?php print __('loading'); ?>">LOADING</div>
 		<?php }?>
 	</div>
 </div>

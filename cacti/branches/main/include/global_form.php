@@ -22,33 +22,34 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+require(CACTI_BASE_PATH . '/include/auth/auth_arrays.php');
 
-if (!defined('VALID_HOST_FIELDS')) {
+if (! defined('VALID_HOST_FIELDS'))
+{
 	$string = plugin_hook_function('valid_device_fields', '(hostname|device_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_version|snmp_port|snmp_timeout)');
 	define('VALID_HOST_FIELDS', $string);
 }
 
 $export_types = array(
-	"graph_template" => array(
-		"name" => __("Graph Template"),
-		"title_sql" => "select name from graph_templates where id=|id|",
-		"dropdown_sql" => "select id,name from graph_templates order by name"
-		),
-	"data_template" => array(
-		"name" => __("Data Source Template"),
-		"title_sql" => "select name from data_template where id=|id|",
-		"dropdown_sql" => "select id,name from data_template order by name"
-		),
-	"device_template" => array(
-		"name" => __("Device Template"),
-		"title_sql" => "select name from device_template where id=|id|",
-		"dropdown_sql" => "select id,name from device_template order by name"
-		),
-	"data_query" => array(
-		"name" => __("Data Query"),
-		"title_sql" => "select name from snmp_query where id=|id|",
-		"dropdown_sql" => "select id,name from snmp_query order by name"
-		)
-	);
+	'graph_template' => array(
+		'name' => __('Graph Template'),
+		'title_sql' => 'select name from graph_templates where id=|id|',
+		'dropdown_sql' => 'select id,name from graph_templates order by name'
+	),
+	'data_template' => array(
+		'name' => __('Data Source Template'),
+		'title_sql' => 'select name from data_template where id=|id|',
+		'dropdown_sql' => 'select id,name from data_template order by name'
+	),
+	'device_template' => array(
+		'name' => __('Device Template'),
+		'title_sql' => 'select name from device_template where id=|id|',
+		'dropdown_sql' => 'select id,name from device_template order by name'
+	),
+	'data_query' => array(
+		'name' => __('Data Query'),
+		'title_sql' => 'select name from snmp_query where id=|id|',
+		'dropdown_sql' => 'select id,name from snmp_query order by name'
+	)
+);
 	

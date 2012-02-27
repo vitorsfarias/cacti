@@ -23,21 +23,22 @@
 */
 
 /* used for plugin actions */
-define("PLUGIN_ACTION_INSTALL", "Install");
-define("PLUGIN_ACTION_ENABLE", "Enable");
-define("PLUGIN_ACTION_DISABLE", "Disable");
-define("PLUGIN_ACTION_UNINSTALL", "Uninstall");
-define("PLUGIN_ACTION_CHECK", "Check");
+define('PLUGIN_ACTION_INSTALL', 'Install');
+define('PLUGIN_ACTION_ENABLE', 'Enable');
+define('PLUGIN_ACTION_DISABLE', 'Disable');
+define('PLUGIN_ACTION_UNINSTALL', 'Uninstall');
+define('PLUGIN_ACTION_CHECK', 'Check');
 
 /* plugin status names */
-define("PLUGIN_STATUS_DISABLED", "-2");
-define("PLUGIN_STATUS_ACTIVE_OLD", "-1");
-define("PLUGIN_STATUS_NOT_INSTALLED", "0");
-define("PLUGIN_STATUS_ACTIVE_NEW", "1");
-define("PLUGIN_STATUS_AWAITING_CONFIGURATION", "2");
-define("PLUGIN_STATUS_AWAITING_UPGRADE", "3");
-define("PLUGIN_STATUS_INSTALLED", "4");
+define('PLUGIN_STATUS_DISABLED', '-2');
+define('PLUGIN_STATUS_ACTIVE_OLD', '-1');
+define('PLUGIN_STATUS_NOT_INSTALLED', '0');
+define('PLUGIN_STATUS_ACTIVE_NEW', '1');
+define('PLUGIN_STATUS_AWAITING_CONFIGURATION', '2');
+define('PLUGIN_STATUS_AWAITING_UPGRADE', '3');
+define('PLUGIN_STATUS_INSTALLED', '4');
 
 /* plugin types */
-define("PLUGIN_TYPE_SYSTEM", "0");
-define("PLUGIN_TYPE_GENERAL", "1");
+define('PLUGIN_TYPE_SYSTEM', '0');
+define('PLUGIN_TYPE_GENERAL', '1');
+

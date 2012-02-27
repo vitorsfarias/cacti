@@ -24,26 +24,26 @@
 
 /* file: cdef.php, action: edit */
 $fields_cdef_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Name"),
-		"description" => __("A useful name for this CDEF."),
-		"value" => "|arg1:name|",
-		"max_length" => "255",
-		"size" => "60"
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_cdef" => array(
-		"method" => "hidden",
-		"value" => "1"
-		),
-	);
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Name'),
+		'description' => __('A useful name for this CDEF.'),
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '60'
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_cdef' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	),
+);
 
 $fields_cdef_item_edit = array(
-	"sequence" => "sequence",
-	"type" => "type",
-	"value" => "value"
-	);
+	'sequence' => 'sequence',
+	'type' => 'type',
+	'value' => 'value'
+);

@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-define("CVDEF_ITEM_TYPE_FUNCTION",		1);
-define("CVDEF_ITEM_TYPE_OPERATOR",		2);
-define("CVDEF_ITEM_TYPE_SPEC_DS",		4);
-define("CVDEF_ITEM_TYPE_CDEF",			5);
-define("CVDEF_ITEM_TYPE_STRING",		6);
+define('CVDEF_ITEM_TYPE_FUNCTION', 1);
+define('CVDEF_ITEM_TYPE_OPERATOR', 2);
+define('CVDEF_ITEM_TYPE_SPEC_DS', 4);
+define('CVDEF_ITEM_TYPE_CDEF', 5);
+define('CVDEF_ITEM_TYPE_STRING', 6);
