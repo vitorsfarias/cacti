@@ -320,7 +320,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 		$keyCol = array($keyCol);
 	}
 
-	$sql = "REPLACE INTO `$table` (";
+	$sql  = "INSERT INTO `$table` (";
 	$sql2 = '';
 	$sql3 = '';
 
@@ -332,11 +332,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 			$sql2 .= ', ';
 		}
 		$sql .= "`$k`";
-		if (is_numeric($v)) {
-			$sql2 .= "$v";
-		} else {
-			$sql2 .= "$v";
-		}
+		$sql2 .= $v;
 		$first = false;
 		if (in_array($k, $keyCol)) continue; // skip UPDATE if is key
 		if (!$first3) {
@@ -344,11 +340,8 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCol, $has_autoinc) {
 		}
 		$sql3 .= "`$k`=VALUES(`$k`)";
 		$first3 = false;
-
-
 	}
-	//$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
-	$sql .= ") VALUES ($sql2)";
+	$sql .= ") VALUES ($sql2) ON DUPLICATE KEY UPDATE $sql3";
 	@db_execute($sql);
 	return db_fetch_insert_id();
 }
@@ -382,7 +375,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 	}
 
 	/* get the last AUTO_ID and return it */
-	if ((db_fetch_insert_id($db_conn) == '0') || ($replace_result == 1)) {
+	if (!$replace_result || db_fetch_insert_id($db_conn) == '0') {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
 				return str_replace("\"", '', $array_items[$key_cols]);
@@ -390,7 +383,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 		}
 		return FALSE;
 	} else {
-		return db_fetch_insert_id($db_conn);
+		return $replace_result;
 	}
 }
 
