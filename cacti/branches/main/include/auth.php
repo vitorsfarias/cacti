@@ -78,8 +78,8 @@ if (read_config_option('auth_method') != 0)
 		}
 
 		/* determine if user is allowed to access this realm */	
-		$user_realms = db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id='" . $_SESSION['sess_user_id'] . "' and user_auth_realm.realm_id='" . $realm_id . "'");
-		if ( empty($user_realms) || empty($realm_id) )
+		$user_realm_check = db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id='" . $_SESSION['sess_user_id'] . "' and user_auth_realm.realm_id='" . $realm_id . "'");
+		if ( empty($user_realm_check) || empty($realm_id) )
 		{
 			if (isset($_SERVER["HTTP_REFERER"]))
 			{
