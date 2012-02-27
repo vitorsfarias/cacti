@@ -871,9 +871,9 @@ class html_table {
 					$passarray = array();
 					if (sizeof($this->row_params)) {
 					foreach($this->row_params as $param) {
-						if (isset($row[$param])) {
+						//if (isset($row[$param])) {
 							$passarray[] = $row[$param];
-						}
+						//}
 					}
 					}
 					$row_classes = call_user_func_array($this->row_function, $passarray);
@@ -915,9 +915,9 @@ class html_table {
 						$passarray = array();
 						if (sizeof($data["params"])) {
 						foreach($data["params"] as $param) {
-							if (isset($row[$param])) {
+						//	if (isset($row[$param])) {
 								$passarray[] = $row[$param];
-							}
+						//	}
 						}
 						}
 
