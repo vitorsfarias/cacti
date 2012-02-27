@@ -430,7 +430,7 @@ function template_edit($tabs = false) {
 			case "graphs":
 				include_once(CACTI_BASE_PATH . "/lib/graph.php");
 
-				graph();
+				cacti_graph();
 
 				break;
 			case "items":
