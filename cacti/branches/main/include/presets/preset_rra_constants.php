@@ -22,12 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-define("RRA_CF_TYPE_AVERAGE", 1);
-define("RRA_CF_TYPE_MIN", 2);
-define("RRA_CF_TYPE_MAX", 3);
-define("RRA_CF_TYPE_LAST", 4);
-define("RRA_CF_TYPE_HWPREDICT", 5);
-define("RRA_CF_TYPE_SEASONAL", 6);
-define("RRA_CF_TYPE_DEVSEASONAL", 7);
-define("RRA_CF_TYPE_DEVPREDICT", 8);
-define("RRA_CF_TYPE_FAILURES", 9);
+define('RRA_CF_TYPE_AVERAGE', 1);
+define('RRA_CF_TYPE_MIN', 2);
+define('RRA_CF_TYPE_MAX', 3);
+define('RRA_CF_TYPE_LAST', 4);
+define('RRA_CF_TYPE_HWPREDICT', 5);
+define('RRA_CF_TYPE_SEASONAL', 6);
+define('RRA_CF_TYPE_DEVSEASONAL', 7);
+define('RRA_CF_TYPE_DEVPREDICT', 8);
+define('RRA_CF_TYPE_FAILURES', 9);
+

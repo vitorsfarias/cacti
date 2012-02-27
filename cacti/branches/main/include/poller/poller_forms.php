@@ -22,41 +22,41 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
+require(CACTI_BASE_PATH . '/include/poller/poller_arrays.php');
 
 /* file: pollers.php, action: edit */
 $fields_poller_edit = array(
-	"device_header" => array(
-		"method" => "spacer",
-		"friendly_name" => __("General Poller Options")
-		),
-	"description" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Description"),
-		"description" => __("Give this poller a meaningful description."),
-		"value" => "|arg1:description|",
-		"max_length" => "250",
-		),
-	"hostname" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Hostname"),
-		"description" => __("Fully qualified hostname of the poller device."),
-		"value" => "|arg1:hostname|",
-		"max_length" => "250",
-		),
-	"disabled" => array(
-		"method" => "checkbox",
-		"friendly_name" => __("Disabled"),
-		"description" => __("Check this box if you wish for this poller to be disabled."),
-		"value" => "|arg1:disabled|",
-		"default" => ""
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_poller" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+	'device_header' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('General Poller Options')
+	),
+	'description' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Description'),
+		'description' => __('Give this poller a meaningful description.'),
+		'value' => '|arg1:description|',
+		'max_length' => '250',
+	),
+	'hostname' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Hostname'),
+		'description' => __('Fully qualified hostname of the poller device.'),
+		'value' => '|arg1:hostname|',
+		'max_length' => '250',
+	),
+	'disabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Disabled'),
+		'description' => __('Check this box if you wish for this poller to be disabled.'),
+		'value' => '|arg1:disabled|',
+		'default' => ''
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_poller' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	)
+);

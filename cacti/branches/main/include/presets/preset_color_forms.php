@@ -24,21 +24,21 @@
 
 /* file: color.php, action: edit */
 $fields_color_edit = array(
-	"hex" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Hex Value"),
-		"description" => __("The hex value for this color; valid range: 000000-FFFFFF."),
-		"value" => "|arg1:hex|",
-		"max_length" => "6",
-		"size" => "7",
-		"class" => "colortags",
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_color" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+	'hex' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Hex Value'),
+		'description' => __('The hex value for this color; valid range: 000000-FFFFFF.'),
+		'value' => '|arg1:hex|',
+		'max_length' => '6',
+		'size' => '7',
+		'class' => 'colortags',
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_color' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	)
+);

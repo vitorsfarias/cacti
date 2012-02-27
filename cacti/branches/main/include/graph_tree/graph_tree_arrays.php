@@ -22,20 +22,20 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_constants.php");
+require_once(CACTI_BASE_PATH . '/include/graph_tree/graph_tree_constants.php');
 
 $tree_types = array(
-	TREE_TYPE_TREE => __("Tree"),
-	TREE_TYPE_NODE => __("Node"),
-	);
+	TREE_TYPE_TREE => __('Tree'),
+	TREE_TYPE_NODE => __('Node'),
+);
 
 $tree_item_types = array(
-	TREE_ITEM_TYPE_HEADER => __("Header"),
-	TREE_ITEM_TYPE_GRAPH => __("Graph"),
-	TREE_ITEM_TYPE_DEVICE => __("Device"),
-	);
+	TREE_ITEM_TYPE_HEADER => __('Header'),
+	TREE_ITEM_TYPE_GRAPH => __('Graph'),
+	TREE_ITEM_TYPE_DEVICE => __('Device'),
+);
 
 $tree_device_group_types = array(
-	TREE_DEVICE_GROUPING_GRAPH_TEMPLATE => __("Graph Template"),
-	TREE_DEVICE_GROUPING_DATA_QUERY_INDEX => __("Data Query Index"),
-	);
+	TREE_DEVICE_GROUPING_GRAPH_TEMPLATE => __('Graph Template'),
+	TREE_DEVICE_GROUPING_DATA_QUERY_INDEX => __('Data Query Index'),
+);

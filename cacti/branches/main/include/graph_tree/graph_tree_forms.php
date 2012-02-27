@@ -22,32 +22,32 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+require(CACTI_BASE_PATH . '/include/graph_tree/graph_tree_arrays.php');
+require(CACTI_BASE_PATH . '/include/data_query/data_query_arrays.php');
 
 /* file: tree.php, action: edit */
 $fields_tree_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Name"),
-		"description" => __("A useful name for this graph tree."),
-		"value" => "|arg1:name|",
-		"max_length" => "255",
-		"size" => "70"
-		),
-	"sort_type" => array(
-		"method" => "drop_array",
-		"friendly_name" => __("Sorting Type"),
-		"description" => __("Choose how items in this tree will be sorted."),
-		"value" => "|arg1:sort_type|",
-		"array" => $tree_sort_types,
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_tree" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Name'),
+		'description' => __('A useful name for this graph tree.'),
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '70'
+	),
+	'sort_type' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Sorting Type'),
+		'description' => __('Choose how items in this tree will be sorted.'),
+		'value' => '|arg1:sort_type|',
+		'array' => $tree_sort_types,
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_tree' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	)
+);

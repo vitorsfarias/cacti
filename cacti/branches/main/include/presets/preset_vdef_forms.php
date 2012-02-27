@@ -24,17 +24,17 @@
 
 /* file: vdef.php, action: edit */
 $fields_vdef_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => __("Name"),
-		"description" => __("A useful name for this VDEF."),
-		"value" => "|arg1:name|",
-		"max_length" => "255",
-		),
-	);
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Name'),
+		'description' => __('A useful name for this VDEF.'),
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+	),
+);
 
 $fields_vdef_item_edit = array(
-		"sequence" => "sequence",
-		"type" => "type",
-		"value" => "value"
-		);
+	'sequence' => 'sequence',
+	'type' => 'type',
+	'value' => 'value'
+);

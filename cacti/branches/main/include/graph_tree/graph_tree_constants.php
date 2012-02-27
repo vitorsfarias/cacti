@@ -22,15 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-define("TREE_DEVICE_GROUPING_GRAPH_TEMPLATE", 1);
-define("TREE_DEVICE_GROUPING_DATA_QUERY_INDEX", 2);
+define('TREE_DEVICE_GROUPING_GRAPH_TEMPLATE', 1);
+define('TREE_DEVICE_GROUPING_DATA_QUERY_INDEX', 2);
 
-define("TREE_TYPE_TREE", 1);
-define("TREE_TYPE_NODE", 2);
+define('TREE_TYPE_TREE', 1);
+define('TREE_TYPE_NODE', 2);
 
-define("TREE_ITEM_TYPE_HEADER", 1);
-define("TREE_ITEM_TYPE_GRAPH", 2);
-define("TREE_ITEM_TYPE_DEVICE", 3);
+define('TREE_ITEM_TYPE_HEADER', 1);
+define('TREE_ITEM_TYPE_GRAPH', 2);
+define('TREE_ITEM_TYPE_DEVICE', 3);
 
-define("SORT_TYPE_TREE", 1);
-define("SORT_TYPE_TREE_ITEM", 2);
+define('SORT_TYPE_TREE', 1);
+define('SORT_TYPE_TREE_ITEM', 2);

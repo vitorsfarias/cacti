@@ -20,7 +20,6 @@
 
 */
 
-
 // Simple class to wrap file streams, string streams, etc.
 // seek is essential, and it should be byte stream
 class StreamReader {
