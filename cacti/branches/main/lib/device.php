@@ -57,7 +57,7 @@ function device_add_gt() {
 
 		db_execute("replace into device_graph (device_id,graph_template_id) values (" . get_request_var_post("id") . "," . get_request_var_post("graph_template_id") . ")");
 
-		exit;
+//		exit;
 	}
 }
 
@@ -74,7 +74,7 @@ function device_add_dq() {
 		/* recache snmp data */
 		run_data_query(get_request_var_post("id"), get_request_var_post("snmp_query_id"));
 
-		exit;
+//		exit;
 	}
 }
 
@@ -652,10 +652,12 @@ function html_devices_draw_tabs() {
 	$parent_id = get_request_var_request("parent_id");
 
 	$device_tabs = array(
-		"general" => __("General"),
-		"graphs_new" => __("New Graphs"),
-		"graphs" => __("Graphs"),
-		"data_sources" => __("Data Sources")
+		"general" 			=> __("General"),
+		"graph_template" 	=> __("Associated Graph Templates"),
+		"data_query" 		=> __("Associated Data Queries"),
+		"graphs_new" 		=> __("New Graphs"),
+		"graphs" 			=> __("Existing Graphs"),
+		"data_sources" 		=> __("Existing Data Sources")
 	);
 
 	$device_tabs = plugin_hook_function('device_tabs_init', $device_tabs);
@@ -670,6 +672,12 @@ function html_devices_draw_tabs() {
 			switch ($tab_short_name) {
 			case 'general':
 				print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit" . (isset($_REQUEST['parent_id']) ? "&id=" . $_REQUEST['parent_id']: "") . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			case 'graph_template':
+				print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit_graph_template" . (isset($_REQUEST['parent_id']) ? "&id=" . $_REQUEST['parent_id']: "") . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
+				break;
+			case 'data_query':
+				print "<li><a href='" . htmlspecialchars("devices.php?action=ajax_edit_data_query" . (isset($_REQUEST['parent_id']) ? "&id=" . $_REQUEST['parent_id']: "") . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
 				break;
 			case 'graphs_new':
 				print "<li><a href='" . htmlspecialchars("graphs_new.php?action=ajax_view" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&parent=devices&parent_id=" . $_REQUEST['id'] . "&device_id=" . $_REQUEST['id']: "") . "&tab=$tab_short_name") . "'>" . $device_tabs[$tab_short_name] . "</a></li>";
@@ -693,7 +701,8 @@ function html_devices_draw_tabs() {
 	print "</div></td></tr></table>
 	<script type='text/javascript'>
 		$().ready(function() {
-			$('#tabs_device').tabs({ cookie: { expires: 30 } });
+			// call jQueryUI tabs
+			$('div #tabs_device').tabs({ cookie: { expires: 30 } });
 			});
 	</script>\n";
 }
@@ -710,24 +719,35 @@ function device_edit($tab = false) {
 	if ($tab) {
 		html_devices_draw_tabs();
 	}elseif(isset($_REQUEST["parent"])) {
+		// TODO: html_draw_tabs will in turn call html_devices_draw_tabs, so why using this way?
 		html_draw_tabs();
 	}else{
 		if (!empty($_REQUEST["id"])) {
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
 			$device_text    = $device["description"] . " [" . $device["hostname"] . "]";
-			$header_label = __("[edit: ") . $device["description"] . "]";
 		}elseif (!empty($_GET["device_id"])) {
 			$_REQUEST["id"]   = $_REQUEST["device_id"];
 			$device         = db_fetch_row("select * from device where id=" . $_REQUEST["id"]);
 			$device_text    = $device["description"] . " [" . $device["hostname"] . "]";
-			$header_label = __("[edit: ") . $device["description"] . "]";
 		}else{
-			$header_label = __("[new]");
-			$device_text    = __("New Device");
 			$device         = "";
+			$device_text    = __("New Device");
 		}
 
-		device_display_general($device, $device_text);
+		/* TODO: is it a good move to again switch on "action", as we already did in devices.php? 
+		 * or should we prefer to pass a parameter to this function to switch on */
+		switch (get_request_var_request('action')) {
+			case 'edit':
+			case 'ajax_edit':
+				device_display_general($device, $device_text);
+				break;
+			case 'ajax_edit_graph_template':
+				device_display_graph_template($device, $device_text);	
+				break;
+			case 'ajax_edit_data_query':
+				device_display_data_query($device, $device_text);
+				break;
+		}		
 	}
 }
 
@@ -1214,6 +1234,18 @@ function device_display_general($device, $device_text) {
 	</script>
 	<?php
 
+	form_save_button("devices.php", "return");
+}
+
+/**
+ * display general device tab that shows configuration data for that device
+ */
+function device_display_graph_template($device, $device_text) {
+	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+
+
+	print "<form id='device_edit_graph_template' name='device_edit_graph_template' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
 	if (isset($device["id"])) {
 		html_start_box(__("Associated Graph Templates"), "100", 0, "center", "", true);
 		print "<tr><td>";
@@ -1290,8 +1322,52 @@ function device_display_general($device, $device_text) {
 		<?php
 		form_end_row();
 		print "</table></td></tr>";		/* end of html_header */
+		form_hidden_box("id", (isset($device["id"]) ? $device["id"] : "0"), "");
+		form_hidden_box("tab", "devices", "");
 		html_end_box(FALSE);
+	}
 
+	print "</form>";		/* end of html_header */
+
+	?>
+	<script type='text/javascript'>
+	$().ready(function() {
+		$('.gremove').click(function(data) {
+			id=$(this).attr('id').split('_');
+			$.get('devices.php?action=gt_remove&id='+id[1]+'&device_id='+id[0], function(data) {
+				//re-call same tab by $.get-ting appropriate edit function
+				$.get('devices.php?action=ajax_edit_graph_template&id='+id[0], function(data) {
+					//reload the form provided by this function, thus refreshing the form
+					$('#device_edit_graph_template').html(data);
+				});
+			});
+		}).css('cursor', 'pointer');
+		$('#add_gt_y').click(function(data) {
+			$('#action').attr('value', 'add_gt');
+			id=$('#id').attr('value');
+			//pass all form parameters using "serialize" to the add function
+			$.post('devices.php?action=add_gt', $('#device_edit_graph_template').serialize(), function(data) {
+				//re-call same tab by $.get-ting appropriate edit function
+				$.get('devices.php?action=ajax_edit_graph_template&id='+id, function(data) {
+					//reload the form provided by this function, thus refreshing the form
+					$('#device_edit_graph_template').html(data);
+				});
+			});
+		}); 
+	});
+	<?php
+}
+
+/**
+ * display general device tab that shows configuration data for that device
+ */
+function device_display_data_query($device, $device_text) {
+	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+
+
+	print "<form id='device_edit_data_query' name='device_edit_data_query' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
+	if (isset($device["id"])) {
 		html_start_box(__("Associated Data Queries"), "100", 0, "center", "", true);
 		print "<tr><td>";
 		html_header(array(array("name" => __("Data Query Name")), array("name" => __("Debugging")), array("name" => __("Re-Index Method")), array("name" =>__("Status"))), 2);
@@ -1381,10 +1457,12 @@ function device_display_general($device, $device_text) {
 		<?php
 		form_end_row();
 		print "</table></td></tr>";		/* end of html_header */
-		html_end_box();
+		form_hidden_box("id", (isset($device["id"]) ? $device["id"] : "0"), "");
+		form_hidden_box("tab", "devices", "");
+		html_end_box(FALSE);
 	}
 
-	form_save_button("devices.php", "return");
+	print "</form>";		/* end of html_header */
 
 	?>
 	<script type='text/javascript'>
@@ -1400,42 +1478,32 @@ function device_display_general($device, $device_text) {
 			id=$(this).attr('id').split('_');
 			$(this).attr('src', 'images/indicator.gif');
 			$.get('devices.php?action=query_reload&id='+id[1]+'&device_id='+id[0], function(data) {
-				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
-					$('#content').html(data);
+				//re-call same tab by $.get-ting appropriate edit function
+				$.get('devices.php?action=ajax_edit_data_query&id='+id[0], function(data) {
+					//reload the form provided by this function, thus refreshing the form
+					$('#device_edit_data_query').html(data);
 				});
 			});
 		}).css('cursor', 'pointer');
 		$('.qremove').click(function(data) {
 			id=$(this).attr('id').split('_');
 			$.get('devices.php?action=query_remove&id='+id[1]+'&device_id='+id[0], function(data) {
-				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
-					$('#content').html(data);
+				//re-call same tab by $.get-ting appropriate edit function
+				$.get('devices.php?action=ajax_edit_data_query&id='+id[0], function(data) {
+					//reload the form provided by this function, thus refreshing the form
+					$('#device_edit_data_query').html(data);
 				});
 			});
 		}).css('cursor', 'pointer');
-		$('.gremove').click(function(data) {
-			id=$(this).attr('id').split('_');
-			$.get('devices.php?action=gt_remove&id='+id[1]+'&device_id='+id[0], function(data) {
-				$.get('devices.php?action=ajax_edit&id='+id[0], function(data) {
-					$('#content').html(data);
-				});
-			});
-		}).css('cursor', 'pointer');
-		$('#add_gt_y').click(function(data) {
-			$('#action').attr('value', 'add_gt');
-			id=$('#id').attr('value');
-			$.post('devices.php?action=add_gt', $('#device_edit_settings').serialize(), function(data) {
-				$.get('devices.php?action=ajax_edit&id='+id, function(data) {
-					$('#content').html(data);
-				});
-			});
-		}); 
 		$('#add_dq_y').click(function(data) {
 			$('#action').attr('value', 'add_dq');
 			id=$('#id').attr('value');
-			$.post('devices.php?action=add_dq', $('#device_edit_settings').serialize(), function(data) {
-				$.get('devices.php?action=ajax_edit&id='+id, function(data) {
-					$('#content').html(data);
+			//pass all form parameters using "serialize" to the add function
+			$.post('devices.php?action=add_dq', $('#device_edit_data_query').serialize(), function(data) {
+				//re-call same tab by $.get-ting appropriate edit function
+				$.get('devices.php?action=ajax_edit_data_query&id='+id, function(data) {
+					//reload the form provided by this function, thus refreshing the form
+					$('#device_edit_data_query').html(data);
 				});
 			});
 		}); 

@@ -722,42 +722,42 @@ class html_table {
 		$this->refresh        = true;		# a filter is provided, so use it
 		$this->rows           = array();	# rows to be provided to the table; array must match layout of table_format below
 		$this->table_format   = array();	# array of parameters to define the table format/layout, like
-											/*
+				/*
 
-											$table->table_format = array(
-												"name" 		=> array(
-													"name" 	=> __("Rule Title"),
-													"order" => "ASC",
-													"filter" => true,
-													"link" => true,
-													"href_suffix" => "#ui-tabs-1",	# always jump to "general" tab from list
-												),
-												"id"		=> array(
-													"name"	=> __("Rule Id"),
-													"order" => "ASC"
-												),
-												....
-												"enabled"	=> array(
-													"name"	=> __("Enabled"),
-													"order"	=> "ASC",
-													"function" => "display_graph_rules_status",
-													"params" => array("enabled")
-												)
-											);
-											 *
-											 *	each element denotes a table column and is build again as an array, like
-											 *	array (
-											 *		"name"		=> columns name
-											 *		"order"		=> default sort order: ASC or DESC
-											 *		"filter"	=> column data should be highlighted in case a filter matches the content
-											 *		"link"		=> column shall carry a href to this prefix, appended by
-											 *						&id=<key field>
-											 *		"href_suffix" => suffix to be used for any href; e.g. to jump to first tab (#ui_tabs-1)
-											 *		"function"	=> callback to build html content for a specific column (e.g. colorized status)
-											 *		"params"	=> array of parameters denoting those array elements, that shall be passed
-											 *						to the "function"
-											 *	)
-											 */
+				$table->table_format = array(
+					"name" 		=> array(
+						"name" 	=> __("Rule Title"),
+						"order" => "ASC",
+						"filter" => true,
+						"link" => true,
+						"href_suffix" => "#ui-tabs-1",	# always jump to "general" tab from list
+					),
+					"id"		=> array(
+						"name"	=> __("Rule Id"),
+						"order" => "ASC"
+					),
+					....
+					"enabled"	=> array(
+						"name"	=> __("Enabled"),
+						"order"	=> "ASC",
+						"function" => "display_graph_rules_status",
+						"params" => array("enabled")
+					)
+				);
+				 *
+				 *	each element denotes a table column and is build again as an array, like
+				 *	array (
+				 *		"name"		=> columns name
+				 *		"order"		=> default sort order: ASC or DESC
+				 *		"filter"	=> column data should be highlighted in case a filter matches the content
+				 *		"link"		=> column shall carry a href to this prefix, appended by
+				 *						&id=<key field>
+				 *		"href_suffix" => suffix to be used for any href; e.g. to jump to first tab (#ui_tabs-1)
+				 *		"function"	=> callback to build html content for a specific column (e.g. colorized status)
+				 *		"params"	=> array of parameters denoting those array elements, that shall be passed
+				 *						to the "function"
+				 *	)
+				 */
 		$this->total_rows     = 0;			# total number of rows
 		$this->rows_per_page  = -1;			# how many rows per page shall be drawn
 		$this->key_field      = "id";		# the key field, e.g. used for edit href's to provide this key field to the edit url
