@@ -83,6 +83,8 @@ switch (get_request_var_request('action')) {
 
 		break;
 	case 'ajax_edit':
+	case 'ajax_edit_graph_template':
+	case 'ajax_edit_data_query':
 		device_edit(false);
 
 		break;
