@@ -135,7 +135,7 @@ function xaxis_form_save() {
 			}
 		}
 
-		if ((is_error_message()) || (empty($_POST["id"]))) {
+		if (is_error_message()) {
 			header("Location: xaxis_presets.php?action=item_edit&xaxis_id=" . $_POST["xaxis_id"] . "&id=" . (empty($xaxis_item_id) ? $_POST["id"] : $xaxis_item_id));
 		}else{
 			header("Location: xaxis_presets.php?action=edit&id=" . (!empty($_POST["xaxis_id"]) ? $_POST["xaxis_id"] : 0));
@@ -353,7 +353,7 @@ function item_edit() {
 		$header_label = __("[new]");
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='xaxis_item_edit'>\n";
+	print "<form id='xaxis_item_edit' name='xaxis_item_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
 	html_start_box(__("X-Axis Items") . " $header_label", "100", 0, "center", "");
 
 	draw_edit_form(
@@ -364,7 +364,6 @@ function item_edit() {
 		);
 
 	html_end_box();
-
 
 	form_hidden_box("id", (isset($_GET["id"]) ? $_GET["id"] : "0"), "");
 	form_hidden_box("xaxis_id", get_request_var("xaxis_id"), "0");
