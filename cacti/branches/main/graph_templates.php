@@ -410,6 +410,7 @@ function template_edit($tabs = false) {
 
 		print "<script type='text/javascript'>
 			$().ready(function() {
+				// refer to the div that preceeds the <ul>
 				$('#tabs_gtemplate').tabs({ cookie: { expires: 30 } });
 			});
 		</script>\n";
@@ -501,10 +502,53 @@ function graph_template_display_general($graph_template, $header_label) {
 		$template_graph = array();
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_template_edit'>\n";
+
+	/* draw a second list of headers to split the huge graph_template option set into smaller chunks */
+	$template_tabs = array(
+		"t_header" 		=> __("Header"),
+		"t_labels" 		=> __("Labels"),
+	);	
+	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
+		$template_tabs += array("t_right_axis" 	=> __("Right Axis"));
+	}
+	$template_tabs += array("t_size" 		=> __("Size"));
+	$template_tabs += array("t_limits" 		=> __("Limits"));
+	$template_tabs += array("t_grid" 		=> __("Grid"));
+	$template_tabs += array("t_color" 		=> __("Color"));
+	$template_tabs += array("t_legend" 		=> __("Legend"));
+	$template_tabs += array("t_misc" 		=> __("Miscellaneous"));
+
+
+
+	/* draw the second list of tabs */
+	print "<div id='tabs_template'>\n";
+	print "<ul>\n";
+
+	if (sizeof($template_tabs) > 0) {
+		foreach (array_keys($template_tabs) as $tab_short_name) {
+			print "<li><a href=#$tab_short_name>$template_tabs[$tab_short_name]</a></li>";
+			if (!isset($_REQUEST["id"])) break;
+		}
+	}
+	print "</ul>\n";
+
+	print "<script type='text/javascript'>
+		$().ready(function() {
+			$('#tabs_template').tabs({ cookie: { expires: 30 } });
+		});
+	</script>\n";
+
+
+	/* now start the huge form that holds all lgraph_template table parameters 
+	 * we will split that up into chunks of seperated div's 
+	 * in case you do NOT like how options are seperated into chunks, 
+	 * please change associations of options into arrays 
+	 * in include/graph/graph_forms.php */
+	print "<form id='graph_template_edit' name='graph_template_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
 
 	# the template header
-	html_start_box(__("Graph Template") . " $header_label", "100", "0", "center", "", true);
+	print "<div id='t_header'>";
+	html_start_box(__("Graph Template") . " $header_label", "100", "0", "center", "", false, "table_graph_template_header");
 
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -512,49 +556,81 @@ function graph_template_display_general($graph_template, $header_label) {
 	));
 
 	html_end_box(false);
+	html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", false, "table_graph_template_cacti");
+	draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $template_graph, false);
+	html_end_box(false);
+	/* provide hidden parameters to rule the save function */
 	form_hidden_box("graph_template_id", (isset($template_graph["graph_template_id"]) ? $template_graph["graph_template_id"] : "0"), "");
 	form_hidden_box("graph_template_graph_id", (isset($template_graph["id"]) ? $template_graph["id"] : "0"), "");
 	form_hidden_box("save_component_template", 1, "");
+	print "</div>";
 
 	/* id tags of tables (set via html_start_box) required for initial js on load */
-	html_start_box(__("Graph Template Labels"), "100", "0", "center", "", true, "table_graph_template_labels");
+	/* display all labels */
+	print "<div id='t_labels'>";
+	html_start_box(__("Graph Template Labels"), "100", "0", "center", "", false, "table_graph_template_labels");
 	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
 	html_end_box(false);
+	print "</div>";
 
-	/* TODO: we should not use rrd version in the code, when going data-driven */
+	/* TODO: we should not use rrd version in the code, when going data-driven 
+	 * display right axis, in case this is supported */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
-		html_start_box(__("Graph Template Right Axis Settings"), "100", "0", "center", "", true, "table_graph_template_right_axis");
+		print "<div id='t_right_axis'>";
+		html_start_box(__("Graph Template Right Axis Settings"), "100", "0", "center", "", false, "table_graph_template_right_axis");
 		draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $template_graph, false);
+		html_end_box(false);
+		print "</div>";
 	}
-	html_end_box(false);
-	html_start_box(__("Graph Template Size"), "100", "0", "center", "", true, "table_graph_template_size");
+
+	/* print all size options */
+	print "<div id='t_size'>";
+	html_start_box(__("Graph Template Size"), "100", "0", "center", "", false, "table_graph_template_size");
 	draw_template_edit_form('header_graph_size', graph_size_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Limits"), "100", "0", "center", "", true, "table_graph_template_limits");
+	print "</div>";
+
+	/* print all limit options */
+	print "<div id='t_limits'>";
+	html_start_box(__("Graph Template Limits"), "100", "0", "center", "", false, "table_graph_template_limits");
 	draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Grid"), "100", "0", "center", "", true, "table_graph_template_grid");
+	print "</div>";
 
+	/* print grid options */
+	print "<div id='t_grid'>";
+	html_start_box(__("Graph Template Grid"), "100", "0", "center", "", false, "table_graph_template_grid");
 	draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Color"), "100", "0", "center", "", true, "table_graph_template_color");
+	print "</div>";
+
+	/* print colors, load jQuery colorpicker below */
+	print "<div id='t_color'>";
+	html_start_box(__("Graph Template Color"), "100", "0", "center", "", false, "table_graph_template_color");
 	draw_template_edit_form('header_graph_color', graph_color_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Legend"), "100", "0", "center", "", true, "table_graph_template_legend");
+	print "</div>";
+
+	/* print all legend options */
+	print "<div id='t_legend'>";
+	html_start_box(__("Graph Template Legend"), "100", "0", "center", "", false, "table_graph_template_legend");
 	draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Misc"), "100", "0", "center", "", true, "table_graph_template_misc");
+	print "</div>";
+
+	/* print miscellaneous options */
+	print "<div id='t_misc'>";
+	html_start_box(__("Graph Template Misc"), "100", "0", "center", "", false, "table_graph_template_misc");
 	draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", true, "table_graph_template_cacti");
-	draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $template_graph, false);
-	html_end_box(false);
+	print "</div>";
+
 
 	# the id tag is required for our js code!
 	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
-	#	html_end_box(false);
 
 	form_save_button("graph_templates.php", "return");
+	print "</div>";		# div id='tabs_template'
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
