@@ -511,9 +511,9 @@ function graph_form_save() {
 	}
 
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
-		header("Location: " . html_get_location("graphs.php") . "action=edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: " . html_get_location("graphs.php") . "action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}else{
 		header("Location: " . html_get_location("graphs.php"));
 	}
@@ -1179,6 +1179,7 @@ function graph_diff() {
 }
 
 function graph_edit() {
+cacti_log(__FUNCTION__, false, "TEST");	
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -1270,7 +1271,8 @@ function graph_edit() {
 		$dd_menu_options .= '&device_id=' . (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id);
 	}
 
-	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='graph_edit'>\n";
+	print "<form id='graph_edit' name='graph_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
+
 	html_start_box(__("Graph Template Selection") . " $header_label", "100", 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
 
 	$form_array = array(
