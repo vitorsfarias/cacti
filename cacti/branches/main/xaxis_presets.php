@@ -51,16 +51,16 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'item_remove_confirm':
-		item_remove_confirm();
+		xaxis_item_remove_confirm();
 
 		break;
 	case 'item_remove':
-		item_remove();
+		xaxis_item_remove();
 
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-		item_edit();
+		xaxis_item_edit();
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
@@ -280,7 +280,7 @@ function xaxis_form_actions() {
  X-Axis Functions
  --------------------- */
 
-function item_remove_confirm() {
+function xaxis_item_remove_confirm() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
 
@@ -330,7 +330,7 @@ function item_remove_confirm() {
 	<?php
 }
 		
-function item_remove() {
+function xaxis_item_remove() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("id"));
 	/* ==================================================== */
@@ -338,7 +338,7 @@ function item_remove() {
 	db_execute("DELETE FROM graph_templates_xaxis_items WHERE id=" . get_request_var_post("item_id"));
 }
 
-function item_edit() {
+function xaxis_item_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
 
 	/* ================= input validation ================= */
