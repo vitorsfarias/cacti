@@ -448,9 +448,9 @@ function data_source_form_save() {
 	}
 
 	if ((isset($_POST["save_component_data_source_new"])) && (empty($_POST["data_template_id"]))) {
-		header("Location: " . html_get_location("data_sources.php") . "action=edit&device_id=" . $_POST["device_id"] . "&new=1");
+		header("Location: " . html_get_location("data_sources.php") . "?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
 	}elseif ((is_error_message()) || ($_POST["data_template_id"] != $_POST["hidden_data_template_id"]) || ($_POST["data_input_id"] != $_POST["hidden_data_input_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: " . html_get_location("data_sources.php") . "action=edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
+		header("Location: " . html_get_location("data_sources.php") . "?action=edit&id=" . (empty($local_data_id) ? $_POST["local_data_id"] : $local_data_id) . "&device_id=" . $_POST["device_id"] . "&view_rrd=" . (isset($_POST["current_rrd"]) ? $_POST["current_rrd"] : "0"));
 	}else{
 		header("Location: " . html_get_location("data_sources.php"));
 	}
