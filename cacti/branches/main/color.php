@@ -45,10 +45,12 @@ switch (get_request_var_request("action")) {
 		break;
 	case 'edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-
 		color_edit();
-
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+
+		break;
+	case 'ajax_edit':
+		color_edit();
 
 		break;
 	case 'ajax_view':
@@ -498,7 +500,7 @@ function color_edit() {
 		$color = db_fetch_row("select * from colors where id=" . $_GET["id"]);
 	}
 
-	print "<form id='color_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='color_edit'>\n";
+	print "<form id='color_edit' name='color_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
 
 	draw_edit_form(array(
 		"config" => array(),
@@ -507,7 +509,8 @@ function color_edit() {
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 
-	form_ajax_save("Edit Color", "color_edit");
+	//form_ajax_save("Edit Color", "color_edit"); works only for jQuery UI Dialog == inplace edit, not for ADD
+	form_save_button("color.php", "return");
 }
 
 function color() {
@@ -547,6 +550,14 @@ function color() {
 	<!--
 	var selectedColors = new Array();
 	var newselectedColors = new Array();
+
+	function addObject1() {
+		event.preventDefault();
+		$.get("color.php?action=ajax_edit", function(data) {
+			$('#cdialog').html(data);
+			$('#cdialog').dialog({ title: "<?php print __("Add Color");?>", minHeight: 80, minWidth: 400 });
+		});
+	}
 
 	function selectAll() {
 		selectedColors = new Array();
@@ -743,7 +754,7 @@ function color() {
 			$j++;
 			if ($j % $columns == 1) {
 				form_alternate_row_color();
-					?>
+				?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
@@ -751,9 +762,10 @@ function color() {
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
-				<?php	$j=1;
+				<?php
+				$j=1;
 			}elseif ($j != $columns) {
-					?>
+				?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
@@ -761,8 +773,10 @@ function color() {
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
-				<?php	$j=$j++;
-			} else { ?>
+				<?php
+				$j=$j++;
+			} else { 
+				?>
 					<td id="<?php print 'hex_' . $color['hex'];?>" width='1'>
 						<a id='anchor_<?php print $color['id'];?>' href='#' class='linkEditMain'><?php print $color["hex"];?></a>
 					</td>
@@ -770,8 +784,8 @@ function color() {
 					<td id="<?php print 'check_' . $color['hex'];?>" align="center">
 						<img id="<?php print $color["id"];?>" class="delete buttonSmall" src="images/delete_icon.gif" alt="<?php print __("Delete");?>" align='middle'></a>
 					</td>
-			<?php
-			form_end_row();
+				<?php
+				form_end_row();
 			}
 		}
 
@@ -791,7 +805,7 @@ function color() {
 	});
 	$('[id^="anchor_"]').click(function() {
 		id=$(this).attr('id').split('_');
-		$.get("color.php?action=edit&id="+id[1], function(data) {
+		$.get("color.php?action=ajax_edit&id="+id[1], function(data) {
 			$('#cdialog').html(data);
 			$('#cdialog').dialog({ title: "<?php print __("Edit Color");?>", minHeight: 80, minWidth: 400 });
 		});
