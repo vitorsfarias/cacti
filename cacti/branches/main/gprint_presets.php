@@ -35,11 +35,11 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch (get_request_var_request("action")) {
 	case 'save':
-		form_save();
+		gprint_presets_form_save();
 
 		break;
 	case 'actions':
-		form_actions();
+		gprint_presets_form_actions();
 
 		break;
 	case 'edit':
@@ -65,7 +65,7 @@ switch (get_request_var_request("action")) {
     The "actions" function
    ------------------------ */
 
-function form_actions() {
+function gprint_presets_form_actions() {
 	global $gprint_actions;
 
 	/* if we are to save this form, instead of display it */
@@ -164,7 +164,7 @@ function form_actions() {
     The Save Function
    -------------------------- */
 
-function form_save() {
+function gprint_presets_form_save() {
 	if (isset($_POST["save_component_gprint_presets"])) {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_gprint($_POST["id"]);
@@ -218,7 +218,7 @@ function gprint_presets_edit() {
 
 	html_end_box();
 
-	form_save_button_alt();
+	form_save_button("gprint_presets.php", "return");
 }
 
 function gprint_presets_filter() {

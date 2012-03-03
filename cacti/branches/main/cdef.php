@@ -39,24 +39,24 @@ if (!isset($_REQUEST["action"])) $_REQUEST["action"] = "";
 
 switch (get_request_var_request("action")) {
 	case 'save':
-		form_save();
+		cdef_form_save();
 
 		break;
 	case 'actions':
-		form_actions();
+		cdef_form_actions();
 
 		break;
 	case 'item_remove_confirm':
-		item_remove_confirm();
+		cdef_item_remove_confirm();
 
 		break;
 	case 'item_remove':
-		item_remove();
+		cdef_item_remove();
 
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-		item_edit();
+		cdef_item_edit();
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
@@ -98,7 +98,7 @@ function draw_cdef_preview($cdef_id) {
     The Save Function
    -------------------------- */
 
-function form_save() {
+function cdef_form_save() {
 	if (isset($_POST["save_component_cdef"])) {
 		$save["id"]   = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"]);
@@ -149,7 +149,7 @@ function form_save() {
     The "actions" function
    ------------------------ */
 
-function form_actions() {
+function cdef_form_actions() {
 	global $cdef_actions;
 
 	/* if we are to save this form, instead of display it */
@@ -265,7 +265,7 @@ function form_actions() {
     CDEF Item Functions
    -------------------------- */
 
-function item_remove_confirm() {
+function cdef_item_remove_confirm() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
 
@@ -315,7 +315,7 @@ function item_remove_confirm() {
 	<?php
 }
 
-function item_remove() {
+function cdef_item_remove() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("id"));
 	input_validate_input_number(get_request_var_post("cdef_id"));
@@ -362,7 +362,7 @@ function cdef_dnd(){
 	draw_cdef_preview(get_request_var("id"));
 }
 
-function item_edit() {
+function cdef_item_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
 
 	/* ================= input validation ================= */

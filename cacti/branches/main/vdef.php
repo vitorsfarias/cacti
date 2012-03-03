@@ -38,24 +38,24 @@ if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
 
 switch ($_REQUEST["action"]) {
 	case 'save':
-		form_save();
+		vdef_form_save();
 
 		break;
 	case 'actions':
-		form_actions();
+		vdef_form_actions();
 
 		break;
 	case 'item_remove_confirm':
-		item_remove_confirm();
+		vdef_item_remove_confirm();
 
 		break;
 	case 'item_remove':
-		item_remove();
+		vdef_item_remove();
 
 		break;
 	case 'item_edit':
 		include_once(CACTI_BASE_PATH . "/include/top_header.php");
-		item_edit();
+		vdef_item_edit();
 		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
 
 		break;
@@ -97,7 +97,7 @@ function draw_vdef_preview($vdef_id) {
     The Save Function
    -------------------------- */
 
-function form_save() {
+function vdef_form_save() {
 	if (isset($_POST["save_component_vdef"])) {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_vdef($_POST["id"]);
@@ -146,7 +146,7 @@ function form_save() {
     The "actions" function
    ------------------------ */
 
-function form_actions() {
+function vdef_form_actions() {
 	global $vdef_actions;
 
 	/* if we are to save this form, instead of display it */
@@ -262,7 +262,7 @@ function form_actions() {
     VDEF Item Functions
    -------------------------- */
 
-function item_remove_confirm() {
+function vdef_item_remove_confirm() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
 	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
 
@@ -312,7 +312,7 @@ function item_remove_confirm() {
 	<?php
 }
 		
-function item_remove() {
+function vdef_item_remove() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("id"));
 	input_validate_input_number(get_request_var_post("vdef_id"));
@@ -321,7 +321,7 @@ function item_remove() {
 	db_execute("DELETE FROM vdef_items WHERE id=" . get_request_var_post("vdef_id"));
 }
 
-function item_edit() {
+function vdef_item_edit() {
 	global $custom_vdef_data_source_types;
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
 
