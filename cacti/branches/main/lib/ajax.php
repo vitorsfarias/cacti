@@ -101,35 +101,47 @@ function ajax_get_data_templates() {
 
 function ajax_get_devices_brief() {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = strtolower(sanitize_search_string(get_request_var("q")));
+	if (isset($_REQUEST["term"])) {
+		/* jQuery UI autocomplete passes filter string as "term" */
+		$q = strtolower(sanitize_search_string(get_request_var("term")));
 	} else return;
 
+	/* first, get the device policy for current user */
 	$device_perms = db_fetch_cell("SELECT policy_devices FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 
-	if ($device_perms == 1) {
-		$sql = "SELECT id, description as name
-			FROM device
-			WHERE (hostname LIKE '%$q%'
-			OR description LIKE '%$q%')
-			AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
-			ORDER BY description,hostname";
+	/* build sql for fetching devices
+	 * take into account, whether we have an ALLOW rule == list includes all allowed devices
+	 * or a DENY rule == list includes all denied devices; if empty == all devices are allowed 
+	 */
+	if ($device_perms == AUTH_CONTROL_DATA_POLICY_ALLOW) {
+		/* this is a ALLOW SELECTED DEVICES permission type */
+		$sql = "SELECT id, description as value" .
+				"FROM device " .
+				"WHERE (hostname LIKE '%$q%' " .
+				"OR description LIKE '%$q%') " .
+				"AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
+				"ORDER BY description,hostname";
 	}else{
-		$sql = "SELECT id, description as name
-			FROM device
-			WHERE (hostname LIKE '%$q%'
-			OR description LIKE '%$q%')
-			AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
-			ORDER BY description,hostname";
+		/* this is a DENY SELECTED DEVICES permission type */
+		$sql = "SELECT id, description as value " .
+				"FROM device " .
+				"WHERE (hostname LIKE '%$q%' " .
+				"OR description LIKE '%$q%') " .
+				"AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
+				"ORDER BY description,hostname";
 	}
 
-
+	/* fetch all matching devices */
 	$devices = db_fetch_assoc($sql);
+	/* we need an explicit list entry to list any device == effetively removing the device filter 
+	 * this has to match the id required by the SQL to display any device 
+	 * see $table->page_variables for the device_id "default" value */
+	array_unshift($devices, array("id" => "-1", "value" => __("Any")));
 
 	if (sizeof($devices) > 0) {
-		foreach ($devices as $device) {
-			print $device["name"] . "|" . $device["id"] . "\n";
-		}
+		/* pay attention to what fields are expected by the autocomplete select function!
+		 * we now provide "id" and "description as value" */
+		print json_encode($devices);
 	}
 }
 
