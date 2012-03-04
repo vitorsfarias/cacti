@@ -1143,7 +1143,7 @@ function data_source_filter() {
 				</tr>
 				<tr>
 					<td class="w1">
-						<?php print __("Host:");?>
+						<?php print __("Device:");?>
 					</td>
 					<td class="w1">
 						<?php
@@ -1153,7 +1153,7 @@ function data_source_filter() {
 							$hostname = "";
 						}
 						?>
-						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+						<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
 					<td class="w1">
@@ -1218,14 +1218,23 @@ function data_source_filter() {
 	?>
 	<script type="text/javascript">
 	$().ready(function() {
-		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#device").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#device_id").val(data[1]);
+		$("#device").autocomplete({
+			// provide data via call to layout.php which in trun calls ajax_get_devices_brief
+			source: "layout.php?action=ajax_get_devices_brief",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#device_id").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#device_id").val(-1);
+				}
+				// and now apply all changes from this autocomplete to the filter
 				applyDSFilterChange(document.form_data_sources);
-			}else{
-				$(this).parent().find("#device_id").val(0);
-			}
+			}			
 		});
 	});
 
