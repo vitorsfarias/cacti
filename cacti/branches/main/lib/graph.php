@@ -1469,7 +1469,7 @@ function graphs_filter() {
 				</tr>
 				<tr>
 					<td class="w1">
-						<?php print __("Host:");?>
+						<?php print __("Device:");?>
 					</td>
 					<td class="w1">
 						<?php
@@ -1529,14 +1529,23 @@ function graphs_filter() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("graphs.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#device").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#device_id").val(data[1]);
+		$("#device").autocomplete({
+			// provide data via call to graphs.php which in turn calls ajax_get_devices_brief
+			source: "graphs.php?action=ajax_get_devices_brief",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#device_id").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#device_id").val(-1);
+				}
+				// and now apply all changes from this autocomplete to the filter
 				applyGraphsFilterChange(document.form_graph_id);
-			}else{
-				$(this).parent().find("#device_id").val(0);
-			}
+			}			
 		});
 	});
 

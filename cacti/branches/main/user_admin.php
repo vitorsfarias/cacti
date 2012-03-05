@@ -635,13 +635,21 @@ function graph_perms_edit() {
 	<script type="text/javascript">
 	<!--
 	$().ready(function() {
-		$("#device").autocomplete("user_admin.php?action=ajax_get_devices_detailed", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#device").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#perm_devices").val(data[1]);
-			}else{
-				$(this).parent().find("#perm_devices").val(0);
-			}
+		$("#device").autocomplete({
+			// provide data via call to user_admin.php which in turn calls ajax_get_devices_detailed
+			source: "user_admin.php?action=ajax_get_devices_detailed",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#perm_devices").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#perm_devices").val(-1);
+				}
+			}			
 		});
 		$("#graph").autocomplete("user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
 		$("#graph").result(function(event, data, formatted) {
