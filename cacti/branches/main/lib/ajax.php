@@ -225,38 +225,47 @@ function ajax_get_form_dropdown() {
 
 function ajax_get_graph_templates()  {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = strtolower(sanitize_search_string(get_request_var("q")));
-	} else {
-		return;
-	}
+	if (isset($_REQUEST["term"])) {
+		/* jQuery UI autocomplete passes filter string as "term" */
+		$q = strtolower(sanitize_search_string(get_request_var("term")));
+	} else return;
 
+	/* first, get the template policy for current user */
 	$template_perms = db_fetch_cell("SELECT policy_graph_templates FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 
-	if ($template_perms == 1) {
+	/* build sql for fetching templates
+	 * take into account, whether we have an ALLOW rule == list includes all allowed templates
+	 * or a DENY rule == list includes all denied templates; if empty == all templates are allowed 
+	 */
+	if ($template_perms == AUTH_CONTROL_DATA_POLICY_ALLOW) {
 		$sql = "SELECT
 			id,
-			name
+			name as value
 			FROM graph_templates
-			WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			WHERE id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			AND (name LIKE '%$q%')
 			ORDER BY name";
 	}else{
 		$sql = "SELECT
 			id,
-			name
+			name as value
 			FROM graph_templates
-			WHERE id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			AND (name LIKE '%$q%')
 			ORDER BY name";
 	}
 
+	/* fetch all matching templates */
 	$templates = db_fetch_assoc($sql);
+	/* we need an explicit list entry to list any template == effetively removing the template filter 
+	 * this has to match the id required by the SQL to display any template 
+	 * see $table->page_variables for the template_id "default" value */
+	array_unshift($templates, array("id" => "-1", "value" => __("Any")));
 
 	if (sizeof($templates) > 0) {
-		foreach ($templates as $template) {
-			print $template["name"] . "|" . $template["id"] . "\n";
-		}
+		/* pay attention to what fields are expected by the autocomplete select function!
+		 * we now provide "id" and "description as value" */
+		print json_encode($templates);
 	}
 }
 
@@ -329,40 +338,49 @@ function ajax_get_graph_tree_content() {
 
 function ajax_get_graphs_brief() {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = strtolower(sanitize_search_string(get_request_var("q")));
-	} else {
-		return;
-	}
+	if (isset($_REQUEST["term"])) {
+		/* jQuery UI autocomplete passes filter string as "term" */
+		$q = strtolower(sanitize_search_string(get_request_var("term")));
+	} else return;
 
+	/* first, get the graph policy for current user */
 	$graph_perms = db_fetch_cell("SELECT policy_graphs FROM user_auth WHERE id=" . $_SESSION["sess_user_id"]);
 
-	if ($graph_perms == 1) {
+	/* build sql for fetching graphs
+	 * take into account, whether we have an ALLOW rule == list includes all allowed graphs
+	 * or a DENY rule == list includes all denied graphs; if empty == all graphs are allowed 
+	 */
+	if ($graph_perms == AUTH_CONTROL_DATA_POLICY_ALLOW) {
 		$sql = "SELECT
 			local_graph_id AS id,
-			title_cache AS name
-			FROM graph_templates_graph
-			WHERE local_graph_id > 0
-			AND LOWER(title_cache) LIKE '%$q%'
-			AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
-			ORDER BY title_cache";
-	}else{
-		$sql = "SELECT
-			local_graph_id AS id,
-			title_cache AS name
+			title_cache AS value
 			FROM graph_templates_graph
 			WHERE local_graph_id > 0
 			AND LOWER(title_cache) LIKE '%$q%'
 			AND local_graph_id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			ORDER BY title_cache";
+	}else{
+		$sql = "SELECT
+			local_graph_id AS id,
+			title_cache AS value
+			FROM graph_templates_graph
+			WHERE local_graph_id > 0
+			AND LOWER(title_cache) LIKE '%$q%'
+			AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			ORDER BY title_cache";
 	}
 
+	/* fetch all matching graphs */
 	$graphs = db_fetch_assoc($sql);
+	/* we need an explicit list entry to list any graph == effetively removing the graph filter 
+	 * this has to match the id required by the SQL to display any graph 
+	 * see $table->page_variables for the graph_id "default" value */
+	array_unshift($graphs, array("id" => "-1", "value" => __("Any")));
 
 	if (sizeof($graphs) > 0) {
-		foreach ($graphs as $graph) {
-			print $graph["name"] . "|" . $graph["id"] . "\n";
-		}
+		/* pay attention to what fields are expected by the autocomplete select function!
+		 * we now provide "id" and "description as value" */
+		print json_encode($graphs);
 	}
 }
 

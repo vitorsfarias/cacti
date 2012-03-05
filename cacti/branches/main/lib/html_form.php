@@ -527,11 +527,21 @@ function form_autocomplete_box($form_name, $callback_function, $id, $name, $form
 
 	print '<script  type="text/javascript">
 	$().ready(function() {
-		$("#' . $display_id . '").autocomplete("' . $callback_function . '", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#' . $display_id . '").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#' . $form_name . '").val(data[1]);
-			}
+		$("#' . $display_id . '").autocomplete({
+			// provide data via call to layout.php which in turn calls ajax_get_devices_brief
+			source: "' . $callback_function . '",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#' . $form_name . '").val(ui.item.id);
+				}else{
+					// in case we didnt find anything, use "any" device
+					$(this).parent().find("#' . $form_name . '").val(-1);
+				}
+			}			
 		});
 	});
 	</script>';
