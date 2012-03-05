@@ -29,14 +29,23 @@ function graph_view_filter_table($mode = "mode") {
 	?>
 	<script type='text/javascript'>
 	$().ready(function() {
-		$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#device").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#device_id").val(data[1]);
+		$("#device").autocomplete({
+			// provide data via call to layout.php which in turn calls ajax_get_devices_brief
+			source: "layout.php?action=ajax_get_devices_brief",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#device_id").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#device_id").val(-1);
+				}
+				// and now apply all changes from this autocomplete to the filter
 				applyGraphFilter(document.form_graph_view);
-			}else{
-				$(this).parent().find("#device_id").val(0);
-			}
+			}			
 		});
 
 		$('#navbar_r [id^="tab_"]').removeClass("selected");
@@ -246,13 +255,25 @@ function get_graph_list_content() {
 			<td>
 				<script type="text/javascript">
 				$().ready(function() {
-					$("#device").autocomplete("layout.php?action=ajax_get_devices_brief", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-					$("#device").result(function(event, data, formatted) {
-						if (data) {
-							$(this).parent().find("#device_id").val(data[1]);
+					$("#device").autocomplete({
+						// provide data via call to layout.php which in turn calls ajax_get_devices_brief
+						source: "layout.php?action=ajax_get_devices_brief",
+						// start selecting, even if no letter typed
+						minLength: 0,
+						// what to do with data returned
+						select: function(event, ui) {
+							if (ui.item) {
+								// provide the id found to hidden variable device_id
+								$(this).parent().find("#device_id").val(ui.item.id);
+							}else{
+								// in case we didn't find anything, use "any" device
+								$(this).parent().find("#device_id").val(-1);
+							}
+							// and now apply all changes from this autocomplete to the filter
 							applyGraphListFilterChange(document.form_graph_list);
-						}
+						}			
 					});
+
 					setSelections();
 				});
 

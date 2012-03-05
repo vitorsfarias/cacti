@@ -1219,7 +1219,7 @@ function data_source_filter() {
 	<script type="text/javascript">
 	$().ready(function() {
 		$("#device").autocomplete({
-			// provide data via call to layout.php which in trun calls ajax_get_devices_brief
+			// provide data via call to layout.php which in turn calls ajax_get_devices_brief
 			source: "layout.php?action=ajax_get_devices_brief",
 			// start selecting, even if no letter typed
 			minLength: 0,
