@@ -651,21 +651,39 @@ function graph_perms_edit() {
 				}
 			}			
 		});
-		$("#graph").autocomplete("user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#graph").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#perm_graphs").val(data[1]);
-			}else{
-				$(this).parent().find("#perm_graphs").val(0);
-			}
+
+		$("#graph").autocomplete({
+			// provide data via call to user_admin.php which in turn calls ajax_get_graphs_brief
+			source: "user_admin.php?action=ajax_get_graphs_brief&id=<?php print get_request_var("id", 0);?>",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#perm_graphs").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#perm_graphs").val(-1);
+				}
+			}			
 		});
-		$("#graph_templates").autocomplete("user_admin.php?action=ajax_get_graph_templates", { minChars: 0, max: 8, highlight: false, scroll: true, scrollHeight: 300 });
-		$("#graph_templates").result(function(event, data, formatted) {
-			if (data) {
-				$(this).parent().find("#perm_graph_templates").val(data[1]);
-			}else{
-				$(this).parent().find("#perm_graph_templates").val(0);
-			}
+
+		$("#graph_templates").autocomplete({
+			// provide data via call to user_admin.php which in turn calls ajax_get_graph_templates
+			source: "user_admin.php?action=ajax_get_graph_templates",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#perm_graph_templates").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#perm_graph_templates").val(-1);
+				}
+			}			
 		});
 	});
 	//-->
