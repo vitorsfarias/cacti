@@ -1226,8 +1226,8 @@ function utilities_view_snmp_cache() {
 			form_alternate_row_color();
 			?>
 			<td>
-				<?php print __("Host:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $item["description"])) : $item["description"]);?>
-				, <?php print __("SNMP Query:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $item["name"])) : $item["name"]);?>
+				<?php print __("Host:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["description"])) : $item["description"]);?>
+				, <?php print __("SNMP Query:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["name"])) : $item["name"]);?>
 			</td>
 			<?php
 			form_end_row();
@@ -1235,9 +1235,9 @@ function utilities_view_snmp_cache() {
 			?>
 			<td>
 				<?php print __("Index:");?> <?php print $item["snmp_index"];?>
-				, <?php print __("Field Name:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $item["field_name"])) : $item["field_name"]);?>
-				, <?php print __("Field Value:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $item["field_value"])) : $item["field_value"]);?>
-				, <?php print __("OID:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $item["oid"])) : $item["oid"]);?>
+				, <?php print __("Field Name:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["field_name"])) : $item["field_name"]);?>
+				, <?php print __("Field Value:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["field_value"])) : $item["field_value"]);?>
+				, <?php print __("OID:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["oid"])) : $item["oid"]);?>
 			</td>
 			<?php
 			form_end_row();

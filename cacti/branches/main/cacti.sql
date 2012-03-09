@@ -2488,7 +2488,7 @@ CREATE TABLE poller_command (
 CREATE TABLE poller_item (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   poller_id smallint(5) unsigned NOT NULL default '0',
-  device_id mediumint(8) NOT NULL default '0',
+  device_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
   present TINYINT NOT NULL default '1',
   hostname varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
@@ -2535,7 +2535,7 @@ CREATE TABLE poller_output (
   time datetime NOT NULL default '0000-00-00 00:00:00',
   poller_id smallint(5) NOT NULL default '0',
   output text NOT NULL,
-  PRIMARY KEY  (local_data_id,rrd_name,time),
+  PRIMARY KEY (local_data_id,rrd_name,time) USING BTREE,
   KEY poller_id (poller_id)
 ) ENGINE=MyISAM;
 

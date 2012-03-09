@@ -690,14 +690,14 @@ $settings = array(
 			),
 		"num_rows_log" => array(
 			"friendly_name" => __("Default Log File Tail Lines"),
-			"description" => __("How many lines of the Cacti log file to you want to tail, by default."),
+			"description" => __("Default number of lines of the Cacti log file to tail."),
 			"method" => "drop_array",
 			"default" => 500,
 			"array" => $log_tail_lines,
 			),
 		"log_refresh_interval" => array(
 			"friendly_name" => __("Log File Tail Refresh"),
-			"description" => __("How many often do you want the Cacti log display to update."),
+			"description" => __("How often do you want the Cacti log display to update."),
 			"method" => "drop_array",
 			"default" => 60,
 			"array" => $page_refresh_interval,

@@ -1,8 +1,6 @@
 Cacti CHANGELOG
 
-NOTE: Someone remove duplication between 0.8.7f and 0.8.8
-
-0.8.8
+SVN
 -bug#0000671: script loadavg_multi.pl: uptime output is for 1, 5 and 15 minutes and NOT 1, 5 and 10 
 -bug#0000933: Change output to 24 hr
 -bug#0001024: Can't create two devices via CLI with the same IP-Address
@@ -62,31 +60,15 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001746: SNMP Hex-String matching 
 -bug#0001772: Script Server is not honouring reindex method "Index Count Changed" and "Verify All Fields"
 -bug#0001948: Autocomplete requires you to start typing to see list
--bug#0001963: "total in" and "total out" are always 0
 -bug#0001965: database upgrade script fails when changing user specific font settings 
 -bug#0001989: IE9 breaks Cacti when objects are hidden using 'display:none;' style tag
 -bug#0001993: "Undefined index: height in /var/www/html/cacti/lib/html.php on line 147" in PHP error log
 -bug#0001995: $_SERVER["REQUEST_URI"] not properly escaped in graph_view.php for preview mode 
 -bug#0002005: Saving Script Server or Script Data Input Method Results in SQL Error
 -bug#0002027: Technical Support columns too small
--bug#0002040: ICMP ping errors for Win7 & PHP 5.3
 -bug#0002060: NAN values in hdd utilisation graphs (Poller Output Table not Empty)
--bug#0002062: Multiple security vunerbilities
--bug#0002063: multiple value poller output incorrectly interpreted as hexadecimal value
--bug#0002064: Removing '~' (tilde) by sanitize_uri() conflicts with Apache UserDir translation
--bug#0002068: analyze_database.php missing header 
--bug#0002071: MySQL table poller_item is dropped always when "Data Input Method" is changed or added.
--bug#0002079: Using input field of a script in graph title doesn't work 
--bug#0002080: Database password containing "@" does not connect
--bug#0002083: When adding a new users, apache generates errors
--bug#0002084: Incorrect normalisation of hrStorageTable values over 2^31
--bug#0002087: PHP recache problems due to missing slashes in reindex table
--bug#0002093: unit exponent value of 0 not imported with graph template
--bug#0002094: CDEF: "another cdef" references not included in template export
 -bug#0002097: cacti.sql import error
--bug#0002106: 'cli/add_device.php' doesn't accept "None" for host template
 -bug#0002161: Graph management "graph()" function conflicts
--bug: Update host template cli script help shows incorrect options
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
 -bug: add_tree.php did not allow nodes with propagating sort options
@@ -107,7 +89,6 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug: Warning in lib/snmp.php by misspelled variable
 -bug: fix SQL error on api_reapply_suggested_graph_title for non-data-query graphs
 -bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
--bug: wrong index used for Data Queries using VALUE/REGEXP
 -documentation: Remove sgml documentation.  See http://docs.cacti.net for Documentation
 -documentation: Explaining Cacti Special Data Sources used on CDEFs, lots of CDEF examples using Special data Sources
 -documentation: Documentation of specific rrdtool feature
@@ -208,11 +189,61 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -feature: introduce |graph_start| and |graph_end| for use with COMMENT/GPRINT or the like
 -feature: duplicate Data Query (duplicates all associated graph templates and suggested values)
 -feature: remove/rename all api_ functions, dropping api_
--feature: Increase granularity of availability options to correct spine bug
 
-0.8.7h
-//FIXME: Consolidate the change log from 0.8.7h
--bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
+
+0.8.8
+-bug#0002081: In Graph Management, search display graph title breaks when using pattern symbol "/"
+-bug#0002141: cacti.sql missing BTREE PRIMARY KEY for poller_output 
+-bug#0002146: Utilities -> View Log File -> refresh does not work
+-bug#0002150: usort_data_query_index() is broken -> graph order for hosts with data query sort option fails
+-bug#0002152: Issue with filter on graphs_new.php
+-bug#0002153: Cant search for patterns containing a forward-slash
+-bug#0002156: CDEF strings are not escaped before passed to rrdtool command
+-bug#0002158: Minor changes to grammar of displayed messages
+-bug#0002165: Using data input field in data source name (related to 2079 in 0.8.7i)
+-bug#0002174: poller_item.host_id has wrong type 
+-bug#0002178: typo in include/global_form.php: Mimimum -> Minimum
+-bug#0002182: When there is no suitable (unique) index, graphs are not shown in data query ordering on host leafs
+-bug: Fix input validation on cli/api_device.php
+-bug: Fix issue with data source template associate command line script inserting incorrect rra information
+-bug: Fix minor display issue on data source pages
+-bug: Fix minor issue with counting items in the poller_output table
+-bug: Graph settings and settings check boxes do not allow unchecking to be saved
+-bug: Fix minor issue with plugin library caused by non-session
+-feature: Merge Plugin Architecture into Cacti
+
+0.8.7i
+-bug#0001963: Bandwidth summation "total in" and "total out" are always 0
+-bug#0002040: ICMP ping errors for Windows 7 with PHP 5.3
+-bug#0002062: Multiple security vulnerabilities
+-bug#0002063: Multiple value poller output incorrectly interpreted as hexadecimal value
+-bug#0002064: Removing "~" (tilde) by sanitize_uri() conflicts with Apache UserDir translation
+-bug#0002066: Graph without host id "Notice: Undefined variable: host_id"
+-bug#0002067: Custom time range filter not working 
+-bug#0002068: Missing header include in analyze_database.php
+-bug#0002071: MySQL table poller_item is dropped always when "Data Input Method" is changed or added.
+-bug#0002079: Using input field of a script in graph title does not work 
+-bug#0002080: Database password containing "@" does not connect
+-bug#0002083: Adding a new users generates errors in apache logs
+-bug#0002084: Incorrect normalization of hrStorageTable values over 2^31
+-bug#0002086: Incorrect usage of mysql custom tcp port
+-bug#0002087: PHP recache problems due to missing slashes in reindex table
+-bug#0002093: Unit exponent value of 0 not imported with graph template
+-bug#0002094: CDEF: "another cdef" references not included in template export
+-bug#0002106: Command line add device does not accept "None" for host template
+-bug: Update host template cli script help to fix incorrect options
+-bug: Refresh of Cacti log viewer not working
+-bug: Problems saving User Graph Permissions in IE9
+-bug: Bandwidth summation fails if NAN values are present
+-bug: Special Type Code "host_id" available in Data Queries by Not Data Input Methods
+-bug: Do not generate error messages when creating non host based graphs
+-bug: Wrong index used for Data Queries using VALUE/REGEXP
+-bug: Fix issue with title variable replacement failing when no host is associated with graph
+-bug: Cacti generating MySQL 1100 Errors when modifying the tree
+-bug: Resolved "Fatal error: Cannot use string offset as an array" in lib/data_query.php
+-feature: Properly support ifHighSpeed replacement variable
+-feature: Increase granularity of availability options to correct spine bug
+-feature: Replace "event count" with last changed date for host availability
 
 0.8.7h
 -bug#0000401: Check for duplicate Data Source Item Names in Data Templates
@@ -263,6 +294,7 @@ NOTE: Someone remove duplication between 0.8.7f and 0.8.8
 -bug#0001954: Usage of PHP_SELF without basename in html.php (at least partly fixed)
 -bug#0001956: Attempts to Update Existing Tree Items Fails
 -bug#0001967: Reflected XSS on Cacti 0.8.7g
+-bug: RRDtool fetch in Cacti fails to function propertly on rrdtool files with NaN values in the output
 -bug: accept "Connection refused" on TCP ping tests
 -bug: add missing row selection to graph preview
 -bug: script server throws "undefined variable" error when in debug mode

@@ -2520,7 +2520,7 @@ function graphs_new() {
 							if ($field_array["direction"] == "input") {
 								if (in_array($field_name, $fields)) {
 									if (isset($row[$field_name])) {
-										print "<td>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"]) . ")/i", "<span class=\"filter\">\\1</span>", $row[$field_name]) : $row[$field_name]) . "</td>";
+										print "<td>" . (strlen($_REQUEST["filter"]) ? preg_replace("/(" . preg_quote($_REQUEST["filter"], "/") . ")/i", "<span class=\"filter\">\\1</span>", $row[$field_name]) : $row[$field_name]) . "</td>";
 									}else{
 										print "<td></td>";
 									}
