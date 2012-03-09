@@ -936,7 +936,7 @@ class html_table {
 					}
 
 					if (isset($data["filter"]) && strlen(html_get_page_variable("filter"))) {
-						$text .= preg_replace("/(" . preg_quote(html_get_page_variable("filter")) . ")/i", "<span class=\"filter\">\\1</span>", $value);
+						$text .= preg_replace("/(" . preg_quote(html_get_page_variable("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $value);
 					}else{
 						$text .= $value;
 					}
@@ -1104,7 +1104,7 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 				}
 
 				if (isset($data["filter"]) && strlen($filter)) {
-					$text .= preg_replace("/(" . preg_quote($filter) . ")/i", "<span class=\"filter\">\\1</span>", $value);
+					$text .= preg_replace("/(" . preg_quote($filter, "/") . ")/i", "<span class=\"filter\">\\1</span>", $value);
 				}else{
 					$text .= $value;
 				}

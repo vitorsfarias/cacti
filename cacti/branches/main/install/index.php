@@ -87,6 +87,7 @@ switch (get_request_var_request("step")) {
 				$cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0.8.4', '0.8.5', '0.8.5a',
 					'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
 					'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h', '0.8.7i',
+					'0.8.8',
 					'1.0.0');
 	
 
@@ -178,8 +179,11 @@ switch (get_request_var_request("step")) {
 					} elseif ($cacti_versions[$i] == "0.8.7i") {
 						include ("0_8_7h_to_0_8_7i.php");
 						upgrade_to_0_8_7i();
+					} elseif ($cacti_versions[$i] == "0.8.8") {
+						include ("0_8_7i_to_0_8_8.php");
+						upgrade_to_0_8_8();
 					} elseif ($cacti_versions[$i] == "1.0.0") {
-						include ("0_8_7i_to_1_0_0.php");
+						include ("0_9_0_to_1_0_0.php");
 						upgrade_to_1_0_0();
 					}
 				}

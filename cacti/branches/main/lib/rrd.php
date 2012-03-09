@@ -25,7 +25,7 @@
 include_once(CACTI_BASE_PATH . "/include/rrd.php");
 
 function escape_command($command) {
-	return $command; # we escape every single argument now, no need for "special" escaping
+	return cacti_escapeshellcmd($command);
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
