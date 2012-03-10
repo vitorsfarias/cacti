@@ -84,10 +84,10 @@ function draw_edit_form($array) {
 					form_checkbox($field_array["sub_checkbox"]["name"],
 						$field_array["sub_checkbox"]["value"],
 						$field_array["sub_checkbox"]["friendly_name"],
-						((isset($field_array["default"])) ? $field_array["default"] : ""),
-						((isset($field_array["form_id"])) ? $field_array["form_id"] : ""),
-						((isset($field_array["class"])) ? $field_array["class"] : ""),
-						((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
+						((isset($field_array["sub_checkbox"]["default"])) 	? $field_array["sub_checkbox"]["default"] : ""),
+						((isset($field_array["sub_checkbox"]["form_id"])) 	? $field_array["sub_checkbox"]["form_id"] : ""),
+						((isset($field_array["sub_checkbox"]["class"])) 	? $field_array["sub_checkbox"]["class"] : ""),
+						((isset($field_array["sub_checkbox"]["on_change"])) ? $field_array["sub_checkbox"]["on_change"] : ""));
 					print "</td>\n";
 				} else {
 					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : " width='50%'");
