@@ -1079,6 +1079,8 @@ function update_device_status($status, $device_id, &$devices, &$ping, $ping_avai
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option("ping_failure_count");
 	$ping_recovery_count = read_config_option("ping_recovery_count");
+	$devices[$device_id]["status_fail_date"] = '0000-00-00 00:00:00';
+	$devices[$device_id]["status_rec_date"] = '0000-00-00 00:00:00';
 
 	if ($status == DEVICE_DOWN) {
 		/* update total polls, failed polls and availability */
