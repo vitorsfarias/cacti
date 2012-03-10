@@ -141,57 +141,6 @@ function upgrade_to_1_0_0() {
 	$data['keys'][] = array('name' => 'alternate_id', 'columns' => 'alternate_id');
 	$data['type'] = 'MyISAM';
 	plugin_upgrade_table('1.0.0', 'sites', $data, $show_output, $no_drop_items);
-	/* Plugin Architecture */
-	unset($data);
-	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
-	$data['columns'][] = array('name' => 'directory', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'status', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
-	$data['columns'][] = array('name' => 'author', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'webpage', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'version', 'type' => 'varchar(8)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'ptype', 'type' => 'tinyint(2)', 'NULL' => false, 'default' => 0);
-	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
-	$data['keys'][] = array('name' => 'status', 'columns' => 'status');
-	$data['keys'][] = array('name' => 'directory', 'columns' => 'directory');
-	$data['type'] = 'MyISAM';
-	plugin_upgrade_table('1.0.0', 'plugin_config', $data, $show_output, $no_drop_items);
-
-	unset($data);
-	$data['columns'][] = array('name' => 'id', 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true);
-	$data['columns'][] = array('name' => 'plugin', 'type' => 'varchar(16)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'table', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'column', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'method', 'type' => 'varchar(16)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
-	$data['keys'][] = array('name' => 'plugin', 'columns' => 'plugin');
-	$data['keys'][] = array('name' => 'method', 'columns' => 'method');
-	$data['type'] = 'MyISAM';
-	plugin_upgrade_table('1.0.0', 'plugin_db_changes', $data, $show_output, $no_drop_items);
-
-	unset($data);
-	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
-	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'hook', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'file', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'function', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'status', 'type' => 'int(8)', 'NULL' => false, 'default' => 0);
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
-	$data['keys'][] = array('name' => 'hook', 'columns' => 'hook');
-	$data['keys'][] = array('name' => 'status', 'columns' => 'status');
-	$data['type'] = 'MyISAM';
-	plugin_upgrade_table('1.0.0', 'plugin_hooks', $data, $show_output, $no_drop_items);
-
-	unset($data);
-	$data['columns'][] = array('name' => 'id', 'type' => 'int(8)', 'NULL' => false, 'auto_increment' => true);
-	$data['columns'][] = array('name' => 'plugin', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'file', 'type' => 'text', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'display', 'type' => 'varchar(64)', 'NULL' => false, 'default' => '');
-	$data['keys'][] = array('name' => 'PRIMARY', 'columns' => 'id', 'primary' => true);
-	$data['keys'][] = array('name' => 'plugin', 'columns' => 'plugin');
-	$data['type'] = 'MyISAM';
-	plugin_upgrade_table('1.0.0', 'plugin_realms', $data, $show_output, $no_drop_items);
 
 	# create new table graph_templates_xaxis
 	unset($data);
