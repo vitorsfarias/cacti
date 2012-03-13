@@ -779,7 +779,7 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 	}
 
 	if (num_rows > 0) {
-		/* retreive each devices polling items from poller cache and load into array */
+		/* retrieve each devices polling items from poller cache and load into array */
 		poller_items = (target_t *) calloc(num_rows, sizeof(target_t));
 
 		i = 0;
@@ -1237,6 +1237,9 @@ void poll_device(int device_id, int device_thread, int last_device_thread, int d
 		}
 		free(poller_items);
 		free(snmp_oids);
+	} else {
+		/* free the mysql result */
+		mysql_free_result(result);
 	}
 
 	free(device);
