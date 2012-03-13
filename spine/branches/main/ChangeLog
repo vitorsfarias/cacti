@@ -3,8 +3,15 @@
 SVN
 -feature#0001550: Record the polling time for each host to optimize polling times
 -feature: Implement new file based datetime format in the spine log function
--feature: Add a reconnect capability when the server goes away
--bug: Rework the way ping works.  Due to bad impact of 0.8.7h
+
+0.8.8
+-bug#0002185: Multiple memory leaks found in spine
+
+0.8.7i
+-bug: Rework the way ping works, due to bad impact of changes in 0.8.7h
+-bug: ICMP ping not working on windows due to cygwin change
+-bug: Linux capabilities reported as on regardless of state
+-feature: Add a reconnect capability when the mysql server goes away
 
 0.8.7h
 -feature#0001852: Another 10% speedup in spine 

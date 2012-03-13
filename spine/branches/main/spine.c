@@ -759,6 +759,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	free(poller_details);
+
 	/* tell Spine that it is now parent */
 	set.parent_fork = SPINE_PARENT;
 
@@ -796,6 +798,10 @@ int main(int argc, char *argv[]) {
 	mysql_close(&mysql);
 
 	SPINE_LOG_DEBUG(("DEBUG: MYSQL Free & Close Completed"));
+	/* close snmp */
+	snmp_spine_close();
+
+	SPINE_LOG_DEBUG(("DEBUG: Net-SNMP Close Completed"));
 
 	/* finally add some statistics to the log and exit */
 	end_time = TIMEVAL_TO_DOUBLE(now);
