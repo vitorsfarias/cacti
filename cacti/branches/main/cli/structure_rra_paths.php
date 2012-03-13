@@ -36,12 +36,16 @@ include(dirname(__FILE__) . "/../include/global.php");
 /* process calling arguments */
 $parms = $_SERVER["argv"];
 $me = array_shift($parms);
+$device_id = NULL;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
 		@list($arg, $value) = @explode("=", $parameter);
 
 		switch ($arg) {
+		case "--device-id":
+			$device_id = $value;
+			break;
 		case "--proceed":
 			$proceed = TRUE;
 
@@ -86,23 +90,33 @@ if ($poller_running == "1") {
 /* turn on extended paths from in the database */
 set_config_option("extended_paths", CHECKED);
 
-/* get the device ids and rrd paths from the poller_item table  */
-$rrd_info = db_fetch_assoc("SELECT DISTINCT local_data_id, device_id, rrd_path FROM poller_item");
+/* fetch all DS having wrong path */
+$data_sources = db_fetch_assoc("SELECT
+				local_data_id,
+				device_id,
+				data_source_path,
+				CONCAT('<path_rra>/', device_id, '/', local_data_id, '.rrd') AS new_data_source_path,
+				REPLACE(data_source_path, '<path_rra>', '$base_rra_path') AS rrd_path,
+				REPLACE(CONCAT('<path_rra>/', device_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path
+					FROM data_template_data
+					INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
+					INNER JOIN device ON device.id=data_local.device_id
+				WHERE data_source_path != CONCAT('<path_rra>/', device_id, '/', local_data_id, '.rrd')"
+				 . ($device_id === NULL ? "" : " AND device_id=$device_id"));
 
 /* setup some counters */
 $done_count   = 0;
-$ignore_count = 0;
 $warn_count   = 0;
 
-/* scan all poller_items */
-foreach ($rrd_info as $info) {
+/* scan all data sources */
+foreach ($data_sources as $info) {
 	$new_base_path = "$base_rra_path" . "/" . $info["device_id"];
-	$new_rrd_path  = $new_base_path . "/" . $info["local_data_id"] . ".rrd";
+	$new_rrd_path  = $info["new_rrd_path"];
 	$old_rrd_path  = $info["rrd_path"];
 
 	/* create one subfolder for every device */
 	if (!is_dir($new_base_path)) {
-		/* see if we can create the dirctory for the new file */
+		/* see if we can create the directory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			printf(__("NOTE: New Directory '%s' Created for RRD Files\n"), $new_base_path);
 			if (CACTI_SERVER_OS != "win32") {
@@ -126,21 +140,17 @@ foreach ($rrd_info as $info) {
 	}
 
 	/* copy the file, update the database and remove the old file */
-	if ($old_rrd_path == $new_rrd_path) {
-		$ignore_count++;
-
-		printf(__("NOTE: File '%s' is Already Structured, Ignoring\n"), $old_rrd_path);
-	} elseif (!file_exists($old_rrd_path)) {
+	if (!file_exists($old_rrd_path)) {
 		$warn_count++;
 
 		printf(__("WARNING: Legacy RRA Path '%s' Does not exist, Skipping\n"), $old_rrd_path);
 
 		/* alter database */
 		update_database($info);
-	} elseif (copy($old_rrd_path, $new_rrd_path)) {
+	} elseif (link($old_rrd_path, $new_rrd_path)) {
 		$done_count++;
 
-		printf(__("NOTE: Copy Complete for File '%a'\n"), $info["rrd_path"]);
+		printf(__("NOTE: HardLink Complete for File '%a" . "' -> '" . "%a'\n"), $old_rrd_path, $new_rrd_path);
 		if (CACTI_SERVER_OS != "win32") {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
 				printf(__("NOTE: Permissions set for '%s'\n"), $new_rrd_path);
@@ -177,23 +187,21 @@ foreach ($rrd_info as $info) {
 /* finally re-enable the poller */
 enable_poller();
 
-printf(__("NOTE: Process Complete, '%1d' Completed, '%2d' Skipped, '%3d' Previously Structured\n"), $done_count, $warn_count, $ignore_count);
+printf(__("NOTE: Process Complete, '%1d' Completed, '%2d' Skipped\n"), $done_count, $warn_count);
 
 /* update database */
 function update_database($info) {
-	global $new_rrd_path;
-
-		/* upate table poller_item */
+	/* upate table poller_item */
 	db_execute("UPDATE poller_item
-		SET rrd_path = '$new_rrd_path'
+		SET rrd_path = '" . $info["new_rrd_path"] . "'
 		WHERE local_data_id=" . $info["local_data_id"]);
 
 	/* update table data_template_data */
 	db_execute("UPDATE data_template_data
-		SET data_source_path='<path_rra>/" . $info["device_id"] . "/" . $info["local_data_id"] . ".rrd'
+		SET data_source_path='" . $info["new_data_source_path"] . "'
 		WHERE local_data_id=" . $info["local_data_id"]);
 
-	printf(__("NOTE: Database Changes Complete for File '%s'"), $info["rrd_path"]);
+	printf(__("NOTE: Database Changes Complete for File '%s'\n"), $info["new_rrd_path"]);
 }
 
 /* turn on the poller */
@@ -207,11 +215,12 @@ function disable_poller() {
 }
 
 function display_help($me) {
-	echo "Structured RRA Paths Utility V1.0" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
+	echo "Structured RRA Paths Utility V1.0" . ", " . __("Copyright 2008-2012 - The Cacti Group") . "\n";
 	echo __("A simple command line utility that converts a Cacti system from using") . "\n";
 	echo __("legacy RRA paths to using structured RRA paths with the following") . "\n";
 	echo __("naming convention: <path_rra>/device-id/local_data_id.rrd") . "\n\n";
 	echo __("This utility is designed for very large Cacti systems.") . "\n\n";
+	echo __("On Linux OS, superuser is required to apply file ownership.") . "\n\n";
 	echo __("The utility follows the process below:") . "\n";
 	echo __("  1) Disables the Cacti Poller") . "\n";
 	echo __("  2) Checks for a Running Poller.") . "\n\n";
@@ -230,5 +239,5 @@ function display_help($me) {
 	echo __("If the utility encounters a problem along the way, it will:") . "\n";
 	echo __("  1) Re-enable the Cacti Poller") . "\n";
 	echo __("  2) Exit") . "\n\n";
-	echo __("usage: ") . $me . " --proceed [--help | -H | --version | -V]\n\n";
+	echo __("usage: ") . $me . " --proceed [--help | -H | --version | -V] [--device-id=<device id>]\n\n";
 }
