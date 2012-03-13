@@ -93,7 +93,7 @@ $graph_item_types2 = array(
 	GRAPH_ITEM_TYPE_CUSTOM_LEGEND	=> __('Custom Legend'),
 );
 
-$graph_item_types = array_merge($graph_item_types1, $graph_item_gprint_types, $graph_item_types2);
+$graph_item_types = $graph_item_types1 + $graph_item_gprint_types + $graph_item_types2;
 
 $image_types = array(
 	IMAGE_TYPE_PNG 	=> 'PNG',
