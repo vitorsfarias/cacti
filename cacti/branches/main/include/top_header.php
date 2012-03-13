@@ -58,7 +58,11 @@ load_current_session_value("toptab", "sess_cacti_toptab", "console");
 
 <?php
 if (isset($refresh)) {
-	print "\t<meta http-equiv=refresh content=\"" . $refresh["seconds"] . "; url='" . $refresh["page"] . "'\">\n";
+	if (is_array($refresh)) {
+		print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
+	}else{
+		print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh,ENT_QUOTES) . "'>\r\n";
+	}
 }
 initializeCookieVariable();
 plugin_hook('page_head');
