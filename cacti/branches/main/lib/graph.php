@@ -1802,6 +1802,10 @@ function draw_edit_form_row($field_array, $field_name, $previous_value) {
    ------------------- */
 
 function graphs_new_reload_query() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	input_validate_input_number(get_request_var("device_id"));
+	/* ==================================================== */
 	run_data_query(get_request_var("device_id"), get_request_var("id"));
 }
 
