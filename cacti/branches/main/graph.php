@@ -29,10 +29,11 @@ if (!isset($_REQUEST["view_type"])) { $_REQUEST["view_type"] = ""; }
 $guest_account = true;
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
 
 plugin_hook_function('graph');
+
+include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
+include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
 
 /* ================= input validation ================= */
 input_validate_input_regex(get_request_var_request("rra_id"), "/^([0-9]+|all)$/");

@@ -30,6 +30,8 @@ $guest_account = true;
 include("./include/auth.php");
 include_once(CACTI_BASE_PATH . "/lib/rrd.php");
 
+plugin_hook_function('graph_image');
+
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("graph_start"));
 input_validate_input_number(get_request_var("graph_end"));
@@ -60,8 +62,6 @@ if ($image_format_id == IMAGE_TYPE_PNG) {
 
 /* flush the headers now */
 ob_end_clean();
-
-plugin_hook_function('graph_image');
 
 session_write_close();
 
