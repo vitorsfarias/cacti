@@ -69,6 +69,7 @@ SVN
 -bug#0002060: NAN values in hdd utilisation graphs (Poller Output Table not Empty)
 -bug#0002097: cacti.sql import error
 -bug#0002161: Graph management "graph()" function conflicts
+-bug#0002183: No graphs are shown due to wrong array_merge
 -bug: remove graph permissions if graph is removed
 -bug: remove host permissions if host is removed
 -bug: add_tree.php did not allow nodes with propagating sort options
