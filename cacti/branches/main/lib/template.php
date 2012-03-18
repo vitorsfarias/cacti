@@ -294,8 +294,9 @@ function change_data_template($local_data_id, $data_template_id) {
 		}
 	}
 
-	/* these fields should never be overwritten by the template */
-	$save["data_source_path"] = $data["data_source_path"];
+	/* these fields should never be overwritten by the template 
+	 * at this point in time, data_template_data may not yet have been saved! */
+	$save["data_source_path"] = (isset($data["data_source_path"]) ? $data["data_source_path"] : "");
 
 	$data_template_data_id = sql_save($save, "data_template_data");
 	$data_rrds_list = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE local_data_id=$local_data_id");
@@ -334,14 +335,14 @@ function change_data_template($local_data_id, $data_template_id) {
 	/* this section is before most everthing else so we can determine if this is a new save, by checking
 	the status of the 'local_data_template_data_id' column */
 	if (sizeof($data_input_data) > 0) {
-	foreach ($data_input_data as $item) {
-		/* always propagate on a new save, only propagate templated fields thereafter */
-		if (($new_save == true) || (empty($item["t_value"]))) {
-			db_execute("REPLACE INTO data_input_data
-				(data_input_field_id,data_template_data_id,t_value,value)
-				VALUES (" . $item["data_input_field_id"] . ", $data_template_data_id, '" . $item["t_value"] . "', '" . $item["value"] . "')");
+		foreach ($data_input_data as $item) {
+			/* always propagate on a new save, only propagate templated fields thereafter */
+			if (($new_save == true) || (empty($item["t_value"]))) {
+				db_execute("REPLACE INTO data_input_data
+					(data_input_field_id,data_template_data_id,t_value,value)
+					VALUES (" . $item["data_input_field_id"] . ", $data_template_data_id, '" . $item["t_value"] . "', '" . $item["value"] . "')");
+			}
 		}
-	}
 	}
 
 	/* make sure to update the 'data_template_data_rra' table for each data source */
@@ -353,11 +354,11 @@ function change_data_template($local_data_id, $data_template_id) {
 		WHERE data_template_data_id=$data_template_data_id");
 
 	if (sizeof($data_rra) > 0) {
-	foreach ($data_rra as $rra) {
-		db_execute("INSERT INTO data_template_data_rra
-			(data_template_data_id,rra_id)
-			VALUES ($data_template_data_id," . $rra["rra_id"] . ")");
-	}
+		foreach ($data_rra as $rra) {
+			db_execute("INSERT INTO data_template_data_rra
+				(data_template_data_id,rra_id)
+				VALUES ($data_template_data_id," . $rra["rra_id"] . ")");
+		}
 	}
 }
 
