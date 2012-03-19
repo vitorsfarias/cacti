@@ -220,6 +220,7 @@ SVN
 -bug: Graph settings and settings check boxes do not allow unchecking to be saved
 -bug: Fix minor issue with plugin library caused by non-session
 -bug: Fix SQL error on data input save for non-templated graphs
+-bug: user_log index added to increase performance
 -feature: Merge Plugin Architecture into Cacti
 
 0.8.7i
