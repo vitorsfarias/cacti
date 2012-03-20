@@ -100,6 +100,7 @@ print_debug("There are '" . sizeof($poller_data) . "' data source elements to up
 if (sizeof($poller_data) > 0) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print ".";
+		$local_data_ids[] = $data["id"];
 		$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
 
 		print_debug("Data Source Item '$current_ds' of '$total_ds' updated");
