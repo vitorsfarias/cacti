@@ -282,6 +282,11 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'autocomplete':
+		/* we may need to evaluate a given SQL
+		 * this should yield a single name for $field_array["name"] */
+		if (isset($field_array["sql"])) {
+			$field_array["name"] = db_fetch_cell($field_array["sql"]);
+		}
 		form_autocomplete_box($field_name,
 			$field_array["callback_function"], $field_array["id"],
 				((isset($field_array["name"])) ? $field_array["name"] : ""),
