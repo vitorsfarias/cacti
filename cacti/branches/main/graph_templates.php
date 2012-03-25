@@ -539,7 +539,7 @@ function graph_template_display_general($graph_template, $header_label) {
 	</script>\n";
 
 
-	/* now start the huge form that holds all lgraph_template table parameters 
+	/* now start the huge form that holds all graph_template table parameters 
 	 * we will split that up into chunks of seperated div's 
 	 * in case you do NOT like how options are seperated into chunks, 
 	 * please change associations of options into arrays 
