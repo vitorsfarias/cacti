@@ -119,6 +119,15 @@ function graph_item_form_list() {
 }
 
 /**
+ * return graph fields list for graph management
+ */
+function graph_header_form_list() {
+	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+
+	return $struct_graph_header;
+}
+
+/**
  * return graph actions list for form engine
  */
 function graph_actions_list() {
@@ -436,7 +445,7 @@ function graph_form_save() {
 			if ($graph_templates_graph_id) {
 				raise_message(1);
 
-				/* if template information chanegd, update all necessary template information */
+				/* if template information changed, update all necessary template information */
 				if ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) {
 					/* check to see if the number of graph items differs, if it does; we need user input */
 					if ((!empty($_POST["graph_template_id"])) && (!empty($_POST["local_graph_id"])) && (sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=$local_graph_id")) != sizeof(db_fetch_assoc("select id from graph_templates_item where local_graph_id=0 and graph_template_id=" . $_POST["graph_template_id"])))) {
@@ -511,13 +520,14 @@ function graph_form_save() {
 
 		change_graph_template(get_request_var_post("local_graph_id"), get_request_var_post("graph_template_id"), $intrusive);
 	}
-
+	
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
 		header("Location: " . html_get_location("graphs.php") . "?action=edit&device_id=" . $_POST["device_id"] . "&new=1");
-	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
-		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
+#	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["device_id"] != $_POST["hidden_device_id"])) {
+#		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}else{
-		header("Location: " . html_get_location("graphs.php"));
+		/* for existing graphs: always stay on page unless user decides to RETURN */
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["device_id"]) ? "&device_id=" . $_POST["device_id"] : ""));
 	}
 
 	exit;
@@ -871,13 +881,15 @@ function graph_item() {
 			graph_templates_item.consolidation_function_id,
 			data_template_rrd.data_source_name,
 			cdef.name as cdef_name,
-			colors.hex
+			colors.hex,
+			graph_templates_gprint.name as gprint_name
 			from graph_templates_item
 			left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
 			left join data_local on (data_template_rrd.local_data_id=data_local.id)
 			left join data_template_data on (data_local.id=data_template_data.local_data_id)
 			left join cdef on (cdef_id=cdef.id)
 			left join colors on (color_id=colors.id)
+			left join graph_templates_gprint on (gprint_id=graph_templates_gprint.id)
 			where graph_templates_item.local_graph_id=" . get_request_var("id") . "
 			order by graph_templates_item.sequence");
 
@@ -888,7 +900,7 @@ function graph_item() {
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . get_request_var("id"));
 
 	if (empty($graph_template_id)) {
-		$add_text = "graphs_items.php?action=item_edit&amp;local_graph_id=" . get_request_var("id") . "&amp;device_id=$device_id";
+		$add_text = "graphs_items.php?action=item_edit&local_graph_id=" . get_request_var("id") . "&device_id=$device_id";
 	}else{
 		$add_text = "";
 	}
@@ -1180,28 +1192,35 @@ function graph_diff() {
 	form_save_button_alt("action!edit|id!" . get_request_var("id"));
 }
 
-function graph_edit() {
-cacti_log(__FUNCTION__, false, "TEST");	
+/** edit a plain graph
+ * @param bool $tabs whether a row of tabs shall be printed
+ */
+function graph_edit($tabs = false) {
+	/* we have to deal with different situations:
+	 * non-templated vs. templated graph:
+	 * 		graph items (explicit) are allowed for non-templated graphs only
+	 * 		graph configuration (explicit) is allowed for non-templated graphs only
+	 * 	  wheras
+	 * 		data input is shown for templated graphs only
+	 * 
+	 * new vs. existing graph:
+	 * 		on the first run, we neither have a graph_id nor a template_id nor a device_id
+	 */
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	$use_graph_template = true;
 
+	/* fetch basic data for that very graph
+	 * to be displayed in various tabs */
 	if (!empty($_GET["id"])) {
-		$local_graph_template_graph_id = db_fetch_cell("select local_graph_template_graph_id from graph_templates_graph where local_graph_id=" . get_request_var("id"));
-
 		$graphs = db_fetch_row("select * from graph_templates_graph where local_graph_id=" . get_request_var("id"));
-
-		$graphs_template = db_fetch_row("select * from graph_templates_graph where id=$local_graph_template_graph_id");
-
 		$device_id = db_fetch_cell("select device_id from graph_local where id=" . get_request_var("id"));
 		$header_label = __("[edit: ") . get_graph_title(get_request_var("id")) . "]";
 
-		if ($graphs["graph_template_id"] == "0") {
-			$use_graph_template = false;
-		}
+		$use_graph_template = (isset($graphs["graph_template_id"]) && $graphs["graph_template_id"] > 0);
+
 		?>
 		<script type="text/javascript">
 		<!--
@@ -1210,11 +1229,11 @@ cacti_log(__FUNCTION__, false, "TEST");
 		$().ready(function() {
 			if ($("#hidden_graph_template_id").val() == 0) {
 				unlockTemplate();
-				$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is unlocked");?></td>");
+				$(".cacti_dd_link").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is unlocked");?></td>");
 				disabled = false;
 			}else{
 				lockTemplate();
-				$("#graph_options").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
+				$(".cacti_dd_link").closest("td").before("<td class='lock w1 textHeaderDark'><?php print __("Template is locked");?></td>");
 				disabled = true;
 			}
 		});
@@ -1249,161 +1268,141 @@ cacti_log(__FUNCTION__, false, "TEST");
 		</script>
 		<?php
 	}else{
-		$graphs = array();
-		$graphs_template = array();
+		/* this is a new graph!
+		 * make sure, that all required indices of $graph are initialized */
+		$graphs = array(
+			"id"							=> 0,
+			"graph_template_id"				=> 0,
+			"local_graph_id"				=> 0,
+			"local_graph_template_graph_id" => 0,
+			);
+		/* have a device id ready */
+		if (isset($_GET["device_id"])) {
+			$device_id = get_request_var("device_id");
+		}else{
+			$device_id = 0;
+		}
 		$header_label = __("[new]");
 		$use_graph_template = false;
 	}
+	
+	/* now, we have a $graph and a $device_id
+	 * for a templated graph, you will find non-zero data
+	 * for a non-templated graph, data == 0
+	 */
+
 
 	/* handle debug mode */
+	$debug = false;
 	if (isset($_GET["debug"])) {
 		if (get_request_var("debug") == "0") {
 			kill_session_var("graph_debug_mode");
 		}elseif (get_request_var("debug") == "1") {
 			$_SESSION["graph_debug_mode"] = true;
+			$debug = true;
 		}
 	}
 
-	$dd_menu_options = 'cacti_dd_menu=graph_options&graph_id=' . (isset($_GET["id"]) ? get_request_var("id") : 0);
 
-	if (!empty($graphs["graph_template_id"])) {
-		$dd_menu_options .= '&graph_template_id=' . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0");
-	}
-	if (!empty($_GET["device_id"]) || !empty($device_id)) {
-		$dd_menu_options .= '&device_id=' . (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id);
-	}
-
-	print "<form id='graph_edit' name='graph_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
-
-	html_start_box(__("Graph Template Selection") . " $header_label", "100", 0, "center", (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":graph_options:html_start_box:" . $dd_menu_options : ""), "");
-
-	$form_array = array(
-		"graph_template_id" => array(
-			"method" => "autocomplete",
-			"callback_function" => "graphs.php?action=ajax_get_graph_templates",
-			"friendly_name" => __("Selected Graph Template"),
-			"description" => __("Choose a graph template to apply to this graph.  Please note that graph data may be lost if you change the graph template after one is already applied."),
-			"id" => (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"),
-			"name" => db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0"))
-			),
-		"device_id" => array(
-			"method" => "autocomplete",
-			"callback_function" => "graphs.php?action=ajax_get_devices_detailed",
-			"friendly_name" => __("Host"),
-			"description" => __("Choose the device that this graph belongs to."),
-			"id" => (isset($_GET["device_id"]) ? get_request_var("device_id") : $device_id),
-			"name" => db_fetch_cell("SELECT CONCAT_WS('',description,' (',hostname,')') FROM device WHERE id=" . (isset($_GET['device_id']) ? $_GET['device_id'] : $device_id))
-			),
-		"graph_template_graph_id" => array(
-			"method" => "hidden",
-			"value" => (isset($graphs["id"]) ? $graphs["id"] : "0")
-			),
-		"local_graph_id" => array(
-			"method" => "hidden",
-			"value" => (isset($graphs["local_graph_id"]) ? $graphs["local_graph_id"] : "0")
-			),
-		"local_graph_template_graph_id" => array(
-			"method" => "hidden",
-			"value" => (isset($graphs["local_graph_template_graph_id"]) ? $graphs["local_graph_template_graph_id"] : "0")
-			),
-		"hidden_graph_template_id" => array(
-			"method" => "hidden",
-			"value" => (isset($graphs["graph_template_id"]) ? $graphs["graph_template_id"] : "0")
-			),
-		"hidden_device_id" => array(
-			"method" => "hidden",
-			"value" => (isset($device_id) ? $device_id : "0")
-			)
-		);
-
-	draw_edit_form(
-		array(
-			"config" => array(),
-			"fields" => $form_array
-		)
+	/* ------------------------------------------------------------------------------------------
+	 * draw a list of headers to split the huge graph option set into smaller chunks
+	 * ------------------------------------------------------------------------------------------ */
+	$template_tabs = array(
+		"t_header" 		=> __("Header"),
 	);
 
-	html_end_box();
 
-#	print "<form method='post' action='graphs.php'>\n";
-
-	/* only display the "inputs" area if we are using a graph template for this graph */
-	if (!empty($graphs["graph_template_id"])) {
-		html_start_box(__("Supplemental Graph Template Data"), "100", "0", "center", "");
-
-		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", __("Graph Fields"), true, 0);
-		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", __("Graph Item Fields"));
-
-		html_end_box();
+	if (isset($graphs["graph_template_id"]) && $graphs["graph_template_id"] > 0) {
+		/* ------------------------------------------------------------------------------------------
+		 * Templated Graph
+		 * ------------------------------------------------------------------------------------------ */
+		/* print supplemental graph template data */
+		$template_tabs += array("t_supp_data" 	=> __("Supplemental Data"));
+		if (!isset($_REQUEST["new"])) {	# not for a new graph, nothing to show yet
+			$template_tabs += array("t_graph" 		=> __("Graph"));
+		}
+	}else{
+		/* ------------------------------------------------------------------------------------------
+		 * non-templated Graph
+		 * ------------------------------------------------------------------------------------------ */
+		if (isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) {
+			$template_tabs += array("t_items"		=> __("Items"));
+		}
+		if (!isset($_REQUEST["new"])) {	# not for a new graph, nothing to show yet
+			$template_tabs += array("t_graph" 		=> __("Graph"));
+		}
+		/* right axis for specific rrdtool versions only */
+		if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
+			$template_tabs += array("t_right_axis" 	=> __("Right Axis"));
+		}
+		$template_tabs += array("t_size" 		=> __("Size"));
+		$template_tabs += array("t_limits" 		=> __("Limits"));
+		$template_tabs += array("t_grid" 		=> __("Grid"));
+		$template_tabs += array("t_color" 		=> __("Color"));
+		$template_tabs += array("t_legend" 		=> __("Legend"));
+		$template_tabs += array("t_misc" 		=> __("Miscellaneous"));
 	}
 
-	/* graph item list goes here */
-	if ((!empty($_GET["id"])) && (!array_key_exists("graph_template_id", $graphs))) {
-		graph_template_item();
-	}
 
-	if (!empty($_GET["id"])) {
-		print "<div id='center'>";
-		print "<img src='" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . "'>";
-		
-		if ((isset($_SESSION["graph_debug_mode"])) && (isset($_GET["id"]))) {
-			$graph_data_array = array();
-			$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
-			/* make rrdtool_function_graph to only print the command without executing it */
-			$graph_data_array["print_source"] = 1;
-						
-			print "<br><span class=\"textInfo\">" .  __("RRDTool Command:") . "</span><br>";
-			print "<pre>";
-			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
-			print "</pre>";
-			print "<span class=\"textInfo\">" . __("RRDTool Says:") . "</span><br>";
-		
-			/* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
-			unset($graph_data_array["print_source"]);
-			print "<pre>";
-			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
-			print "</pre>";
+	/* draw the list of tabs */
+	print "<div id='tabs_template'>\n";
+	print "<ul>\n";
+
+
+
+	if (sizeof($template_tabs) > 0) {
+		foreach (array_keys($template_tabs) as $tab_short_name) {
+			print "<li><a href=#$tab_short_name>$template_tabs[$tab_short_name]</a></li>";
+			if (!isset($_REQUEST["id"]) && !isset($_REQUEST["new"])) break;
 		}
 	}
+	print "</ul>\n";
 
-	if (((isset($_GET["id"])) || (isset($_GET["new"]))) && (empty($graphs["graph_template_id"]))) {
-		html_start_box(__("Graph Configuration"), "0", "center", "");
+	print "<script type='text/javascript'>
+		$().ready(function() {
+			$('#tabs_template').tabs({ cookie: { expires: 30 } });
+		});
+	</script>\n";
 
-		############
-		html_start_box(__("Labels"), "100", "0", "center", "", true);
+
+
+	/* handle the dynamic menu to be shown on the upper right */
+	if (isset($graphs["local_graph_id"])) $dd_menu_options = 'cacti_dd_menu=graph_options&local_graph_id=' . $graphs["local_graph_id"];
+	if (isset($graphs["graph_template_id"])) $dd_menu_options .= '&graph_template_id=' . $graphs["graph_template_id"];
+	if ($device_id > 0) $dd_menu_options .= '&device_id=' . $device_id;
+
+
+	/* now start the huge form that holds all graph options
+	 * we will split that up into chunks of seperated div's 
+	 * in case you do NOT like how options are seperated into chunks, 
+	 * please change associations of options into arrays 
+	 * in include/graph/graph_forms.php */
+	print "<form id='graph_edit' name='graph_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
+
+	# the graph header
+	print "<div id='t_header'>";
+	$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_header:html_start_box:" . $dd_menu_options : "");
+	html_start_box(__("Graph") . " $header_label", "100", 0, "center", $add_text, false, "table_graph_template_header");
+	$device["device_id"] = $device_id;
+	draw_edit_form(array(
+		"config" => array("no_form_tag" => true),
+		"fields" => inject_form_variables(graph_header_form_list(), $graphs, $device)
+	));
+	html_end_box(false);
+	
+	/* draw additional sections on the first screen
+	 * especially those fields, that are required for a "save" operation
+	 */
+	if (((isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) || (isset($_GET["new"]))) && ($graphs["graph_template_id"] == 0)) {
+		html_start_box(__("Labels"), "100", "0", "center", "", false);
 		draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
-
-		/* TODO: we should not use rrd version in the code, when going data-driven */
-		if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
-			html_start_box(__("Right Axis Settings"), "100", "0", "center", "", true, "table_graph_template_right_axis");
-			draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $graphs, $use_graph_template);
-		}
-
-		html_end_box(false);
-		html_start_box(__("Graph Template Size"), "100", "0", "center", "", true, "table_graph_template_size");
-		draw_template_edit_form('header_graph_size', graph_size_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Limits"), "100", "0", "center", "", true, "table_graph_template_limits");
-		draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Grid"), "100", "0", "center", "", true, "table_graph_template_grid");
-		draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Color"), "100", "0", "center", "", true, "table_graph_template_color");
-		draw_template_edit_form('header_graph_color', graph_color_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Legend"), "100", "0", "center", "", true, "table_graph_template_misc");
-		draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Misc"), "100", "0", "center", "", true, "table_graph_template_misc");
-		draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $graphs, $use_graph_template);
-		html_end_box(false);
-		html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", true, "table_graph_template_cacti");
+		html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", false, "table_graph_template_cacti");
 		draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 	}
-
+	
+	/* provide hidden parameters to rule the save function */
 	if ((isset($_GET["id"])) || (isset($_GET["new"]))) {
 		form_hidden_box("save_component_graph","1","");
 		form_hidden_box("save_component_input","1","");
@@ -1415,8 +1414,128 @@ cacti_log(__FUNCTION__, false, "TEST");
 
 	if (isset($_REQUEST["parent"]))    form_hidden_box("parent", get_request_var_request("parent"), "");
 	if (isset($_REQUEST["parent_id"])) form_hidden_box("parent_id", get_request_var_request("parent_id"), "");
+	print "</div>";
 
-	form_save_button_alt();
+
+	
+	if (isset($graphs["graph_template_id"]) && $graphs["graph_template_id"] > 0) {
+		/* ---------------------------------------------------------------------------------------
+		 * Templated Graph? 
+		 * --------------------------------------------------------------------------------------- */
+		/* only display the "inputs" area if we are using a graph template for this graph */
+		print "<div id='t_supp_data'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_supp_data:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Supplemental Graph Template Data"), "100", "0", "center", $add_text, false);
+		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", __("Graph Fields"), true, 0);
+		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", __("Graph Item Fields"));
+		html_end_box(false);
+		print "</div>";
+	}else{
+		/* ---------------------------------------------------------------------------------------
+		 * non-templated Graph? 
+		 * --------------------------------------------------------------------------------------- */
+
+		/* graph item list goes here 
+		 * do NOT print in case we have a new graph just created 
+		 * DO print for non-templated graphs */
+		print "<div id='t_items'>";
+		if (isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) {
+			graph_item();
+		}
+		print "</div>";
+	}
+
+
+
+	/* ---------------------------------------------------------------------------------------
+	 * print graph and optionally rrdtool graph statement
+	 * --------------------------------------------------------------------------------------- */
+	if (isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) {
+		print "<div id='t_graph'>";
+		html_start_box(__("Graph"), "100", "0", "center", "", false, "");
+		print "<div class='center'>";
+		print "<img src='" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . "'>";
+		print "</div>";
+		
+		if ((isset($_SESSION["graph_debug_mode"])) && ($graphs["local_graph_id"] > 0)) {
+			$graph_data_array = array();
+			$graph_data_array["output_flag"] = RRDTOOL_OUTPUT_STDERR;
+			/* make rrdtool_function_graph to only print the command without executing it */
+			$graph_data_array["print_source"] = 1;
+						
+			print "<br><span class='textInfo'>" .  __("RRDTool Command:") . "</span><br>";
+			print "<pre>";
+			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+			print "</pre>";
+			print "<span class='textInfo'>" . __("RRDTool Says:") . "</span><br>";
+		
+			/* make rrdtool_function_graph to generate AND execute the rrd command, but only for fetching the "return code" */
+			unset($graph_data_array["print_source"]);
+			print "<pre>";
+			print rrdtool_function_graph(get_request_var("id"), read_graph_config_option("default_rra_id"), $graph_data_array);
+			print "</pre>";
+		}
+		html_end_box(false);
+		print "</div>";
+	}
+
+
+
+
+	/* print graph configuration
+	 * when either graph id given or new graph created
+	 * AND this is a non-templated graph */
+	if (((isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) || (isset($_GET["new"]))) && ($graphs["graph_template_id"] == 0)) {
+
+		/* TODO: we should not use rrd version in the code, when going data-driven */
+		if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
+			print "<div id='t_right_axis'>";
+			$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_right_axis:html_start_box:" . $dd_menu_options : "");
+			html_start_box(__("Right Axis Settings"), "100", "0", "center", $add_text, false, "table_graph_template_right_axis");
+			draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $graphs, $use_graph_template);
+			html_end_box(false);
+			print "</div>";
+		}
+
+		print "<div id='t_size'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_size:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Size"), "100", "0", "center", $add_text, false, "table_graph_template_size");
+		draw_template_edit_form('header_graph_size', graph_size_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+		print "<div id='t_limits'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_limits:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Limits"), "100", "0", "center", $add_text, false, "table_graph_template_limits");
+		draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+		print "<div id='t_grid'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_grid:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Grid"), "100", "0", "center", $add_text, false, "table_graph_template_grid");
+		draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+		print "<div id='t_color'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_color:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Color"), "100", "0", "center", $add_text, false, "table_graph_template_color");
+		draw_template_edit_form('header_graph_color', graph_color_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+		print "<div id='t_legend'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_legend:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Legend"), "100", "0", "center", $add_text, false, "table_graph_template_misc");
+		draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+		print "<div id='t_misc'>";
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_misc:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph Template Misc"), "100", "0", "center", $add_text, false, "table_graph_template_misc");
+		draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $graphs, $use_graph_template);
+		html_end_box(false);
+		print "</div>";
+	}
+
+	form_save_button("graphs.php", "return");
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
