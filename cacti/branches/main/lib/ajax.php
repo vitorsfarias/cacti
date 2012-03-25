@@ -31,12 +31,12 @@ function ajax_get_data_dd_menus() {
 		case 'graph_options':
 
 			$output	= "<h6><a id='changeGraphState' onClick='changeGraphState()' href='#'>Unlock/Lock</a></h6>";
-			$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=edit&id=' . $_GET["graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["graph_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=edit&id=' . $_GET["local_graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . (isset($_SESSION["graph_debug_mode"]) ? __("Turn <strong>Off</strong> Debug Mode") : __("Turn <strong>On</strong> Debug Mode")) . "</a></h6>";
 
-			if (!empty($_GET["graph_template_id"])) {
+			if (!empty($_GET["graph_template_id"]) && $_GET["graph_template_id"] > 0) {
 				$output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
 			}
-			if (!empty($_GET["device_id"])) {
+			if (!empty($_GET["device_id"]) && $_GET["device_id"] > 0) {
 				$output .= "<h6><a href='" . htmlspecialchars('devices.php?action=edit&id=' . $_GET["device_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
 			}
 			break;
@@ -45,8 +45,8 @@ function ajax_get_data_dd_menus() {
 
 			$output = "<h6><a id='changeDSState' onClick='changeDSState()' href='#'>Unlock/Lock</a></h6>";
 			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=data_source_toggle_status&id=' . $_GET["data_source_id"] . '&newstate=' . $_GET["newstate"] ) . "'>" . (($_GET["newstate"]) ? __("Disable") : __("Enable")) . "</a></h6>";
-			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=edit&id=' . $_GET["data_source_id"] . '&debug=' . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_debug_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("Debug Mode") . "</a></h6>";
-			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=edit&id=' . $_GET["data_source_id"] . '&info=' . (isset($_SESSION["ds_info_mode"]) ? "0" : "1")) . "'>" . __("Turn") . " <strong>" . (isset($_SESSION["ds_info_mode"]) ? __("Off") : __(CHECKED)) . "</strong> " . __("RRD Info Mode") . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=edit&id=' . $_GET["data_source_id"] . '&debug=' . (isset($_SESSION["ds_debug_mode"]) ? "0" : "1")) . "'>" . (isset($_SESSION["ds_debug_mode"]) ? __("Turn <strong>Off</strong> Debug Mode") : __("Turn <strong>On</strong> Debug Mode")) . "</a></h6>";
+			$output .= "<h6><a href='" . htmlspecialchars('data_sources.php?action=edit&id=' . $_GET["data_source_id"] . '&info=' . (isset($_SESSION["ds_info_mode"]) ? "0" : "1")) . "'>" . (isset($_SESSION["ds_info_mode"]) ? __("Turn <strong>Off</strong> RRD Info Mode") : __("Turn <strong>On</strong> RRD Info Mode")) . "</a></h6>";
 
 			if (!empty($_GET["data_template_id"])) {
 				$output .= "<h6><a href='" . htmlspecialchars('data_templates.php?action=edit&id=' . $_GET["data_template_id"]) . "'>" . __("Edit Data Source Template") . "</a></h6>";
@@ -119,7 +119,7 @@ function ajax_get_devices_brief() {
 				"FROM device " .
 				"WHERE (hostname LIKE '%$q%' " .
 				"OR description LIKE '%$q%') " .
-				"AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
+				"AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
 				"ORDER BY description,hostname";
 	}else{
 		/* this is a DENY SELECTED DEVICES permission type */
@@ -127,7 +127,7 @@ function ajax_get_devices_brief() {
 				"FROM device " .
 				"WHERE (hostname LIKE '%$q%' " .
 				"OR description LIKE '%$q%') " .
-				"AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
+				"AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") " .
 				"ORDER BY description,hostname";
 	}
 
@@ -164,14 +164,14 @@ function ajax_get_devices_detailed() {
 			FROM device
 			WHERE (hostname LIKE '%$q%'
 			OR description LIKE '%$q%')
-			AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
 			ORDER BY description,hostname";
 	}else{
 		$sql = "SELECT id, CONCAT_WS('',description,' (',hostname,')') as value
 			FROM device
 			WHERE (hostname LIKE '%$q%'
 			OR description LIKE '%$q%')
-			AND id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
+			AND id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=3 AND user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ")
 			ORDER BY description,hostname";
 	}
 
@@ -242,7 +242,7 @@ function ajax_get_graph_templates()  {
 			id,
 			name as value
 			FROM graph_templates
-			WHERE id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			AND (name LIKE '%$q%')
 			ORDER BY name";
 	}else{
@@ -250,7 +250,7 @@ function ajax_get_graph_templates()  {
 			id,
 			name as value
 			FROM graph_templates
-			WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			WHERE id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=4 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			AND (name LIKE '%$q%')
 			ORDER BY name";
 	}
@@ -357,7 +357,7 @@ function ajax_get_graphs_brief() {
 			FROM graph_templates_graph
 			WHERE local_graph_id > 0
 			AND LOWER(title_cache) LIKE '%$q%'
-			AND local_graph_id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			ORDER BY title_cache";
 	}else{
 		$sql = "SELECT
@@ -366,7 +366,7 @@ function ajax_get_graphs_brief() {
 			FROM graph_templates_graph
 			WHERE local_graph_id > 0
 			AND LOWER(title_cache) LIKE '%$q%'
-			AND local_graph_id NOT IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
+			AND local_graph_id IN (SELECT item_id FROM user_auth_perms WHERE user_auth_perms.type=1 AND user_auth_perms.user_id=". $_SESSION["sess_user_id"] . ")
 			ORDER BY title_cache";
 	}
 
