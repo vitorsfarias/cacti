@@ -369,7 +369,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 
 	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols, $autoinc);
 
-	if ($replace_result == 0) {
+	if ($replace_result === false) {
 		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . mysql_error($db_conn) . "'", false);
 		return FALSE;
 	}
