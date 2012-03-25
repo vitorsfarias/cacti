@@ -271,7 +271,6 @@ function item_edit() {
 	input_validate_input_number(get_request_var_request("device_id"));
 	input_validate_input_number(get_request_var_request("graph_template_id"));
 	input_validate_input_number(get_request_var_request("local_graph_id"));
-	input_validate_input_number(get_request_var_request("device_id"));
 	input_validate_input_number(get_request_var_request("data_template_id"));
 	/* ==================================================== */
 
@@ -292,7 +291,7 @@ function item_edit() {
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="nw50">
-						<?php print __("Host");?>:&nbsp;
+						<?php print __("Device");?>:&nbsp;
 					</td>
 					<td>
 						<select name="cbo_device_id" onChange="window.location=document.form_graph_items.cbo_device_id.options[document.form_graph_items.cbo_device_id.selectedIndex].value">
