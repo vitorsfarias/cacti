@@ -651,3 +651,44 @@ $struct_graph_item = array(
 		'method' => 'view'
 	)
 );
+
+
+/* file: (graphs.php -> lib/graph.php), action: edit */
+$struct_graph_header = array(
+		"graph_template_id" => array(
+			"method" => "autocomplete",
+			"callback_function" => "graphs.php?action=ajax_get_graph_templates",
+			"friendly_name" => __("Selected Graph Template"),
+			"description" => __("Choose a graph template to apply to this graph.  Please note that graph data may be lost if you change the graph template after one is already applied."),
+			"id" => "|arg1:graph_template_id|",
+			"sql" => "SELECT name FROM graph_templates WHERE id=|arg1:graph_template_id|"
+			),
+		"device_id" => array(
+			"method" => "autocomplete",
+			"callback_function" => "graphs.php?action=ajax_get_devices_detailed",
+			"friendly_name" => __("Host"),
+			"description" => __("Choose the device that this graph belongs to."),
+			"id" => "|arg2:device_id|",
+			"sql" => "SELECT CONCAT_WS('',description,' (',hostname,')') FROM device WHERE id=|arg2:device_id|"
+			),
+		"graph_template_graph_id" => array(
+			"method" => "hidden",
+			"value" => "|arg1:id|"
+			),
+		"local_graph_id" => array(
+			"method" => "hidden",
+			"value" => "|arg1:local_graph_id|"
+			),
+		"local_graph_template_graph_id" => array(
+			"method" => "hidden",
+			"value" => "|arg1:local_graph_template_graph_id|"
+			),
+		"hidden_graph_template_id" => array(
+			"method" => "hidden",
+			"value" => "|arg1:graph_template_id|"
+			),
+		"hidden_device_id" => array(
+			"method" => "hidden",
+			"value" => "|arg2:device_id|"
+			)
+		);
