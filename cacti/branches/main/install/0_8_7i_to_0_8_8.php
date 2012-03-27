@@ -24,13 +24,13 @@
 
 function upgrade_to_0_8_8() {
 	/* speed up the joins */
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_item"), "Field", "Field");
+	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM `poller_item`"), "Field", "Field");
 	if (in_array("host_id", $_columns)) {
-		db_install_execute("0.8.8", "ALTER TABLE poller_item MODIFY COLUMN host_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
+		db_install_execute("0.8.8", "ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 		cacti_log(__FUNCTION__ . " upgrade table poller_item", false, "UPGRADE");
 	}
 
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM poller_output"), "Key_name", "Key_name");
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `poller_output`"), "Key_name", "Key_name");
 	if (in_array("PRIMARY", $_keys)) {
 		db_install_execute("0.8.8", "ALTER TABLE `poller_output` DROP PRIMARY KEY");
 		cacti_log(__FUNCTION__ . " table poller_output: dropping old PRIMARY KEY", false, "UPGRADE");
@@ -110,5 +110,8 @@ function upgrade_to_0_8_8() {
 	db_install_execute("0.8.8", "REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
 	/* allow admin user to access Plugin Management */
 	db_install_execute("0.8.8", "REPLACE INTO user_auth_realm VALUES (101,1)");
+
+	/* create index on data_template_data on data_input_id */
+	db_install_excute("0.8.8", "CREATE INDEX data_input_id ON data_template_data (data_input_id)");
 }
 ?>
