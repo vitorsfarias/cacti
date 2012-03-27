@@ -768,7 +768,8 @@ CREATE TABLE data_template_data (
   PRIMARY KEY  (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
-  KEY data_source_path (data_source_path)
+  KEY data_source_path (data_source_path),
+  KEY data_input_id (data_input_id)
 ) ENGINE=MyISAM;
 
 --
