@@ -40,11 +40,11 @@ load_current_session_value("toptab", "sess_cacti_toptab", "console");
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<meta http-equiv='Content-Script-Type' content='text/javascript'>
 	<meta http-equiv='Content-Style-Type' content='text/css'>
-	<link type='text/css' href='<?php echo CACTI_URL_PATH; ?>include/main.css' rel='stylesheet'>
-	<link type='text/css' href='<?php echo CACTI_URL_PATH; ?>include/dd.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/main.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/dd.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/colorpicker.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/cacti_dd_menu.css' rel='stylesheet'>
-	<link type="text/css" media="screen" href="<?php echo CACTI_URL_PATH; ?>include/css/jquery.ui.all.css" rel="stylesheet">
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui.all.css' rel='stylesheet'>
 	<link href='<?php echo CACTI_URL_PATH; ?>images/favicon.ico' rel='shortcut icon'>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery-ui.js'></script>
