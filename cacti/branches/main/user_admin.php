@@ -743,7 +743,7 @@ function graph_perms_edit() {
 				<input type="submit" value="<?php print __("Add");?>" name="add_graph_y">
 			</td>
 			<td align='left' width='1'>
-				<input class="ac_field" type="text" id="graph" size="70" value="">
+				<input type="text" id="graph" size="70" value="">
 				<input type="hidden" id="perm_graphs" name="perm_graphs">
 			</td>
 		</tr>
@@ -799,7 +799,7 @@ function graph_perms_edit() {
 				<input type="submit" value="<?php print __("Add");?>" name="add_device_y">
 			</td>
 			<td align='left' width='1'>
-				<input class="ac_field" type="text" id="device" size="70" value="">
+				<input type="text" id="device" size="70" value="">
 				<input type="hidden" id="perm_devices" name="perm_devices">
 			</td>
 		</tr>
@@ -855,7 +855,7 @@ function graph_perms_edit() {
 				<input type="submit" value="<?php print __("Add");?>" name="add_graph_template_y">
 			</td>
 			<td align='left' width='1'>
-				<input class="ac_field" type="text" id="graph_templates" size="70" value="">
+				<input type="text" id="graph_templates" size="70" value="">
 				<input type="hidden" id="perm_graph_templates" name="perm_graph_templates">
 			</td>
 		</tr>
