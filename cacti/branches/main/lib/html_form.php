@@ -551,7 +551,7 @@ function form_autocomplete_box($form_name, $callback_function, $id, $name, $form
 	});
 	</script>';
 
-	print "<input class='ac_field' type='text'";
+	print "<input type='text'";
 
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {

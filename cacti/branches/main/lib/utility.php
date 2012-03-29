@@ -964,7 +964,7 @@ function poller_cache_filter() {
 							$hostname = "";
 						}
 						?>
-						<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+						<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
 						<input type="hidden" id="device_id">
 					</td>
 					<td class="nw50">
