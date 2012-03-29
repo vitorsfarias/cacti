@@ -115,7 +115,7 @@ function ajax_get_devices_brief() {
 	 */
 	if ($device_perms == AUTH_CONTROL_DATA_POLICY_ALLOW) {
 		/* this is a ALLOW SELECTED DEVICES permission type */
-		$sql = "SELECT id, description as value" .
+		$sql = "SELECT id, description as value " .
 				"FROM device " .
 				"WHERE (hostname LIKE '%$q%' " .
 				"OR description LIKE '%$q%') " .
