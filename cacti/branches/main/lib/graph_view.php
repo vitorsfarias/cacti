@@ -101,7 +101,7 @@ function graph_view_filter_table($mode = "mode") {
 									$hostname = "";
 								}
 								?>
-								<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+								<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
 								<input type="hidden" id="device_id">
 							</td>
 							<td class='w1'>
@@ -352,7 +352,7 @@ function get_graph_list_content() {
 									$hostname = "";
 								}
 								?>
-								<input class="ac_field" type="text" id="device" size="30" value="<?php print $hostname; ?>">
+								<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
 								<input type="hidden" id="device_id">
 							</td>
 							<td class='w1'>
