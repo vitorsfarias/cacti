@@ -954,7 +954,7 @@ function poller_cache_filter() {
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="nw50">
-						&nbsp;<?php print __("Host:");?>&nbsp;
+						<?php print __("Host:");?>
 					</td>
 					<td class="w1">
 						<?php
@@ -968,7 +968,7 @@ function poller_cache_filter() {
 						<input type="hidden" id="device_id">
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Action:");?>&nbsp;
+						<?php print __("Action:");?>
 					</td>
 					<td class="w1">
 						<select name="poller_action" onChange="applyPItemFilterChange(document.form_pollercache)">
@@ -979,21 +979,21 @@ function poller_cache_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearPItemFilterChange(document.form_pollercache)">
 					</td>
 				</tr>
 			</table>
 			<table cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
+						<?php print __("Search:");?>
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+						<?php print __("Rows:");?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyPItemFilterChange(document.form_pollercache)">
@@ -1223,7 +1223,7 @@ function userlog_filter() {
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="nw50">
-						&nbsp;<?php print __("Username:");?>&nbsp;
+						<?php print __("Username:");?>
 					</td>
 					<td class="w1">
 						<select name="username" onChange="applyViewLogFilterChange(document.form_userlog)">
@@ -1241,7 +1241,7 @@ function userlog_filter() {
 						</select>
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Result:");?>&nbsp;
+						<?php print __("Result:");?>
 					</td>
 					<td class="w1">
 						<select name="result" onChange="applyViewLogFilterChange(document.form_userlog)">
@@ -1252,7 +1252,7 @@ function userlog_filter() {
 						</select>
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+						<?php print __("Rows:");?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyViewLogFilterChange(document.form_userlog)">
@@ -1267,13 +1267,13 @@ function userlog_filter() {
 						</select>
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
+						<?php print __("Search:");?>
 					</td>
 					<td class="w1">
 						<input type="text" name="filter" size="20" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
 						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearViewLogFilterChange(document.form_userlog)">
 						<input type="submit" Value="<?php print __("Purge All");?>" name="purge_x" align="middle">
 					</td>
@@ -1497,13 +1497,13 @@ function font_cache_filter() {
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="nw50">
-						&nbsp;<?php print __("Search:");?>&nbsp;
+						<?php print __("Search:");?>
 					</td>
 					<td class="w1">
-						<input type="text" name="filter" size="40" value="<?php print html_get_page_variable("filter");?>">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
-						&nbsp;<?php print __("Rows:");?>&nbsp;
+						<?php print __("Rows:");?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyFontCacheFilterChange(document.form_fontcache)">
@@ -1518,7 +1518,7 @@ function font_cache_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						&nbsp;<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
 						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
 					</td>
 				</tr>
@@ -1637,4 +1637,530 @@ function utilities_view_font_cache($refresh=true) {
 	/* display the table */
 	$table->draw_table();
 
+}
+
+function snmp_cache_filter() {
+	global $item_rows;
+
+	html_start_box(__("SNMP Cache Items"), "100", "3", "center", "", true);
+	?>
+	<tr class='rowAlternate3'>
+		<td>
+			<form name="form_snmpcache" action="utilities.php">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="nw50">
+						<?php print __("Device:");?>
+					</td>
+					<td class="w1">
+						<?php
+						if (isset($_REQUEST["device_id"])) {
+							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".html_get_page_variable("device_id")." ORDER BY description,hostname");
+						} else {
+							$hostname = "";
+						}
+						?>
+						<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
+						<input type="hidden" id="device_id">
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td class="nw50">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw50">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applySNMPItemFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearSNMPItemFilterChange(document.form_snmpcache)">
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			<div><input type='hidden' name='action' value='view_snmp_cache'></div>
+			<div><input type='hidden' name='page_referrer' value='view_snmp_cache'></div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+	?>
+	<script type="text/javascript">
+	<!--
+	$().ready(function() {
+		$("#device").autocomplete({
+			// provide data via call to utilities.php which in turn calls ajax_get_devices_brief
+			source: "utilities.php?action=ajax_get_devices_brief",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#device_id").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#device_id").val(-1);
+				}
+				// and now apply all changes from this autocomplete to the filter
+				applySNMPItemFilterChange(document.form_snmpcache);
+			}			
+		});
+	});
+
+	function clearSNMPItemFilterChange(objForm) {
+		strURL = '?device_id=-1';
+		strURL = strURL + '&filter=';
+		strURL = strURL + '&rows=-1';
+		strURL = strURL + '&action=view_snmp_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	function applySNMPItemFilterChange(objForm) {
+		if (objForm.device_id.value) {
+			strURL = '?device_id=' + objForm.device_id.value;
+			strURL = strURL + '&filter=' + objForm.filter.value;
+		}else{
+			strURL = '?filter=' + objForm.filter.value;
+		}
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		strURL = strURL + '&action=view_snmp_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+}
+
+function snmp_cache_get_records(&$total_rows, &$rowspp) {
+	$sql_where = "";
+
+	if (html_get_page_variable("device_id") == "-1") {
+		/* Show all items */
+	}elseif (html_get_page_variable("device_id") == "0") {
+		$sql_where .= " AND device_id=0";
+	}elseif (!empty($_REQUEST["device_id"])) {
+		$sql_where .= " AND device_id=" . html_get_page_variable("device_id");
+	}
+
+	if (html_get_page_variable("snmp_query_id") == "-1") {
+		/* Show all items */
+	}elseif (html_get_page_variable("snmp_query_id") == "0") {
+		$sql_where .= " AND snmp_query_id=0";
+	}elseif (!empty($_REQUEST["snmp_query_id"])) {
+		$sql_where .= " AND snmp_query_id=" . html_get_page_variable("snmp_query_id");
+	}
+
+	/* filter by search string */
+	if (html_get_page_variable("filter") <> "") {
+		$sql_where .= " AND (device.description LIKE '%%" . html_get_page_variable("filter") . "%%'
+			OR snmp_query.name LIKE '%%" . html_get_page_variable("filter") . "%%'
+			OR device_snmp_cache.field_name LIKE '%%" . html_get_page_variable("filter") . "%%'
+			OR device_snmp_cache.field_value LIKE '%%" . html_get_page_variable("filter") . "%%'
+			OR device_snmp_cache.oid LIKE '%%" . html_get_page_variable("filter") . "%%')";
+	}
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM (device_snmp_cache,snmp_query,device)
+		WHERE device_snmp_cache.device_id=device.id
+		AND device_snmp_cache.snmp_query_id=snmp_query.id
+		$sql_where");
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_data_source");
+	}else{
+		$rowspp = html_get_page_variable("rows");
+	}
+
+	$snmp_cache_sql = "SELECT
+		device_snmp_cache.*,
+		device.description,
+		snmp_query.name
+		FROM (device_snmp_cache,snmp_query,device)
+		WHERE device_snmp_cache.device_id=device.id
+		AND device_snmp_cache.snmp_query_id=snmp_query.id
+		$sql_where
+		ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction") . "
+		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+
+	//	print $snmp_cache_sql;
+
+	return db_fetch_assoc($snmp_cache_sql);
+}
+
+/**
+ * view all entries in the SNMP cache
+ */
+function utilities_view_snmp_cache($refresh=true) {
+	global $item_rows, $colors;
+
+	define("MAX_DISPLAY_PAGES", 21);
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"device_id"      => array("type" => "numeric",  "method" => "request", "default" => "-1"),
+		"snmp_query_id"	 => array("type" => "numeric",  "method" => "request", "default" => "-1"),
+#		"poller_action"  => array("type" => "string",  "method" => "request", "default" => "-1"),
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "description"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+
+	$table->table_format = array(
+		"description" => array(
+			"name" => __("Device Name"),
+#			"link" => true,
+#			"href" => "data_sources.php?action=edit",
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"name" => array(
+			"name" => __("SNMP Query"),
+#			"function" => "snmp_cache_format_detail",
+#			"params" => array("action", "snmp_version", "snmp_community", "snmp_username", "arg1"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"snmp_index" => array(
+			"name" => __("Index"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"field_name" => array(
+			"name" => __("Field"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"field_value" => array(
+			"name" => __("Value"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+		"oid" => array(
+			"name" => __("OID"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+	);
+
+	/* initialize page behavior */
+	$table->key_field      = "description";
+	$table->href           = "utilities.php?action=view_snmp_cache&page_referrer=view_snmp_cache";
+	$table->session_prefix = "sess_snmp_cache";
+	$table->filter_func    = "snmp_cache_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->sortable       = true;
+	$table->table_id       = "snmp_cache";
+#	$table->actions        = $snmp_cache_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = snmp_cache_get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
+
+}
+
+function utilities_view_snmp_cache_() {
+	global $poller_actions, $item_rows;
+
+	define("MAX_DISPLAY_PAGES", 21);
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_request("device_id"));
+	input_validate_input_number(get_request_var_request("snmp_query_id"));
+	input_validate_input_number(get_request_var_request("page"));
+	input_validate_input_number(get_request_var_request("rows"));
+	input_validate_input_number(get_request_var_request("poller_action"));
+	/* ==================================================== */
+
+	/* clean up search filter */
+	if (isset($_REQUEST["filter"])) {
+		$_REQUEST["filter"] = sanitize_search_string(get_request_var("filter"));
+	}
+
+	/* if the user pushed the 'clear' button */
+	if (isset($_REQUEST["clear_x"])) {
+		kill_session_var("sess_snmp_current_page");
+		kill_session_var("sess_snmp_rows");
+		kill_session_var("sess_snmp_device_id");
+		kill_session_var("sess_snmp_snmp_query_id");
+		kill_session_var("sess_snmp_filter");
+
+		unset($_REQUEST["page"]);
+		unset($_REQUEST["rows"]);
+		unset($_REQUEST["filter"]);
+		unset($_REQUEST["device_id"]);
+		unset($_REQUEST["snmp_query_id"]);
+	}
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value("page", "sess_snmp_current_page", "1");
+	load_current_session_value("rows", "sess_snmp_rows", "-1");
+	load_current_session_value("device_id", "sess_snmp_device_id", "-1");
+	load_current_session_value("snmp_query_id", "sess_snmp_snmp_query_id", "-1");
+	load_current_session_value("filter", "sess_snmp_filter", "");
+
+	$_REQUEST['page_referrer'] = 'view_snmp_cache';
+	load_current_session_value('page_referrer', 'page_referrer', 'view_snmp_cache');
+
+	?>
+	<script type="text/javascript">
+	<!--
+	$().ready(function() {
+		$("#device").autocomplete({
+			// provide data via call to utilities.php which in turn calls ajax_get_devices_brief
+			source: "utilities.php?action=ajax_get_devices_brief",
+			// start selecting, even if no letter typed
+			minLength: 0,
+			// what to do with data returned
+			select: function(event, ui) {
+				if (ui.item) {
+					// provide the id found to hidden variable device_id
+					$(this).parent().find("#device_id").val(ui.item.id);
+				}else{
+					// in case we didn't find anything, use "any" device
+					$(this).parent().find("#device_id").val(-1);
+				}
+				// and now apply all changes from this autocomplete to the filter
+				applyViewSNMPFilterChange(document.form_snmpcache);
+			}			
+		});
+	});
+
+	function applyViewSNMPFilterChange(objForm) {
+		if (objForm.device_id.value) {
+			strURL = '?device_id=' + objForm.device_id.value;
+			strURL = strURL + '&filter=' + objForm.filter.value;
+		}else{
+			strURL = '?filter=' + objForm.filter.value;
+		}
+		strURL = strURL + '&snmp_query_id=' + objForm.snmp_query_id.value;
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		strURL = strURL + '&action=view_snmp_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+
+	html_start_box(__("SNMP Cache Items"), "100", "3", "center", "", true);
+	?>
+	<tr class='rowAlternate3'>
+		<td>
+			<form name="form_snmpcache" action="utilities.php">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="nw50">
+						<?php print __("Device:");?>
+					</td>
+					<td class="w1">
+						<?php
+						if (isset($_REQUEST["device_id"])) {
+							$hostname = db_fetch_cell("SELECT description as name FROM device WHERE id=".$_REQUEST["device_id"]." ORDER BY description,hostname");
+						} else {
+							$hostname = "";
+						}
+						?>
+						<input type="text" id="device" size="30" value="<?php print $hostname; ?>">
+						<input type="hidden" id="device_id">
+					</td>
+					<td class="nw90">
+						<?php print __("Query Name:");?>
+					</td>
+					<td class="w1">
+						<select name="snmp_query_id" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if (get_request_var_request("device_id") == "-1") {?> selected<?php }?>><?php print __("Any");?></option>
+							<?php
+							if (get_request_var_request("device_id") == -1) {
+								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+											snmp_query.id,
+											snmp_query.name
+											FROM (device_snmp_cache,snmp_query,device)
+											WHERE device_snmp_cache.device_id=device.id
+											AND device_snmp_cache.snmp_query_id=snmp_query.id
+											ORDER by snmp_query.name");
+							}else{
+								$snmp_queries = db_fetch_assoc("SELECT DISTINCT
+											snmp_query.id,
+											snmp_query.name
+											FROM (device_snmp_cache,snmp_query,device)
+											WHERE device_snmp_cache.device_id=device.id
+											AND device_snmp_cache.device_id='" . $_REQUEST["device_id"] . "'
+											AND device_snmp_cache.snmp_query_id=snmp_query.id
+											ORDER by snmp_query.name");
+							}
+							if (sizeof($snmp_queries) > 0) {
+							foreach ($snmp_queries as $snmp_query) {
+								print "<option value='" . $snmp_query["id"] . "'"; if (get_request_var_request("snmp_query_id") == $snmp_query["id"]) { print " selected"; } print ">" . $snmp_query["name"] . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="submit" Value="<?php print __("Clear");?>" name="clear_x" align="middle">
+					</td>
+				</tr>
+			</table>
+			<table cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td class="nw50">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print $_REQUEST["filter"];?>">
+					</td>
+					<td class="nw50">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyViewSNMPFilterChange(document.form_snmpcache)">
+							<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			<div><input type='hidden' name='action' value='view_snmp_cache'></div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+
+	$sql_where = "";
+
+	/* filter by device */
+	if (get_request_var_request("device_id") == "-1") {
+		/* Show all items */
+	}elseif (get_request_var_request("device_id") == "0") {
+		$sql_where .= " AND device.id=0";
+	}elseif (!empty($_REQUEST["device_id"])) {
+		$sql_where .= " AND device.id=" . $_REQUEST["device_id"];
+	}
+
+	/* filter by query name */
+	if (get_request_var_request("snmp_query_id") == "-1") {
+		/* Show all items */
+	}elseif (!empty($_REQUEST["snmp_query_id"])) {
+		$sql_where .= " AND device_snmp_cache.snmp_query_id=" . $_REQUEST["snmp_query_id"];
+	}
+
+	/* filter by search string */
+	if (get_request_var_request("filter") <> "") {
+		$sql_where .= " AND (device.description LIKE '%%" . $_REQUEST["filter"] . "%%'
+			OR snmp_query.name LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR device_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR device_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%'
+			OR device_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
+	}
+
+	html_start_box("", "100", "0", "center", "");
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM (device_snmp_cache,snmp_query,device)
+		WHERE device_snmp_cache.device_id=device.id
+		AND device_snmp_cache.snmp_query_id=snmp_query.id
+		$sql_where");
+
+	if (get_request_var_request("rows") == "-1") {
+		$rows = read_config_option("num_rows_device");
+	}else{
+		$rows = get_request_var_request("rows");
+	}
+
+	$snmp_cache_sql = "SELECT
+		device_snmp_cache.*,
+		device.description,
+		snmp_query.name
+		FROM (device_snmp_cache,snmp_query,device)
+		WHERE device_snmp_cache.device_id=device.id
+		AND device_snmp_cache.snmp_query_id=snmp_query.id
+		$sql_where
+		LIMIT " . ($rows*(get_request_var_request("page")-1)) . "," . $rows;
+
+	//	print $snmp_cache_sql;
+
+	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
+
+	/* generate page list navigation */
+	$nav = html_create_nav($_REQUEST["page"], MAX_DISPLAY_PAGES, $rows, $total_rows, 7, "utilities.php?action=view_snmp_cache");
+
+	print $nav;
+	html_end_box(false);
+
+	html_header(array(array("name" => __("Details"))));
+
+	if (sizeof($snmp_cache) > 0) {
+		foreach ($snmp_cache as $item) {
+			form_alternate_row_color();
+			?>
+			<td>
+				<?php print __("Host:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["description"])) : $item["description"]);?>
+				, <?php print __("SNMP Query:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["name"])) : $item["name"]);?>
+			</td>
+			<?php
+			form_end_row();
+			form_alternate_row_color();
+			?>
+			<td>
+				<?php print __("Index:");?> <?php print $item["snmp_index"];?>
+				, <?php print __("Field Name:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["field_name"])) : $item["field_name"]);?>
+				, <?php print __("Field Value:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["field_value"])) : $item["field_value"]);?>
+				, <?php print __("OID:");?> <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span class=\"filter\">\\1</span>", $item["oid"])) : $item["oid"]);?>
+			</td>
+			<?php
+			form_end_row();
+		}
+
+		form_end_table();
+
+		print $nav;
+	}else{
+		print "<tr><td><em>" . __("No SNMP Records") . "</em></td></tr>\n";
+	}
+
+	print "</table>\n";
 }
