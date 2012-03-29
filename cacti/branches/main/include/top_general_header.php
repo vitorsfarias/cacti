@@ -58,6 +58,7 @@ load_current_session_value("toptab", "sess_cacti_toptab", "general");
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/main.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/dd.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/colorpicker.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui-timepicker.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/cacti_dd_menu.css' rel='stylesheet'>
 	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui.all.css' rel='stylesheet'>
 	<link href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico" rel="shortcut icon">
