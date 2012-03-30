@@ -89,8 +89,6 @@ case 'ajax_view':
 			}
 
 			$form_array[$field_name]["value"] = db_fetch_cell("select value from settings where name='$field_name'");
-			/* for autocomplete fields, we need the "name" as well */
-			$form_array[$field_name]["name"] = $form_array[$field_name]["value"];
 		}
 	}
 
