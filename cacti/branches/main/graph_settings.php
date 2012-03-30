@@ -186,7 +186,24 @@ function settings() {
 	$().ready(function() {
 		// the name of the default selected tab has to match an array key of $settings_graphs
 		$('#tabs').tabs({ cookie: { expires: 30 } });
+		
+
+		// trigger on autocomplete select operation
+		// and on change (e.g. in case you type everything by keybord)
+		// to change the font of any input textbox that shall define a font-family to that very font
+		// and at last trigger that event to cover the ready() event
+		// we do NOT care in case weird data was entered, browser will silently fall back to a valid font	
+		$(".font_family").bind( "autocompleteselect change", function(event) {
+			//alert('Font Value: ' + $(this).val());
+			$(this).css({
+				"font-family": function(index) {
+					return $(this).val();
+				}
+			});		
+		})
+		.trigger('autocompleteselect');
 	});
+	
 	//-->
 	</script>
 	<?php

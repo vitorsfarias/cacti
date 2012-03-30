@@ -109,8 +109,8 @@ $settings = array(
 							__('You can to use the full Pango syntax when selecting your font: The font name has the form <br>"[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where <br>FAMILY-LIST is a comma separated list of families optionally terminated by a comma,<br> STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and <br>SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. <br>Any one of the options may be absent.'),
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
-			"id" => "path_rrdtool_default_font",    # some id required for automcomplete form to work
-			"max_length" => "255"
+			"max_length" => "255",
+			"class" => "font_family",
 			),
 		"path_php_binary" => array(
 			"friendly_name" => __("PHP Binary Path"),
@@ -736,7 +736,7 @@ $settings = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"legend_size" => array(
 			"friendly_name" => __("Legend Font Size"),
@@ -753,7 +753,7 @@ $settings = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"axis_size" => array(
 			"friendly_name" => __("Axis Font Size"),
@@ -770,7 +770,7 @@ $settings = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"unit_size" => array(
 			"friendly_name" => __("Unit Font Size"),
@@ -787,7 +787,7 @@ $settings = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"watermark_size" => array(
 			"friendly_name" => __("Watermark Font Size"),
@@ -804,7 +804,7 @@ $settings = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"colortags_header" => array(
 			"friendly_name" => __("Default RRDtool Colortags"),
@@ -1813,7 +1813,7 @@ $settings_graphs = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"legend_size" => array(
 			"friendly_name" => __("Legend Font Size"),
@@ -1830,7 +1830,7 @@ $settings_graphs = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"axis_size" => array(
 			"friendly_name" => __("Axis Font Size"),
@@ -1847,7 +1847,7 @@ $settings_graphs = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"unit_size" => array(
 			"friendly_name" => __("Unit Font Size"),
@@ -1864,7 +1864,7 @@ $settings_graphs = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		"watermark_size" => array(
 			"friendly_name" => __("Watermark Font Size"),
@@ -1881,7 +1881,7 @@ $settings_graphs = array(
 			"method" => "autocomplete",
 			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
-			"class" => "not_RRD_1_0_x",
+			"class" => "not_RRD_1_0_x font_family",
 			),
 		),
 	"colortags" => array(

@@ -108,7 +108,8 @@ case 'ajax_view':
 
 	?>
 	<script type="text/javascript">
-		$(function(){
+	<!--
+	$().ready(function(){
 			$('#i18n_language_support').bind('change', function() {
 				$('#i18n_default_language').attr('disabled', ($('#i18n_language_support').val() == '0') ? true : false );
 				$('#i18n_auto_detection').attr('disabled', ($('#i18n_language_support').val() == '0') ? true : false );
@@ -118,7 +119,24 @@ case 'ajax_view':
 			});
 		$('#i18n_timezone_support').trigger('change');
 		$('#i18n_language_support').trigger('change');
-		});
+
+		// trigger on autocomplete select operation
+		// and on change (e.g. in case you type everything by keybord)
+		// to change the font of any input textbox that shall define a font-family to that very font
+		// and at last trigger that event to cover the ready() event
+		// we do NOT care in case weird data was entered, browser will silently fall back to a valid font	
+		$(".font_family").bind( "autocompleteselect change", function(event) {
+			//alert('Font Value: ' + $(this).val());
+			$(this).css({
+				"font-family": function(index) {
+					return $(this).val();
+				}
+			});		
+		})
+		.trigger('autocompleteselect');
+	});
+	
+	//-->
 	</script>
 	<?php
 
