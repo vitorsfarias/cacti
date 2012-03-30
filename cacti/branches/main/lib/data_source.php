@@ -984,9 +984,9 @@ function data_source_edit() {
 
 	$form_array = fields_data_source_form_list();
 	$form_array["data_template_id"]["id"] = (isset($data_template["id"]) ? $data_template["id"] : "0");
-	$form_array["data_template_id"]["name"] = db_fetch_cell("SELECT name FROM data_template WHERE id=" . $form_array["data_template_id"]["id"]);
+	$form_array["data_template_id"]["value"] = db_fetch_cell("SELECT name FROM data_template WHERE id=" . $form_array["data_template_id"]["id"]);
 	$form_array["device_id"]["id"] = (isset($_GET["device_id"]) ? $_GET["device_id"] : $data_local["device_id"]);
-	$form_array["device_id"]["name"] = db_fetch_cell("SELECT CONCAT_WS('',description,' (',hostname,')') FROM device WHERE id=" . $form_array["device_id"]["id"]);
+	$form_array["device_id"]["value"] = db_fetch_cell("SELECT CONCAT_WS('',description,' (',hostname,')') FROM device WHERE id=" . $form_array["device_id"]["id"]);
 
 	draw_edit_form(
 		array(
