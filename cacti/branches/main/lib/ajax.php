@@ -77,15 +77,15 @@ function ajax_get_data_dd_menus() {
 
 function ajax_get_data_templates() {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = strtolower(sanitize_search_string(get_request_var("q")));
+	if (isset($_REQUEST["term"])) {
+		$q = strtolower(sanitize_search_string(get_request_var("term")));
 	} else {
 		return;
 	}
 
 	$sql = "SELECT
 		id,
-		name
+		name as value
 		FROM data_template
 		WHERE LOWER(name) LIKE '%$q%'
 		ORDER BY name";
@@ -93,9 +93,7 @@ function ajax_get_data_templates() {
 	$templates = db_fetch_assoc($sql);
 
 	if (sizeof($templates) > 0) {
-		foreach ($templates as $template) {
-			print $template["name"] . "|" . $template["id"] . "\n";
-		}
+		print json_encode($templates);
 	}
 }
 
@@ -191,19 +189,19 @@ function ajax_get_devices_detailed() {
 
 function ajax_get_form_dropdown() {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = sanitize_search_string(get_request_var("q"));
+	if (isset($_REQUEST["term"])) {
+		$q = sanitize_search_string(get_request_var("term"));
 	} else return;
 
 	if (isset($_REQUEST["sql"])) {
 		$sql = base64_decode(get_request_var("sql"));
 	} else return;
 
-	if ($asname_pos = strpos(strtoupper($sql), "AS NAME")) {
+	if ($asname_pos = strpos(strtoupper($sql), "AS VALUE")) {
 		$name_qry = substr($sql, 6, $asname_pos-6);
 		cacti_log($name_qry);
 	}else{
-		$name_qry = "name";
+		$name_qry = "value";
 	}
 
 	if ($where_pos = strpos(strtoupper($sql), "WHERE")) {
@@ -217,9 +215,7 @@ function ajax_get_form_dropdown() {
 	$entries = db_fetch_assoc($sql);
 
 	if (sizeof($entries) > 0) {
-		foreach ($entries as $entry) {
-			print $entry["name"] . "|" . $entry["id"] . "\n";
-		}
+		print json_encode($entries);
 	}
 }
 
