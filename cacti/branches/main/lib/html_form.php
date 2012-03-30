@@ -283,15 +283,18 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'autocomplete':
 		/* we may need to evaluate a given SQL
-		 * this should yield a single name for $field_array["name"] */
+		 * this should yield a single value */
 		if (isset($field_array["sql"])) {
-			$field_array["name"] = db_fetch_cell($field_array["sql"]);
+			$field_array["value"] = db_fetch_cell($field_array["sql"]);
 		}
 		form_autocomplete_box($field_name,
-			$field_array["callback_function"], $field_array["id"],
-				((isset($field_array["name"])) ? $field_array["name"] : ""),
-				((isset($field_array["size"])) ? $field_array["size"] : "40"),
-				((isset($field_array["max_length"])) ? $field_array["max_length"] : ""));
+			$field_array["callback_function"],
+			((isset($field_array["id"])) ? $field_array["id"] : ""),
+			((isset($field_array["value"])) ? $field_array["value"] : ""),
+			((isset($field_array["size"])) ? $field_array["size"] : "40"),
+			((isset($field_array["max_length"])) ? $field_array["max_length"] : ""),
+			((isset($field_array["class"])) ? $field_array["class"] : ""),
+			((isset($field_array["on_change"])) ? $field_array["on_change"] : ""));
 		break;
 	case 'font':
 		form_font_box($field_name, $field_array["value"],
@@ -521,37 +524,67 @@ function form_multiple_dirpath_box($form_name, $form_previous_value, $form_rows,
 }
 
 /** form_autocomplete_box - draws a standard html textbox as an autocomplete type
+ * there are multiple use cases:
+ * sql given: the value to be displayed will be derived from the SQL and passed to this function (see above)
+ * id given: in case we refer to a unique id of a table, we have to pass this id to the save function along with the value displayed
+ * value given: this is the value we have to display
+ *              in case e.g. of "Settings", we do NOT have an id but this value only, so don't pass any id around
+ *              in case of id+value present, the value has to be shown along with a hidden id
    @param string $form_name  - the name of this form element
    @param string $callback_function - the function that primes the field
-   @param int $id - the key for this textbox
-   @param string $name - what should be displayed to the user
+   @param int $id - an id that serves as an index to a table and shall be passed to the save function
+   @param string $value - what should be displayed to the user
    @param int $form_size - the size of the text box
-   @param int $form_max_length - the maximum number of text to allow */
-function form_autocomplete_box($form_name, $callback_function, $id, $name, $form_size = "40", $form_max_length = "") {
-	$display_id = $form_name . "_display";
+   @param int $form_max_length - the maximum number of text to allow
+   @param string $class - specify a css class
+   @param string $on_change - specify a javascript onchange action */
+function form_autocomplete_box($form_name, $callback_function, $id="", $value="", $form_size = "40", $form_max_length = "", $class = "", $on_change = "") {
+
+	/* in case we have a valid id, we require a
+	 * form_name for the value and a
+	 * form_name for the id (hidden)
+	 * else we only require the form_name for the value
+	 */
+	if ($id == '') {
+		$form_value = $form_name;
+		/* we only have to fill a single $form_value,
+		 * so initialize the rest as empty string */
+		$form_id = '';
+		$jq_form_id1 = '';
+		$jq_form_id2 = '';
+	}else{
+		$form_value = $form_name . "_display";
+		$form_id = $form_name;
+		/* make the jQuery code dynamic
+		 * and fill the id field as well
+		 */
+		$jq_form_id1 = '$(this).parent().find("#' . $form_id . '").val(ui.item.id);';
+		$jq_form_id2 = '$(this).parent().find("#' . $form_id . '").val(-1);';
+	}
 
 	print '<script  type="text/javascript">
 	$().ready(function() {
-		$("#' . $display_id . '").autocomplete({
-			// provide data via call to layout.php which in turn calls ajax_get_devices_brief
+		$("#' . $form_value . '").autocomplete({
+			// provide data via callback
 			source: "' . $callback_function . '",
 			// start selecting, even if no letter typed
 			minLength: 0,
 			// what to do with data returned
 			select: function(event, ui) {
 				if (ui.item) {
-					// provide the id found to hidden variable device_id
-					$(this).parent().find("#' . $form_name . '").val(ui.item.id);
+					// provide the value
+					$(this).parent().find("#' . $form_value . '").val(ui.item.value);
+					' . $jq_form_id1 . '
 				}else{
-					// in case we didnt find anything, use "any" device
-					$(this).parent().find("#' . $form_name . '").val(-1);
+					// in case we didnt find anything
+					$(this).parent().find("#' . $form_value . '").val("");
+					' . $jq_form_id2 . '
 				}
 			}			
 		});
 	});
 	</script>';
 
-	print "<input type='text'";
 
 	if (isset($_SESSION["sess_error_fields"])) {
 		if (!empty($_SESSION["sess_error_fields"][$form_name])) {
@@ -566,8 +599,18 @@ function form_autocomplete_box($form_name, $callback_function, $id, $name, $form
 		}
 	}
 
-	print " id='${form_name}_display' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($name, ENT_QUOTES) . "'>\n";
-	print "<div><input type='hidden' id='$form_name' name='$form_name' value='$id'></div>";
+	if (strlen($class)) {
+		$class = " class='$class' ";
+	}
+
+	if (strlen($on_change)) {
+		$on_change = " onChange='$on_change' ";
+	}
+
+	print "<input type='text' id='$form_value' name='$form_value'  $on_change  $class size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : "") . " value='" . htmlspecialchars($value, ENT_QUOTES) . "'>\n";
+	if ($id !== '') {
+		print "<div><input type='hidden' id='$form_id' name='$form_id' value='" . htmlspecialchars($id, ENT_QUOTES) . "'></div>";
+	}
 }
 
 /** form_hidden_box - draws a standard html hidden element
