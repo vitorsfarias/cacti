@@ -1806,8 +1806,12 @@ $settings_graphs = array(
 			),
 		"title_font" => array(
 			"friendly_name" => __("Title Font File"),
-			"description" => __("The font file to use for Graph Titles"),
-			"method" => "font",
+			"description" => __("The font to use for Graph Titles") . "<br/>" .
+							__("For RRDtool 1.2, the full file name of a True Type Font.") . "<br/>" .
+							__("For RRDtool 1.3 and above, the font name conforming to the pango naming convention:") . "<br/>" .
+							__('You can to use the full Pango syntax when selecting your font: The font name has the form <br>"[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where <br>FAMILY-LIST is a comma separated list of families optionally terminated by a comma,<br> STYLE_OPTIONS is a whitespace separated list of words where each WORD describes one of style, variant, weight, stretch, or gravity, and <br>SIZE is a decimal number (size in points) or optionally followed by the unit modifier "px" for absolute size. <br>Any one of the options may be absent.'),
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),
@@ -1823,7 +1827,8 @@ $settings_graphs = array(
 		"legend_font" => array(
 			"friendly_name" => __("Legend Font File"),
 			"description" => __("The font file to be used for Graph Legend items"),
-			"method" => "font",
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),
@@ -1839,7 +1844,8 @@ $settings_graphs = array(
 		"axis_font" => array(
 			"friendly_name" => __("Axis Font File"),
 			"description" => __("The font file to be used for Graph Axis items"),
-			"method" => "font",
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),
@@ -1855,7 +1861,8 @@ $settings_graphs = array(
 		"unit_font" => array(
 			"friendly_name" => __("Unit Font File"),
 			"description" => __("The font file to be used for Graph Unit items"),
-			"method" => "font",
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),
@@ -1871,7 +1878,8 @@ $settings_graphs = array(
 		"watermark_font" => array(
 			"friendly_name" => __("Watermark Font File"),
 			"description" => __("The font file to be used for Graph Watermarks"),
-			"method" => "font",
+			"method" => "autocomplete",
+			"callback_function" => "utilities.php?action=ajax_get_fonts",
 			"max_length" => "100",
 			"class" => "not_RRD_1_0_x",
 			),
