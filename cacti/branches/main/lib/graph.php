@@ -1452,7 +1452,8 @@ function graph_edit($tabs = false) {
 	 * --------------------------------------------------------------------------------------- */
 	if (isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) {
 		print "<div id='t_graph'>";
-		html_start_box(__("Graph"), "100", "0", "center", "", false, "");
+		$add_text = (!empty($_GET['id']) ? "menu::" . __("Graph Options") . ":m_graph:html_start_box:" . $dd_menu_options : "");
+		html_start_box(__("Graph"), "100", "0", "center", $add_text, false);
 		print "<div class='center'>";
 		print "<img src='" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . "'>";
 		print "</div>";
