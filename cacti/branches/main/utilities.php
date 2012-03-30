@@ -285,21 +285,22 @@ function utilities_view_tech($tabs = false) {
 
 function utilities_ajax_get_fonts() {
 	/* input validation */
-	if (isset($_REQUEST["q"])) {
-		$q = strtolower(sanitize_search_string(get_request_var("q")));
+	if (isset($_REQUEST["term"])) {
+		/* jQuery UI autocomplete passes filter string as "term" */
+		$q = strtolower(sanitize_search_string(get_request_var("term")));
 	} else return;
 
-	$sql = "SELECT id, font as name
+	$sql = "SELECT font as value
 		FROM fonts
 		WHERE font LIKE '%$q%'
-		ORDER BY font";
+		ORDER BY font ASC";
 
 	$fonts = db_fetch_assoc($sql);
 
 	if (sizeof($fonts) > 0) {
-		foreach ($fonts as $font) {
-			print $font["name"] . "|" . $font["name"] . "\n";
-		}
+		/* pay attention to which fields are expected by the autocomplete select function!
+		 * we now provide "id" and "font as value" */
+		print json_encode($fonts);
 	}
 }
 
