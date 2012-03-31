@@ -402,6 +402,7 @@ function template_edit($tabs = false) {
 				print "<li><a id='tabs-$i' href='" . htmlspecialchars("graph_templates.php?action=ajax_edit" . (isset($_REQUEST['id']) ? "&id=" . $_REQUEST['id'] . "&template_id=" . $_REQUEST['id']: "") . "&filter=&device_id=-1&tab=$tab_short_name") . "'>$graph_template_tabs[$tab_short_name]</a></li>";
 				$i++;
 
+				/* in case this is a new template, exit */
 				if (!isset($_REQUEST["id"])) break;
 			}
 		}
@@ -506,8 +507,8 @@ function graph_template_display_general($graph_template, $header_label) {
 	/* draw a second list of headers to split the huge graph_template option set into smaller chunks */
 	$template_tabs = array(
 		"t_header" 		=> __("Header"),
-		"t_labels" 		=> __("Labels"),
 	);	
+	/* right axis for specific rrdtool versions only */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 		$template_tabs += array("t_right_axis" 	=> __("Right Axis"));
 	}
@@ -519,15 +520,16 @@ function graph_template_display_general($graph_template, $header_label) {
 	$template_tabs += array("t_misc" 		=> __("Miscellaneous"));
 
 
-
 	/* draw the second list of tabs */
 	print "<div id='tabs_template'>\n";
 	print "<ul>\n";
 
+
+
 	if (sizeof($template_tabs) > 0) {
 		foreach (array_keys($template_tabs) as $tab_short_name) {
 			print "<li><a href=#$tab_short_name>$template_tabs[$tab_short_name]</a></li>";
-			if (!isset($_REQUEST["id"])) break;
+			#if (!isset($_REQUEST["id"])) break; always print all tabs
 		}
 	}
 	print "</ul>\n";
@@ -549,32 +551,38 @@ function graph_template_display_general($graph_template, $header_label) {
 	# the template header
 	print "<div id='t_header'>";
 	html_start_box(__("Graph Template") . " $header_label", "100", "0", "center", "", false, "table_graph_template_header");
-
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(graph_template_form_list(), (isset($graph_template) ? $graph_template : array()), (isset($template_graph) ? $template_graph : array()))
 	));
-
+	html_end_box(false);
+	
+	/* draw additional sections on the first screen
+	 * especially those fields, that are required for a "save" operation
+	 */
+	/* display all labels */
+	html_start_box(__("Graph Template Labels"), "100", "0", "center", "", false, "table_graph_template_labels");
+	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
 	html_end_box(false);
 	html_start_box(__("Graph Template Cacti Specifics"), "100", "0", "center", "", false, "table_graph_template_cacti");
 	draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $template_graph, false);
 	html_end_box(false);
+
 	/* provide hidden parameters to rule the save function */
 	form_hidden_box("graph_template_id", (isset($template_graph["graph_template_id"]) ? $template_graph["graph_template_id"] : "0"), "");
 	form_hidden_box("graph_template_graph_id", (isset($template_graph["id"]) ? $template_graph["id"] : "0"), "");
 	form_hidden_box("save_component_template", 1, "");
+
+	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 	print "</div>";
 
-	/* id tags of tables (set via html_start_box) required for initial js on load */
-	/* display all labels */
-	print "<div id='t_labels'>";
-	html_start_box(__("Graph Template Labels"), "100", "0", "center", "", false, "table_graph_template_labels");
-	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
-	html_end_box(false);
-	print "</div>";
 
-	/* TODO: we should not use rrd version in the code, when going data-driven 
-	 * display right axis, in case this is supported */
+
+	/* print graph configuration
+	 * when either graph template id given or new graph template is created
+	 * that is: always! */
+
+	/* TODO: we should not use rrd version in the code, when going data-driven */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 		print "<div id='t_right_axis'>";
 		html_start_box(__("Graph Template Right Axis Settings"), "100", "0", "center", "", false, "table_graph_template_right_axis");
@@ -624,10 +632,6 @@ function graph_template_display_general($graph_template, $header_label) {
 	draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
-
-
-	# the id tag is required for our js code!
-	form_hidden_box("hidden_rrdtool_version", read_config_option("rrdtool_version"), "");
 
 	form_save_button("graph_templates.php", "return");
 	print "</div>";		# div id='tabs_template'
