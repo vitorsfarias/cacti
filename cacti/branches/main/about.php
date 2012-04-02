@@ -39,7 +39,7 @@ html_start_box(__("About Cacti"), "100", "3", "center", "");
 
 		<?php print __("Cacti is designed to be a complete graphing solution based on the RRDTool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs.");?>
 
-		<p><?php print __("Please see the");?> <a href="http://www.cacti.net/index.php?version=<?php print CACTI_VERSION;?>"><?php print __("official Cacti website");?></a> <?php print __("for information, support, and updates.");?></p>
+		<p><?php print __("Please see the offical");?> <a href="http://www.cacti.net/?version=<?php print CACTI_VERSION;?>"><?php print __("Cacti website");?></a> <?php print __("for information, support, and updates.");?></p>
 
 		<p><strong><?php print __("Current Cacti Developers");?></strong><br></p>
 		<ul type="disc">
