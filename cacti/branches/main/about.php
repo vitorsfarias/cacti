@@ -66,16 +66,9 @@ html_start_box(__("About Cacti"), "100", "3", "center", "");
 			<li>A very special thanks to <a href="http://tobi.oetiker.ch/"><strong>Tobi Oetiker</strong></a>,
 				the creator of <a href="http://www.rrdtool.org/">RRDTool</a> and the very popular
 				<a href="http://www.rrdtool.org">MRTG</a>.</li>
-			<li><strong>Brady Alleman</strong>, creator of NetMRG and
-				<a href="http://www.thtech.net">Treehouse Technologies</a> for questions and ideas. Just
-				as a note, NetMRG is a complete Network Monitoring solution also written in PHP/MySQL. His
-				product also makes use of RRDTool's graphing capabilities, I encourage you to check it out.</li>
-			<li><strong>Andy Blyler</strong>, for ideas, code, and that much needed overall support
-				during really lengthy coding sessions.</li>
 			<li><strong>The users of Cacti</strong>! Especially anyone who has taken the time to create a bug report, or otherwise
 				help fix a Cacti-related problem. Also to anyone who has purchased an item from a developers amazon.com
 				wishlist or donated money to the project.</li>
-
 		</ul>
 
 		<p><strong><?php print __("License");?></strong><br></p>
