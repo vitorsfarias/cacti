@@ -191,6 +191,8 @@ SVN
 -feature: duplicate Data Query (duplicates all associated graph templates and suggested values)
 -feature: remove/rename all api_ functions, dropping api_
 
+0.8.8a
+-bug#0002207: cannot export graph templates 
 
 0.8.8
 -bug#0002056: un-initialized datetime used for host status (was: Zero length string != NULL)
