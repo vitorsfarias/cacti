@@ -2745,6 +2745,18 @@ function cacti_wiki_url() {
 	return CACTI_WIKI_URL . $ref_ns . $ref_sp;
 }
 
+/** cleans up a CDEF/VDEF string
+ * the CDEF/VDEF must have passed all magic string replacements beforehand
+ * @arg string $cdef   - the CDEF/VDEF to be sanitized
+ * @returns string    - the sanitized CDEF/VDEF
+ */
+function sanitize_cdef($cdef) {
+	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '[', ']', '{', '}', ';', '!');
+	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '');
+
+	return str_replace($drop_char_match, $drop_char_replace, $cdef);
+}
+
 /**
  * mimics excapeshellcmd, even for windows
  * @param $string 	- the string to be escaped
@@ -2783,10 +2795,17 @@ function cacti_escapeshellarg($string, $quote=true) {
 			return substr($string, 1, (strlen($string)-2));
 		}
 	}else{
+		/* escapeshellarg takes care of different quotation for both linux and windows,
+		 * but unfortunately, it blanks out percent signs
+		 * we want to keep them, e.g. for GPRINT format strings
+		 * so we need to create our own escapeshellarg 
+		 * on windows, command injection requires to close any open quotation first
+		 * so we have to escape any quotation here */
 		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
 			$string = str_replace(CACTI_ESCAPE_CHARACTER, "\\" . CACTI_ESCAPE_CHARACTER, $string);
 		}
 
+		/* ... before we add our own quotation */
 		if ( $quote ) {
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
