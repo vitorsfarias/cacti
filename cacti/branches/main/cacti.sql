@@ -2222,7 +2222,7 @@ CREATE TABLE device_snmp_cache (
   KEY snmp_query_id (snmp_query_id),
   KEY device_id_snmp_query_id (device_id,snmp_query_id),
   KEY device_id_snmp_query_id_snmp_index (device_id,snmp_query_id,snmp_index),
-  KEY present USING BTREE (present)
+  KEY present (present) /*!50060 USING BTREE */
 ) ENGINE=MyISAM;
 
 --
@@ -2536,7 +2536,7 @@ CREATE TABLE poller_output (
   time datetime NOT NULL default '0000-00-00 00:00:00',
   poller_id smallint(5) NOT NULL default '0',
   output text NOT NULL,
-  PRIMARY KEY (local_data_id,rrd_name,time) USING BTREE,
+  PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */,
   KEY poller_id (poller_id)
 ) ENGINE=MyISAM;
 
