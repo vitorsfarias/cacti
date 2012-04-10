@@ -928,8 +928,6 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 			$log_type = "note";
 
 		if (strlen($log_type)) {
-			define_syslog_variables();
-
 			if (CACTI_SERVER_OS == "win32")
 				openlog("Cacti", LOG_NDELAY | LOG_PID, LOG_USER);
 			else
