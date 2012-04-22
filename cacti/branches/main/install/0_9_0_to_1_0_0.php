@@ -678,6 +678,12 @@ function upgrade_to_1_0_0() {
 	db_install_execute("1.0.0", "DELETE FROM `plugin_hooks` WHERE `plugin_hooks`.`name` = 'internal'");
 	db_install_execute("1.0.0", "REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 
+	/* adjust size of column */
+	db_install_execute("1.0.0", "ALTER TABLE `plugin_db_changes` CHANGE `plugin` `plugin` VARCHAR( 32 )");
+
+	/* make index UNIQUE */
+	db_install_execute("1.0.0", "ALTER TABLE `plugin_config` DROP INDEX `directory`, ADD UNIQUE `directory` ( `directory` ) ");
+
 	/* wrong lower limit for generic OID graph template */
 	db_install_execute("1.0.0", "UPDATE graph_templates_graph SET lower_limit='0', vertical_label='' WHERE id=47");
 

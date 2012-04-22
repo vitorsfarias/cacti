@@ -2384,8 +2384,8 @@ CREATE TABLE `plugin_config` (
   `ptype` int(11) unsigned NOT NULL default '1',
   `sequence` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `status` (`status`),
-  KEY `directory` (`directory`)
+  UNIQUE KEY `directory` (`directory`),
+  KEY `status` (`status`)
 ) ENGINE=MyISAM;
 
 --
@@ -2394,7 +2394,7 @@ CREATE TABLE `plugin_config` (
 
 CREATE TABLE `plugin_db_changes` (
   `id` int(10) NOT NULL auto_increment,
-  `plugin` varchar(16) NOT NULL default '',
+  `plugin` varchar(32) NOT NULL default '',
   `table` varchar(64) NOT NULL default '',
   `column` varchar(64) NOT NULL default '',
   `method` varchar(16) NOT NULL default '',
