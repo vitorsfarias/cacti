@@ -185,6 +185,9 @@ switch (get_request_var_request("step")) {
 					} elseif ($cacti_versions[$i] == "0.8.8a") {
 						include ("0_8_8_to_0_8_8a.php");
 						upgrade_to_0_8_8a();
+					} elseif ($cacti_versions[$i] == "0.8.9") {
+						include ("0_8_8a_to_0_8_9.php");
+						upgrade_to_0_8_8a();
 					} elseif ($cacti_versions[$i] == "1.0.0") {
 						include ("0_9_0_to_1_0_0.php");
 						upgrade_to_1_0_0();
