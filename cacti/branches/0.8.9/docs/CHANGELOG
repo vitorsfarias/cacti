@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.9
+-feature: list all include/config.php parameters during install/upgrade to verify
+
 0.8.8a
 -bug#0002207: cannot export graph templates
 -bug#0002208: Graphs with CDEFs fail to generate

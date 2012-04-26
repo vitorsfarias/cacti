@@ -539,10 +539,15 @@ if ($_REQUEST["step"] == "4") {
 						If it is not correct, please edit 'include/config.php' before continuing.</p>
 
 						<p class="code">
-						<?php	print "Database User: $database_username<br>";
+						<?php	
+							print "Database User: $database_username<br>";
 							print "Database Hostname: $database_hostname<br>";
 							print "Database: $database_default<br>";
-							print "Server Operating System Type: " . $config["cacti_server_os"] . "<br>"; ?>
+							print "Database Type: $database_type<br>";
+							print "Database Port: $database_port<br>";
+							print "Installation URL Path: $url_path<br>";
+							print "Server Operating System Type: " . $config["cacti_server_os"] . "<br>";
+						?>
 						</p>
 
 						<?php }elseif ($_REQUEST["step"] == "3") { ?>
