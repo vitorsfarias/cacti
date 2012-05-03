@@ -691,10 +691,4 @@ $graph_datechar = array(
 	GDC_SLASH => "/"
 	);
 
-$plugin_architecture = array(
-	'version' => '3.1'
-	);
-
-api_plugin_hook('config_arrays');
-
 ?>
