@@ -558,7 +558,7 @@ function snmp_escape_string($string) {
 	global $config;
 
 	if (! defined("SNMP_ESCAPE_CHARACTER")) {
-		if ($config["cacti_server_os"] == "win32") {
+		if (CACTI_SERVER_OS == "win32") {
 			define("SNMP_ESCAPE_CHARACTER", "\"");
 		}else{
 			define("SNMP_ESCAPE_CHARACTER", "'");

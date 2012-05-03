@@ -42,7 +42,7 @@ function rrd_init($output_to_term = TRUE) {
 	if ($output_to_term) {
 		$command = read_config_option("path_rrdtool") . " - ";
 	}else{
-		if ($config["cacti_server_os"] == "win32") {
+		if (CACTI_SERVER_OS == "win32") {
 			$command = read_config_option("path_rrdtool") . " - > nul";
 		}else{
 			$command = read_config_option("path_rrdtool") . " - > /dev/null 2>&1";
@@ -86,7 +86,7 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 	}
 
 	/* use popen to eliminate the zombie issue */
-	if ($config["cacti_server_os"] == "unix") {
+	if (CACTI_SERVER_OS == "unix") {
 		$pipe_mode = "r";
 	}else{
 		$pipe_mode = "rb";
@@ -295,7 +295,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 	if (read_config_option("extended_paths") == "on") {
 		if (!is_dir(dirname($data_source_path))) {
 			if (mkdir(dirname($data_source_path), 0775)) {
-				if ($config["cacti_server_os"] != "win32") {
+				if (CACTI_SERVER_OS != "win32") {
 					$owner_id      = fileowner($config["rra_path"]);
 					$group_id      = filegroup($config["rra_path"]);
 
