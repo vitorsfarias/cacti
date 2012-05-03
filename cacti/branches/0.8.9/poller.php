@@ -166,7 +166,7 @@ if (isset($items_perhost) && sizeof($items_perhost)) {
 }
 
 /* some text formatting for platform specific vocabulary */
-if ($config["cacti_server_os"] == "unix") {
+if (CACTI_SERVER_OS == "unix") {
 	$task_type = "Cron";
 }else{
 	$task_type = "Scheduled Task";
@@ -236,7 +236,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$last_host         = 0;
 
 	/* update web paths for the poller */
-	db_execute("REPLACE INTO settings (name,value) VALUES ('path_webroot','" . addslashes(($config["cacti_server_os"] == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
+	db_execute("REPLACE INTO settings (name,value) VALUES ('path_webroot','" . addslashes((CACTI_SERVER_OS == "win32") ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", "/") : dirname(__FILE__)) . "')");
 
 	/* obtain some defaults from the database */
 	$poller      = read_config_option("poller_type");
@@ -286,7 +286,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$method         = "spine";
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option("path_spine")));
-		}else if ($config["cacti_server_os"] == "unix") {
+		}else if (CACTI_SERVER_OS == "unix") {
 			$command_string = read_config_option("path_php_binary");
 			$extra_args     = "-q \"" . $config["base_path"] . "/cmd.php\"";
 			$method         = "cmd.php";

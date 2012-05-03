@@ -76,7 +76,7 @@ include_once($config["library_path"] . "/variables.php");
 record_cmdphp_started();
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
-if ($config["cacti_server_os"] == "win32") {
+if (CACTI_SERVER_OS == "win32") {
 	/* check PHP versions first, we know 5.2.0 and above is fixed */
 	if (version_compare("5.2.0", PHP_VERSION, ">=")) {
 		$guess = substr(__FILE__,0,2);

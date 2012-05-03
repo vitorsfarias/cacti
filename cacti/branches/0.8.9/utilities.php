@@ -298,7 +298,7 @@ function utilities_view_tech($php_info = "") {
 	print "</tr>\n";
 	print "<tr bgcolor='#" . $colors["form_alternate1"] . "'>\n";
 	print "		<td class='textArea'>Cacti OS</td>\n";
-	print "		<td class='textArea'>" . $config["cacti_server_os"] . "</td>\n";
+	print "		<td class='textArea'>" . CACTI_SERVER_OS . "</td>\n";
 	print "</tr>\n";
 	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>SNMP Version</td>\n";
