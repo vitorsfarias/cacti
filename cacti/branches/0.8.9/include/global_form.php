@@ -1243,5 +1243,4 @@ $fields_template_import = array(
 		),
 	);
 
-api_plugin_hook('config_form');
 ?>
