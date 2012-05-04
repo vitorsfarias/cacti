@@ -144,17 +144,21 @@ if (read_config_option("auth_method") != 0) {
 			$realm_id = $user_auth_realm_filenames[ basename($_SERVER['PHP_SELF']) ];
 		}
 
-		/* determine if user is allowed to access this realm */	
-		$user_realm_check = db_fetch_assoc("select user_auth_realm.realm_id from user_auth_realm where user_auth_realm.user_id='" . $_SESSION['sess_user_id'] . "' and user_auth_realm.realm_id='" . $realm_id . "'");
-		if ( empty($user_realm_check) || empty($realm_id) )
+		/* determine if user is allowed to access this realm, take care for logout realm */	
+		if ($realm_id != -1 && ((!db_fetch_assoc("select
+			user_auth_realm.realm_id
+			from
+			user_auth_realm
+			where user_auth_realm.user_id='" . $_SESSION["sess_user_id"] . "'
+			and user_auth_realm.realm_id='$realm_id'")) || (empty($realm_id))))
 		{
 			if (isset($_SERVER["HTTP_REFERER"]))
 			{
-				$referer = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __('Return') . "</a> | <a href='" . CACTI_URL_PATH . "logout.php'>" . __("Login Again") . "</a> )</td>";
+				$referer = "<td class='textArea' colspan='2' align='center'>( <a href='" . $_SERVER["HTTP_REFERER"] . "'>" . 'Return' . "</a> | <a href='" . CACTI_URL_PATH . "logout.php'>" . 'Login Again' . "</a> )</td>";
 			}
 			else
 			{
-				$referer = "<td class='textArea' colspan='2' align='center'>( <a href='" . CACTI_URL_PATH . "index.php'>" . __('Login Again') . "</a> )</td>";
+				$referer = "<td class='textArea' colspan='2' align='center'>( <a href='" . CACTI_URL_PATH . "index.php'>" . 'Login Again' . "</a> )</td>";
 			}
 
 			?>
@@ -171,7 +175,7 @@ if (read_config_option("auth_method") != 0) {
 
 			<table width="450" align='center'>
 				<tr>
-					<td colspan='2'><img src='<?php echo CACTI_URL_PATH; ?>images/auth_deny.gif' alt='<?php echo __('Access Denied'); ?>'></td>
+					<td colspan='2'><img src='<?php echo CACTI_URL_PATH; ?>images/auth_deny.gif' alt='<?php echo 'Access Denied'; ?>'></td>
 				</tr>
 				<tr><td></td></tr>
 				<tr>
