@@ -934,4 +934,65 @@ function xml_character_decode($text) {
 	}
 }
 
-?>
+function update_pre_089_graph_items($items) {
+#	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+#	require_once(CACTI_BASE_PATH . "/include/presets/preset_rra_constants.php");
+	require_once(CACTI_BASE_PATH . "/include/global_constants.php");
+	require_once(CACTI_BASE_PATH . "/lib/template.php");
+
+	if (sizeof($items)) {
+		foreach ($items as $key => $graph_item) {
+			/* mimic the old behavior: LINE[123], AREA and STACK items use the CF specified in the graph item */
+			if (($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3) ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
+				$graph_cf = $graph_item["consolidation_function_id"];
+				/* remember the last CF for this data source for use with GPRINT
+				 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
+				 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
+				$last_graph_cf{$graph_item["task_item_id"]} = $graph_cf;
+				/* remember this for second foreach loop */
+				$items[$key]["cf_reference"] = $graph_cf;
+			}elseif ($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_GPRINT) {
+				/* ATTENTION!
+				* the "CF" given on graph_item edit screen for GPRINT is indeed NOT a real "CF",
+				* but an aggregation function
+				* see "man rrdgraph_data" for the correct VDEF based notation
+				* so our task now is to "guess" the very graph_item, this GPRINT is related to
+				* and to use that graph_item's CF */
+				if (isset($last_graph_cf{$graph_item["task_item_id"]})) {
+					$graph_cf = $last_graph_cf{$graph_item["task_item_id"]};
+					/* remember this for second foreach loop */
+					$items[$key]["cf_reference"] = $graph_cf;
+				} else {
+					$local_data_id = db_fetch_cell("SELECT data_template_rrd.local_data_id FROM data_template_rrd WHERE id=" . $graph_item["task_item_id"]);
+					$graph_cf = generate_graph_best_cf($local_data_id, $graph_item["consolidation_function_id"]);
+					/* remember this for second foreach loop */
+					$items[$key]["cf_reference"] = $graph_cf;
+				}
+
+				switch($graph_item["consolidation_function_id"]) {
+					case RRA_CF_TYPE_AVERAGE:
+						$items[$key]["graph_type_id"] = GRAPH_ITEM_TYPE_GPRINT_AVERAGE;
+						break;
+					case RRA_CF_TYPE_MIN:
+						$items[$key]["graph_type_id"] = GRAPH_ITEM_TYPE_GPRINT_MIN;
+						break;
+					case RRA_CF_TYPE_MAX:
+						$items[$key]["graph_type_id"] = GRAPH_ITEM_TYPE_GPRINT_MAX;
+						break;
+					case RRA_CF_TYPE_LAST:
+						$items[$key]["graph_type_id"] = GRAPH_ITEM_TYPE_GPRINT_LAST;
+						break;
+				}
+
+				db_execute("UPDATE graph_templates_item SET `consolidation_function_id`=".$items[$key]["cf_reference"].", `graph_type_id`=".$items[$key]["graph_type_id"]." WHERE `id`=".$graph_item["id"]);
+				if ($graph_item["graph_template_id"] != 0) {
+					db_execute("UPDATE graph_templates_item SET `consolidation_function_id`=".$items[$key]["cf_reference"].", `graph_type_id`=".$items[$key]["graph_type_id"]." WHERE `local_graph_template_item_id`=".$graph_item["id"]);
+				}
+			}
+		}
+	}
+}
