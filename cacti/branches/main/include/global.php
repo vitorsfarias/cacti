@@ -42,7 +42,7 @@ $database_ssl = false;
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
 
-/* Intialize config array and include the configuration */
+/* Initialize config array and include the configuration */
 $config = array();
 if (file_exists(dirname(__FILE__) . '/config.php'))
 {
