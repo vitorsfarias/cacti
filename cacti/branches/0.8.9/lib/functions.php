@@ -525,7 +525,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 			$log_type = "note";
 
 		if (strlen($log_type)) {
-			if ($config["cacti_server_os"] == "win32")
+			if (CACTI_SERVER_OS == "win32")
 				openlog("Cacti", LOG_NDELAY | LOG_PID, LOG_USER);
 			else
 				openlog("Cacti", LOG_NDELAY | LOG_PID, LOG_SYSLOG);
@@ -1155,9 +1155,9 @@ function clean_up_file_name($string) {
 function clean_up_path($path) {
 	global $config;
 
-	if ($config["cacti_server_os"] == "unix" or read_config_option("using_cygwin") == "on") {
+	if (CACTI_SERVER_OS == "unix" or read_config_option("using_cygwin") == "on") {
 		$path = str_replace("\\", "/", $path);
-	}elseif ($config["cacti_server_os"] == "win32") {
+	}elseif (CACTI_SERVER_OS == "win32") {
 		$path = str_replace("/", "\\", $path);
 
 	}
@@ -1782,6 +1782,13 @@ function draw_navigation_text($type = "url") {
 		"host.php:" => array("title" => "Devices", "mapping" => "index.php:", "url" => "host.php", "level" => "1"),
 		"host.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
 		"host.php:actions" => array("title" => "Actions", "mapping" => "index.php:,host.php:", "url" => "", "level" => "2"),
+		"plugins.php:" => array("title" => "Plugin Management", "mapping" => "index.php:", "url" => "plugins.php", "level" => "1"),
+		"sites.php:actions" => array("title" => "Actions", "mapping" => "index.php:,sites.php:", "url" => "", "level" => "2"),
+		"sites.php:" => array("title" => "Sites", "mapping" => "index.php:", "url" => "sites.php", "level" => "1"),
+		"sites.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,sites.php:", "url" => "", "level" => "2"),
+		"pollers.php:actions" => array("title" => "Actions", "mapping" => "index.php:,pollers.php:", "url" => "", "level" => "2"),
+		"pollers.php:" => array("title" => "Pollers", "mapping" => "index.php:", "url" => "pollers.php", "level" => "1"),
+		"pollers.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,pollers.php:", "url" => "", "level" => "2"),
 		"rra.php:" => array("title" => "Round Robin Archives", "mapping" => "index.php:", "url" => "rra.php", "level" => "1"),
 		"rra.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
 		"rra.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,rra.php:", "url" => "", "level" => "2"),
@@ -1805,6 +1812,8 @@ function draw_navigation_text($type = "url") {
 		"utilities.php:view_user_log" => array("title" => "View User Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:clear_user_log" => array("title" => "Clear User Log File", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"utilities.php:view_tech" => array("title" => "Technical Support", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:rebuild_font_cache" => array("title" => "Rebuild Font Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
+		"utilities.php:view_font_cache" => array("title" => "View Font Cache", "mapping" => "index.php:,utilities.php:", "url" => "utilities.php", "level" => "2"),
 		"settings.php:" => array("title" => "Cacti Settings", "mapping" => "index.php:", "url" => "settings.php", "level" => "1"),
 		"user_admin.php:" => array("title" => "User Management", "mapping" => "index.php:", "url" => "user_admin.php", "level" => "1"),
 		"user_admin.php:user_edit" => array("title" => "(Edit)", "mapping" => "index.php:,user_admin.php:", "url" => "", "level" => "2"),
@@ -1816,6 +1825,15 @@ function draw_navigation_text($type = "url") {
 		"templates_export.php:" => array("title" => "Export Templates", "mapping" => "index.php:", "url" => "templates_export.php", "level" => "1"),
 		"templates_export.php:save" => array("title" => "Export Results", "mapping" => "index.php:,templates_export.php:", "url" => "templates_export.php", "level" => "2"),
 		"templates_import.php:" => array("title" => "Import Templates", "mapping" => "index.php:", "url" => "templates_import.php", "level" => "1"),
+		"vdef.php:" => array("title" => "VDEF's", "mapping" => "index.php:", "url" => "vdef.php", "level" => "1"),
+		"vdef.php:actions" => array("title" => "Actions", "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
+		"vdef.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
+		"vdef.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
+		"vdef.php:item_edit" => array("title" => "VDEF Items", "mapping" => "index.php:,vdef.php:,vdef.php:edit", "url" => "", "level" => "3"),
+		"xaxis_presets.php:" => array("title" => "X-Axis Presets", "mapping" => "index.php:", "url" => "xaxis_presets.php", "level" => "1"),
+		"xaxis_presets.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,xaxis_presets.php:", "url" => "", "level" => "2"),
+		"xaxis_presets.php:item_edit" => array("title" => "X-Axis Items", "mapping" => "index.php:,xaxis_presets.php:,xaxis_presets.php:edit", "url" => "", "level" => "3"),
+		"xaxis_presets.php:actions" => array("title" => "Actions", "mapping" => "index.php:,xaxis_presets.php:", "url" => "", "level" => "2"),
 		);
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
@@ -2180,7 +2198,7 @@ function sanitize_cdef($cdef) {
 function cacti_escapeshellcmd($string) {
 	global $config;
 
-	if ($config["cacti_server_os"] == "unix") {
+	if (CACTI_SERVER_OS == "unix") {
 		return escapeshellcmd($string);
 	}else{
 		$replacements = "#&;`|*?<>^()[]{}$\\";
@@ -2204,7 +2222,7 @@ function cacti_escapeshellarg($string, $quote=true) {
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
 	characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 	you do this, but are perfectly happy with a quotation mark. */
-	if ($config["cacti_server_os"] == "unix") {
+	if (CACTI_SERVER_OS == "unix") {
 		$string = escapeshellarg($string);
 		if ( $quote ) {
 			return $string;
@@ -2230,6 +2248,103 @@ function cacti_escapeshellarg($string, $quote=true) {
 			return $string;
 		}
 	}
+}
+
+/**
+ * recursively search a dir for filenames
+ * @param string $dir	name of directory
+ * @param bool $debug	debugging mode
+ * @return array		array of all files found
+ */
+function search_dir_recursive($dir, $debug=false) {
+	if ($debug) cacti_log(__FUNCTION__ . " scanning dir: $dir");
+	$entries = array();
+
+	/* verify this is a directory */
+	if (!is_dir($dir)) return $entries;
+
+	/* get list of all inodes in this directory */
+	$handle = opendir($dir);
+	while (false !== ($direntry = readdir($handle))) {
+		if ($debug) cacti_log("entry found: $direntry");
+		if ($direntry == "." || $direntry == "..") continue;
+		$entry = $dir . "/" . $direntry;
+		if (is_dir($entry)) {
+			$entries = array_merge($entries, search_dir_recursive($entry, $debug));
+		} else {
+			$entries[] = $entry;
+		}
+	}
+	closedir($handle);
+	return $entries;
+}
+
+/**
+ * search array of files for given filetypes using the "file" command
+ * @param array $files 		array of files to be searched
+ * @param array $file_types array of file types for matching
+ * @param bool $debug		debugging mode
+ * @return array			array of matching files
+ */
+function search_filetype($files, $file_types, $debug=false) {
+
+	$entries = array();
+	/* if no files, return */
+	if (sizeof($files) === 0 || !sizeof($file_types)) return $entries;
+
+	/* scan all entries */
+	foreach ($files as $entry) {
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");
+		if(is_file($entry)) {
+			/* verify file type or extension */
+
+			/* do we have a "file" command and want to check the result of it? */
+#			if (function_exists('is_executable') && (is_executable("file"))) {
+				/* get file type file "file" command */
+				$filetype_found = trim(shell_exec("file $entry"));
+				if ($debug) cacti_log("filetype found: $filetype_found");
+				foreach($file_types as $file_type) {
+					/* if $file_type is part of result from "file" command */
+					if (strpos($filetype_found, $file_type)) {
+						$entries[] = $entry;
+						if ($debug) cacti_log("filetype match: $file_type");
+					}
+				}
+#			}
+		}
+	}
+	return $entries;
+}
+
+
+/**
+ * search array of files for given file "extensions"
+ * @param array $files 				array of files to be searched
+ * @param array $file_extensions 	array of file types for matching
+ * @param bool $debug				debugging mode
+ * @return array					array of matching files
+ */
+function search_fileext($files, $file_extensions, $debug=false) {
+
+	$matching_entries = array();
+	/* if no files, return */
+	if (sizeof($files) === 0 || !sizeof($file_extensions)) return $matching_entries;
+
+	/* scan all entries */
+	foreach ($files as $entry) {
+		if ($debug) cacti_log(__FUNCTION__ . " scanning entry: $entry");
+		if(is_file($entry)) {
+			/* scan all given extensions */
+			foreach($file_extensions as $extension) {
+				/* if filename ends in ".$extension", it's a match */
+				if (preg_match("/\." . $extension . "\$/", $entry)) {
+					$matching_entries[] = $entry;
+					if ($debug) cacti_log("fileext match: $extension");
+				}
+			}
+		}
+	}
+	return $matching_entries;
 }
 
 ?>
