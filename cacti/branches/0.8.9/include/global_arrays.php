@@ -369,6 +369,7 @@ $menu = array(
 			"graphs.php" => "Graph Management",
 			"cdef.php" => "CDEFs",
 			"vdef.php" => "VDEFs",
+			"xaxis.php" => "X-Axis",
 			"color.php" => "Colors",
 			"gprint_presets.php" => "GPRINT Presets"
 			),
@@ -377,7 +378,9 @@ $menu = array(
 			"data_sources.php" => "Data Sources",
 			"rra.php" => "RRAs"
 			),
-		"host.php" => 'Devices'
+		"host.php" => 'Devices',
+#		"sites.php" => 'Sites',
+#		"pollers.php" => 'Pollers'
 		),
 	"Collection Methods" => array(
 		"data_queries.php" => "Data Queries",
