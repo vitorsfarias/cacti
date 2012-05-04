@@ -43,10 +43,7 @@ $database_ssl = false;
 $cacti_session_name = 'Cacti';
 
 /* Default URL path - in case config.php does not override */
-define('CACTI_URL_PATH', '/cacti/');
-$url_path = CACTI_URL_PATH;	# compat
-$config = array();	# compat
-$config['url_path'] = CACTI_URL_PATH;	# compat
+$url_path = '/cacti/';				# compat
 
 
 /* Include the user configuration file config.php */
@@ -54,6 +51,7 @@ if (file_exists(dirname(__FILE__) . '/config.php'))
 {
 	include(dirname(__FILE__) . '/config.php');
 }
+
 
 /* detect old configuration files: search for a version information (should now be defined within this file, see bottom) */
 if (isset($config['cacti_version']))
@@ -80,12 +78,15 @@ else
 
 /* setup paths */
 /* CACTI_BASE_PATH is platform dependant and has been defined above */
+define('CACTI_URL_PATH', $url_path);
 define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
 define('CACTI_LIBRARY_PATH', CACTI_BASE_PATH . '/lib');
 define('CACTI_INCLUDE_PATH', CACTI_BASE_PATH . '/include');
 define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');		# no compat required
 define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');	# no compat required
 
+$config = array();									# compat
+$config['url_path'] = $url_path;					# compat
 $config['base_path']    = CACTI_BASE_PATH;			# compat
 $config['library_path'] = CACTI_BASE_PATH . '/lib';	# compat
 $config['include_path'] = CACTI_BASE_PATH . '/lib';	# compat
