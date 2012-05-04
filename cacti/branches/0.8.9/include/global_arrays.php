@@ -368,6 +368,7 @@ $menu = array(
 		"graphs.php" => array(
 			"graphs.php" => "Graph Management",
 			"cdef.php" => "CDEFs",
+			"vdef.php" => "VDEFs",
 			"color.php" => "Colors",
 			"gprint_presets.php" => "GPRINT Presets"
 			),
@@ -392,7 +393,8 @@ $menu = array(
 		"templates_export.php" => "Export Templates"
 		),
 	"Configuration"  => array(
-		"settings.php" => "Settings"
+		"settings.php" => "Settings",
+		"plugins.php" => "Plugin Management"
 		),
 	"Utilities" => array(
 		"utilities.php" => "System Utilities",
