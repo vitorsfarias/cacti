@@ -1121,7 +1121,7 @@ function graph_diff() {
 
 			switch ($graph_type_id) {
 				case GRAPH_ITEM_TYPE_AREA:
-				case GRAPH_ITEM_TYPE_AREASTACK:
+				case GRAPH_ITEM_TYPE_STACK:
 				case GRAPH_ITEM_TYPE_GPRINT:
 				case GRAPH_ITEM_TYPE_LINE1:
 				case GRAPH_ITEM_TYPE_LINE2:

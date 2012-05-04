@@ -70,7 +70,7 @@ define('GRAPH_ITEM_TYPE_LINE1',			4);
 define('GRAPH_ITEM_TYPE_LINE2',			5);
 define('GRAPH_ITEM_TYPE_LINE3',			6);
 define('GRAPH_ITEM_TYPE_AREA',			7);
-define('GRAPH_ITEM_TYPE_AREASTACK',		8);
+define('GRAPH_ITEM_TYPE_STACK',			8); // this is an AREASTACK, but for compat, we still call it a STACK
 define('GRAPH_ITEM_TYPE_GPRINT',		9);	// keep 'old' GPRINT id for template import
 define('GRAPH_ITEM_TYPE_GPRINT_AVERAGE',10);
 define('GRAPH_ITEM_TYPE_GPRINT_LAST',	11);
