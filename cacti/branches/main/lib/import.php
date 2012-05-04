@@ -1100,7 +1100,7 @@ function xml_character_decode($text) {
 	}
 }
 
-function update_pre_088_graph_items($items) {
+function update_pre_089_graph_items($items) {
 	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
 	require_once(CACTI_BASE_PATH . "/include/presets/preset_rra_constants.php");
 	require_once(CACTI_BASE_PATH . "/lib/template.php");
@@ -1112,7 +1112,7 @@ function update_pre_088_graph_items($items) {
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2) ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3) ||
 				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREA)  ||
-				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK)) {
+				($graph_item["graph_type_id"] == GRAPH_ITEM_TYPE_STACK)) {
 				$graph_cf = $graph_item["consolidation_function_id"];
 				/* remember the last CF for this data source for use with GPRINT
 				 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
