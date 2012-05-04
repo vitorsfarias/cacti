@@ -296,15 +296,9 @@ function upgrade_to_1_0_0() {
 	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'site_id');
 	$columns[] = array('name' => 'template_enabled', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'device_template_id');
 	/* implement per device threads setting for spine */
-	$columns[] = array('name' => 'device_threads', 'type' => 'tinyint(2)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids');
 	$columns[] = array('name' => 'polling_time', 'type' => 'decimal(10,5)', 'NULL' => false, 'default' => '0.00000', 'after' => 'avg_time');
 	plugin_upgrade_columns('1.0.0', 'device', $columns, $show_output, $no_drop_items);
 
-	/* enable lossless reindexing in Cacti */
-	unset($columns);
-	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'oid');
-	#, ADD INDEX present USING BTREE (present));
-	plugin_upgrade_columns('1.0.0', 'device_snmp_cache', $columns, $show_output, $no_drop_items);
 
 	/* add some fields required for devices to table device_template */
 	unset($columns);
@@ -463,11 +457,6 @@ function upgrade_to_1_0_0() {
 	unset($columns);
 	$columns[] = array('name' => 'poller_id', 'type' => 'smallint(5)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => '0', 'after' => 'time');
 	plugin_upgrade_columns('1.0.0', 'poller_output', $columns, $show_output, $no_drop_items);
-
-	unset($columns);
-	$columns[] = array('name' => 'present', 'type' => 'tinyint(4)', 'NULL' => false, 'default' => '1', 'after' => 'action');
-	#, ADD INDEX present USING BTREE (present));
-	plugin_upgrade_columns('1.0.0', 'poller_reindex', $columns, $show_output, $no_drop_items);
 
 	unset($columns);
 	$columns[] = array('name' => 'image', 'type' => 'varchar(64)', 'NULL' => false, 'after' => 'description');
@@ -733,6 +722,8 @@ function upgrade_to_1_0_0() {
 			}
 		}
 	}
+	
+	
 	db_install_execute("1.0.0", "ALTER TABLE graph_tree_items DROP COLUMN order_key");
 
 	/* insert the default poller into the database */
@@ -871,7 +862,7 @@ function upgrade_to_1_0_0() {
 								"WHERE local_graph_id = 0 " .
 								"AND graph_template_id = " . $template["id"] .  " " .
 								"ORDER BY graph_template_id ASC, sequence ASC");
-			update_pre_088_graph_items($graph_template_items);
+			update_pre_089_graph_items($graph_template_items);
 		}
 	}
 	# now handle non-templated graphs
@@ -883,7 +874,7 @@ function upgrade_to_1_0_0() {
 								"WHERE local_graph_id = " . $graph["id"] . " " .
 								"AND graph_template_id = 0 " .
 								"ORDER BY local_graph_id ASC, sequence ASC");
-			update_pre_088_graph_items($graph_items);
+			update_pre_089_graph_items($graph_items);
 		}
 	}
 
