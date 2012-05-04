@@ -763,4 +763,180 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
+/**
+ * update the font cache via browser
+ */
+function repopulate_font_cache() {
+require_once(CACTI_BASE_PATH . "/lib/functions.php");
+require_once(CACTI_BASE_PATH . "/lib/fonts.php");
+
+
+if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
+	read_config_option("rrdtool_version") == "rrd-1.2.x") {
+
+	# rrdtool 1.0 and 1.2 use font files
+	$success = create_filebased_fontlist();
+
+} else {
+
+	# higher rrdtool versions use pango fonts
+	$success = create_pango_fontlist();
+
+}
+
+}
+
+function font_cache_filter() {
+	global $item_rows;
+
+	html_start_box(__("Font Cache Items"), "100", "3", "center", "", true);
+	?>
+	<tr class='rowAlternate3'>
+		<td>
+			<form name="form_fontcache" action="utilities.php">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="nw50">
+						<?php print __("Search:");?>
+					</td>
+					<td class="w1">
+						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
+					</td>
+					<td class="nw50">
+						<?php print __("Rows:");?>
+					</td>
+					<td class="w1">
+						<select name="rows" onChange="applyFontCacheFilterChange(document.form_fontcache)">
+							<option value="-1"<?php if (html_get_page_variable("rows") == "-1") {?> selected<?php }?>>Default</option>
+							<?php
+							if (sizeof($item_rows) > 0) {
+							foreach ($item_rows as $key => $value) {
+								print "<option value='" . $key . "'"; if (html_get_page_variable("rows") == $key) { print " selected"; } print ">" . $value . "</option>\n";
+							}
+							}
+							?>
+						</select>
+					</td>
+					<td class="nw120">
+						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
+						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
+					</td>
+				</tr>
+			</table>
+			<div><input type='hidden' name='page' value='1'></div>
+			<div><input type='hidden' name='action' value='view_font_cache'></div>
+			<div><input type='hidden' name='page_referrer' value='view_font_cache'></div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	html_end_box(false);
+	?>
+	<script type="text/javascript">
+	<!--
+
+	function clearFontCacheFilterChange(objForm) {
+		strURL = '?filter=';
+		strURL = strURL + '&rows=-1';
+		strURL = strURL + '&action=view_font_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	function applyFontCacheFilterChange(objForm) {
+		strURL = '?filter=' + objForm.filter.value;
+		strURL = strURL + '&rows=' + objForm.rows.value;
+		strURL = strURL + '&action=view_font_cache';
+		strURL = strURL + '&page=1';
+		document.location = strURL;
+	}
+
+	-->
+	</script>
+	<?php
+}
+
+/**
+ * fetch rows from font table
+ */
+function font_cache_get_records(&$total_rows, &$rowspp) {
+
+	/* form the 'where' clause for our main sql query */
+	$sql_where = "";
+
+	$sql_where .= (strlen($sql_where) ? " AND ":"WHERE ") . " font LIKE '%%" . html_get_page_variable("filter") . "%%'";
+
+	if (html_get_page_variable("rows") == "-1") {
+		$rowspp = read_config_option("num_rows_data_source");
+	}else{
+		$rowspp = html_get_page_variable("rows");
+	}
+
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(*)
+		FROM fonts
+		$sql_where");
+
+	$font_sql = "SELECT *
+		FROM fonts
+		$sql_where
+		ORDER BY " . html_get_page_variable("sort_column") . " " . html_get_page_variable("sort_direction") . "
+		LIMIT " . ($rowspp*(html_get_page_variable("page")-1)) . "," . $rowspp;
+
+	//	print $font_sql;
+
+	return db_fetch_assoc($font_sql);
+}
+
+
+/**
+ * view all fonts available in Cacti font cache and provide some filter options
+ */
+function utilities_view_font_cache($refresh=true) {
+	global $item_rows, $colors;
+
+	define("MAX_DISPLAY_PAGES", 21);
+
+	$table = New html_table;
+
+	$table->page_variables = array(
+		"page"           => array("type" => "numeric", "method" => "request", "default" => "1"),
+		"rows"           => array("type" => "numeric", "method" => "request", "default" => "-1"),
+		"filter"         => array("type" => "string",  "method" => "request", "default" => ""),
+		"sort_column"    => array("type" => "string",  "method" => "request", "default" => "font"),
+		"sort_direction" => array("type" => "string",  "method" => "request", "default" => "ASC")
+	);
+
+
+	$table->table_format = array(
+		"font" => array(
+			"name" => __("Font Name"),
+			"filter" => true,
+			"order" => "ASC"
+		),
+	);
+
+	/* initialize page behavior */
+	$table->key_field      = "id";
+	$table->href           = "utilities.php?action=view_font_cache&page_referrer=view_font_cache";
+	$table->session_prefix = "sess_font_cache";
+	$table->filter_func    = "font_cache_filter";
+	$table->refresh        = $refresh;
+	$table->resizable      = true;
+	$table->sortable       = true;
+	$table->table_id       = "font_cache";
+#	$table->actions        = $font_cache_actions;
+
+	/* we must validate table variables */
+	$table->process_page_variables();
+
+	/* get the records */
+	$table->rows = font_cache_get_records($table->total_rows, $table->rows_per_page);
+
+	/* display the table */
+	$table->draw_table();
+
+}
+
 ?>
