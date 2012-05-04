@@ -134,6 +134,11 @@ function upgrade_to_0_8_9() {
 	$columns[] = array('name' => 'plugin', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	plugin_upgrade_columns('0.8.9', 'plugin_db_changes', $columns, $show_output, $no_drop_items);
 
+	/* add description */
+	unset($columns);
+	$columns[] = array('name' => 'description', 'type' => 'varchar(255)', 'NULL' => false, 'after' => 'name');
+	plugin_upgrade_columns('0.8.9', 'data_template', $columns, $show_output, $no_drop_items);
+
 	/* add rrd_compute_rpn for data source items */
 	unset($columns);
 	$columns[] = array('name' => 't_rrd_compute_rpn', 'type' => 'char(2)', 'default' => NULL, 'after' => 'rrd_minimum');
