@@ -288,7 +288,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 		$local_data_array = array();
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -303,7 +303,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 		if (!empty($graph_item["data_source_name"])) {
 			for ($t=0;($t<count($graph_items));$t++) {
 				if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-					$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+					$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 					$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 					$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 					$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -329,7 +329,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	}elseif ($regexp_match_array[4] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -354,7 +354,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	}elseif ($regexp_match_array[4] == "total_peak") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -372,7 +372,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	}elseif ($regexp_match_array[4] == "all_max_current") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -392,7 +392,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	}elseif ($regexp_match_array[4] == "all_max_peak") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -497,7 +497,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}elseif ($regexp_match_array[2] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (($graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREA ||
-				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_AREASTACK ||
+				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_STACK ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_items[$t]["graph_type_id"] == GRAPH_ITEM_TYPE_LINE3 ||

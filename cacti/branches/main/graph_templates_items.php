@@ -182,7 +182,7 @@ function form_save() {
 				case GRAPH_ITEM_TYPE_LINE2:
 				case GRAPH_ITEM_TYPE_LINE3:
 				case GRAPH_ITEM_TYPE_AREA:
-				case GRAPH_ITEM_TYPE_AREASTACK:
+				case GRAPH_ITEM_TYPE_STACK:
 				case GRAPH_ITEM_TYPE_LINESTACK:
 				case GRAPH_ITEM_TYPE_TICK:
 					if ($save["color_id"] == 0) {

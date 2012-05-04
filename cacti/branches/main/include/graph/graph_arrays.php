@@ -82,7 +82,7 @@ $graph_item_types1 = array(
 	GRAPH_ITEM_TYPE_LINE2			=> 'LINE2',
 	GRAPH_ITEM_TYPE_LINE3			=> 'LINE3',
 	GRAPH_ITEM_TYPE_AREA			=> 'AREA',
-	GRAPH_ITEM_TYPE_AREASTACK		=> 'AREA:STACK',
+	GRAPH_ITEM_TYPE_STACK		=> 'AREA:STACK',
 );
 
 $graph_item_types2 = array(
