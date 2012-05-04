@@ -447,7 +447,7 @@ if ($_REQUEST["step"] == "4") {
 		}elseif ($cacti_versions[$i] == "0.8.8a") {
 			include ("0_8_8_to_0_8_8a.php");
 			upgrade_to_0_8_8a();
-		}elseif ($cacti_versions[$i] == "0.8.8a") {
+		}elseif ($cacti_versions[$i] == "0.8.9") {
 			include ("0_8_8a_to_0_8_9.php");
 			upgrade_to_0_8_9();
 		}
