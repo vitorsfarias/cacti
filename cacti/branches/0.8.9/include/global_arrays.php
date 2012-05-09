@@ -161,12 +161,6 @@ $consolidation_functions = array(1 =>
 	"MAX",
 	"LAST");
 
-$data_source_types = array(1 =>
-	"GAUGE",
-	"COUNTER",
-	"DERIVE",
-	"ABSOLUTE");
-
 $graph_item_types = array(
 	GRAPH_ITEM_TYPE_COMMENT => "COMMENT",
 	GRAPH_ITEM_TYPE_HRULE   => "HRULE",
@@ -369,7 +363,7 @@ $menu = array(
 			"graphs.php" => "Graph Management",
 			"cdef.php" => "CDEFs",
 			"vdef.php" => "VDEFs",
-			"xaxis.php" => "X-Axis",
+			"xaxis_presets.php" => "X-Axis",
 			"color.php" => "Colors",
 			"gprint_presets.php" => "GPRINT Presets"
 			),
@@ -481,60 +475,74 @@ $user_auth_realms = array(
 	);
 
 $user_auth_realm_filenames = array(
-	"about.php" => 8,
-	"cdef.php" => 14,
-	"color.php" => 5,
-	"data_input.php" => 2,
-	"data_sources.php" => 3,
-	"data_templates.php" => 11,
-	"gprint_presets.php" => 5,
-	"graph.php" => 7,
-	"graph_image.php" => 7,
-	"graph_xport.php" => 7,
-	"graph_settings.php" => 7,
-	"graph_templates.php" => 10,
-	"graph_templates_inputs.php" => 10,
-	"graph_templates_items.php" => 10,
-	"graph_view.php" => 7,
-	"graphs.php" => 5,
-	"graphs_items.php" => 5,
-	"graphs_new.php" => 5,
-	"host.php" => 3,
-	"host_templates.php" => 12,
-	"index.php" => 8,
-	"rra.php" => 9,
-	"settings.php" => 15,
-	"data_queries.php" => 13,
-	"templates_export.php" => 16,
-	"templates_import.php" => 17,
-	"tree.php" => 4,
-	"user_admin.php" => 1,
-	"utilities.php" => 15,
-	"smtp_servers.php" => 8,
-	"email_templates.php" => 8,
-	"event_queue.php" => 8,
-	"smtp_queue.php" => 8,
-	"logout.php" => -1
-	);
+	'about.php'						=> 8,
+	'cdef.php'						=> 14,
+	'color.php'						=> 5,
+	'data_input.php'				=> 2,
+	'data_queries.php'				=> 13,
+	'data_sources_items.php'		=> 3,
+	'data_sources.php'				=> 3,
+	'data_templates.php'			=> 11,
+	'data_templates_items.php'		=> 11,
+	'devices.php'					=> 3,
+	'device_templates.php'			=> 12,
+	'email_templates.php'			=> 8,
+	'event_queue.php'				=> 8,
+	'gprint_presets.php'			=> 5,
+	'graph.php'						=> 7,
+	'graph_image.php'				=> 7,
+	'graph_xport.php'				=> 7,
+	'graph_settings.php'			=> 7,
+	'graph_templates.php'			=> 10,
+	'graph_templates_inputs.php'	=> 10,
+	'graph_templates_items.php'		=> 10,
+	'graph_view.php'				=> 7,
+	'graphs.php'					=> 5,
+	'graphs_items.php'				=> 5,
+	'graphs_new.php'				=> 5,
+	'index.php'						=> 8,
+	'logout.php'					=> 7,
+	'plugins.php'					=> 101,
+	'pollers.php'					=> 3,
+	'rra.php'						=> 9,
+	'settings.php'					=> 15,
+	'sites.php'						=> 3,
+	'smtp_servers.php'				=> 8,
+	'smtp_queue.php'				=> 8,
+	'templates_export.php'			=> 16,
+	'templates_import.php'			=> 17,
+	'tree.php'						=> 4,
+	'user_admin.php'				=> 1,
+	'utilities.php'					=> 15,
+	'vdef.php'						=> 14,
+	'xaxis_presets.php'				=> 5,
+	'layout.php'					=> 7
+);
 
+/* sequence of hash_type_codes defines the sequence of import ations
+ * on template import */
 $hash_type_codes = array(
-	"round_robin_archive" => "15",
-	"cdef" => "05",
-	"cdef_item" => "14",
-	"gprint_preset" => "06",
-	"data_input_method" => "03",
-	"data_input_field" => "07",
-	"data_template" => "01",
-	"data_template_item" => "08",
-	"graph_template" => "00",
-	"graph_template_item" => "10",
-	"graph_template_input" => "09",
-	"data_query" => "04",
-	"data_query_graph" => "11",
-	"data_query_sv_graph" => "12",
-	"data_query_sv_data_source" => "13",
-	"host_template" => "02"
-	);
+	'round_robin_archive'		=> '15',
+	'cdef'						=> '05',
+	'cdef_item'					=> '14',
+	'vdef'						=> '18',
+	'vdef_item'					=> '19',
+	'gprint_preset'				=> '06',
+	'xaxis'						=> '16',
+	'xaxis_item'				=> '17',
+	'data_input_method'			=> '03',
+	'data_input_field'			=> '07',
+	'data_template'				=> '01',
+	'data_template_item'		=> '08',
+	'graph_template'			=> '00',
+	'graph_template_item'		=> '10',
+	'graph_template_input'		=> '09',
+	'data_query'				=> '04',
+	'data_query_graph'			=> '11',
+	'data_query_sv_graph'		=> '12',
+	'data_query_sv_data_source'	=> '13',
+	'device_template'			=> '02',
+);
 
 $hash_version_codes = array(
 	"0.8.4"  => "0000",
@@ -696,4 +704,25 @@ $graph_datechar = array(
 	GDC_SLASH => "/"
 	);
 
+/*
+ * TODO: to be moved to ./include/data_source/data_source_arrays.php
+ */
+$ds_actions = array(
+	DS_ACTION_DELETE => "Delete",
+	DS_ACTION_CHANGE_TEMPLATE => "Change Data Source Template",
+	DS_ACTION_DUPLICATE => "Duplicate",
+	DS_ACTION_CONVERT_TO_TEMPLATE => "Convert to Data Source Template",
+	DS_ACTION_CHANGE_HOST => "Change Host",
+	DS_ACTION_REAPPLY_SUGGESTED_NAMES => "Reapply Suggested Names",
+	DS_ACTION_ENABLE => "Enable",
+	DS_ACTION_DISABLE => "Disable",
+	);
+
+$data_source_types = array(
+	DATA_SOURCE_TYPE_GAUGE		=> "GAUGE",
+	DATA_SOURCE_TYPE_COUNTER	=> "COUNTER",
+	DATA_SOURCE_TYPE_DERIVE		=> "DERIVE",
+	DATA_SOURCE_TYPE_ABSOLUTE	=> "ABSOLUTE",
+	DATA_SOURCE_TYPE_COMPUTE	=> "COMPUTE"
+	);
 ?>

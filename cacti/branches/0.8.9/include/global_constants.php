@@ -264,5 +264,22 @@ define('RRA_CF_TYPE_DEVSEASONAL', 7);
 define('RRA_CF_TYPE_DEVPREDICT', 8);
 define('RRA_CF_TYPE_FAILURES', 9);
 
+/*
+ * TODO: to be moved to include/data_source/data_source_constants.php
+ */
+define('DS_ACTION_DELETE', '0');
+define('DS_ACTION_CHANGE_TEMPLATE', '1');
+define('DS_ACTION_CHANGE_HOST', '2');
+define('DS_ACTION_DUPLICATE', '3');
+define('DS_ACTION_CONVERT_TO_TEMPLATE', '4');
+define('DS_ACTION_ENABLE', '5');
+define('DS_ACTION_DISABLE', '6');
+define('DS_ACTION_REAPPLY_SUGGESTED_NAMES', '7');
+
+define('DATA_SOURCE_TYPE_GAUGE', 1);
+define('DATA_SOURCE_TYPE_COUNTER', 2);
+define('DATA_SOURCE_TYPE_DERIVE', 3);
+define('DATA_SOURCE_TYPE_ABSOLUTE', 4);
+define('DATA_SOURCE_TYPE_COMPUTE', 5);
 
 ?>
