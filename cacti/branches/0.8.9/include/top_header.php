@@ -24,6 +24,8 @@
 
 global $colors, $config, $menu, $refresh;
 
+include_once(CACTI_BASE_PATH . "/lib/time.php");
+
 $oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {
 	return;
@@ -35,12 +37,28 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 	<title><?php echo $page_title; ?></title>
-	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta http-equiv='Content-Script-Type' content='text/javascript'>
+	<meta http-equiv='Content-Style-Type' content='text/css'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/main.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/dd.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/colorpicker.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui-timepicker.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/cacti_dd_menu.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui.all.css' rel='stylesheet'>
+	<link href='<?php echo CACTI_URL_PATH; ?>images/favicon.ico' rel='shortcut icon'>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery-ui.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/layout.php'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.tablednd.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dropdown.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.dd.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.cookie.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/colorpicker.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.timepicker.js'></script>
+	
 	<?php
 	if (isset($refresh)) {
 		if (is_array($refresh)) {
