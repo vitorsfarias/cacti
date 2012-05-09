@@ -320,7 +320,7 @@ function draw_edit_control($field_name, &$field_array) {
 	}
 }
 
-/* form_file - draws a standard html file input element
+/** form_file - draws a standard html file input element
    @param string $form_name - the name of this form element
    @param int $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
@@ -1084,7 +1084,7 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
 	<table align="center" cellpadding="1" cellspacing="0" border="0" width="60%">
 		<tr>
-			<td clspan="10">
+			<td colspan="10">
 				<table width="100%" cellpadding="3" cellspacing="0">
 					<tr>
 						<td class="textHeaderDark"><?php print $title_text;?></td>
