@@ -112,16 +112,19 @@ function form_alternate_row_color($row_id = "", $hover = false, $row_class = "")
 }
 
 /** form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
-   @param $contents - the readable portion of the
-   @param $id - the id of the object that will be highlighted
-   @param $width - the width of the table element
-   @param $class - the class to apply to the table element */
+   @param string $contents - the readable portion of the cell
+   @param string $id - the id of the object that will be highlighted
+   @param string $width - the width of the table element
+   @param string $class - the class to apply to the table element 
+   @param string $align - alignment */
 function form_selectable_cell($contents, $id, $width="", $class="", $align="") {
 	print "\t<td onClick='selectLine(\"$id\")'" . (strlen($align) ? " style='text-align:$align;'" : "") . (strlen($width) ? " width='$width'" : "") . (strlen($class) ? " class='$class'" : "") . ">" . $contents . "</td>\n";
 }
 
 /** form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
-   @param $title - the text that will be displayed if your hover over the checkbox */
+   @param string $title - the text that will be displayed if your hover over the checkbox
+   @param string $id - the id of the object that will be highlighted
+   @param bool $checked - pre-check that cell */
 function form_checkbox_cell($title, $id, $checked = false) {
 	print "\t<td onClick='selectLine(\"$id\",true)' style='" . get_checkbox_style() . ";' width='1%' align='center'>\n";
 	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'" . ($checked ? " checked" : "") . ">\n";
@@ -270,6 +273,11 @@ function html_verify_request_variables($filter_vars, $session_prefix, $clear = f
 	}
 }
 
+
+/** get a page variable out of the global
+ * @param string $variable - the variable to be fetched
+ * @return string - value of that variable
+ */
 function html_get_page_variable($variable) {
 	global $_pageVars;
 
