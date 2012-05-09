@@ -1,0 +1,82 @@
+/* drop down menu styles */
+.cacti_dd_link{
+	cursor: pointer;
+}
+
+.cacti_dd_menu{
+	font-family: Helvetica, Arial, Verdana, sans-serif;
+	position: absolute;
+	border: 1px solid grey;
+	background-color: #fff;
+	z-index: auto;
+	padding: 0.1em;
+	padding-bottom: 0.2em;
+	text-decoration: none;
+	overflow: hidden;
+}
+
+.cacti_dd_menu .title{
+	display: none;
+	padding: 2px 2px;
+	overflow: hidden;
+}
+
+.cacti_dd_menu .title h6{
+	font-size: small;
+	font-weight: 600;
+	margin: 0.3em; padding: 0;
+}
+
+.cacti_dd_menu .back{
+	cursor: pointer;
+	display: none;
+	overflow: hidden;
+	font-size: small;
+	font-weight: bold;
+	padding: 2px 2px;
+	margin: 0px;
+}
+
+.cacti_dd_menu .content {
+	overflow: hidden;
+}
+
+.cacti_dd_menu .content h6 {
+	clear: both;
+	font-size: small;
+	font-weight: 500;
+	margin: 0; padding: 0;
+}
+
+.cacti_dd_menu .content h6 a{
+  	display: block;
+  	margin: 0;
+  	margin-left: 0.3em;
+	padding: 3px 2px;
+	text-decoration: none;
+	white-space: nowrap;
+	vertical-align:baseline;
+}
+
+.cacti_dd_menu .content h6 a:hover {
+	font-size:small;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.cacti_dd_menu .subtitle{
+	display: none;
+	overflow: hidden;
+}
+
+.cacti_dd_menu .subtitle h6{
+	font-size: x-small;
+	font-weight: 500;
+	margin: 0.3em; padding: 0;
+
+}
+
+.cacti_dd_menu .html{
+	display: none;
+	overflow: hidden;
+}
