@@ -283,6 +283,7 @@ $struct_data_source_item = array(
 		"max_length" => "20",
 		"size" => "30",
 		"default" => "0",
+		"class" => "DS_std",
 		"description" => "The minimum value of data that is allowed to be collected."
 		),
 	"rrd_maximum" => array(
@@ -291,6 +292,7 @@ $struct_data_source_item = array(
 		"max_length" => "20",
 		"size" => "30",
 		"default" => "0",
+		"class" => "DS_std",
 		"description" => "The maximum value of data that is allowed to be collected."
 		),
 	"data_source_type_id" => array(
@@ -299,6 +301,16 @@ $struct_data_source_item = array(
 		"array" => $data_source_types,
 		"default" => "",
 		"description" => "How data is represented in the RRA."
+		),
+	"rrd_compute_rpn" => array(
+		"friendly_name" => "RPN for a COMPUTE DS Item Type (RRDTool 1.2.x and above)",
+		"method" => "textbox",
+		"max_length" => "150",
+		"size" => "30",
+		"default" => "",
+		"class" => "DS_compute",
+		"description" => "When using a COMPUTE data source type, please enter the RPN for it here." . "<br>" .
+						"Available for RRDTool 1.2.x and above",
 		),
 	"rrd_heartbeat" => array(
 		"friendly_name" => "Heartbeat",
