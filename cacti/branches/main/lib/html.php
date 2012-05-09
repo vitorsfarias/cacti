@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* html_start_box - draws the start of an HTML box with an optional title
+/** html_start_box - draws the start of an HTML box with an optional title
    @param $title - the title of this box ("" for no title)
    @param $width - the width of the box in pixels or percent
    @param $cell_padding - the amount of cell padding to use inside of the box
@@ -145,9 +145,8 @@ function html_start_box_dq($query_name, $query_id, $device_id, $colspan, $width,
 					<table cellpadding='0' cellspacing='1' class='startBox<?php print $cell_padding;?>'><?php
 }
 
-/* html_end_box - draws the end of an HTML box
-   @param $trailing_br (bool) - whether to draw a trailing <br> tag after ending
-     the box */
+/** html_end_box - draws the end of an HTML box
+ * @param $trailing_br (bool) - whether to draw a trailing <br> tag after ending the box */
 function html_end_box($trailing_br = true) { ?>
 					</table>
 				</td>
@@ -156,19 +155,19 @@ function html_end_box($trailing_br = true) { ?>
 		<?php if ($trailing_br == true) { print '<br>'; } ?>
 <?php }
 
-/* html_graph_start_box - draws the start of an HTML graph view box
-   @param $cellpadding - the table cell padding for the box
-   @param $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
+/** html_graph_start_box - draws the start of an HTML graph view box
+ * @param $cellpadding - the table cell padding for the box
+ * @param $leading_br (bool) - whether to draw a leader <br> tag before the start of the table */
 function html_graph_start_box() {
 	print "\t<table class='startBox1' cellpadding='3'>\n";
 }
 
-/* html_graph_end_box - draws the end of an HTML graph view box */
+/** html_graph_end_box - draws the end of an HTML graph view box */
 function html_graph_end_box() {
 	print "</table>\n";
 }
 
-/* html_get_location - calculates the return location for nested tables */
+/** html_get_location - calculates the return location for nested tables */
 function html_get_location($page) {
 	if (isset($_REQUEST["parent"]) && isset($_REQUEST["parent_id"])) {
 		$parts = explode("?", $page);
@@ -179,20 +178,21 @@ function html_get_location($page) {
 	}
 }
 
+/** draws tabs via user_func */
 function html_draw_tabs() {
 	if (function_exists("html_" . get_request_var_request("parent") . "_draw_tabs")) {
 		call_user_func("html_" . get_request_var_request("parent") . "_draw_tabs");
 	}
 }
 
-/* html_graph_area - draws an area the contains full sized graphs
-   @param $graph_array - the array to contains graph information. for each graph in the
-     array, the following two keys must exist
-     $arr[0]["local_graph_id"] // graph id
-     $arr[0]["title_cache"] // graph title
-   @param $no_graphs_message - display this message if no graphs are found in $graph_array
-   @param $extra_url_args - extra arguments to append to the url
-   @param $header - html to use as a header */
+/** html_graph_area - draws an area the contains full sized graphs
+ * @param $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param $extra_url_args - extra arguments to append to the url
+ * @param $header - html to use as a header */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '') {
 	$i = 0;
 	if (sizeof($graph_array) > 0) {
@@ -298,14 +298,14 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 }
 
-/* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
-   @param $graph_array - the array to contains graph information. for each graph in the
-     array, the following two keys must exist
-     $arr[0]["local_graph_id"] // graph id
-     $arr[0]["title_cache"] // graph title
-   @param $no_graphs_message - display this message if no graphs are found in $graph_array
-   @param $extra_url_args - extra arguments to append to the url
-   @param $header - html to use as a header */
+/** html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
+ * @param $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param $extra_url_args - extra arguments to append to the url
+ * @param $header - html to use as a header */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "") {
 	$i = 0; $k = 0; $j = 0;
 
@@ -460,19 +460,18 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 	}
 }
 
-/* html_header_sort - draws a header row suitable for display inside of a box element.  When
-     a user selects a column header, the callback function "filename" will be called to handle
-     the sort the column and display the altered results.
-   @param $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (id => column_id, name => display_text, order => default_sort_direction, align => alignment)
-   @param $sort_column - the value of current sort column.
-   @param $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row 
-   @param $table_id - table id
-   @param $sort_url - provide url to be used as a base for sort function
-   */
+/** html_header_sort - draws a header row suitable for display inside of a box element.  When
+ *   a user selects a column header, the callback function "filename" will be called to handle
+ *   the sort the column and display the altered results.
+ * @param $header_items - an array containing a list of column items to display.  The
+ *      format is similar to the html_header, with the exception that it has three
+ *      dimensions associated with each element (id => column_id, name => display_text, order => default_sort_direction, align => alignment)
+ * @param $sort_column - the value of current sort column.
+ * @param $sort_direction - the value the current sort direction.  The actual sort direction
+ *      will be opposite this direction if the user selects the same named column.
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row 
+ * @param $table_id - table id
+ * @param $sort_url - provide url to be used as a base for sort function   */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $table_id = "", $sort_url = "") {
 	static $rand_id = 0;
 
@@ -537,20 +536,19 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	print "\t\t</tr></thead><tbody>\n";
 }
 
-/* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
-     suitable for display inside of a box element.  When a user selects a column header,
-     the collback function "filename" will be called to handle the sort the column and display
-     the altered results.
-   @param $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (id => column_id, name => display_text, order => default sort order, align => text aligment)
-   @param $sort_column - the value of current sort column.
-   @param $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @param $form_action - the url to post the 'select all' form to 
-   @param $table_id - table_id
-   @param $sort_url - provide url to be used as a base for sort function
-*/
+/** html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ *   suitable for display inside of a box element.  When a user selects a column header,
+ *   the collback function "filename" will be called to handle the sort the column and display
+ *   the altered results.
+ * @param $header_items - an array containing a list of column items to display.  The
+ *      format is similar to the html_header, with the exception that it has three
+ *      dimensions associated with each element (id => column_id, name => display_text, order => default sort order, align => text aligment)
+ * @param $sort_column - the value of current sort column.
+ * @param $sort_direction - the value the current sort direction.  The actual sort direction
+ *      will be opposite this direction if the user selects the same named column.
+ * @param $form_action - the url to post the 'select all' form to 
+ * @param $table_id - table_id
+ * @param $sort_url - provide url to be used as a base for sort function */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $form_action = "", $table_id = "", $sort_url = '') {
 	static $rand_id = 0;
 
@@ -623,15 +621,14 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "\t\t</tr></thead><tbody>\n";
 }
 
-/* html_header - draws a header row suitable for display inside of a box element
-   @param $header_items - an array containing a list of items to be included in the header
-   @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
-   @param $resizable - allow for the table to be resized via javascript
-   @param $table_id - table_id
-   @param $tclass - optional class extension for table
-   @param $trclass - optional class extension for table row
-   @param $thclass - optional class extension for table header cell
- */
+/** html_header - draws a header row suitable for display inside of a box element
+ * @param $header_items - an array containing a list of items to be included in the header
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param $resizable - allow for the table to be resized via javascript
+ * @param $table_id - table_id
+ * @param $tclass - optional class extension for table
+ * @param $trclass - optional class extension for table row
+ * @param $thclass - optional class extension for table header cell */
 function html_header($header_items, $last_item_colspan = 1, $resizable = false, $table_id = '', $tclass = '', $trclass = '', $thclass = '') {
 	static $rand_id = 0;
 
@@ -668,15 +665,14 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	print "\t\t</tr></thead><tbody>\n";
 }
 
-/* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-     suitable for display inside of a box element
-   @param $header_items - an array containing a list of items to be included in the header
-   @param $form_action - the url to post the 'select all' form to
-   @param $resizable - allow for the table to be resized via javascript
-   @param $tclass - optional class extension for table
-   @param $trclass - optional class extension for table row
-   @param $thclass - optional class extension for table header cell
- */
+/** html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ *   suitable for display inside of a box element
+ * @param $header_items - an array containing a list of items to be included in the header
+ * @param $form_action - the url to post the 'select all' form to
+ * @param $resizable - allow for the table to be resized via javascript
+ * @param $tclass - optional class extension for table
+ * @param $trclass - optional class extension for table row
+ * @param $thclass - optional class extension for table header cell */
 function html_header_checkbox($header_items, $form_action = "", $resizable = false, $table_id = '', $tclass = '', $trclass= '', $thclass = '') {
 	static $rand_id = 0;
 
@@ -1149,18 +1145,18 @@ function html_draw_table(&$table_format, &$rows, $total_rows, $rows_per_page, $p
 	print "</form>\n";	# end form of html_header_sort_checkbox
 }
 
-/* html_create_list - draws the items for an html dropdown given an array of data
-   @param $form_data - an array containing data for this dropdown. it can be formatted
-     in one of two ways:
-     $array["id"] = "value";
-     -- or --
-     $array[0]["id"] = 43;
-     $array[0]["name"] = "Red";
-   @param $column_display - used to indentify the key to be used for display data. this
-     is only applicable if the array is formatted using the second method above
-   @param $column_id - used to indentify the key to be used for id data. this
-     is only applicable if the array is formatted using the second method above
-   @param $form_previous_value - the current value of this form element */
+/** html_create_list - draws the items for an html dropdown given an array of data
+ * @param $form_data - an array containing data for this dropdown. it can be formatted
+ *   in one of two ways:
+ *   $array["id"] = "value";
+ *   -- or --
+ *   $array[0]["id"] = 43;
+ *   $array[0]["name"] = "Red";
+ * @param $column_display - used to indentify the key to be used for display data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param $column_id - used to indentify the key to be used for id data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		foreach (array_keys($form_data) as $id) {
@@ -1191,12 +1187,12 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}
 }
 
-/* html_split_string - takes a string and breaks it into a number of <br> separated segments
-   @param $string - string to be modified and returned
-   @param $length - the maximal string length to split to
-   @param $forgiveness - the maximum number of characters to walk back from to determine
-         the correct break location.
-   @returns $new_string - the modified string to be returned. */
+/** html_split_string - takes a string and breaks it into a number of <br> separated segments
+ * @param $string - string to be modified and returned
+ * @param $length - the maximal string length to split to
+ * @param $forgiveness - the maximum number of characters to walk back from to determine
+ *       the correct break location.
+ * @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
 	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
 	$string = trim($string);
@@ -1241,16 +1237,16 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 	}
 }
 
-/* html_create_nav - creates page select navigation html
+/** html_create_nav - creates page select navigation html
  * 					creates a table inside of a row
-   @param $current_page - the current page displayed
-   @param $max_pages - the maxium number of pages to show on a page
-   @param $rows_per_page - the number of rows to display per page
-   @param $total_rows - the total number of rows that can be displayed
-   @param $columns - the total number of columns on this page
-   @param $base_url - the url to navigate to
-   @param $page_var - the request variable to look for the page number
-   @param $url_page_select - the page list to display */
+ * @param $current_page - the current page displayed
+ * @param $max_pages - the maxium number of pages to show on a page
+ * @param $rows_per_page - the number of rows to display per page
+ * @param $total_rows - the total number of rows that can be displayed
+ * @param $columns - the total number of columns on this page
+ * @param $base_url - the url to navigate to
+ * @param $page_var - the request variable to look for the page number
+ * @param $url_page_select - the page list to display */
 function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows, $columns, $base_url, $page_var = "page") {
 	if (substr_count($base_url, "?")) {
 		$base_url .= "&";
@@ -1305,14 +1301,14 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
 	return $nav;
 }
 
-/* draw_graph_items_list - draws a nicely formatted list of graph items for display
-     on an edit form
-   @param $item_list - an array representing the list of graph items. this array should
-     come directly from the output of db_fetch_assoc()
-   @param $filename - the filename to use when referencing any external url
-   @param $url_data - any extra GET url information to pass on when referencing any
-     external url
-   @param $disable_controls - whether to hide all edit/delete functionality on this form */
+/** draw_graph_items_list - draws a nicely formatted list of graph items for display
+ *   on an edit form
+ * @param $item_list - an array representing the list of graph items. this array should
+ *   come directly from the output of db_fetch_assoc()
+ * @param $filename - the filename to use when referencing any external url
+ * @param $url_data - any extra GET url information to pass on when referencing any
+ *   external url
+ * @param $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
 	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
@@ -1418,6 +1414,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	print "</table></td></tr>";
 }
 
+/**
+ * draw list of data template items
+ * @param array $item_list - list of items
+ * @param string $filename - file name
+ * @param string $url_data - data for the URL
+ * @param bool	$disable_controls	- disable controls
+ */
 function draw_data_template_items_list($item_list, $filename, $url_data, $disable_controls) {
 	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
 
@@ -1467,6 +1470,12 @@ function draw_data_template_items_list($item_list, $filename, $url_data, $disabl
 }
 
 
+/** draw a tab in the header area
+ * @param string $name - name of the tab
+ * @param string $title - title of the tab
+ * @param string $location - location
+ * @param string $image - filename of image to be shown
+ */
 function draw_header_tab($name, $title, $location, $image = "") {
 	if ($image == "") {
 		return "<li id=\"tab_" . html_escape($name) . "\"" . (html_selected_tab($name, $location) ? " class=\"selected\"" : " class=\"notselected\"") . "><a href=\"javascript:navigation_select('" . html_escape($name) . "','" . htmlspecialchars($location) . "')\" title=\"" . html_escape($title) . "\">" . html_escape($title) . "</a></li>\n";
@@ -1475,6 +1484,10 @@ function draw_header_tab($name, $title, $location, $image = "") {
 	}
 }
 
+/** draw the selected tab in the header area
+ * @param string $name - name of the tab
+ * @param string $location - location
+ */
 function html_selected_tab($name, $location) {
 	if (get_request_var_request('toptab') == $name) {
 		return true;
@@ -1489,12 +1502,17 @@ function html_selected_tab($name, $location) {
 	return false;
 }
 
+/** escape html strings
+ * @param string $html - input to be escaped
+ * @return string - escaped output
+ */
 function html_escape($html) {
 	return htmlentities($html, ENT_QUOTES, 'UTF-8');
 }
 
-/* html_get_php_pathname() - extracts the name of the php file without the
-   extention.  This value is used to store and retriev cookie values */
+
+/** html_get_php_pathname() - extracts the name of the php file without the
+ * extention.  This value is used to store and retriev cookie values */
 function html_get_php_pathname() {
 	$path = $_SERVER['PHP_SELF'];
 
@@ -1505,6 +1523,11 @@ function html_get_php_pathname() {
 	return str_replace('.php', '', $path);
 }
 
+/** get column width from cookie
+ * @param $name - the cookie name that contains the cookie elements
+ * @param $element - the name of the cookie element to be searched for.
+ * @return string - width in pixels
+ */
 function html_get_column_width($name, $element) {
 	$width = html_read_cookie_element($name, $element);
 
@@ -1515,9 +1538,10 @@ function html_get_column_width($name, $element) {
 	}
 }
 
-/* html_read_cookie_element - extracts an element from the specified cookie array
-   @param $name - the cookie name that contains the cookie elements
-   @param $element - the name of the cookie element to be searched for. */
+/** html_read_cookie_element - extracts an element from the specified cookie array
+ * @param $name - the cookie name that contains the cookie elements
+ * @param $element - the name of the cookie element to be searched for. 
+ * @return string - cookie */
 function html_read_cookie_element($name, $element) {
 	if (isset($_COOKIE[$name])) {
 		$parts = explode('!', $_COOKIE[$name]);
@@ -1538,7 +1562,9 @@ function html_read_cookie_element($name, $element) {
 	return '';
 }
 
-/* draw_menu - draws the cacti menu for display in the console */
+/** draw_menu - draws the cacti menu for display in the console 
+ * @param array $user_menu - array that describes the menu
+ * */
 function draw_menu($user_menu = '') {
 	global $user_auth_realms, $user_auth_realm_filenames, $menu;
 
@@ -1666,10 +1692,10 @@ function draw_menu($user_menu = '') {
 	<?php
 }
 
-/* draw_actions_dropdown - draws a table the allows the user to select an action to perform
-     on one or more data elements
-   @param $actions_array - an array that contains a list of possible actions. this array should
-     be compatible with the form_dropdown() function */
+/** draw_actions_dropdown - draws a table the allows the user to select an action to perform
+ *   on one or more data elements
+ * @param $actions_array - an array that contains a list of possible actions. this array should
+ *   be compatible with the form_dropdown() function */
 function draw_actions_dropdown($actions_array, $table_id = '', $parent = '', $parent_id = '') {
 	global $actions_none;
 	?>
@@ -1708,6 +1734,7 @@ function draw_actions_dropdown($actions_array, $table_id = '', $parent = '', $pa
 /*
  * Deprecated functions
  */
+/** DEPRECATED draw a matrix header item */
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1, $align = 'left') { ?>
 		<td height='1' style='text-align:<?php print $align;?>;' colspan='<?php print $column_span;?>'>
 			<font color='#<?php print $matrix_text_color;?>'><?php print $matrix_name;?></font>
@@ -1715,6 +1742,7 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 <?php
 }
 
+/** DEPRECATED print a text area */
 function form_area($text) { ?>
 	<tr>
 		<td bgcolor='#E1E1E1' class='textArea'>
