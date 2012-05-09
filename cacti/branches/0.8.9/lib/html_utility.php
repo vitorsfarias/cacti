@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* inject_form_variables - replaces all variables contained in $form_array with
+/** inject_form_variables - replaces all variables contained in $form_array with
      their actual values
    @arg $form_array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
@@ -82,7 +82,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	return $form_array;
 }
 
-/* form_alternate_row_color - starts an HTML row with an alternating color scheme
+/** form_alternate_row_color - starts an HTML row with an alternating color scheme
    @arg $row_color1 - the first color to use
    @arg $row_color2 - the second color to use
    @arg $row_value - the value of the row which will be used to evaluate which color
@@ -105,8 +105,8 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	return $current_color;
 }
 
-/* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
-   @arg $contents - the readable portion of the
+/** form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
+   @arg $contents - the readable portion of the cell
    @arg $id - the id of the object that will be highlighted
    @arg $width - the width of the table element
    @arg $style - the style to apply to the table element */
@@ -114,20 +114,21 @@ function form_selectable_cell($contents, $id, $width="", $style="") {
 	print "\t<td" . (strlen($width) ? " width='$width'" : "") . (strlen($style) ? " style='$style;'" : "") . " onClick='select_line(\"$id\")'>" . $contents . "</td>\n";
 }
 
-/* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
-   @arg $title - the text that will be displayed if your hover over the checkbox */
+/** form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
+   @param $title - the text that will be displayed if your hover over the checkbox
+   @param string $id - the id of the object that will be highlighted */
 function form_checkbox_cell($title, $id) {
 	print "\t<td onClick='select_line(\"$id\", true)' style='" . get_checkbox_style() . "' width='1%' align='right'>\n";
 	print "\t\t<input type='checkbox' style='margin: 0px;' id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
 
-/* form_end_row - ends a table row that is started with form_alternate_row */
+/** form_end_row - ends a table row that is started with form_alternate_row */
 function form_end_row() {
 	print "</tr>\n";
 }
 
-/* html_boolean - returns the boolean equivalent of an HTML checkbox value
+/** html_boolean - returns the boolean equivalent of an HTML checkbox value
    @arg $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
@@ -138,7 +139,7 @@ function html_boolean($html_boolean) {
 	}
 }
 
-/* html_boolean_friendly - returns the natural language equivalent of an HTML
+/** html_boolean_friendly - returns the natural language equivalent of an HTML
      checkbox value
    @arg $html_boolean - the value of the HTML checkbox
    @returns - 'Selected' or 'Not Selected' based on the value of the HTML
@@ -151,7 +152,7 @@ function html_boolean_friendly($html_boolean) {
 	}
 }
 
-/* get_checkbox_style - finds the proper CSS padding to apply based on the
+/** get_checkbox_style - finds the proper CSS padding to apply based on the
      current client browser in use
    @returns - a CSS style string which should be used with an HTML checkbox
      control */
@@ -165,7 +166,7 @@ function get_checkbox_style() {
 	}
 }
 
-/* get_request_var - returns the current value of a PHP $_GET variable, optionally
+/** get_request_var - returns the current value of a PHP $_GET variable, optionally
      returning a default value if the request variable does not exist
    @arg $name - the name of the request variable. this should be a valid key in the
      $_GET array
@@ -185,7 +186,7 @@ function get_request_var($name, $default = "") {
 	}
 }
 
-/* get_request_var_post - returns the current value of a PHP $_POST variable, optionally
+/** get_request_var_post - returns the current value of a PHP $_POST variable, optionally
      returning a default value if the request variable does not exist
    @arg $name - the name of the request variable. this should be a valid key in the
      $_POST array
@@ -205,7 +206,7 @@ function get_request_var_post($name, $default = "") {
 	}
 }
 
-/* get_request_var_request - returns the current value of a PHP $_POST variable, optionally
+/** get_request_var_request - returns the current value of a PHP $_POST variable, optionally
      returning a default value if the request variable does not exist
    @arg $name - the name of the request variable. this should be a valid key in the
      $_REQUEST array
@@ -224,7 +225,7 @@ function get_request_var_request($name, $default = "")
 }
 
 
-/* load_current_session_value - finds the correct value of a variable that is being
+/** load_current_session_value - finds the correct value of a variable that is being
      cached as a session variable on an HTML form
    @arg $request_var_name - the array index name for the request variable
    @arg $session_var_name - the array index name for the session variable
@@ -240,7 +241,7 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 	}
 }
 
-/* get_colored_device_status - given a device's status, return the colored text in HTML
+/** get_colored_device_status - given a device's status, return the colored text in HTML
      format suitable for display
    @arg $disabled (bool) - true if the device is disabled, false is it is not
    @arg $status - the status type of the device as defined in global_constants.php
@@ -273,7 +274,7 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
-/* get_current_graph_start - determine the correct graph start time selected using
+/** get_current_graph_start - determine the correct graph start time selected using
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
@@ -284,7 +285,7 @@ function get_current_graph_start() {
 	}
 }
 
-/* get_current_graph_end - determine the correct graph end time selected using
+/** get_current_graph_end - determine the correct graph end time selected using
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
@@ -295,7 +296,7 @@ function get_current_graph_end() {
 	}
 }
 
-/* get_page_list - generates the html necessary to present the user with a list of pages limited
+/** get_page_list - generates the html necessary to present the user with a list of pages limited
      in length and number of rows per page
    @arg $current_page - the current page number
    @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
