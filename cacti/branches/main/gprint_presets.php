@@ -195,7 +195,7 @@ function gprint_presets_form_save() {
    ----------------------------------- */
 
 function gprint_presets_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_gprint_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/gprint.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

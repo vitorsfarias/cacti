@@ -554,7 +554,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_gprint_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/gprint.php");
 
 	/* import into: graph_templates_gprint */
 	$_gprint_preset_id = db_fetch_cell("select id from graph_templates_gprint where hash='$hash'");
