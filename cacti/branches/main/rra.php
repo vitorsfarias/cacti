@@ -212,7 +212,7 @@ function form_save() {
    ------------------- */
 
 function rra_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_rra_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/rra.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
