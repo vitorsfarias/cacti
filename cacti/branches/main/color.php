@@ -490,7 +490,7 @@ function color_remove() {
 }
 
 function color_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_color_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/color.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
