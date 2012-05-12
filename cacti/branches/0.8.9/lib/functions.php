@@ -2031,6 +2031,43 @@ function get_hash_gprint($gprint_id) {
 	}
 }
 
+/**
+ * returns the current unique hash for a xaxis
+ * @param $graph_template_id - (int) the ID of the xaxis to return a hash for
+ * @param $sub_type (optional) return the hash for a particlar sub-type of this type
+ * @returns - a 128-bit, hexadecimal hash */
+function get_hash_xaxis($xaxis_id, $sub_type = "xaxis") {
+	if ($sub_type == "xaxis") {
+		$hash = db_fetch_cell("select hash from graph_templates_xaxis where id=$xaxis_id");
+	}elseif ($sub_type == "xaxis_item") {
+		$hash = db_fetch_cell("select hash from graph_templates_xaxis_items where id=$xaxis_id");
+	}
+
+	if (preg_match("/[a-fA-F0-9]{32}/", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
+
+/**
+ * returns the current unique hash for a vdef
+ * @param $graph_template_id - (int) the ID of the vdef to return a hash for
+ * @param $sub_type (optional) return the hash for a particlar sub-type of this type
+ * @returns - a 128-bit, hexadecimal hash */
+function get_hash_vdef($vdef_id, $sub_type = "vdef") {
+	if ($sub_type == "vdef") {
+		$hash = db_fetch_cell("select hash from vdef where id=$vdef_id");
+	}elseif ($sub_type == "vdef_item") {
+		$hash = db_fetch_cell("select hash from vdef_items where id=$vdef_id");
+	}
+
+	if (ereg("[a-fA-F0-9]{32}", $hash)) {
+		return $hash;
+	}else{
+		return generate_hash();
+	}
+}
 /* get_hash_host_template - returns the current unique hash for a gprint preset
    @arg $host_template_id - (int) the ID of the host template to return a hash for
    @returns - a 128-bit, hexadecimal hash */

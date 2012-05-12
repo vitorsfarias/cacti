@@ -40,11 +40,11 @@ $vdef_functions = array(1 =>
 );
 
 $vdef_item_types = array(
-	CVDEF_ITEM_TYPE_FUNCTION	=> __('Function'),
-	CVDEF_ITEM_TYPE_SPEC_DS		=> __('Special Data Source'),
-	CVDEF_ITEM_TYPE_STRING		=> __('Custom String'),
+	CVDEF_ITEM_TYPE_FUNCTION	=> 'Function',
+	CVDEF_ITEM_TYPE_SPEC_DS		=> 'Special Data Source',
+	CVDEF_ITEM_TYPE_STRING		=> 'Custom String',
 );
 
 $custom_vdef_data_source_types = array( // this may change as soon as RRDTool supports math in VDEF, until then only reference to CDEF may help
-	'CURRENT_DATA_SOURCE' => __('Current Graph Item Data Source'),
+	'CURRENT_DATA_SOURCE' => 'Current Graph Item Data Source',
 );
