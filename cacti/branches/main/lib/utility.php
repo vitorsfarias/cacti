@@ -847,7 +847,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 }
 
 function duplicate_vdef($_vdef_id, $vdef_title) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
 
 	$vdef = db_fetch_row("select * from vdef where id=$_vdef_id");
 	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$_vdef_id");

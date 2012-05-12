@@ -67,4 +67,15 @@ function get_vdef($vdef_id, $display = false) {
 	return $vdef_string;
 }
 
+function &preset_vdef_form_list() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_forms.php");
+
+	return $fields_vdef_edit;
+}
+
+function &preset_vdef_item_form_list() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_forms.php");
+
+	return $fields_vdef_item_edit;
+}
 ?>

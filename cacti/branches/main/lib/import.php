@@ -757,7 +757,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
 
 	/* import into: vdef */
 	$_vdef_id = db_fetch_cell("select id from vdef where hash='$hash'");
