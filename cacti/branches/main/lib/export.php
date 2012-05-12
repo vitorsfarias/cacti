@@ -479,7 +479,7 @@ function vdef_to_xml($vdef_id) {
  * @return string		- XML text of encoded XAXIS
  */
 function xaxis_to_xml($xaxis_id) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
 
 	$hash["xaxis"] = get_hash_version("xaxis") . get_hash_xaxis($xaxis_id);
 	$xml_text = "";
