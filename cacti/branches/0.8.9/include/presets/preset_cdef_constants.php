@@ -22,19 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/* file: vdef.php, action: edit */
-$fields_vdef_edit = array(
-	'name' => array(
-		'method' => 'textbox',
-		'friendly_name' => 'Name',
-		'description' => 'A useful name for this VDEF.',
-		'value' => '|arg1:name|',
-		'max_length' => '255',
-	),
-);
-
-$fields_vdef_item_edit = array(
-	'sequence' => 'sequence',
-	'type' => 'type',
-	'value' => 'value'
-);
+define('CVDEF_ITEM_TYPE_FUNCTION', 1);
+define('CVDEF_ITEM_TYPE_OPERATOR', 2);
+define('CVDEF_ITEM_TYPE_SPEC_DS', 4);
+define('CVDEF_ITEM_TYPE_CDEF', 5);
+define('CVDEF_ITEM_TYPE_STRING', 6);
