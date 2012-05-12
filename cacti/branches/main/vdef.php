@@ -454,7 +454,7 @@ function vdef_item_dnd() {
 
 function vdef_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
