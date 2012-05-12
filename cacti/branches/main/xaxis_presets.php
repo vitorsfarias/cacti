@@ -373,7 +373,7 @@ function xaxis_item_edit() {
 
 function xaxis_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

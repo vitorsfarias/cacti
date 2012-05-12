@@ -816,7 +816,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_xaxis($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
 
 	/* import into: xaxis */
 	$_xaxis_id = db_fetch_cell("select id from graph_templates_xaxis where hash='$hash'");
