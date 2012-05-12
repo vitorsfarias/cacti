@@ -807,7 +807,7 @@ function duplicate_data_query($data_query_id, $data_query_name) {
 }
 
 function duplicate_cdef($_cdef_id, $cdef_title) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
 
 	$cdef = db_fetch_row("select * from cdef where id=$_cdef_id");
 	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$_cdef_id");

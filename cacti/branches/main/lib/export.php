@@ -350,7 +350,7 @@ function data_input_method_to_xml($data_input_id) {
 function cdef_to_xml($cdef_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
 
 	$hash["cdef"] = get_hash_version("cdef") . get_hash_cdef($cdef_id);
 	$xml_text = "";

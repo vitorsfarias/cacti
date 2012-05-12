@@ -684,7 +684,7 @@ function xml_to_device_template($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
 
 	/* import into: cdef */
 	$_cdef_id = db_fetch_cell("select id from cdef where hash='$hash'");
