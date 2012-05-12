@@ -267,7 +267,7 @@ function cdef_form_actions() {
 
 function cdef_item_remove_confirm() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
@@ -453,7 +453,7 @@ function cdef_item_edit() {
 
 function cdef_edit() {
 	require(CACTI_BASE_PATH . "/include/presets/preset_cdef_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_cdef_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
