@@ -583,7 +583,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_rra_info.php");
+	require_once(CACTI_BASE_PATH . "/lib/rra.php");
 
 	/* import into: rra */
 	$_rra_id = db_fetch_cell("select id from rra where hash='$hash'");
