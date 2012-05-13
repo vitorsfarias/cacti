@@ -222,7 +222,7 @@ $menu = array(
 			'vdef.php'				=> __('VDEFs'),
 			'color.php'				=> __('Colors'),
 			'gprint_presets.php'	=> __('GPRINT'),
-			'xaxis_presets.php'		=> __('X-Axis'),
+			'xaxis.php'		=> __('X-Axis'),
 			'rra.php'				=> __('RRAs'),
 		),
 	),
@@ -378,7 +378,7 @@ $user_auth_realm_filenames = array(
 	'user_admin.php'				=> 1,
 	'utilities.php'					=> 15,
 	'vdef.php'						=> 14,
-	'xaxis_presets.php'				=> 5,
+	'xaxis.php'				=> 5,
 	'layout.php'					=> 7
 );
 
