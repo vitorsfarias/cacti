@@ -484,8 +484,8 @@ $user_auth_realm_filenames = array(
 	'data_sources.php'				=> 3,
 	'data_templates.php'			=> 11,
 	'data_templates_items.php'		=> 11,
-	'devices.php'					=> 3,
-	'device_templates.php'			=> 12,
+	'host.php'						=> 3,
+	'host_templates.php'			=> 12,
 	'email_templates.php'			=> 8,
 	'event_queue.php'				=> 8,
 	'gprint_presets.php'			=> 5,
@@ -515,7 +515,7 @@ $user_auth_realm_filenames = array(
 	'user_admin.php'				=> 1,
 	'utilities.php'					=> 15,
 	'vdef.php'						=> 14,
-	'xaxis.php'				=> 5,
+	'xaxis.php'						=> 5,
 	'layout.php'					=> 7
 );
 
