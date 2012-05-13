@@ -1830,10 +1830,10 @@ function draw_navigation_text($type = "url") {
 		"vdef.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
 		"vdef.php:remove" => array("title" => "(Remove)", "mapping" => "index.php:,vdef.php:", "url" => "", "level" => "2"),
 		"vdef.php:item_edit" => array("title" => "VDEF Items", "mapping" => "index.php:,vdef.php:,vdef.php:edit", "url" => "", "level" => "3"),
-		"xaxis_presets.php:" => array("title" => "X-Axis Presets", "mapping" => "index.php:", "url" => "xaxis_presets.php", "level" => "1"),
-		"xaxis_presets.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,xaxis_presets.php:", "url" => "", "level" => "2"),
-		"xaxis_presets.php:item_edit" => array("title" => "X-Axis Items", "mapping" => "index.php:,xaxis_presets.php:,xaxis_presets.php:edit", "url" => "", "level" => "3"),
-		"xaxis_presets.php:actions" => array("title" => "Actions", "mapping" => "index.php:,xaxis_presets.php:", "url" => "", "level" => "2"),
+		"xaxis.php:" => array("title" => "X-Axis Presets", "mapping" => "index.php:", "url" => "xaxis.php", "level" => "1"),
+		"xaxis.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,xaxis.php:", "url" => "", "level" => "2"),
+		"xaxis.php:item_edit" => array("title" => "X-Axis Items", "mapping" => "index.php:,xaxis.php:,xaxis.php:edit", "url" => "", "level" => "3"),
+		"xaxis.php:actions" => array("title" => "Actions", "mapping" => "index.php:,xaxis.php:", "url" => "", "level" => "2"),
 		);
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);

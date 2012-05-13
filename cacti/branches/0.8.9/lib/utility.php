@@ -763,6 +763,81 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
+function duplicate_vdef($_vdef_id, $vdef_title) {
+	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+
+	$vdef = db_fetch_row("select * from vdef where id=$_vdef_id");
+	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$_vdef_id");
+
+	/* substitute the title variable */
+	$vdef["name"] = str_replace("<vdef_title>", $vdef["name"], $vdef_title);
+
+	/* create new entry: device_template */
+	$save["id"] = 0;
+	$save["hash"] = get_hash_vdef(0);
+
+	$fields_vdef_edit = preset_vdef_form_list();
+	reset($fields_vdef_edit);
+	while (list($field, $array) = each($fields_vdef_edit)) {
+		if (!preg_match("/^hidden/", $array["method"])) {
+			$save[$field] = $vdef[$field];
+		}
+	}
+
+	$vdef_id = sql_save($save, "vdef");
+
+	/* create new entry(s): vdef_items */
+	if (sizeof($vdef_items) > 0) {
+		foreach ($vdef_items as $vdef_item) {
+			unset($save);
+
+			$save["id"] = 0;
+			$save["hash"] = get_hash_vdef(0, "vdef_item");
+			$save["vdef_id"] = $vdef_id;
+			$save["sequence"] = $vdef_item["sequence"];
+			$save["type"] = $vdef_item["type"];
+			$save["value"] = $vdef_item["value"];
+
+			sql_save($save, "vdef_items");
+		}
+	}
+}
+
+function duplicate_xaxis($_xaxis_id, $xaxis_title) {
+	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+
+	$xaxis = db_fetch_row("select * from graph_templates_xaxis where id=$_xaxis_id");
+	$xaxis_items = db_fetch_assoc("select * from graph_templates_xaxis_items where xaxis_id=$_xaxis_id ORDER BY timespan");
+
+	/* create new entry: device_template */
+	$save["id"] = 0;
+	$save["hash"] = get_hash_xaxis(0);
+	/* substitute the title variable */
+	$save["name"] = str_replace("<xaxis_title>", $xaxis["name"], $xaxis_title);
+
+	$xaxis_id = sql_save($save, "graph_templates_xaxis");
+	$fields_xaxis_item_edit = preset_xaxis_item_form_list();
+
+	/* create new entry(s): xaxis_items */
+	if (sizeof($xaxis_items) > 0) {
+		foreach ($xaxis_items as $xaxis_item) {
+			unset($save);
+
+			$save["id"] = 0;
+			$save["hash"] = get_hash_xaxis(0, "xaxis_item");
+			$save["xaxis_id"] = $xaxis_id;
+			reset($fields_xaxis_item_edit);
+			while (list($field, $array) = each($fields_xaxis_item_edit)) {
+				if (!preg_match("/^hidden/", $array["method"])) {
+					$save[$field] = $xaxis_item[$field];
+				}
+			}
+
+			sql_save($save, "graph_templates_xaxis_items");
+		}
+	}
+}
+
 /**
  * update the font cache via browser
  */
@@ -789,7 +864,7 @@ if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||
 function font_cache_filter() {
 	global $item_rows;
 
-	html_start_box(__("Font Cache Items"), "100", "3", "center", "", true);
+	html_start_box("Font Cache Items", "100", "3", "center", "", true);
 	?>
 	<tr class='rowAlternate3'>
 		<td>
@@ -797,13 +872,13 @@ function font_cache_filter() {
 			<table cellpadding="0" cellspacing="0">
 				<tr>
 					<td class="nw50">
-						<?php print __("Search:");?>
+						<?php print "Search:";?>
 					</td>
 					<td class="w1">
 						<input type="text" name="filter" size="30" value="<?php print html_get_page_variable("filter");?>">
 					</td>
 					<td class="nw50">
-						<?php print __("Rows:");?>
+						<?php print "Rows:";?>
 					</td>
 					<td class="w1">
 						<select name="rows" onChange="applyFontCacheFilterChange(document.form_fontcache)">
@@ -818,8 +893,8 @@ function font_cache_filter() {
 						</select>
 					</td>
 					<td class="nw120">
-						<input type="submit" Value="<?php print __("Go");?>" name="go" align="middle">
-						<input type="button" Value="<?php print __("Clear");?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
+						<input type="submit" Value="<?php print "Go";?>" name="go" align="middle">
+						<input type="button" Value="<?php print "Clear";?>" name="clear" align="middle" onClick="clearFontCacheFilterChange(document.form_userlog)">
 					</td>
 				</tr>
 			</table>
@@ -911,7 +986,7 @@ function utilities_view_font_cache($refresh=true) {
 
 	$table->table_format = array(
 		"font" => array(
-			"name" => __("Font Name"),
+			"name" => "Font Name",
 			"filter" => true,
 			"order" => "ASC"
 		),
