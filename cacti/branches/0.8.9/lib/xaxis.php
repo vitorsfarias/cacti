@@ -22,14 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/presets/preset_xaxis_constants.php');
+function &preset_xaxis_form_list() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
 
-$rrd_xaxis_timespans = array(
-	RRD_XAXIS_SECOND		=> 'Second',
-	RRD_XAXIS_MINUTE		=> 'Minute',
-	RRD_XAXIS_HOUR			=> 'Hour',
-	RRD_XAXIS_DAY			=> 'Day',
-	RRD_XAXIS_WEEK			=> 'Week',
-	RRD_XAXIS_MONTH			=> 'Month',
-	RRD_XAXIS_YEAR			=> 'Year',
-);
+	return $fields_xaxis_edit;
+}
+
+function &preset_xaxis_item_form_list() {
+	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
+
+	return $fields_xaxis_item_edit;
+}
