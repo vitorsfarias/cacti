@@ -124,7 +124,7 @@ switch ($_REQUEST["action"]) {
 		break;
 	default:
 
-		if (!api_plugin_hook_function('utilities_action', $_REQUEST['action'])) {
+		if (!plugin_hook_function('utilities_action', $_REQUEST['action'])) {
 			include_once('./include/top_header.php');
 
 			utilities();
@@ -291,7 +291,7 @@ function utilities_view_tech($php_info = "") {
 	print "		<td class='textArea'>Date</td>\n";
 	print "		<td class='textArea'>" . date("r") . "</td>\n";
 	print "</tr>\n";
-	api_plugin_hook_function('custom_version_info');
+	plugin_hook_function('custom_version_info');
 	print "<tr bgcolor='#" . $colors["form_alternate2"] . "'>\n";
 	print "		<td class='textArea'>Cacti Version</td>\n";
 	print "		<td class='textArea'>" . $config["cacti_version"] . "</td>\n";
@@ -1665,7 +1665,7 @@ function utilities() {
 
 	<?php
 
-	api_plugin_hook('utilities_list');
+	plugin_hook('utilities_list');
 
 	html_end_box();
 }

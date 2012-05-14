@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
+$oper_mode = plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
 if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
 
 ?>
@@ -30,7 +30,7 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 		</td>
 	</tr>
 </table>
-<?php api_plugin_hook('page_bottom');?>
+<?php plugin_hook('page_bottom');?>
 </body>
 </html>
 

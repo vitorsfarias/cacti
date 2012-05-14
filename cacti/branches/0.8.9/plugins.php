@@ -57,35 +57,35 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 
 	switch ($mode) {
 		case 'installold':
-			api_plugin_install_old($id);
+			plugin_install_old($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'uninstallold':
-			api_plugin_uninstall_old($id);
+			plugin_uninstall_old($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'install':
-			api_plugin_install($id);
+			plugin_install($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'uninstall':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_uninstall($id);
+			plugin_uninstall($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'disable':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_disable($id);
+			plugin_disable($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'enable':
 			if (!in_array($id, $pluginslist)) break;
-			api_plugin_enable($id);
+			plugin_enable($id);
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -95,14 +95,14 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 		case 'moveup':
 			if (!in_array($id, $pluginslist)) break;
 			if (is_system_plugin($id)) break;
-			api_plugin_moveup($id);
+			plugin_moveup($id);
 			header("Location: plugins.php");
 			exit;
 			break;
 		case 'movedown':
 			if (!in_array($id, $pluginslist)) break;
 			if (is_system_plugin($id)) break;
-			api_plugin_movedown($id);
+			plugin_movedown($id);
 			header("Location: plugins.php");
 			exit;
 			break;
@@ -124,7 +124,7 @@ update_show_current();
 
 include("./include/bottom_footer.php");
 
-function api_plugin_install_old ($plugin) {
+function plugin_install_old ($plugin) {
 	global $config;
 	if (!file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
 		return false;
@@ -151,7 +151,7 @@ function api_plugin_install_old ($plugin) {
 	return false;
 }
 
-function api_plugin_uninstall_old ($plugin) {
+function plugin_uninstall_old ($plugin) {
 	global $config;
 	$oldplugins = read_config_option('oldplugins');
 	if (strlen(trim($oldplugins))) {

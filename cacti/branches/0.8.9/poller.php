@@ -108,7 +108,7 @@ if (function_exists("pcntl_signal")) {
 	pcntl_signal(SIGINT, "sig_handler");
 }
 
-api_plugin_hook('poller_top');
+plugin_hook('poller_top');
 
 /* record the start time */
 list($micro,$seconds) = explode(" ", microtime());
@@ -298,7 +298,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		}
 
-		$extra_args = api_plugin_hook_function ('poller_command_args', $extra_args);
+		$extra_args = plugin_hook_function ('poller_command_args', $extra_args);
 
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_hosts as $item) {
@@ -369,7 +369,7 @@ while ($poller_runs_completed < $poller_runs) {
 			if ($finished_processes >= $started_processes) {
 				/* all scheduled pollers are finished */
 				if ($poller_finishing_dispatched === FALSE) {
-					api_plugin_hook('poller_finishing');
+					plugin_hook('poller_finishing');
 					$poller_finishing_dispatched = TRUE;
 				}
 				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, TRUE);
@@ -451,9 +451,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 		/* sleep the appripriate amount of time */
 		if ($poller_runs_completed < $poller_runs) {
-			api_plugin_hook('poller_bottom');
+			plugin_hook('poller_bottom');
 			usleep($sleep_time * 1000000);
-			api_plugin_hook('poller_top');
+			plugin_hook('poller_top');
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
 		cacti_log("WARNING: Cacti Polling Cycle Exceeded Poller Interval by " . $loop_end-$loop_start-$poller_interval . " seconds", TRUE, "POLLER");
@@ -500,6 +500,6 @@ function display_help() {
 	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
-api_plugin_hook('poller_bottom');
+plugin_hook('poller_bottom');
 
 ?>

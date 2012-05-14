@@ -60,7 +60,7 @@ case 'changepassword':
 				case '3': /* default graph page */
 					header("Location: graph_view.php"); break;
 				default:
-					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
+					plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
 		}else{
 			header("Location: graph_view.php");
@@ -74,7 +74,7 @@ case 'changepassword':
 	break;
 }
 
-if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+if (plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	exit;
 }
 

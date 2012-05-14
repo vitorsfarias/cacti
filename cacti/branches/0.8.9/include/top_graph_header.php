@@ -26,7 +26,7 @@ global $menu;
 $using_guest_account = false;
 $show_console_tab = true;
 
-$oper_mode = api_plugin_hook_function('top_graph_header', OPER_MODE_NATIVE);
+$oper_mode = plugin_hook_function('top_graph_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {
 	return;
 }
@@ -58,7 +58,7 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "zoom") {
 	$_SESSION["sess_nav_level_cache"][2]["url"] = "graph.php?local_graph_id=" . $_REQUEST["local_graph_id"] . "&rra_id=all";
 }
 
-$page_title = api_plugin_hook_function('page_title', draw_navigation_text("title"));
+$page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -72,7 +72,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	}else if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'zoom') {
 		print "<meta http-equiv=refresh content='99999'>";
 	}else{
-		$refresh = api_plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
+		$refresh = plugin_hook_function('top_graph_refresh', htmlspecialchars(read_graph_config_option("page_refresh"),ENT_QUOTES));
 		if (is_array($refresh)) {
 			print "<meta http-equiv=refresh content='" . htmlspecialchars($refresh["seconds"],ENT_QUOTES) . "'; url='" . htmlspecialchars($refresh["page"],ENT_QUOTES) . "'>\r\n";
 		}else{
@@ -89,14 +89,14 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
-	<?php api_plugin_hook('page_head'); ?>
+	<?php plugin_hook('page_head'); ?>
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body <?php print api_plugin_hook_function("body_style", "");?>>
+<body <?php print plugin_hook_function("body_style", "");?>>
 <a name='page_top'></a>
 <?php }else{?>
-<body <?php print api_plugin_hook_function("body_style", "");?>>
+<body <?php print plugin_hook_function("body_style", "");?>>
 <?php }?>
 
 <table style="width:100%;height:100%;" cellspacing="0" cellpadding="0">
@@ -107,7 +107,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop2.gif') no-repeat center right;">
 					<td id="tabs" nowrap>
 						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
-						api_plugin_hook('top_graph_header_tabs');
+						plugin_hook('top_graph_header_tabs');
 						?>
 					</td>
 					<td id="gtabs" align="right" nowrap>
@@ -117,7 +117,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			</table>
 		</td>
 	</tr>
-<?php } elseif ($oper_mode == OPER_MODE_NOTABS) { api_plugin_hook_function('print_top_header'); } ?>
+<?php } elseif ($oper_mode == OPER_MODE_NOTABS) { plugin_hook_function('print_top_header'); } ?>
 	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
 			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
@@ -131,9 +131,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 						<?php echo draw_navigation_text();?>
 					</td>
 					<td align="right">
-						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { api_plugin_hook('nav_login_before'); ?>
+						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { plugin_hook('nav_login_before'); ?>
 						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
-						<?php api_plugin_hook('nav_login_after'); } ?>
+						<?php plugin_hook('nav_login_after'); } ?>
 					</td>
 				</tr>
 			</table>
