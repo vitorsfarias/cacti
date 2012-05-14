@@ -97,7 +97,7 @@ elseif (db_fetch_cell("select cacti from version") != CACTI_VERSION)
 
 if (read_config_option("auth_method") != 0) {
 	/* handle alternate authentication realms */
-	api_plugin_hook_function('auth_alternate_realms');
+	plugin_hook_function('auth_alternate_realms');
 
 	/* handle change password dialog */
 	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != CHECKED))

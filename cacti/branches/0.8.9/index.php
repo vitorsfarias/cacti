@@ -25,7 +25,7 @@
 include("./include/auth.php");
 include("./include/top_header.php");
 
-api_plugin_hook('console_before');
+plugin_hook('console_before');
 
 ?>
 <table width="100%" align="center">
@@ -48,7 +48,7 @@ api_plugin_hook('console_before');
 
 <?php
 
-api_plugin_hook('console_after');
+plugin_hook('console_after');
 
 include("./include/bottom_footer.php");
 

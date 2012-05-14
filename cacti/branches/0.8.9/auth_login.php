@@ -131,7 +131,7 @@ if ($action == 'login') {
 		}
 
 	default:
-		if (!api_plugin_hook_function('login_process', false)) {
+		if (!plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
 			if ((!$user_auth) && (!$ldap_error)) {
 				/* if auth has not occured process for builtin - AKA Ldap fall through */
@@ -233,7 +233,7 @@ if ($action == 'login') {
 
 				break;
 			default:
-				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
+				plugin_hook_function('login_options_navigate', $user['login_opts']);
 		}
 		exit;
 	}else{
@@ -267,14 +267,14 @@ function auth_display_custom_error_message($message) {
 	print "</body>\n</html>\n";
 }
 
-if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+if (plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	return;
 }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title><?php print api_plugin_hook_function("login_title", "Login to Cacti");?></title>
+	<title><?php print plugin_hook_function("login_title", "Login to Cacti");?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<STYLE TYPE="text/css">
 	<!--
@@ -291,10 +291,10 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<input type="hidden" name="action" value="login">
 <?php
 
-api_plugin_hook_function("login_before", array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
+plugin_hook_function("login_before", array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
 
 $cacti_logo = $config['url_path'] . 'images/auth_login.gif';
-$cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
+$cacti_logo = plugin_hook_function('cacti_image', $cacti_logo);
 
 ?>
 	<table id="login" align="center">
@@ -336,8 +336,8 @@ $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
 			<td><input type="password" name="login_password" size="40" style="width: 295px;"></td>
 		</tr>
 		<?php
-		if (read_config_option("auth_method") == "3" || api_plugin_hook_function('login_realms_exist')) {
-			$realms = api_plugin_hook_function('login_realms', array("local" => array("name" => "Local", "selected" => false), "ldap" => array("name" => "LDAP", "selected" => true)));
+		if (read_config_option("auth_method") == "3" || plugin_hook_function('login_realms_exist')) {
+			$realms = plugin_hook_function('login_realms', array("local" => array("name" => "Local", "selected" => false), "ldap" => array("name" => "LDAP", "selected" => true)));
 			?>
 		<tr id="realm_row">
 			<td>Realm:</td>
@@ -358,7 +358,7 @@ $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
 			<td><input type="submit" value="Login"></td>
 		</tr>
 	</table>
-<?php api_plugin_hook('login_after'); ?>
+<?php plugin_hook('login_after'); ?>
 	</form>
 </body>
 </html>

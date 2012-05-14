@@ -121,7 +121,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	}
 
-	api_plugin_hook_function('copy_user', array('template_id' => $template_id, 'new_id' => $new_id));
+	plugin_hook_function('copy_user', array('template_id' => $template_id, 'new_id' => $new_id));
 
 	return true;
 }
@@ -153,7 +153,7 @@ function user_remove($user_id) {
 	db_execute("delete from settings_graphs where user_id=" . $user_id);
 	db_execute("delete from settings_tree where user_id=" . $user_id);
 
-	api_plugin_hook_function('user_remove', $user_id);
+	plugin_hook_function('user_remove', $user_id);
 }
 
 /* user_disable - disable a user account

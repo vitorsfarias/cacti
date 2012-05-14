@@ -44,7 +44,7 @@ $ds_actions = array(
 	7 => "Disable"
 	);
 
-$ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
+$ds_actions = plugin_hook_function('data_source_action_array', $ds_actions);
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -323,7 +323,7 @@ function form_actions() {
 						db_execute("delete from graph_templates_item where task_item_id IN (" . implode(",", $data_template_rrds) . ") and local_graph_id > 0");
 					}
 
-					api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+					plugin_hook_function('graph_items_remove', $data_template_rrds);
 
 					break;
 				case '3': /* delete all graphs tied to this data source */
@@ -340,7 +340,7 @@ function form_actions() {
 						api_graph_remove_multi($graphs);
 					}
 
-					api_plugin_hook_function('graphs_remove', $graphs);
+					plugin_hook_function('graphs_remove', $graphs);
 
 					break;
 			}
@@ -353,7 +353,7 @@ function form_actions() {
 
 			api_data_source_remove_multi($selected_items);
 
-			api_plugin_hook_function('data_source_remove', $selected_items);
+			plugin_hook_function('data_source_remove', $selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -407,7 +407,7 @@ function form_actions() {
 				update_data_source_title_cache($selected_items[$i]);
 			}
 		} else {
-			api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
+			plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
 		}
 		header("Location: data_sources.php");
 		exit;
@@ -555,7 +555,7 @@ function form_actions() {
 			$save['drp_action'] = $_POST['drp_action'];
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
-			api_plugin_hook_function('data_source_action_prepare', $save);
+			plugin_hook_function('data_source_action_prepare', $save);
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue'>";
 		}
 	}else{
@@ -695,7 +695,7 @@ function ds_edit() {
 	input_validate_input_number(get_request_var("host_id"));
 	/* ==================================================== */
 
-	api_plugin_hook('data_source_edit_top');
+	plugin_hook('data_source_edit_top');
 
 	$use_data_template = true;
 	$host_id = 0;
@@ -989,7 +989,7 @@ function ds_edit() {
 
 	form_save_button("data_sources.php");
 
-	api_plugin_hook('data_source_edit_bottom');
+	plugin_hook('data_source_edit_bottom');
 
 	include_once("./include/bottom_footer.php");
 }
@@ -1336,7 +1336,7 @@ function ds() {
 
 			/* keep copy of data source for comparison */
 			$data_source_orig = $data_source;
-			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
+			$data_source = plugin_hook_function('data_sources_table', $data_source);
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			if ($data_source_orig["data_template_name"] != $data_source["data_template_name"]) {
 				/* was changed by plugin, plugin has to take care for html-escaping */

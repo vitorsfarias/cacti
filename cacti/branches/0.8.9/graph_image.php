@@ -30,7 +30,7 @@ $guest_account = true;
 include("./include/auth.php");
 include_once("./lib/rrd.php");
 
-api_plugin_hook_function('graph_image');
+plugin_hook_function('graph_image');
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("graph_start"));

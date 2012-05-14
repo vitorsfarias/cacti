@@ -24,17 +24,17 @@
 
 include("./include/auth.php");
 
-api_plugin_hook('logout_pre_session_destroy');
+plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
 setcookie(session_name(),"",time() - 3600,"/");
 session_destroy();
 
-api_plugin_hook('logout_post_session_destroy');
+plugin_hook('logout_post_session_destroy');
 
 /* Check to see if we are using Web Basic Auth */
 if (read_config_option("auth_method") == "2") {
-	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+	if (plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 		exit;
 	}
 
