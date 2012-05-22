@@ -90,6 +90,7 @@ SVN
 -bug: Warning in lib/snmp.php by misspelled variable
 -bug: fix SQL error on api_reapply_suggested_graph_title for non-data-query graphs
 -bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
+-bug: hosts using SNMP V3 do not accept setting priv protocol to NONE
 -documentation: Remove sgml documentation.  See http://docs.cacti.net for Documentation
 -documentation: Explaining Cacti Special Data Sources used on CDEFs, lots of CDEF examples using Special data Sources
 -documentation: Documentation of specific rrdtool feature
