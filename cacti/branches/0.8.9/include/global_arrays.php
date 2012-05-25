@@ -24,6 +24,10 @@
 
 global $menu;
 
+$actions_none = array(
+	ACTION_NONE => 'None',
+);
+
 $messages = array(
 	1  => array(
 		"message" => 'Save Successful.',

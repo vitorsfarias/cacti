@@ -22,7 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-define("CACTI_ESCAPE_CHARACTER", "\"");
+define('CHECKED', 'on');
+define('ACTION_NONE', '-1');
+
+define('CACTI_ESCAPE_CHARACTER', '"');
+#define("CACTI_ESCAPE_CHARACTER", "\"");
 
 define("HOST_GROUPING_GRAPH_TEMPLATE", 1);
 define("HOST_GROUPING_DATA_QUERY_INDEX", 2);

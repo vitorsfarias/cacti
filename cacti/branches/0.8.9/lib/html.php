@@ -772,7 +772,7 @@ function draw_menu($user_menu = "") {
  * @param array $actions_array - an array that contains a list of possible actions. this array should
  *   be compatible with the form_dropdown() function */
 function draw_actions_dropdown($actions_array) {
-	global $config;
+	global $config, $actions_none;
 	?>
 	<table align='center' width='100%'>
 		<tr>
@@ -781,7 +781,7 @@ function draw_actions_dropdown($actions_array) {
 			</td>
 			<td align='right'>
 				Choose an action:
-				<?php form_dropdown("drp_action",$actions_array,"","","1","","");?>
+				<?php form_dropdown('drp_action',$actions_none+$actions_array,'','',ACTION_NONE,'','');?>
 			</td>
 			<td width='1' align='right'>
 				<input type='submit' value='Go' title='Execute Action'>
