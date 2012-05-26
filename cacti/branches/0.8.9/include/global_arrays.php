@@ -165,24 +165,6 @@ $consolidation_functions = array(1 =>
 	"MAX",
 	"LAST");
 
-$graph_item_types = array(
-	GRAPH_ITEM_TYPE_COMMENT => "COMMENT",
-	GRAPH_ITEM_TYPE_HRULE   => "HRULE",
-	GRAPH_ITEM_TYPE_VRULE   => "VRULE",
-	GRAPH_ITEM_TYPE_LINE1   => "LINE1",
-	GRAPH_ITEM_TYPE_LINE2   => "LINE2",
-	GRAPH_ITEM_TYPE_LINE3   => "LINE3",
-	GRAPH_ITEM_TYPE_AREA    => "AREA",
-	GRAPH_ITEM_TYPE_STACK   => "STACK",
-	GRAPH_ITEM_TYPE_GPRINT  => "GPRINT",
-	GRAPH_ITEM_TYPE_LEGEND  => "LEGEND"
-	);
-
-$image_types = array(1 =>
-	"PNG",
-	"GIF",
-	"SVG");
-
 $snmp_versions = array(0 =>
 	"Not In Use",
 	"Version 1",
@@ -257,11 +239,6 @@ $cron_intervals = array(
 $registered_cacti_names = array(
 	"path_cacti");
 
-$graph_views = array(1 =>
-	"Tree View",
-	"List View",
-	"Preview View");
-
 $graph_tree_views = array(1 =>
 	"Single Pane",
 	"Dual Pane");
@@ -310,20 +287,6 @@ $cdef_item_types = array(
 	4 => "Special Data Source",
 	5 => "Another CDEF",
 	6 => "Custom String");
-
-$graph_color_alpha = array(
-		"00" => "  0%",
-		"19" => " 10%",
-		"33" => " 20%",
-		"4C" => " 30%",
-		"66" => " 40%",
-		"7F" => " 50%",
-		"99" => " 60%",
-		"B2" => " 70%",
-		"CC" => " 80%",
-		"E5" => " 90%",
-		"FF" => "100%"
-		);
 
 $tree_sort_types = array(
 	TREE_ORDERING_NONE => "Manual Ordering (No Sorting)",
@@ -631,102 +594,15 @@ $host_struc = array(
 	"availability"
 	);
 
-$graph_timespans = array(
-	GT_LAST_HALF_HOUR => "Last Half Hour",
-	GT_LAST_HOUR => "Last Hour",
-	GT_LAST_2_HOURS => "Last 2 Hours",
-	GT_LAST_4_HOURS => "Last 4 Hours",
-	GT_LAST_6_HOURS =>"Last 6 Hours",
-	GT_LAST_12_HOURS =>"Last 12 Hours",
-	GT_LAST_DAY =>"Last Day",
-	GT_LAST_2_DAYS =>"Last 2 Days",
-	GT_LAST_3_DAYS =>"Last 3 Days",
-	GT_LAST_4_DAYS =>"Last 4 Days",
-	GT_LAST_WEEK =>"Last Week",
-	GT_LAST_2_WEEKS =>"Last 2 Weeks",
-	GT_LAST_MONTH =>"Last Month",
-	GT_LAST_2_MONTHS =>"Last 2 Months",
-	GT_LAST_3_MONTHS =>"Last 3 Months",
-	GT_LAST_4_MONTHS =>"Last 4 Months",
-	GT_LAST_6_MONTHS =>"Last 6 Months",
-	GT_LAST_YEAR =>"Last Year",
-	GT_LAST_2_YEARS =>"Last 2 Years",
-	GT_DAY_SHIFT => "Day Shift",
-	GT_THIS_DAY => "This Day",
-	GT_THIS_WEEK => "This Week",
-	GT_THIS_MONTH => "This Month",
-	GT_THIS_YEAR => "This Year",
-	GT_PREV_DAY => "Previous Day",
-	GT_PREV_WEEK => "Previous Week",
-	GT_PREV_MONTH => "Previous Month",
-	GT_PREV_YEAR => "Previous Year"
-	);
-
-$graph_timeshifts = array(
-	GTS_HALF_HOUR => "30 Min",
-	GTS_1_HOUR => "1 Hour",
-	GTS_2_HOURS => "2 Hours",
-	GTS_4_HOURS => "4 Hours",
-	GTS_6_HOURS => "6 Hours",
-	GTS_12_HOURS => "12 Hours",
-	GTS_1_DAY => "1 Day",
-	GTS_2_DAYS => "2 Days",
-	GTS_3_DAYS => "3 Days",
-	GTS_4_DAYS => "4 Days",
-	GTS_1_WEEK => "1 Week",
-	GTS_2_WEEKS => "2 Weeks",
-	GTS_1_MONTH => "1 Month",
-	GTS_2_MONTHS => "2 Months",
-	GTS_3_MONTHS => "3 Months",
-	GTS_4_MONTHS => "4 Months",
-	GTS_6_MONTHS => "6 Months",
-	GTS_1_YEAR => "1 Year",
-	GTS_2_YEARS => "2 Years"
-	);
-
-$graph_weekdays = array(
-	WD_SUNDAY => date("l", strtotime("Sunday")),
-	WD_MONDAY => date("l", strtotime("Monday")),
-	WD_TUESDAY => date("l", strtotime("Tuesday")),
-	WD_WEDNESDAY => date("l", strtotime("Wednesday")),
-	WD_THURSDAY => date("l", strtotime("Thursday")),
-	WD_FRIDAY => date("l", strtotime("Friday")),
-	WD_SATURDAY => date("l", strtotime("Saturday"))
-	);
-
-$graph_dateformats = array(
-	GD_MO_D_Y => "Month Number, Day, Year",
-	GD_MN_D_Y => "Month Name, Day, Year",
-	GD_D_MO_Y => "Day, Month Number, Year",
-	GD_D_MN_Y => "Day, Month Name, Year",
-	GD_Y_MO_D => "Year, Month Number, Day",
-	GD_Y_MN_D => "Year, Month Name, Day"
-	);
-
-$graph_datechar = array(
-	GDC_HYPHEN => "-",
-	GDC_SLASH => "/"
-	);
-
 /*
- * TODO: to be moved to ./include/data_source/data_source_arrays.php
+ * moved to include/graph/graph_arrays.php
+ * moved to include/presets/preset_rra_arrays.php
+ * moved to include/data_source/data_source_arrays.php
  */
-$ds_actions = array(
-	DS_ACTION_DELETE => "Delete",
-	DS_ACTION_CHANGE_TEMPLATE => "Change Data Source Template",
-	DS_ACTION_DUPLICATE => "Duplicate",
-	DS_ACTION_CONVERT_TO_TEMPLATE => "Convert to Data Source Template",
-	DS_ACTION_CHANGE_HOST => "Change Host",
-	DS_ACTION_REAPPLY_SUGGESTED_NAMES => "Reapply Suggested Names",
-	DS_ACTION_ENABLE => "Enable",
-	DS_ACTION_DISABLE => "Disable",
-	);
+if (CACTI_ARRAY_COMPAT === TRUE) {
+	require(CACTI_INCLUDE_PATH . '/graph/graph_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/presets/preset_rra_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/data_source/data_source_arrays.php');
+}
 
-$data_source_types = array(
-	DATA_SOURCE_TYPE_GAUGE		=> "GAUGE",
-	DATA_SOURCE_TYPE_COUNTER	=> "COUNTER",
-	DATA_SOURCE_TYPE_DERIVE		=> "DERIVE",
-	DATA_SOURCE_TYPE_ABSOLUTE	=> "ABSOLUTE",
-	DATA_SOURCE_TYPE_COMPUTE	=> "COMPUTE"
-	);
 ?>

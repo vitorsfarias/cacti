@@ -26,6 +26,10 @@
  * set to false to verify, that including constants here is no longer required */
 define('CACTI_CONST_COMPAT', TRUE);
 
+/* compatibility mode for Arrays 
+ * set to false to verify, that including arrays here is no longer required */
+define('CACTI_ARRAY_COMPAT', TRUE);
+
 define('CHECKED', 'on');
 define('ACTION_NONE', '-1');
 
