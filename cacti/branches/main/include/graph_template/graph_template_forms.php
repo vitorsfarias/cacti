@@ -26,45 +26,45 @@
 $fields_graph_template_template_edit = array(
 	'name' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Name'),
-		'description' => __('The name given to this graph template.'),
+		'friendly_name' => 'Name',
+		'description' => 'The name given to this graph template.',
 		'value' => '|arg1:name|',
 		'max_length' => '150',
 		'size' => '70',
 	),
 	'description' => array(
 		'method' => 'textarea',
-		'friendly_name' => __('Description'),
-		'description' => __('Additional details relative this template.'),
+		'friendly_name' => 'Description',
+		'description' => 'Additional details relative this template.',
 		'value' => '|arg1:description|',
 		'textarea_rows' => '5',
 		'textarea_cols' => '60',
 		'class' => 'textAreaNotes'
 	),
-	'image' => array(
-		'method' => 'drop_image',
-		'path' => '/images/',
-		'friendly_name' => __('Image'),
-		'description' => __('A useful icon to use to associate with this Device Template.'),
-		'default' => 'graphs.gif',
-		'width' => '220',
-		'value' => '|arg1:image|'
-	),
+#	'image' => array(
+#		'method' => 'drop_image',
+#		'path' => '/images/',
+#		'friendly_name' => 'Image',
+#		'description' => 'A useful icon to use to associate with this Device Template.',
+#		'default' => 'graphs.gif',
+#		'width' => '220',
+#		'value' => '|arg1:image|'
+#	),
 );
 
 /* file: graph_templates.php, action: input_edit */
 $fields_graph_template_input_edit = array(
 	'name' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Name'),
-		'description' => __('Enter a name for this graph item input, make sure it is something you recognize.'),
+		'friendly_name' => 'Name',
+		'description' => 'Enter a name for this graph item input, make sure it is something you recognize.',
 		'value' => '|arg1:name|',
 		'max_length' => '50'
 	),
 	'description' => array(
 		'method' => 'textarea',
-		'friendly_name' => __('Description'),
-		'description' => __('Enter a description for this graph item input to describe what this input is used for.'),
+		'friendly_name' => 'Description',
+		'description' => 'Enter a description for this graph item input to describe what this input is used for.',
 		'value' => '|arg1:description|',
 		'textarea_rows' => '5',
 		'textarea_cols' => '40',
@@ -72,8 +72,8 @@ $fields_graph_template_input_edit = array(
 	),
 	'column_name' => array(
 		'method' => 'drop_array',
-		'friendly_name' => __('Field Type'),
-		'description' => __('How data is to be represented on the graph.'),
+		'friendly_name' => 'Field Type',
+		'description' => 'How data is to be represented on the graph.',
 		'value' => '|arg1:column_name|',
 		'array' => '|arg2:|',
 	),
