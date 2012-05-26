@@ -22,14 +22,23 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_constants.php');
-
-$rrd_xaxis_timespans = array(
-	RRD_XAXIS_SECOND		=> 'Second',
-	RRD_XAXIS_MINUTE		=> 'Minute',
-	RRD_XAXIS_HOUR			=> 'Hour',
-	RRD_XAXIS_DAY			=> 'Day',
-	RRD_XAXIS_WEEK			=> 'Week',
-	RRD_XAXIS_MONTH			=> 'Month',
-	RRD_XAXIS_YEAR			=> 'Year',
+/* file: color.php, action: edit */
+$fields_color_edit = array(
+	'hex' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Hex Value'),
+		'description' => __('The hex value for this color; valid range: 000000-FFFFFF.'),
+		'value' => '|arg1:hex|',
+		'max_length' => '6',
+		'size' => '7',
+		'class' => 'colortags',
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_color' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	)
 );
