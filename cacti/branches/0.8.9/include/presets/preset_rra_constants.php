@@ -22,14 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_constants.php');
+define('RRA_CF_TYPE_AVERAGE', 1);
+define('RRA_CF_TYPE_MIN', 2);
+define('RRA_CF_TYPE_MAX', 3);
+define('RRA_CF_TYPE_LAST', 4);
+define('RRA_CF_TYPE_HWPREDICT', 5);
+define('RRA_CF_TYPE_SEASONAL', 6);
+define('RRA_CF_TYPE_DEVSEASONAL', 7);
+define('RRA_CF_TYPE_DEVPREDICT', 8);
+define('RRA_CF_TYPE_FAILURES', 9);
 
-$rrd_xaxis_timespans = array(
-	RRD_XAXIS_SECOND		=> 'Second',
-	RRD_XAXIS_MINUTE		=> 'Minute',
-	RRD_XAXIS_HOUR			=> 'Hour',
-	RRD_XAXIS_DAY			=> 'Day',
-	RRD_XAXIS_WEEK			=> 'Week',
-	RRD_XAXIS_MONTH			=> 'Month',
-	RRD_XAXIS_YEAR			=> 'Year',
-);

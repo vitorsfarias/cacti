@@ -22,14 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_constants.php');
+require_once(CACTI_BASE_PATH . '/include/presets/preset_rra_constants.php');
 
-$rrd_xaxis_timespans = array(
-	RRD_XAXIS_SECOND		=> 'Second',
-	RRD_XAXIS_MINUTE		=> 'Minute',
-	RRD_XAXIS_HOUR			=> 'Hour',
-	RRD_XAXIS_DAY			=> 'Day',
-	RRD_XAXIS_WEEK			=> 'Week',
-	RRD_XAXIS_MONTH			=> 'Month',
-	RRD_XAXIS_YEAR			=> 'Year',
+$consolidation_functions = array(
+	RRA_CF_TYPE_AVERAGE		=> 'AVERAGE',
+	RRA_CF_TYPE_MIN			=> 'MIN',
+	RRA_CF_TYPE_MAX			=> 'MAX',
+	RRA_CF_TYPE_LAST		=> 'LAST',
+	# be prepared for Holt-Winters Forecasting
+#	RRA_CF_TYPE_HWPREDICT 	=> 'HWPREDICT',
+#	RRA_CF_TYPE_SEASONAL 	=> 'SEASONAL',
+#	RRA_CF_TYPE_DEVSEASONAL => 'DEVSEASONAL',
+#	RRA_CF_TYPE_DEVPREDICT 	=> 'DEVPREDICT',
+#	RRA_CF_TYPE_FAILURES 	=> 'FAILURES',
 );

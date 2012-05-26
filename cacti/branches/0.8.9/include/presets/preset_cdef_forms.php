@@ -20,16 +20,30 @@
  +-------------------------------------------------------------------------+
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
-*/
+ */
 
-require_once(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_constants.php');
+/* file: cdef.php, action: edit */
+$fields_cdef_edit = array(
+	'name' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Name'),
+		'description' => __('A useful name for this CDEF.'),
+		'value' => '|arg1:name|',
+		'max_length' => '255',
+		'size' => '60'
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	),
+	'save_component_cdef' => array(
+		'method' => 'hidden',
+		'value' => '1'
+	),
+);
 
-$rrd_xaxis_timespans = array(
-	RRD_XAXIS_SECOND		=> 'Second',
-	RRD_XAXIS_MINUTE		=> 'Minute',
-	RRD_XAXIS_HOUR			=> 'Hour',
-	RRD_XAXIS_DAY			=> 'Day',
-	RRD_XAXIS_WEEK			=> 'Week',
-	RRD_XAXIS_MONTH			=> 'Month',
-	RRD_XAXIS_YEAR			=> 'Year',
+$fields_cdef_item_edit = array(
+	'sequence' => 'sequence',
+	'type' => 'type',
+	'value' => 'value'
 );
