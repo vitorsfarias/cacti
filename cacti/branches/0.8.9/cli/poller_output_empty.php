@@ -32,10 +32,10 @@ $no_http_headers = true;
 
 /* start initialization section */
 include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/graph_export.php");
-include_once($config["base_path"] . "/lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/graph_export.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];

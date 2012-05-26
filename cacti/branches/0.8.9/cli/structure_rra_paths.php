@@ -70,9 +70,8 @@ if ($proceed == FALSE) {
 }
 
 /* check ownership of the current base path */
-$base_rra_path = $config["rra_path"];
-$owner_id      = fileowner($base_rra_path);
-$group_id      = filegroup($base_rra_path);
+$owner_id      = fileowner(CACTI_RRA_PATH);
+$group_id      = filegroup(CACTI_RRA_PATH);
 
 /* turn off the poller */
 disable_poller();
@@ -95,8 +94,8 @@ $data_sources = db_fetch_assoc("SELECT
 				host_id,
 				data_source_path,
 				CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,
-				REPLACE(data_source_path, '<path_rra>', '$base_rra_path') AS rrd_path,
-				REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path
+				REPLACE(data_source_path, '<path_rra>', 'CACTI_RRA_PATH') AS rrd_path,
+				REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', 'CACTI_RRA_PATH') AS new_rrd_path
 					FROM data_template_data
 					INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
 					INNER JOIN host ON host.id=data_local.host_id
@@ -109,7 +108,7 @@ $warn_count   = 0;
 
 /* scan all data sources */
 foreach ($data_sources as $info) {
-	$new_base_path = "$base_rra_path" . "/" . $info["host_id"];
+	$new_base_path = "CACTI_RRA_PATH" . "/" . $info["host_id"];
 	$new_rrd_path  = $info["new_rrd_path"];
 	$old_rrd_path  = $info["rrd_path"];
 

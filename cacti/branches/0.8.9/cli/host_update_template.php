@@ -32,9 +32,9 @@ ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/snmp.php");
-include_once($config["base_path"] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/api_automation_tools.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/api_automation_tools.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
