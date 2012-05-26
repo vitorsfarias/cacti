@@ -233,7 +233,6 @@ function shift_time(&$span, $direction, $shift_size) {
  * @param string returns	date time format
  */
 function date_time_format() {
-	global $config;
 
 	$graph_date = "";
 

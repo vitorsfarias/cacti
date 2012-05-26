@@ -37,7 +37,7 @@ if (isset($_REQUEST["date2"])) {
 	$_REQUEST["date2"] = sanitize_search_string(get_request_var("date2"));
 }
 
-include_once($config["base_path"] . "/lib/time.php");
+include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 /* initialize the timespan array */
 $timespan = array();
@@ -238,7 +238,7 @@ function finalize_timespan(&$timespan) {
 
 /* establish graph timeshift from either a user select or the default */
 function set_timeshift() {
-	global $config, $graph_timeshifts;
+	global $graph_timeshifts;
 
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION["sess_current_timeshift"])) ||

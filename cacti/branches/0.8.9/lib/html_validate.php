@@ -41,7 +41,6 @@ function input_validate_input_regex($value, $regex) {
 }
 
 function die_html_input_error() {
-	global $config;
 
 	?>
 	<table width="100%" align="center">
@@ -53,7 +52,7 @@ function die_html_input_error() {
 	</table>
 	<?php
 
-	include_once("./include/bottom_footer.php");
+	include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 	exit;
 }
 

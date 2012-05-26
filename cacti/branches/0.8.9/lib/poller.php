@@ -26,7 +26,6 @@
    @arg $command - the command to execute
    @returns - the output of $command after execution */
 function exec_poll($command) {
-	global $config;
 
 	if (function_exists("popen")) {
 		if (CACTI_SERVER_OS == "unix") {
@@ -61,7 +60,6 @@ function exec_poll($command) {
    @returns - the output of $command after execution against the php script
      server */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
-	global $config;
 	/* execute using php process */
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
@@ -113,7 +111,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
    @arg $filename - the full pathname to the script to execute
    @arg $args - any additional arguments that must be passed onto the executable */
 function exec_background($filename, $args = "") {
-	global $config, $debug;
+	global $debug;
 
 	if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_DEBUG || $debug) {
 		cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, "POLLER");
@@ -134,7 +132,6 @@ function exec_background($filename, $args = "") {
      for errors in certain versions of php.
    @arg $filename - the name of the file to be tested. */
 function file_exists_2gb($filename) {
-	global $config;
 
 	$rval = 0;
 	if (CACTI_SERVER_OS != "win32") {
@@ -150,10 +147,8 @@ function file_exists_2gb($filename) {
    @arg $host_id - the id of the host to which the data query belongs
    @arg $data_query_id - the id of the data query to rebuild the reindex cache for */
 function update_reindex_cache($host_id, $data_query_id) {
-	global $config;
-
-	include_once($config["library_path"] . "/data_query.php");
-	include_once($config["library_path"] . "/snmp.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/snmp.php");
 
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
@@ -318,9 +313,9 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
-	global $config, $debug;
+	global $debug;
 
-	include_once($config["library_path"] . "/rrd.php");
+	include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 	/* let's count the number of rrd files we processed */
 	$rrds_processed = 0;

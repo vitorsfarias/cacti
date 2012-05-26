@@ -24,12 +24,11 @@
 
 function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
 	$host_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
-	global $config;
 
 	input_validate_input_number($tree_id);
 	input_validate_input_number($parent_tree_item_id);
 
-	include_once($config["library_path"] . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	db_execute("LOCK TABLES graph_tree_items WRITE, graph_tree READ, graph_templates_graph READ, host READ");
 

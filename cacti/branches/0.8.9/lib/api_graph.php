@@ -75,7 +75,6 @@ function api_graph_remove_multi($local_graph_ids) {
    @arg $graph_height - the height of the resized graph
   */
 function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
-	global $config;
 
 	/* get graphs template id */
 	db_execute("UPDATE graph_templates_graph SET width=" . $graph_width . ", height=" . $graph_height . " WHERE local_graph_id=" . $local_graph_id);
@@ -85,7 +84,6 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
    @param int $graph_templates_graph_id - the id of the graph to reapply the name to
 */
 function api_reapply_suggested_graph_title($local_graph_id) {
-	global $config;
 
 	/* get graphs template id */
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_templates_graph where local_graph_id=" . $local_graph_id);
