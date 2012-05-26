@@ -598,65 +598,66 @@ $struct_graph_item = array(
 	);
 
 /* file: graph_templates.php, action: template_edit */
-$fields_graph_template_template_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => "Name",
-		"description" => "The name given to this graph template.",
-		"value" => "|arg1:name|",
-		"max_length" => "150",
-		),
-	"graph_template_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg2:graph_template_id|"
-		),
-	"graph_template_graph_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg2:id|"
-		),
-	"save_component_template" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+include_once(CACTI_INCLUDE_PATH . '/graph_template/graph_template_forms.php');
+#$fields_graph_template_template_edit = array(
+#	"name" => array(
+#		"method" => "textbox",
+#		"friendly_name" => "Name",
+#		"description" => "The name given to this graph template.",
+#		"value" => "|arg1:name|",
+#		"max_length" => "150",
+#		),
+#	"graph_template_id" => array(
+#		"method" => "hidden_zero",
+#		"value" => "|arg2:graph_template_id|"
+#		),
+#	"graph_template_graph_id" => array(
+#		"method" => "hidden_zero",
+#		"value" => "|arg2:id|"
+#		),
+#	"save_component_template" => array(
+#		"method" => "hidden",
+#		"value" => "1"
+#		)
+#	);
 
 /* file: graph_templates.php, action: input_edit */
-$fields_graph_template_input_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => "Name",
-		"description" => "Enter a name for this graph item input, make sure it is something you recognize.",
-		"value" => "|arg1:name|",
-		"max_length" => "50"
-		),
-	"description" => array(
-		"method" => "textarea",
-		"friendly_name" => "Description",
-		"description" => "Enter a description for this graph item input to describe what this input is used for.",
-		"value" => "|arg1:description|",
-		"textarea_rows" => "5",
-		"textarea_cols" => "40"
-		),
-	"column_name" => array(
-		"method" => "drop_array",
-		"friendly_name" => "Field Type",
-		"description" => "How data is to be represented on the graph.",
-		"value" => "|arg1:column_name|",
-		"array" => "|arg2:|",
-		),
-	"graph_template_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg3:graph_template_id|"
-		),
-	"graph_template_input_id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg3:id|"
-		),
-	"save_component_input" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
+#$fields_graph_template_input_edit = array(
+#	"name" => array(
+#		"method" => "textbox",
+#		"friendly_name" => "Name",
+#		"description" => "Enter a name for this graph item input, make sure it is something you recognize.",
+#		"value" => "|arg1:name|",
+#		"max_length" => "50"
+#		),
+#	"description" => array(
+#		"method" => "textarea",
+#		"friendly_name" => "Description",
+#		"description" => "Enter a description for this graph item input to describe what this input is used for.",
+#		"value" => "|arg1:description|",
+#		"textarea_rows" => "5",
+#		"textarea_cols" => "40"
+#		),
+#	"column_name" => array(
+#		"method" => "drop_array",
+#		"friendly_name" => "Field Type",
+#		"description" => "How data is to be represented on the graph.",
+#		"value" => "|arg1:column_name|",
+#		"array" => "|arg2:|",
+#		),
+#	"graph_template_id" => array(
+#		"method" => "hidden_zero",
+#		"value" => "|arg3:graph_template_id|"
+#		),
+#	"graph_template_input_id" => array(
+#		"method" => "hidden_zero",
+#		"value" => "|arg3:id|"
+#		),
+#	"save_component_input" => array(
+#		"method" => "hidden",
+#		"value" => "1"
+#		)
+#	);
 
 /* file: host.php, action: edit */
 $fields_host_edit = array(
