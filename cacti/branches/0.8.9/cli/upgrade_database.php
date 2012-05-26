@@ -31,8 +31,8 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 ini_set('max_execution_time', '0');
 
 include(dirname(__FILE__)."/../include/global.php");
-include_once($config["base_path"]."/lib/data_query.php");
-include_once($config["base_path"]."/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 /* UPDATE THIS FOR NEW VERSIONS!! */
 $includes = array(
@@ -95,7 +95,7 @@ $start = FALSE;
 foreach ($includes as $v => $file) {
 	if ($file != '' && $start) {
 		print "Upgrading to " . $v . "\n";
-		include($config["base_path"] . '/install/' . $file);
+		include(CACTI_BASE_PATH . '/install/' . $file);
 		$func = "upgrade_to_" . str_replace('.', '_', $v);
 		$func();
 		db_install_errors ($v);

@@ -32,7 +32,7 @@ ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/api_graph.php");
+include_once(CACTI_LIBRARY_PATH . "/api_graph.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
