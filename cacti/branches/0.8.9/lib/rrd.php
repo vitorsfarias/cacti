@@ -179,7 +179,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "") {
-
+	global $consolidation_functions;
+	
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* ok, if that passes lets check to make sure an rra does not already
