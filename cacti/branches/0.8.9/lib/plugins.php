@@ -236,7 +236,7 @@ function api_plugin_install ($plugin) {
  */
 function plugin_install($plugin) {
 	global $plugins_deprecated;
-	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
+	include_once(CACTI_PLUGIN_PATH . "/$plugin/setup.php");
 
 	$exists = db_fetch_assoc("SELECT id FROM plugin_config WHERE directory = '$plugin'", false);
 	if (!count($exists)) {
@@ -301,8 +301,8 @@ function api_plugin_uninstall ($plugin) {
  */
 function plugin_uninstall($plugin) {
 	/* make sure, uninstall module is still available */
-	if (file_exists(CACTI_BASE_PATH . "/plugins/$plugin/setup.php")) {
-		include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
+	if (file_exists(CACTI_PLUGIN_PATH . "/$plugin/setup.php")) {
+		include_once(CACTI_PLUGIN_PATH . "/$plugin/setup.php");
 		// Run the Plugin's Uninstall Function first, if exists
 		$function = 'plugin_' . $plugin . '_uninstall';
 		if (function_exists($function)) {
@@ -326,7 +326,7 @@ function api_plugin_check_config ($plugin) {
  * @param string $plugin	plugin name
  */
 function plugin_check_config($plugin) {
-	include_once(CACTI_BASE_PATH . "/plugins/$plugin/setup.php");
+	include_once(CACTI_PLUGIN_PATH . "/$plugin/setup.php");
 	$function = 'plugin_' . $plugin . '_check_config';
 	if (function_exists($function)) {
 		return $function();

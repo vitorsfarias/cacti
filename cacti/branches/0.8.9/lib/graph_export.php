@@ -148,7 +148,7 @@ function export_log($stMessage) {
 }
 
 function export_pre_ftp_upload($stExportDir) {
-	global $config, $aFtpExport;
+	global $aFtpExport;
 
 	/* export variable as global */
 	$config["config_options_array"]["path_html_export"] = $stExportDir;
@@ -396,12 +396,11 @@ function export_post_ftp_upload($stExportDir) {
 }
 
 function export() {
-	global $config;
 
 	/* count how many graphs are created */
 	$total_graphs_created = 0;
 
-	$cacti_root_path = $config["base_path"];
+	$cacti_root_path = CACTI_BASE_PATH;
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* if the path is not a directory, don't continue */
@@ -490,8 +489,7 @@ function export() {
 }
 
 function classical_export($cacti_root_path, $cacti_export_path) {
-	global $config;
-	include_once($config["base_path"] . "/lib/time.php");
+	include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 	$total_graphs_created = 0;
 
@@ -650,8 +648,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 }
 
 function tree_export() {
-	global $config;
-	include_once($config["base_path"] . "/lib/time.php");
+	include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 	$total_graphs_created = 0;
 
@@ -660,7 +657,7 @@ function tree_export() {
 
 	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id='" . $export_user . "'");
 
-	$cacti_root_path   = $config["base_path"];
+	$cacti_root_path   = CACTI_BASE_PATH;
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* if the selected user has default rights, show all the graphs */
@@ -1163,9 +1160,9 @@ function export_is_tree_allowed($tree_id) {
 }
 
 function export_tree_graphs_and_graph_html($path, $tree_id) {
-	global $colors, $config;
-	include_once($config["library_path"] . "/tree.php");
-	include_once($config["library_path"] . "/data_query.php");
+	global $colors;
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* start the count of graphs */
 	$total_graphs_created = 0;
@@ -1379,9 +1376,9 @@ function draw_html_left_tree($fp, $tree_id)  {
 }
 
 function grow_dhtml_trees_export($fp, $tree_id) {
-	global $colors, $config, $dhtml_trees;
-	include_once($config["library_path"] . "/tree.php");
-	include_once($config["library_path"] . "/data_query.php");
+	global $colors, $dhtml_trees;
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	fwrite($fp, "<script type='text/javascript'>\n");
 	fwrite($fp, "<!--
@@ -1424,7 +1421,6 @@ function grow_dhtml_trees_export($fp, $tree_id) {
 	@arg $force_refresh - (bool) Force the refresh of the array from the database
    @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array_export($return_sql = false, $force_refresh = false) {
-	global $config;
 
 	/* set the tree update time if not already set */
 	if (!isset($config["config_options_array"]["tree_update_time"])) {

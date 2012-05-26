@@ -23,10 +23,10 @@
 */
 
 function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
-	global $colors, $current_user, $config, $graph_timeshifts;
+	global $colors, $current_user, $graph_timeshifts;
 
-	include($config["include_path"] . "/global_arrays.php");
-	include_once($config["library_path"] . "/tree.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$search_key = "";
 	$already_open = false;
@@ -268,9 +268,9 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 }
 
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
-	global $config, $colors;
+	global $colors;
 
-	include_once($config["library_path"] . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$tree_sorting_type = db_fetch_cell("select sort_type from graph_tree where id='$tree_id'");
 
@@ -454,9 +454,9 @@ function tree_tier_string($order_key, $chars_per_tier = CHARS_PER_TIER) {
 }
 
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
-	global $colors, $config;
+	global $colors;
 
-	include_once($config["library_path"] . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
@@ -489,10 +489,10 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 }
 
 function grow_dhtml_trees() {
-	global $colors, $config;
+	global $colors;
 
-	include_once($config["library_path"] . "/tree.php");
-	include_once($config["library_path"] . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	?>
 	<script type="text/javascript">
@@ -676,12 +676,12 @@ function create_dhtml_tree() {
 }
 
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
-	global $current_user, $colors, $config, $graphs_per_page, $graph_timeshifts;
+	global $current_user, $colors, $graphs_per_page, $graph_timeshifts;
 
-	include($config["include_path"] . "/global_arrays.php");
-	include_once($config["library_path"] . "/data_query.php");
-	include_once($config["library_path"] . "/tree.php");
-	include_once($config["library_path"] . "/html_utility.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/html_utility.php");
 
 	define("MAX_DISPLAY_PAGES", 21);
 

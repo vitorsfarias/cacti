@@ -1077,12 +1077,11 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
    @param string $cancel_url - the url to go to when the user clicks 'cancel'
    @param string $action_url - the url to go to when the user clicks 'delete' */
 function form_confirm_buttons($action_url, $cancel_url) {
-	global $config;
 	?>
 	<tr>
 		<td bgcolor="#E1E1E1">
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='Cancel'>
-			<input type='submit' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='Delete'>
+			<input type='button' onClick='cactiReturnTo("<?php print CACTI_URL_PATH . $cancel_url;?>")' value='Cancel'>
+			<input type='submit' onClick='cactiReturnTo("<?php print CACTI_URL_PATH . $action_url;?>&confirm=true")' value='Delete'>
 		</td>
 	</tr>
 <?php }
@@ -1139,4 +1138,45 @@ function form_save_button($cancel_url, $force_type = "", $key_field = "id") {
 	<?php
 }
 
-?>
+
+/** draw_template_edit_form
+ *
+ * @param string $table_id
+ * @param string $edit_struct
+ * @param string $edit_data
+ * @param string $use_template
+ */
+function draw_template_edit_form($table_id, $edit_struct, $edit_data, $use_template=false) {
+
+	$form_array = array();
+
+	while (list($field_name, $field_array) = each($edit_struct)) {
+		if (isset($field_array["flags"]) && $field_array["flags"] == "NOTEMPLATE" && !$use_template) {
+			CONTINUE;
+		}
+		$form_array += array($field_name => $edit_struct[$field_name]);
+
+		$form_array[$field_name]["value"] = (isset($edit_data[$field_name]) ? $edit_data[$field_name] : "");
+		$form_array[$field_name]["form_id"] = (isset($edit_data["id"]) ? $edit_data["id"] : "0");
+
+		if (!(($use_template === false) || ($edit_data{"t_" . $field_name} == CHECKED))) {
+			$form_array[$field_name]["method"] = "template_" . $form_array[$field_name]["method"];
+		}
+
+
+		$form_array[$field_name]["sub_checkbox"] = array(
+			"name" => "t_" . $field_name,
+			"friendly_name" => "<em>" . "Use Per-Graph Value (Ignore this Value)" . "</em>",
+			"value" => (isset($edit_data{"t_" . $field_name}) ? $edit_data{"t_" . $field_name} : ""),
+			"class" => (isset($form_array[$field_name]["class"]) ? $form_array[$field_name]["class"] : "")
+		);
+	}
+
+	draw_edit_form(
+		array(
+			"config" => array("no_form_tag" => true),
+			"fields" => inject_form_variables($form_array, $edit_data)
+			)
+		);
+
+}

@@ -96,7 +96,6 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 }
 
 function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
-	global $config;
 
 	$poller_interval = read_config_option("poller_interval");
 	$rrd_next_step = 0;

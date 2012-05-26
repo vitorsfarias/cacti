@@ -32,7 +32,6 @@ function escape_command($command) {
 }
 
 function rrd_init($output_to_term = TRUE) {
-	global $config;
 
 	/* set the rrdtool default font */
 	if (read_config_option("path_rrdtool_default_font")) {
@@ -60,8 +59,6 @@ function rrd_close($rrdtool_pipe) {
 }
 
 function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = "", $logopt = "WEBLOG") {
-	global $config;
-
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -182,9 +179,6 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "") {
-	global $config;
-
-	include ($config["include_path"] . "/global_arrays.php");
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
@@ -296,8 +290,8 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "
 		if (!is_dir(dirname($data_source_path))) {
 			if (mkdir(dirname($data_source_path), 0775)) {
 				if (CACTI_SERVER_OS != "win32") {
-					$owner_id      = fileowner($config["rra_path"]);
-					$group_id      = filegroup($config["rra_path"]);
+					$owner_id      = fileowner(CACTI_RRA_PATH);
+					$group_id      = filegroup(CACTI_RRA_PATH);
 
 					if ((chown(dirname($data_source_path), $owner_id)) &&
 						(chgrp(dirname($data_source_path), $group_id))) {
@@ -377,9 +371,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = "") {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
-	global $config;
-
-	include($config["include_path"] . "/global_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array["data_source_id"]);
 	$data_source_type = $data_source_types{$rrd_tune_array["data-source-type"]};
@@ -547,11 +539,11 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = "") {
-	global $config, $consolidation_functions;
+	global $consolidation_functions;
 
-	include_once($config["library_path"] . "/cdef.php");
-	include_once($config["library_path"] . "/graph_variables.php");
-	include($config["include_path"] . "/global_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/cdef.php");
+	include_once(CACTI_LIBRARY_PATH . "/graph_variables.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	
 	
 	/* prevent command injection
@@ -1456,12 +1448,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 }
 
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
-	global $config, $consolidation_functions;
+	global $consolidation_functions;
 
-	include_once($config["library_path"] . "/cdef.php");
-	include_once($config["library_path"] . "/graph_variables.php");
-	include_once($config["library_path"] . "/xml.php");
-	include($config["include_path"] . "/global_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/cdef.php");
+	include_once(CACTI_LIBRARY_PATH . "/graph_variables.php");
+	include_once(CACTI_LIBRARY_PATH . "/xml.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
@@ -2025,8 +2017,6 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 }
 
 function rrdtool_set_font($type, $no_legend = "") {
-	global $config;
-
 	if (read_graph_config_option("custom_fonts") == "on") {
 		$font = read_graph_config_option($type . "_font");
 		$size = read_graph_config_option($type . "_size");

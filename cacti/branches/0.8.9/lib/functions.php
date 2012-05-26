@@ -42,7 +42,7 @@ function title_trim($text, $max_length) {
      in 'include/global_settings.php'
    @returns - the default value of the configuration option */
 function read_default_graph_config_option($config_name) {
-	global $config, $settings_graphs;
+	global $settings_graphs;
 
 	reset($settings_graphs);
 	while (list($tab_name, $tab_array) = each($settings_graphs)) {
@@ -248,7 +248,7 @@ function check_changed($request, $session) {
      user
    @returns - (bool) whether the messages array contains an error or not */
 function is_error_message() {
-	global $config, $messages;
+	global $messages;
 
 	if (isset($_SESSION["sess_messages"])) {
 		if (is_array($_SESSION["sess_messages"])) {
@@ -306,7 +306,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $colors, $messages;
+	global $colors, $messages;
 
 	if (isset($_SESSION["sess_messages"])) {
 		$error_message = is_error_message();
@@ -480,7 +480,6 @@ function strip_newlines($string) {
    @arg $output - (bool) whether to output the log line to the browser using print() or not
    @arg $environ - (string) tell's from where the script was called from */
 function cacti_log($string, $output = false, $environ = "CMDPHP") {
-	global $config;
 
 	/* fill in the current date for printing in the log */
 	$date = date("m/d/Y h:i:s A");
@@ -499,7 +498,7 @@ function cacti_log($string, $output = false, $environ = "CMDPHP") {
 	/* Log to Logfile */
 	if ((($logdestination == 1) || ($logdestination == 2)) && (read_config_option("log_verbosity") != POLLER_VERBOSITY_NONE)) {
 		if ($logfile == "") {
-			$logfile = $config["base_path"] . "/log/cacti.log";
+			$logfile = CACTI_BASE_PATH . "/log/cacti.log";
 		}
 
 		/* echo the data to the log (append) */
@@ -1003,7 +1002,6 @@ function validate_result(&$result) {
    @arg $local_data_id - (int) the ID of the data source
    @returns - the full script path or (bool) false for an error */
 function get_full_script_path($local_data_id) {
-	global $config;
 
 	$data_source = db_fetch_row("select
 		data_template_data.id,
@@ -1037,7 +1035,7 @@ function get_full_script_path($local_data_id) {
 	}
 	}
 
-	$full_path = str_replace("<path_cacti>", $config["base_path"], $full_path);
+	$full_path = str_replace("<path_cacti>", CACTI_BASE_PATH, $full_path);
 	$full_path = str_replace("<path_snmpget>", read_config_option("path_snmpget"), $full_path);
 	$full_path = str_replace("<path_php_binary>", read_config_option("path_php_binary"), $full_path);
 
@@ -1079,7 +1077,6 @@ function get_data_source_item_name($data_template_rrd_id) {
    @arg $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
    @returns - the full path to the data source or an empty string for an error */
 function get_data_source_path($local_data_id, $expand_paths) {
-	global $config;
 
 	if (empty($local_data_id)) { return ""; }
 
@@ -1099,7 +1096,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace('<path_rra>', $config['rra_path'], $data_source_path);
+			$data_source_path = str_replace('<path_rra>', CACTI_RRA_PATH, $data_source_path);
 		}
 
 		return $data_source_path;
@@ -1153,7 +1150,6 @@ function clean_up_file_name($string) {
    @arg $path - the path to modify
    @returns - the modified path */
 function clean_up_path($path) {
-	global $config;
 
 	if (CACTI_SERVER_OS == "unix" or read_config_option("using_cygwin") == "on") {
 		$path = str_replace("\\", "/", $path);
@@ -1213,7 +1209,6 @@ function get_graph_title($local_graph_id) {
    @arg $local_data_id - (int) the ID of the data source to generate a new path for
    @returns - the new generated path */
 function generate_data_source_path($local_data_id) {
-	global $config;
 
 	$host_part = ""; $ds_part = "";
 
@@ -1374,7 +1369,7 @@ function generate_graph_def_name($graph_item_id) {
    @arg $string - the input string that contains the field variables in a certain order
    @arg $data_input_id - (int) the ID of the data input method */
 function generate_data_input_field_sequences($string, $data_input_id) {
-	global $config, $registered_cacti_names;
+	global $registered_cacti_names;
 
 	if (preg_match_all("/<([_a-zA-Z0-9]+)>/", $string, $matches)) {
 		$j = 0;
@@ -1725,7 +1720,6 @@ function get_host_array() {
    @arg $type - (string) Either 'url' or 'title'
    @returns (string> Either the navigation text or title */
 function draw_navigation_text($type = "url") {
-	global $config;
 
 	$nav_level_cache = (isset($_SESSION["sess_nav_level_cache"]) ? $_SESSION["sess_nav_level_cache"] : array());
 
@@ -1739,8 +1733,8 @@ function draw_navigation_text($type = "url") {
 		"graph.php:zoom" => array("title" => "Zoom", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph.php:properties" => array("title" => "Properties", "mapping" => "graph_view.php:,?,graph.php:view", "level" => "3"),
 		"graph_settings.php:" => array("title" => "Settings", "mapping" => "graph_view.php:", "url" => "graph_settings.php", "level" => "1"),
-		"index.php:" => array("title" => "Console", "mapping" => "", "url" => $config['url_path'] . "index.php", "level" => "0"),
-		"index.php:login" => array("title" => "Console", "mapping" => "", "url" => $config['url_path'] . "index.php", "level" => "0"),
+		"index.php:" => array("title" => "Console", "mapping" => "", "url" => CACTI_URL_PATH . "index.php", "level" => "0"),
+		"index.php:login" => array("title" => "Console", "mapping" => "", "url" => CACTI_URL_PATH . "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
 		"graphs.php:graph_edit" => array("title" => "(Edit)", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
 		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
@@ -2129,7 +2123,6 @@ function get_hash_version($type) {
 /* generate_hash - generates a new unique hash
    @returns - a 128-bit, hexadecimal hash */
 function generate_hash() {
-	global $config;
 
 	return md5(session_id() . microtime() . rand(0,1000));
 }
@@ -2233,7 +2226,6 @@ function sanitize_cdef($cdef) {
 }
 
 function cacti_escapeshellcmd($string) {
-	global $config;
 
 	if (CACTI_SERVER_OS == "unix") {
 		return escapeshellcmd($string);
@@ -2255,7 +2247,6 @@ function cacti_escapeshellcmd($string) {
  * @return			- the escaped [quoted|unquoted] string
  */
 function cacti_escapeshellarg($string, $quote=true) {
-	global $config;
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
 	characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 	you do this, but are perfectly happy with a quotation mark. */
