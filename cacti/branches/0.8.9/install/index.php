@@ -266,7 +266,7 @@ $input["path_cactilog"]["description"] = "The path to your Cacti log file.";
 if (config_value_exists("path_cactilog")) {
 	$input["path_cactilog"]["default"] = read_config_option("path_cactilog");
 } else {
-	$input["path_cactilog"]["default"] = $config["base_path"] . "/log/cacti.log";
+	$input["path_cactilog"]["default"] = CACTI_BASE_PATH . "/log/cacti.log";
 }
 
 /* SNMP Version */

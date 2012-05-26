@@ -23,8 +23,7 @@
 */
 
 function upgrade_to_0_8_7h() {
-	global $config;
-	require_once($config["base_path"] . "/lib/poller.php");
+	require_once(CACTI_LIBRARY_PATH . "/poller.php");
 
 	/* speed up the reindexing */
 	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");
@@ -60,7 +59,7 @@ function upgrade_to_0_8_7h() {
 
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
 	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q \"" . $config["base_path"] . "/cli/poller_reindex_hosts.php\" --id=all";
+	$extra_args = "-q \"" . CACTI_BASE_PATH . "/cli/poller_reindex_hosts.php\" --id=all";
 	exec_background($command_string, "$extra_args");
 	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, "UPGRADE");
 
