@@ -66,11 +66,11 @@ ini_set("memory_limit", "512M");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/include/global.php");
-include_once($config["base_path"] . "/lib/snmp.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/rrd.php");
-include_once($config["base_path"] . "/lib/ping.php");
-include_once($config["library_path"] . "/variables.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/ping.php");
+include_once(CACTI_LIBRARY_PATH . "/variables.php");
 
 /* notify cacti processes that a poller is running */
 record_cmdphp_started();
@@ -223,7 +223,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option("poller_enabled") == "on
 			);
 
 		if (function_exists("proc_open")) {
-			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . $config["base_path"] . "/script_server.php cmd", $cactides, $pipes);
+			$cactiphp = proc_open(read_config_option("path_php_binary") . " -q " . CACTI_BASE_PATH . "/script_server.php cmd", $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			if (substr_count($output, "Started") != 0) {
 				if (read_config_option("log_verbosity") >= POLLER_VERBOSITY_HIGH) {

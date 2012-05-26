@@ -587,7 +587,7 @@ function data_edit() {
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
-	global $config, $colors;
+	global $colors;
 
 	if (!empty($_GET["id"])) {
 		$data = db_fetch_row("select id,data_input_id,data_template_id,name,local_data_id from data_template_data where local_data_id=" . $_GET["id"]);

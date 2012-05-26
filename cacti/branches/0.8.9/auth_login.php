@@ -204,15 +204,15 @@ if ($action == 'login') {
 				if (isset($_SERVER["HTTP_REFERER"])) {
 					$referer = $_SERVER["HTTP_REFERER"];
 					if (basename($referer) == "logout.php") {
-						$referer = $config['url_path'] . "index.php";
+						$referer = CACTI_URL_PATH . "index.php";
 					}
 				} else if (isset($_SERVER["REQUEST_URI"])) {
 					$referer = $_SERVER["REQUEST_URI"];
 					if (basename($referer) == "logout.php") {
-						$referer = $config['url_path'] . "index.php";
+						$referer = CACTI_URL_PATH . "index.php";
 					}
 				} else {
-					$referer = $config['url_path'] . "index.php";
+					$referer = CACTI_URL_PATH . "index.php";
 				}
 
 				if (substr_count($referer, "plugins")) {
@@ -225,11 +225,11 @@ if ($action == 'login') {
 
 				break;
 			case '2': /* default console page */
-				header("Location: " . $config['url_path'] . "index.php");
+				header("Location: " . CACTI_URL_PATH . "index.php");
 
 				break;
 			case '3': /* default graph page */
-				header("Location: " . $config['url_path'] . "graph_view.php");
+				header("Location: " . CACTI_URL_PATH . "graph_view.php");
 
 				break;
 			default:
@@ -293,7 +293,7 @@ if (plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) 
 
 plugin_hook_function("login_before", array('ldap_error' => $ldap_error, 'ldap_error_message' => $ldap_error_message, 'username' => $username, 'user_enabled' => $user_enabled, 'action' => $action));
 
-$cacti_logo = $config['url_path'] . 'images/auth_login.gif';
+$cacti_logo = CACTI_URL_PATH . 'images/auth_login.gif';
 $cacti_logo = plugin_hook_function('cacti_image', $cacti_logo);
 
 ?>

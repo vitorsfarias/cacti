@@ -125,8 +125,7 @@ update_show_current();
 include("./include/bottom_footer.php");
 
 function plugin_install_old ($plugin) {
-	global $config;
-	if (!file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+	if (!file_exists(CACTI_PLUGIN_PATH . "/$plugin/setup.php")) {
 		return false;
 	}
 	$oldplugins = read_config_option('oldplugins');
@@ -136,7 +135,7 @@ function plugin_install_old ($plugin) {
 		$oldplugins = array();
 	}
 	if (!in_array($plugin, $oldplugins)) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+		include_once(CACTI_PLUGIN_PATH . "/$plugin/setup.php");
 		$function = 'plugin_init_' . $plugin;
 		if (function_exists($function)){
 			$oldplugins[] = $plugin;
@@ -152,7 +151,6 @@ function plugin_install_old ($plugin) {
 }
 
 function plugin_uninstall_old ($plugin) {
-	global $config;
 	$oldplugins = read_config_option('oldplugins');
 	if (strlen(trim($oldplugins))) {
 	$oldplugins = explode(',', $oldplugins);
@@ -249,7 +247,7 @@ function plugins_temp_table_exists($table) {
 }
 
 function plugins_load_temp_table() {
-	global $config, $plugins;
+	global $plugins;
 
 	$pluginslist = retrieve_plugin_list();
 
@@ -272,7 +270,7 @@ function plugins_load_temp_table() {
 		$x++;
 	}
 
-	$path = $config['base_path'] . '/plugins/';
+	$path = CACTI_BASE_PATH . '/plugins/';
 	$dh = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
