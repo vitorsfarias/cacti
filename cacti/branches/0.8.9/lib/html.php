@@ -551,37 +551,62 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 	return $new_string;
 }
 
+
 /** draw_graph_items_list - draws a nicely formatted list of graph items for display
  *   on an edit form
- * @param array $item_list - an array representing the list of graph items. this array should
+ * @param $item_list - an array representing the list of graph items. this array should
  *   come directly from the output of db_fetch_assoc()
- * @param string $filename - the filename to use when referencing any external url
- * @param string $url_data - any extra GET url information to pass on when referencing any
+ * @param $filename - the filename to use when referencing any external url
+ * @param $url_data - any extra GET url information to pass on when referencing any
  *   external url
- * @param bool $disable_controls - whether to hide all edit/delete functionality on this form */
+ * @param $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	global $colors;
 
-	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
-
+#	$header_items = array(
+#		array("name" => "Graph Item", "align" => "left"),
+#		array("name" => "Data Source", "align" => "left"),
+#		array("name" => "Graph Item Type", "align" => "left"),
+#		array("name" => "CF Type", "align" => "left"),
+#		array("name" => "CDEF", "align" => "left"),
+#		array("name" => "GPRINT Type", "align" => "left"),
+#		array("name" => "Item Color", "align" => "center"),
+#		array("name" => "Action", "align" => "center"),
+#	);
+#	$last_item_colspan = 3;
+#
+#	print "<tr><td>";
+#	html_header($header_items, $last_item_colspan);
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
 		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
 		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
 		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],4);
+		DrawMatrixHeaderItem("CDEF",$colors["header_text"],1);
+		DrawMatrixHeaderItem("GPRINT Type",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Item Color",$colors["header_text"],1);
+		DrawMatrixHeaderItem("Action",$colors["header_text"],3);
 	print "</tr>";
-
+    
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
 	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
 
+	$i = 0;
 	if (sizeof($item_list) > 0) {
 	foreach ($item_list as $item) {
 		/* graph grouping display logic */
 		$this_row_style = ""; $use_custom_row_color = false; $hard_return = "";
 
-		if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-			$this_row_style = "font-weight: bold;"; $use_custom_row_color = true;
+		if ($item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT &&
+			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_AVERAGE &&
+			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_LAST &&
+			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MAX &&
+			$item["graph_type_id"] != GRAPH_ITEM_TYPE_GPRINT_MIN) {
+			$this_row_style = "font-weight: bold;";
+			$use_custom_row_color = true;
 
 			if ($group_counter % 2 == 0) {
 				$alternate_color_1 = "EEEEEE";
@@ -592,56 +617,68 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$alternate_color_2 = $colors["alternate"];
 				$custom_row_color = "D2D6E7";
 			}
-
 			$group_counter++;
 		}
 
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
-
+		
 		/* alternating row color */
 		if ($use_custom_row_color == false) {
 			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
 		}else{
 			print "<tr bgcolor='#$custom_row_color'>";
 		}
-
+        
 		print "<td>";
-		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
-		print "<strong>Item # " . ($i+1) . "</strong>";
+		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") ."'>"; }
+		print "Item # " . ($i+1);
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
 
 		if (empty($item["data_source_name"])) { $item["data_source_name"] = "No Task"; }
 
-		switch (true) {
-		case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
-			$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
-			break;
-		case preg_match("/(HRULE)/", $_graph_type_name):
-			$matrix_title = "HRULE: " . $item["value"];
-			break;
-		case preg_match("/(VRULE)/", $_graph_type_name):
-			$matrix_title = "VRULE: " . $item["value"];
-			break;
-		case preg_match("/(COMMENT)/", $_graph_type_name):
-			$matrix_title = "COMMENT: " . $item["text_format"];
-			break;
+		switch ($item["graph_type_id"]) {
+			case GRAPH_ITEM_TYPE_AREA:
+			case GRAPH_ITEM_TYPE_STACK:
+			case GRAPH_ITEM_TYPE_GPRINT:
+			case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
+			case GRAPH_ITEM_TYPE_GPRINT_LAST:
+			case GRAPH_ITEM_TYPE_GPRINT_MAX:
+			case GRAPH_ITEM_TYPE_GPRINT_MIN:
+			case GRAPH_ITEM_TYPE_LINE1:
+			case GRAPH_ITEM_TYPE_LINE2:
+			case GRAPH_ITEM_TYPE_LINE3:
+			case GRAPH_ITEM_TYPE_LINESTACK:
+			case GRAPH_ITEM_TYPE_TICK:
+				$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+				break;
+			case GRAPH_ITEM_TYPE_HRULE:
+				$matrix_title = "HRULE: " . $item["value"];
+				break;
+			case GRAPH_ITEM_TYPE_VRULE:
+				$matrix_title = "VRULE: " . $item["value"];
+				break;
+			case GRAPH_ITEM_TYPE_COMMENT:
+				$matrix_title = "COMMENT: " . $item["text_format"];
+				break;
+			case GRAPH_ITEM_TYPE_TEXTALIGN:
+				$matrix_title = "TEXTALIGN: " . $rrd_textalign{$item["textalign"]};
+				break;
 		}
 
-		if ($item["hard_return"] == "on") {
-			$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+		if ($item["hard_return"] == CHECKED) {
+			$hard_return = "<font color=\"#FF0000\">&lt;HR&gt;</font>";
 		}
 
 		print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 		print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-		print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-		print "<td" . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . " width='1%'>&nbsp;</td>\n";
-		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+		print "<td style='$this_row_style'>" . ((!empty($item["consolidation_function_id"])) ? $consolidation_functions{$item["consolidation_function_id"]} : "None") . "</td>\n";
+		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["cdef_name"],0,30) : "None") . "</td>\n";
+		print "<td style='$this_row_style'>" . ((strlen($item["gprint_name"]) > 0) ? substr($item["gprint_name"],0,30) : "None") . "</td>\n";
+		print "<td style='$this_row_style'"  . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . ">&nbsp;</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td><a href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'><img src='" . CACTI_URL_PATH . "images/move_down.gif' border='0' alt='Move Down'></a>
-					<a href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'><img src='" . CACTI_URL_PATH . "images/move_up.gif' border='0' alt='Move Up'></a></td>\n";
-			print "<td align='right'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img src='" . CACTI_URL_PATH . "images/delete_icon.gif' style='height:10px;width:10px;' border='0' alt='Delete'></a></td>\n";
+			print "<td align='center'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' title='Delete this Item' alt='Delete' align='middle'></a></td>\n";
 		}
 
 		print "</tr>";
@@ -649,8 +686,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$i++;
 	}
 	}else{
-		print "<tr bgcolor='#" . $colors["form_alternate2"] . "'><td colspan='7'><em>No Items</em></td></tr>";
+		print "<tr class='topBoxAlt'><td colspan='10'><em>" . "No Items" . "</em></td></tr>";
 	}
+
+#	print "</table></td></tr>";
 }
 
 /** draw_menu - draws the cacti menu for display in the console 

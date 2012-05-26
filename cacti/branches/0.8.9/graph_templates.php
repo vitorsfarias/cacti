@@ -38,7 +38,6 @@ ACTION_NONE => "None",
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
-cacti_log("action: " . $_REQUEST["action"], false, "TEST");	
 
 switch ($_REQUEST["action"]) {
 	case 'save':
@@ -771,6 +770,106 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	include_once(CACTI_BASE_PATH . "/access/js/colorpicker.js");
 	include_once(CACTI_BASE_PATH . "/access/js/graph_template_options.js");
+}
+
+
+
+function graph_template_display_items() {
+	global $colors;
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
+
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
+	if (empty($_REQUEST["id"])) {
+		$template_item_list = array();
+
+		$header_label = "[new]";
+	}else{
+		$template_item_list = db_fetch_assoc("select
+			graph_templates_item.id,
+			graph_templates_item.text_format,
+			graph_templates_item.value,
+			graph_templates_item.hard_return,
+			graph_templates_item.graph_type_id,
+			graph_templates_item.line_width,
+			graph_templates_item.dashes,
+			graph_templates_item.dash_offset,
+			graph_templates_item.textalign,
+			graph_templates_item.shift,
+			graph_templates_item.consolidation_function_id,
+			CONCAT_WS(' - ',data_template_data.name,data_template_rrd.data_source_name) as data_source_name,
+			cdef.name as cdef_name,
+			colors.hex,
+			graph_templates_gprint.name as gprint_name
+			from graph_templates_item
+			left join data_template_rrd on (graph_templates_item.task_item_id=data_template_rrd.id)
+			left join data_local on (data_template_rrd.local_data_id=data_local.id)
+			left join data_template_data on (data_local.id=data_template_data.local_data_id)
+			left join cdef on (cdef_id=cdef.id)
+			left join vdef on (vdef_id=vdef.id)
+			left join colors on (color_id=colors.id)
+			left join graph_templates_gprint on (gprint_id=graph_templates_gprint.id)
+			where graph_templates_item.graph_template_id=" . $_REQUEST["id"] . "
+			and graph_templates_item.local_graph_id=0
+			order by graph_templates_item.sequence");
+
+		$header_label = "[edit: " . db_fetch_cell("select name from graph_templates where id=" . $_REQUEST["id"]) . "]";
+	}
+
+	/* graph template item */
+	html_start_box("Graph Template Items" . " $header_label", "100%", $colors["header"], "0", "center", "graph_templates_items.php?action=item_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	draw_graph_items_list($template_item_list, "graph_templates_items.php", "graph_template_id=" . $_REQUEST["id"], false);
+	html_end_box(true);
+
+	/* graph template inputs */
+	html_start_box("Graph Item Inputs", "100%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	print "<tr><td>\n";
+	html_header(array(array("name" => "Name")), 2,'','','left wp100');
+
+	$template_item_list = db_fetch_assoc("select id,name from graph_template_input where graph_template_id=" . $_REQUEST["id"] . " order by name");
+
+	$i = 0;
+	if (sizeof($template_item_list) > 0) {
+		foreach ($template_item_list as $item) {
+#			form_alternate_row_color("item" . $item["id"]);
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'item' . $item["id"]);$i++;
+			?>
+			<td>
+				<a class="linkEditMain" href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $item["id"] . "&graph_template_id=" . $_REQUEST["id"]);?>'><?php print $item["name"];?></a>
+			</td>
+			<td align="right" style="text-align:right">
+				<a href='<?php print htmlspecialchars("graph_templates_inputs.php?action=input_remove&id=" . $item["id"] . "&graph_template_id=" . $_GET["id"]);?>'>
+					<img class="buttonSmall" src="images/delete_icon.gif" alt="<?php print "Delete";?>" align='right'>
+				</a>
+			</td>
+			<?php
+			form_end_row();
+		}
+	}else{
+		print "<tr class='rowAlternate1'><td colspan='2'><em>" . "No Inputs" . "</em></td></tr>";
+	}
+	print "</table></td></tr>";
+
+	html_end_box(true);
+
+	form_save_button("graph_templates.php", "return");
+
+	?>
+	<script type="text/javascript">
+	<!--
+	$(document).ready(function(){
+		//drag and drop for graph items
+		$('#graph_item').tableDnD({
+			onDrop: function(table, row) {
+				$.get("graph_templates.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
+			}
+		});
+	});
+	//-->
+	</script>
+	<?php
 }
 
 
