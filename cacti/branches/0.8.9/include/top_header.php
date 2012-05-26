@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $colors, $config, $menu, $refresh;
+global $colors, $menu, $refresh;
 
 include_once(CACTI_BASE_PATH . "/lib/time.php");
 
@@ -70,9 +70,9 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 </head>
 
 <?php if ($oper_mode == OPER_MODE_NATIVE) {?>
-<body style="background-image:url('<?php print $config['url_path'];?>images/left_border.gif');background-repeat:repeat-y;" <?php print plugin_hook_function("body_style", "");?>>
+<body style="background-image:url('<?php print CACTI_URL_PATH;?>images/left_border.gif');background-repeat:repeat-y;" <?php print plugin_hook_function("body_style", "");?>>
 <?php }else{?>
-<body style="background-image:url('<?php print $config['url_path'];?>images/left_border.gif');background-repeat:repeat-y;" <?php print plugin_hook_function("body_style", "");?>>
+<body style="background-image:url('<?php print CACTI_URL_PATH;?>images/left_border.gif');background-repeat:repeat-y;" <?php print plugin_hook_function("body_style", "");?>>
 <?php }?>
 
 <table width="100%" cellspacing="0" cellpadding="0">
@@ -80,9 +80,9 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	<tr style="height:1px;" bgcolor="#a9a9a9">
 		<td valign="bottom" colspan="3" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop.gif') no-repeat center right;">
+				<tr style="background: transparent url('<?php echo CACTI_URL_PATH; ?>images/cacti_backdrop.gif') no-repeat center right;">
 					<td id="tabs" valign="bottom">
-						&nbsp;<a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console_down.gif" alt="Console" align="absmiddle" border="0"></a><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a><?php
+						&nbsp;<a href="<?php echo CACTI_URL_PATH; ?>index.php"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_console_down.gif" alt="Console" align="absmiddle" border="0"></a><a href="<?php echo CACTI_URL_PATH; ?>graph_view.php"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_graphs.gif" alt="Graphs" align="absmiddle" border="0"></a><?php
 						plugin_hook('top_header_tabs');
 					?></td>
 				</tr>
@@ -91,7 +91,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	</tr>
 	<tr style="height:2px;" bgcolor="#183c8f">
 		<td colspan="3">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;" border="0"><br>
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" style="height:2px;" border="0"><br>
 		</td>
 	</tr>
 	<tr style="height:5px;" bgcolor="#e9e9e9">
@@ -103,7 +103,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 					</td>
 					<td align="right">
 						<?php if (read_config_option("auth_method") != 0) { plugin_hook('nav_login_before'); ?>
-							Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
+							Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo CACTI_URL_PATH; ?>logout.php">Logout</a>)&nbsp;
 							<?php plugin_hook('nav_login_after'); } ?>
 					</td>
 				</tr>
@@ -111,10 +111,10 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="#f5f5f5" colspan="1" style="height:8px;width:135px;background-image: url(<?php echo $config['url_path']; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:135px;" border="0"><br>
+		<td bgcolor="#f5f5f5" colspan="1" style="height:8px;width:135px;background-image: url(<?php echo CACTI_URL_PATH; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" style="height:2px;width:135px;" border="0"><br>
 		</td>
-		<td colspan="2" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
+		<td colspan="2" style="height:8px;background-image: url(<?php echo CACTI_URL_PATH; ?>images/shadow.gif); background-repeat: repeat-x;" bgcolor="#ffffff">
 
 		</td>
 	</tr>
@@ -124,9 +124,9 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 				<?php draw_menu();?>
 			</table>
 
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
-			<p style="width:135px;" align="center"><a href='<?php echo $config['url_path']; ?>about.php'><img src="<?php echo $config['url_path']; ?>images/cacti_logo.gif" border="0"></a></p>
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
+			<p style="width:135px;" align="center"><a href='<?php echo CACTI_URL_PATH; ?>about.php'><img src="<?php echo CACTI_URL_PATH; ?>images/cacti_logo.gif" border="0"></a></p>
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" style="height:5px;width:135px;" border="0"><br>
 		</td>
 		<td width="100%" colspan="2" valign="top" style="padding: 5px; border-right: #aaaaaa 1px solid;"><?php display_output_messages();?><div style='position:relative;' id='main'>
 <?php }else{ ?>

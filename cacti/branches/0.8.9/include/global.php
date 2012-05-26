@@ -78,10 +78,12 @@ else
 
 /* setup paths */
 /* CACTI_BASE_PATH is platform dependant and has been defined above */
+/* this is were distro package maintainers should look at */
 define('CACTI_URL_PATH', $url_path);
 define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
 define('CACTI_LIBRARY_PATH', CACTI_BASE_PATH . '/lib');
 define('CACTI_INCLUDE_PATH', CACTI_BASE_PATH . '/include');
+define('CACTI_PLUGIN_PATH', CACTI_BASE_PATH . '/plugins');
 define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');		# no compat required
 define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');	# no compat required
 
@@ -89,8 +91,10 @@ $config = array();									# compat
 $config['url_path'] = $url_path;					# compat
 $config['base_path']    = CACTI_BASE_PATH;			# compat
 $config['library_path'] = CACTI_BASE_PATH . '/lib';	# compat
-$config['include_path'] = CACTI_BASE_PATH . '/lib';	# compat
+$config['include_path'] = CACTI_BASE_PATH . '/include';	# compat
 $config['rra_path'] 	= CACTI_BASE_PATH . '/rra';	# compat
+$config['plugin_path'] 	= CACTI_BASE_PATH . '/plugins';	# compat
+
 $config['cacti_server_os'] = CACTI_SERVER_OS;		# compat
 
 
