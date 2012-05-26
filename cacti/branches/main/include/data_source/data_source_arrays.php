@@ -22,17 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . "/include/data_source/data_source_constants.php");
+require_once(CACTI_INCLUDE_PATH . "/data_source/data_source_constants.php");
 
 $ds_actions = array(
-	DS_ACTION_DELETE => __("Delete"),
-	DS_ACTION_CHANGE_TEMPLATE => __("Change Data Source Template"),
-	DS_ACTION_DUPLICATE => __("Duplicate"),
-	DS_ACTION_CONVERT_TO_TEMPLATE => __("Convert to Data Source Template"),
-	DS_ACTION_CHANGE_HOST => __("Change Host"),
-	DS_ACTION_REAPPLY_SUGGESTED_NAMES => __("Reapply Suggested Names"),
-	DS_ACTION_ENABLE => __("Enable"),
-	DS_ACTION_DISABLE => __("Disable"),
+	DS_ACTION_DELETE => "Delete",
+	DS_ACTION_CHANGE_TEMPLATE => "Change Data Source Template",
+	DS_ACTION_DUPLICATE => "Duplicate",
+	DS_ACTION_CONVERT_TO_TEMPLATE => "Convert to Data Source Template",
+	DS_ACTION_CHANGE_HOST => "Change Host",
+	DS_ACTION_REAPPLY_SUGGESTED_NAMES => "Reapply Suggested Names",
+	DS_ACTION_ENABLE => "Enable",
+	DS_ACTION_DISABLE => "Disable",
 	);
 
 $data_source_types = array(
