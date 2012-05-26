@@ -81,14 +81,14 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	}
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon"/>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ua.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/treeview/ftiens4.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/lang/calendar-en.js"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar-setup.js"></script>
+	<link href="<?php echo CACTI_URL_PATH; ?>include/main.css" type="text/css" rel="stylesheet">
+	<link href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico" rel="shortcut icon"/>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/layout.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/treeview/ua.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/treeview/ftiens4.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/jscalendar/calendar.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/jscalendar/lang/calendar-en.js"></script>
+	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/jscalendar/calendar-setup.js"></script>
 	<?php plugin_hook('page_head'); ?>
 </head>
 
@@ -104,14 +104,14 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	<tr style="height:25px;" bgcolor="#a9a9a9" class="noprint">
 		<td colspan="2" valign="bottom" nowrap>
 			<table width="100%" cellspacing="0" cellpadding="0">
-				<tr style="background: transparent url('<?php echo $config['url_path']; ?>images/cacti_backdrop2.gif') no-repeat center right;">
+				<tr style="background: transparent url('<?php echo CACTI_URL_PATH; ?>images/cacti_backdrop2.gif') no-repeat center right;">
 					<td id="tabs" nowrap>
-						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
+						&nbsp;<?php if ($show_console_tab == true) {?><a href="<?php echo CACTI_URL_PATH; ?>index.php"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_console.gif" alt="Console" align="absmiddle" border="0"></a><?php }?><a href="<?php echo CACTI_URL_PATH; ?>graph_view.php"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_graphs<?php if ((substr(basename($_SERVER["PHP_SELF"]),0,5) == "graph") || (basename($_SERVER["PHP_SELF"]) == "graph_settings.php")) { print "_down"; } print ".gif";?>" alt="Graphs" align="absmiddle" border="0"></a><?php
 						plugin_hook('top_graph_header_tabs');
 						?>
 					</td>
 					<td id="gtabs" align="right" nowrap>
-						<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { print '<a href="' . $config['url_path'] . 'graph_settings.php"><img src="' . $config['url_path'] . 'images/tab_settings'; if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; } print '.gif" border="0" alt="Settings" align="absmiddle"></a>';}?>&nbsp;&nbsp;<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=tree");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_tree<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=list");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_list<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {?><a href="<?php print htmlspecialchars($config['url_path'] . "graph_view.php?action=preview");?>"><img src="<?php echo $config['url_path']; ?>images/tab_mode_preview<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php }?>&nbsp;<br>
+						<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["graph_settings"] == "on")) { print '<a href="' . CACTI_URL_PATH . 'graph_settings.php"><img src="' . CACTI_URL_PATH . 'images/tab_settings'; if (basename($_SERVER["PHP_SELF"]) == "graph_settings.php") { print "_down"; } print '.gif" border="0" alt="Settings" align="absmiddle"></a>';}?>&nbsp;&nbsp;<?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_tree"] == "on")) {?><a href="<?php print htmlspecialchars(CACTI_URL_PATH . "graph_view.php?action=tree");?>"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_mode_tree<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "tree") { print "_down"; }?>.gif" border="0" title="Tree View" alt="Tree View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_list"] == "on")) {?><a href="<?php print htmlspecialchars(CACTI_URL_PATH . "graph_view.php?action=list");?>"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_mode_list<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "list") { print "_down"; }?>.gif" border="0" title="List View" alt="List View" align="absmiddle"></a><?php }?><?php if ((!isset($_SESSION["sess_user_id"])) || ($current_user["show_preview"] == "on")) {?><a href="<?php print htmlspecialchars(CACTI_URL_PATH . "graph_view.php?action=preview");?>"><img src="<?php echo CACTI_URL_PATH; ?>images/tab_mode_preview<?php if (isset($_REQUEST["action"]) && $_REQUEST["action"] == "preview") { print "_down"; }?>.gif" border="0" title="Preview View" alt="Preview View" align="absmiddle"></a><?php }?>&nbsp;<br>
 					</td>
 				</tr>
 			</table>
@@ -120,7 +120,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 <?php } elseif ($oper_mode == OPER_MODE_NOTABS) { plugin_hook_function('print_top_header'); } ?>
 	<tr style="height:2px;" bgcolor="#183c8f" class="noprint">
 		<td colspan="2">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" style="height:2px;width:170px;" border="0"><br>
 		</td>
 	</tr>
 	<tr style="height:5px;" bgcolor="#e9e9e9" class="noprint">
@@ -132,7 +132,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 					</td>
 					<td align="right">
 						<?php if ((isset($_SESSION["sess_user_id"])) && ($using_guest_account == false)) { plugin_hook('nav_login_before'); ?>
-						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo $config['url_path']; ?>logout.php">Logout</a>)&nbsp;
+						Logged in as <strong><?php print db_fetch_cell("select username from user_auth where id=" . $_SESSION["sess_user_id"]);?></strong> (<a href="<?php echo CACTI_URL_PATH; ?>logout.php">Logout</a>)&nbsp;
 						<?php plugin_hook('nav_login_after'); } ?>
 					</td>
 				</tr>
@@ -140,10 +140,10 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 		</td>
 	</tr>
 	<tr class="noprint">
-		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
-			<img src="<?php echo $config['url_path']; ?>images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
+		<td bgcolor="#efefef" colspan="1" style="height:8px;background-image: url(<?php echo CACTI_URL_PATH; ?>images/shadow_gray.gif); background-repeat: repeat-x; border-right: #aaaaaa 1px solid;">
+			<img src="<?php echo CACTI_URL_PATH; ?>images/transparent_line.gif" width="<?php print htmlspecialchars(read_graph_config_option("default_dual_pane_width"));?>" style="height:2px;" border="0"><br>
 		</td>
-		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(<?php echo $config['url_path']; ?>images/shadow.gif); background-repeat: repeat-x;">
+		<td bgcolor="#ffffff" colspan="1" style="height:8px;background-image: url(<?php echo CACTI_URL_PATH; ?>images/shadow.gif); background-repeat: repeat-x;">
 
 		</td>
 	</tr>
