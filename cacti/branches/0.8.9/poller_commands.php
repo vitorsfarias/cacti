@@ -34,9 +34,9 @@ $no_http_headers = true;
 
 /* Start Initialization Section */
 include(dirname(__FILE__) . "/include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 /* Record Start Time */
 list($micro,$seconds) = explode(" ", microtime());

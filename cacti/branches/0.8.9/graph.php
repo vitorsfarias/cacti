@@ -112,7 +112,7 @@ case 'view':
 								<a href='<?php print htmlspecialchars("graph_xport.php?local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"] .  "&graph_start=" . $graph_start . "&graph_end=" . $graph_end);?>'><img src='images/graph_query.png' border='0' alt='CSV Export' title='CSV Export' style='padding: 3px;'></a><br>
 								<a href='<?php print htmlspecialchars("graph.php?action=properties&local_graph_id=" . $_GET["local_graph_id"] . "&rra_id=" . $rra["id"] . "&view_type=" . $_REQUEST["view_type"] .  "&graph_start=" . $graph_start . "&graph_end=" . $graph_end);?>'><img src='images/graph_properties.gif' border='0' alt='Graph Source/Properties' title='Graph Source/Properties' style='padding: 3px;'></a>
 								<?php plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => $_GET['local_graph_id'], 'rra' => $rra['id'], 'view_type' => $_REQUEST['view_type'])); ?>
-								<a href='#page_top'><img src='<?php print $config['url_path']; ?>images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
+								<a href='#page_top'><img src='<?php print CACTI_URL_PATH; ?>images/graph_page_top.gif' border='0' alt='Page Top' title='Page Top' style='padding: 3px;'></a><br>
 							</td>
 						</tr>
 						<tr>

@@ -61,10 +61,10 @@ $no_http_headers = true;
 
 /* start initialization section */
 include(dirname(__FILE__) . "/include/global.php");
-include_once($config["base_path"] . "/lib/poller.php");
-include_once($config["base_path"] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/graph_export.php");
-include_once($config["base_path"] . "/lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/graph_export.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 /* initialize some variables */
 $force = FALSE;
@@ -288,12 +288,12 @@ while ($poller_runs_completed < $poller_runs) {
 			chdir(dirname(read_config_option("path_spine")));
 		}else if (CACTI_SERVER_OS == "unix") {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args     = "-q \"" . $config["base_path"] . "/cmd.php\"";
+			$extra_args     = "-q \"" . CACTI_BASE_PATH . "/cmd.php\"";
 			$method         = "cmd.php";
 			$total_procs    = $concurrent_processes;
 		}else{
 			$command_string = read_config_option("path_php_binary");
-			$extra_args     = "-q \"" . strtolower($config["base_path"] . "/cmd.php\"");
+			$extra_args     = "-q \"" . strtolower(CACTI_BASE_PATH . "/cmd.php\"");
 			$method         = "cmd.php";
 			$total_procs    = $concurrent_processes;
 		}
@@ -404,7 +404,7 @@ while ($poller_runs_completed < $poller_runs) {
 		/* process poller commands */
 		if (db_fetch_cell("SELECT COUNT(*) FROM poller_command") > 0) {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q \"" . $config["base_path"] . "/poller_commands.php\"";
+			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_commands.php\"";
 			exec_background($command_string, "$extra_args");
 		} else {
 			/* no re-index or Rechache present on this run
@@ -417,7 +417,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ((read_config_option("export_type") != "disabled") &&
 			(read_config_option("export_timing") != "disabled")) {
 			$command_string = read_config_option("path_php_binary");
-			$extra_args = "-q \"" . $config["base_path"] . "/poller_export.php\"";
+			$extra_args = "-q \"" . CACTI_BASE_PATH . "/poller_export.php\"";
 			exec_background($command_string, "$extra_args");
 		}
 

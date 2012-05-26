@@ -528,16 +528,15 @@ function host_remove_gt() {
    --------------------- */
 
 function host_remove() {
-	global $config;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == "on") && (!isset($_GET["confirm"]))) {
-		include("./include/top_header.php");
+		include(CACTI_INCLUDE_PATH . "/top_header.php");
 		form_confirm("Are You Sure?", "Are you sure you want to delete the host <strong>'" . htmlspecialchars(db_fetch_cell("select description from host where id=" . $_GET["id"])) . "'</strong>?", htmlspecialchars("host.php"), htmlspecialchars("host.php?action=remove&id=" . $_GET["id"]));
-		include("./include/bottom_footer.php");
+		include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		exit;
 	}
 
