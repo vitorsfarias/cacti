@@ -441,6 +441,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 /** html_header - draws a header row suitable for display inside of a box element
  * @param array $header_items - an array containing a list of items to be included in the header
+ * 								array('item1', 'item2', ...)
  * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function _html_header($header_items, $last_item_colspan = 1) {
 	global $colors;
@@ -478,7 +479,13 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 	$i = 0;
 	$align = "text-align:left;";
 	foreach($header_items as $item) {
-		if (isset($item["align"])) {
+		if (is_array($item) && array_key_exists("name", $item)) {
+			$name = $item["name"];
+		} else {	# old style: array('item1', 'item2', ...)
+			$name = $item;
+		}
+		
+		if (is_array($item) && array_key_exists("align", $item)) {
 			$align = "text-align:" . $item["align"] . ";";
 		}else{
 			$align = "";
@@ -487,9 +494,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = false, 
 		if ($resizable) {
 			$width = html_get_column_width($pathname, "hh_$rand_id");
 
-			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $name . "</th>\n";
 		}else{
-			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
+			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $name . "</th>\n";
 		}
 		$rand_id++;
 		$i++;
