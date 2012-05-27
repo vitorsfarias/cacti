@@ -26,15 +26,15 @@
 $fields_gprint_presets_edit = array(
 	'name' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Name'),
-		'description' => __('Enter a name for this GPRINT preset, make sure it is something you recognize.'),
+		'friendly_name' => 'Name',
+		'description' => 'Enter a name for this GPRINT preset, make sure it is something you recognize.',
 		'value' => '|arg1:name|',
 		'max_length' => '50',
 	),
 	'gprint_text' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('GPRINT Text'),
-		'description' => __('Enter the custom GPRINT string here.'),
+		'friendly_name' => 'GPRINT Text',
+		'description' => 'Enter the custom GPRINT string here.',
 		'value' => '|arg1:gprint_text|',
 		'max_length' => '50',
 	),

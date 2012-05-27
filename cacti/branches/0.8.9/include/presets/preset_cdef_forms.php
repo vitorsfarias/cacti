@@ -26,8 +26,8 @@
 $fields_cdef_edit = array(
 	'name' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Name'),
-		'description' => __('A useful name for this CDEF.'),
+		'friendly_name' => 'Name',
+		'description' => 'A useful name for this CDEF.',
 		'value' => '|arg1:name|',
 		'max_length' => '255',
 		'size' => '60'
