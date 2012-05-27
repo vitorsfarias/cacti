@@ -442,7 +442,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 /** html_header - draws a header row suitable for display inside of a box element
  * @param array $header_items - an array containing a list of items to be included in the header
  * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
-function html_header($header_items, $last_item_colspan = 1) {
+function _html_header($header_items, $last_item_colspan = 1) {
 	global $colors;
 
 	print "<tr bgcolor='#" . $colors["header_panel"] . "'>\n";
@@ -453,6 +453,51 @@ function html_header($header_items, $last_item_colspan = 1) {
 
 	print "</tr>\n";
 }
+
+/** html_header - draws a header row suitable for display inside of a box element
+ * @param $header_items - an array containing a list of items to be included in the header
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param $resizable - allow for the table to be resized via javascript
+ * @param $table_id - table_id
+ * @param $tclass - optional class extension for table
+ * @param $trclass - optional class extension for table row
+ * @param $thclass - optional class extension for table header cell */
+function html_header($header_items, $last_item_colspan = 1, $resizable = false, $table_id = '', $tclass = '', $trclass = '', $thclass = '') {
+	static $rand_id = 0;
+
+	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
+
+	if ($resizable) {
+		$pathname = html_get_php_pathname();
+
+		print "\t\t<table cellpadding='0' cellspacing='0' $table_id class='hover striped resizable startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+	}else{
+		print "\t\t<table cellpadding='0' cellspacing='0' $table_id class='hover striped startBoxHeader startBox3 $tclass'><thead><tr class='rowSubHeader nodrag nodrop $trclass'>\n";
+	}
+
+	$i = 0;
+	$align = "text-align:left;";
+	foreach($header_items as $item) {
+		if (isset($item["align"])) {
+			$align = "text-align:" . $item["align"] . ";";
+		}else{
+			$align = "";
+		}
+
+		if ($resizable) {
+			$width = html_get_column_width($pathname, "hh_$rand_id");
+
+			print "\t\t\t<th id='hh_$rand_id' style='width: $width;$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
+		}else{
+			print "\t\t\t<th id='hh_$rand_id' style='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' class='textSubHeaderDark $thclass lastColumn'" : "class='textSubHeaderDark $thclass'") . ">" . $item["name"] . "</th>\n";
+		}
+		$rand_id++;
+		$i++;
+	}
+
+	print "\t\t</tr></thead><tbody>\n";
+}
+
 
 /** html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
  *   suitable for display inside of a box element
@@ -566,30 +611,30 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	global $colors;
 
-#	$header_items = array(
-#		array("name" => "Graph Item", "align" => "left"),
-#		array("name" => "Data Source", "align" => "left"),
-#		array("name" => "Graph Item Type", "align" => "left"),
-#		array("name" => "CF Type", "align" => "left"),
-#		array("name" => "CDEF", "align" => "left"),
-#		array("name" => "GPRINT Type", "align" => "left"),
-#		array("name" => "Item Color", "align" => "center"),
-#		array("name" => "Action", "align" => "center"),
-#	);
-#	$last_item_colspan = 3;
-#
-#	print "<tr><td>";
-#	html_header($header_items, $last_item_colspan);
-	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
-		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("CDEF",$colors["header_text"],1);
-		DrawMatrixHeaderItem("GPRINT Type",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Item Color",$colors["header_text"],1);
-		DrawMatrixHeaderItem("Action",$colors["header_text"],3);
-	print "</tr>";
+	$header_items = array(
+		array("name" => "Graph Item", "align" => "left"),
+		array("name" => "Data Source", "align" => "left"),
+		array("name" => "Graph Item Type", "align" => "left"),
+		array("name" => "CF Type", "align" => "left"),
+		array("name" => "CDEF", "align" => "left"),
+		array("name" => "GPRINT Type", "align" => "left"),
+		array("name" => "Item Color", "align" => "center"),
+		array("name" => "Action", "align" => "right"),
+	);
+	$last_item_colspan = 2;	# span numeric color and action
+
+	print "<tr><td>";
+	html_header($header_items, $last_item_colspan, false, 'graph_item');
+#	print "<tr bgcolor='#" . $colors["header_panel"] . "'>";
+#		DrawMatrixHeaderItem("Graph Item",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("Data Source",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("Graph Item Type",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("CF Type",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("CDEF",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("GPRINT Type",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("Item Color",$colors["header_text"],1);
+#		DrawMatrixHeaderItem("Action",$colors["header_text"],3);
+#	print "</tr>";
     
 	$group_counter = 0; $_graph_type_name = ""; $i = 0;
 	$alternate_color_1 = $colors["alternate"]; $alternate_color_2 = $colors["alternate"];
@@ -623,14 +668,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
 		
 		/* alternating row color */
-		if ($use_custom_row_color == false) {
-			form_alternate_row_color($alternate_color_1,$alternate_color_2,$i);
-		}else{
-			print "<tr bgcolor='#$custom_row_color'>";
-		}
+		form_alternate_row_color($alternate_color_1,$alternate_color_2,$i,$item["id"]);
         
 		print "<td>";
-		if ($disable_controls == false) { print "<a href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") ."'>"; }
+		if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") ."'>"; }
 		print "Item # " . ($i+1);
 		if ($disable_controls == false) { print "</a>"; }
 		print "</td>\n";
@@ -676,9 +717,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<td style='$this_row_style'>" . ((strlen($item["cdef_name"]) > 0) ? substr($item["cdef_name"],0,30) : "None") . "</td>\n";
 		print "<td style='$this_row_style'>" . ((strlen($item["gprint_name"]) > 0) ? substr($item["gprint_name"],0,30) : "None") . "</td>\n";
 		print "<td style='$this_row_style'"  . ((!empty($item["hex"])) ? " bgcolor='#" . $item["hex"] . "'" : "") . ">&nbsp;</td>\n";
+		print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
 
 		if ($disable_controls == false) {
-			print "<td align='center'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' title='Delete this Item' alt='Delete' align='middle'></a></td>\n";
+			print "<td align='center'><a href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'><img id='buttonSmall" . $item["id"] . "' class='buttonSmall' src='images/delete_icon.gif' title='Delete this Item' alt='Delete' align='right'></a></td>\n";
 		}
 
 		print "</tr>";
@@ -689,7 +731,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		print "<tr class='topBoxAlt'><td colspan='10'><em>" . "No Items" . "</em></td></tr>";
 	}
 
-#	print "</table></td></tr>";
+	print "</table></td></tr>";
 }
 
 /** draw_menu - draws the cacti menu for display in the console 
@@ -849,4 +891,56 @@ function form_area($text) { ?>
 	</tr>
 <?php }
 
-?>
+
+
+/** html_get_php_pathname() - extracts the name of the php file without the
+ * extention.  This value is used to store and retriev cookie values */
+function html_get_php_pathname() {
+	$path = $_SERVER['PHP_SELF'];
+
+	while (($location = strpos($path, '/')) !== FALSE) {
+		$path = substr($path, $location + 1);
+	}
+
+	return str_replace('.php', '', $path);
+}
+
+/** get column width from cookie
+ * @param $name - the cookie name that contains the cookie elements
+ * @param $element - the name of the cookie element to be searched for.
+ * @return string - width in pixels
+ */
+function html_get_column_width($name, $element) {
+	$width = html_read_cookie_element($name, $element);
+
+	if (!strlen($width)) {
+		return 'auto';
+	}else{
+		return $width . 'px';
+	}
+}
+
+/** html_read_cookie_element - extracts an element from the specified cookie array
+ * @param $name - the cookie name that contains the cookie elements
+ * @param $element - the name of the cookie element to be searched for. 
+ * @return string - cookie */
+function html_read_cookie_element($name, $element) {
+	if (isset($_COOKIE[$name])) {
+		$parts = explode('!', $_COOKIE[$name]);
+
+		foreach ($parts as $part) {
+			$name_value = explode('@@', $part);
+
+			if ($name_value[0] == $element) {
+				if ($name_value[1] == 'NaN') {
+					return '';
+				}else{
+					return $name_value[1];
+				}
+			}
+		}
+	}
+
+	return '';
+}
+
