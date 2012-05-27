@@ -1022,13 +1022,11 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 		foreach ($selected_graph_templates as $item) {
-			$i++;
-
 			/* get status information for this graph template */
 			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'gt_' . $item["id"]);$i++;
 
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
@@ -1038,13 +1036,13 @@ function host_edit() {
 				<td align='right' nowrap>
 					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
 		}else{ print "<tr><td><em>No associated graph templates.</em></td></tr>"; }
 
+		form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'gt_add');
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 			<td colspan="4">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Graph Template:&nbsp;
@@ -1055,9 +1053,8 @@ function host_edit() {
 					</td>
 				</table>
 			</td>
-		</tr>
-
 		<?php
+			form_end_row();
 		html_end_box();
 
 		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");
@@ -1095,7 +1092,7 @@ function host_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
 		foreach ($selected_data_queries as $item) {
-			$i++;
+			form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'dq_' . $item["id"]);$i++;
 
 			/* get status information for this data query */
 			$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
@@ -1104,7 +1101,6 @@ function host_edit() {
 			$status = "success";
 
 			?>
-			<tr>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
 				</td>
@@ -1121,13 +1117,13 @@ function host_edit() {
 					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
 					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
 				</td>
-			</tr>
 			<?php
+			form_end_row();
 		}
 		}else{ print "<tr><td><em>No associated data queries.</em></td></tr>"; }
 
+		form_alternate_row_color($colors["alternate"], $colors["light"], $i, 'dq_add');
 		?>
-		<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
 			<td colspan="5">
 				<table cellspacing="0" cellpadding="1" width="100%">
 					<td nowrap>Add Data Query:&nbsp;
@@ -1141,9 +1137,8 @@ function host_edit() {
 					</td>
 				</table>
 			</td>
-		</tr>
-
 		<?php
+		form_end_row();
 		html_end_box();
 	}
 
