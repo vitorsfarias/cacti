@@ -83,25 +83,38 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 }
 
 /** form_alternate_row_color - starts an HTML row with an alternating color scheme
-   @arg $row_color1 - the first color to use
-   @arg $row_color2 - the second color to use
-   @arg $row_value - the value of the row which will be used to evaluate which color
+   @param $row_color1 - the first color to use
+   @param $row_color2 - the second color to use
+   @param $row_value - the value of the row which will be used to evaluate which color
      to display for this particular row. must be an integer
-   @arg $row_id - used to allow js and ajax actions on this object
-   @returns - the background color used for this particular row */
-function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = "") {
+   @param $row_id - used to allow js and ajax actions on this object
+   @param $row_class 	- additional class attributes, e.g. "nodrag nodrop"
+   @return - the background color used for this particular row */
+function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = "", $row_class = "") {
+
 	if (($row_value % 2) == 1) {
 		$current_color = $row_color1;
+		$class_int = 0;
 	}else{
 		$current_color = $row_color2;
+		$class_int = 1;
 	}
 
-	if (strlen($row_id)) {
-		print "<tr id='$row_id' bgcolor='#$current_color'>\n";
+	/* be sure to prepend at least one whitespace in case we specify additional class(es) here */
+	if (strlen($row_class)) $row_class = " " . $row_class;
+
+	$class = "rowAlternate$class_int" . $row_class;
+
+	if (is_numeric($row_id)) {
+		print "<tr id='row_$row_id' class='$class'>\n";
 	}else{
-		print "<tr bgcolor='#$current_color'>\n";
+		if (strlen($row_id)) {
+			print "<tr id='$row_id' bgcolor='#$current_color' class='$class'>\n";
+		}else{
+			print "<tr bgcolor='#$current_color' class='$class'>\n";
+		}
 	}
-
+	
 	return $current_color;
 }
 
