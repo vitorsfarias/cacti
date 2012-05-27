@@ -103,41 +103,6 @@ $messages = array(
 		"type" => "error"),
 	);
 
-$cdef_operators = array(1 =>
-	"+",
-	"-",
-	"*",
-	"/",
-	"%");
-
-$cdef_functions = array(1 =>
-	"SIN",
-	"COS",
-	"LOG",
-	"EXP",
-	"FLOOR",
-	"CEIL",
-	"LT",
-	"LE",
-	"GT",
-	"GE",
-	"EQ",
-	"IF",
-	"MIN",
-	"MAX",
-	"LIMIT",
-	"DUP",
-	"EXC",
-	"POP",
-	"UN",
-	"UNKN",
-	"PREV",
-	"INF",
-	"NEGINF",
-	"NOW",
-	"TIME",
-	"LTIME");
-
 $input_types = array(
 	DATA_INPUT_TYPE_SNMP => "SNMP", // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY => "SNMP Query",
@@ -158,12 +123,6 @@ $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
 	"SNMP Field Value (From User)",
 	"SNMP Output Type (Dropdown)");
-
-$consolidation_functions = array(1 =>
-	"AVERAGE",
-	"MIN",
-	"MAX",
-	"LAST");
 
 $snmp_versions = array(0 =>
 	"Not In Use",
@@ -281,13 +240,6 @@ $rrdtool_versions = array(
 	"rrd-1.3.x" => "RRDTool 1.3.x",
 	"rrd-1.4.x" => "RRDTool 1.4.x");
 
-$cdef_item_types = array(
-	1 => "Function",
-	2 => "Operator",
-	4 => "Special Data Source",
-	5 => "Another CDEF",
-	6 => "Custom String");
-
 $tree_sort_types = array(
 	TREE_ORDERING_NONE => "Manual Ordering (No Sorting)",
 	TREE_ORDERING_ALPHABETIC => "Alphabetic Ordering",
@@ -305,21 +257,6 @@ $host_group_types = array(
 	HOST_GROUPING_GRAPH_TEMPLATE => "Graph Template",
 	HOST_GROUPING_DATA_QUERY_INDEX => "Data Query Index"
 	);
-
-$custom_data_source_types = array(
-	"CURRENT_DATA_SOURCE" => "Current Graph Item Data Source",
-	"ALL_DATA_SOURCES_NODUPS" => "All Data Sources (Don't Include Duplicates)",
-	"ALL_DATA_SOURCES_DUPS"	=> "All Data Sources (Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_NODUPS" => "All Similar Data Sources (Don't Include Duplicates)",
-	"SIMILAR_DATA_SOURCES_DUPS" => "All Similar Data Sources (Include Duplicates)",
-	"CURRENT_DS_MINIMUM_VALUE" => "Current Data Source Item: Minimum Value",
-	"CURRENT_DS_MAXIMUM_VALUE" => "Current Data Source Item: Maximum Value",
-	"CURRENT_GRAPH_MINIMUM_VALUE" => "Graph: Lower Limit",
-	"CURRENT_GRAPH_MAXIMUM_VALUE" => "Graph: Upper Limit",
-	"COUNT_ALL_DS_NODUPS" => "Count of All Data Sources (Don't Include Duplicates)",
-	"COUNT_ALL_DS_DUPS" => "Count of All Data Sources (Include Duplicates)",
-	"COUNT_SIMILAR_DS_NODUPS" => "Count of All Similar Data Sources (Don't Include Duplicates)",
-	"COUNT_SIMILAR_DS_DUPS"	=> "Count of All Similar Data Sources (Include Duplicates)");
 
 $menu = array(
 	"Create" => array(
@@ -596,11 +533,13 @@ $host_struc = array(
 
 /*
  * moved to include/graph/graph_arrays.php
+ * moved to include/presets/preset_cdef_arrays.php
  * moved to include/presets/preset_rra_arrays.php
  * moved to include/data_source/data_source_arrays.php
  */
 if (CACTI_ARRAY_COMPAT === TRUE) {
 	require(CACTI_INCLUDE_PATH . '/graph/graph_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/presets/preset_cdef_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_rra_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/data_source/data_source_arrays.php');
 }

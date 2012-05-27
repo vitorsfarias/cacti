@@ -28,47 +28,47 @@ require(CACTI_BASE_PATH . '/include/presets/preset_rra_arrays.php');
 $fields_rra_edit = array(
 	'name' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Name'),
-		'description' => __('How data is to be entered in RRAs.'),
+		'friendly_name' => 'Name',
+		'description' => 'How data is to be entered in RRAs.',
 		'value' => '|arg1:name|',
 		'max_length' => '100',
 		'size' => '50'
 	),
 	'consolidation_function_id' => array(
 		'method' => 'drop_multi',
-		'friendly_name' => __('Consolidation Functions'),
-		'description' => __('How data is to be entered in RRAs.'),
+		'friendly_name' => 'Consolidation Functions',
+		'description' => 'How data is to be entered in RRAs.',
 		'array' => $consolidation_functions,
 		'sql' => 'select consolidation_function_id as id,rra_id from rra_cf where rra_id=|arg1:id|',
 	),
 	'x_files_factor' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('X-Files Factor'),
-		'description' => __('The amount of unknown data that can still be regarded as known.'),
+		'friendly_name' => 'X-Files Factor',
+		'description' => 'The amount of unknown data that can still be regarded as known.',
 		'value' => '|arg1:x_files_factor|',
 		'max_length' => '10',
 		'size' => '10'
 	),
 	'steps' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Steps'),
-		'description' => __('How many data points are needed to put data into the RRA.'),
+		'friendly_name' => 'Steps',
+		'description' => 'How many data points are needed to put data into the RRA.',
 		'value' => '|arg1:steps|',
 		'max_length' => '8',
 		'size' => '10'
 	),
 	'rows' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Rows'),
-		'description' => __('How many generations data is kept in the RRA.'),
+		'friendly_name' => 'Rows',
+		'description' => 'How many generations data is kept in the RRA.',
 		'value' => '|arg1:rows|',
 		'max_length' => '12',
 		'size' => '10'
 	),
 	'timespan' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Timespan'),
-		'description' => __('How many seconds to display in graph for this RRA.'),
+		'friendly_name' => 'Timespan',
+		'description' => 'How many seconds to display in graph for this RRA.',
 		'value' => '|arg1:timespan|',
 		'max_length' => '12',
 		'size' => '10'

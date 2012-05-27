@@ -26,8 +26,8 @@
 $fields_color_edit = array(
 	'hex' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Hex Value'),
-		'description' => __('The hex value for this color; valid range: 000000-FFFFFF.'),
+		'friendly_name' => 'Hex Value',
+		'description' => 'The hex value for this color; valid range: 000000-FFFFFF.',
 		'value' => '|arg1:hex|',
 		'max_length' => '6',
 		'size' => '7',
