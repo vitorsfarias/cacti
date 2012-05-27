@@ -682,7 +682,7 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	# the template header
 	print "<div id='t_header'>";
-	html_start_box("Graph Template" . " $header_label", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template" . " $header_label", "100%", $colors["header"], "3", "center", "");
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
 		"fields" => inject_form_variables(graph_template_form_list(), (isset($graph_template) ? $graph_template : array()), (isset($template_graph) ? $template_graph : array()))
@@ -693,10 +693,10 @@ function graph_template_display_general($graph_template, $header_label) {
 	 * especially those fields, that are required for a "save" operation
 	 */
 	/* display all labels */
-	html_start_box("Graph Template Labels", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Labels", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $template_graph, false);
 	html_end_box(false);
-	html_start_box("Graph Template Cacti Specifics", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Cacti Specifics", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $template_graph, false);
 	html_end_box(false);
 
@@ -717,7 +717,7 @@ function graph_template_display_general($graph_template, $header_label) {
 	/* TODO: we should not use rrd version in the code, when going data-driven */
 	if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 		print "<div id='t_right_axis'>";
-		html_start_box("Graph Template Right Axis Settings", "100%", $colors["header"], "0", "center", "");
+		html_start_box("Graph Template Right Axis Settings", "100%", $colors["header"], "3", "center", "");
 		draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $template_graph, false);
 		html_end_box(false);
 		print "</div>";
@@ -725,42 +725,42 @@ function graph_template_display_general($graph_template, $header_label) {
 
 	/* print all size options */
 	print "<div id='t_size'>";
-	html_start_box("Graph Template Size", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Size", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_size', graph_size_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
 
 	/* print all limit options */
 	print "<div id='t_limits'>";
-	html_start_box("Graph Template Limits", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Limits", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
 
 	/* print grid options */
 	print "<div id='t_grid'>";
-	html_start_box("Graph Template Grid", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Grid", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
 
 	/* print colors, load jQuery colorpicker below */
 	print "<div id='t_color'>";
-	html_start_box("Graph Template Color", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Color", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_color', graph_color_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
 
 	/* print all legend options */
 	print "<div id='t_legend'>";
-	html_start_box("Graph Template Legend", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Legend", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
 
 	/* print miscellaneous options */
 	print "<div id='t_misc'>";
-	html_start_box("Graph Template Misc", "100%", $colors["header"], "0", "center", "");
+	html_start_box("Graph Template Misc", "100%", $colors["header"], "3", "center", "");
 	draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $template_graph, false);
 	html_end_box(false);
 	print "</div>";
@@ -824,7 +824,7 @@ function graph_template_display_items() {
 	html_end_box(true);
 
 	/* graph template inputs */
-	html_start_box("Graph Item Inputs", "100%", $colors["header"], "3", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
+	html_start_box("Graph Item Inputs", "100%", $colors["header"], "0", "center", "graph_templates_inputs.php?action=input_edit&graph_template_id=" . htmlspecialchars(get_request_var("id")));
 	print "<tr><td>\n";
 	html_header(array(array("name" => "Name")), 2,'','','left wp100');
 

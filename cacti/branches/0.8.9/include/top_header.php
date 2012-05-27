@@ -97,7 +97,7 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	</tr>
 	<tr style="height:5px;" bgcolor="#e9e9e9">
 		<td colspan="3">
-			<table width="100%">
+			<table width="100%" id='navbrcrumb'>
 				<tr>
 					<td>
 						<?php echo draw_navigation_text();?>
