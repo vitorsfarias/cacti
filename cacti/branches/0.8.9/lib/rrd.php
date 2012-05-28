@@ -179,8 +179,8 @@ function rrdtool_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_p
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = "") {
-	global $consolidation_functions;
-	
+	global $consolidation_functions, $data_source_types;
+
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* ok, if that passes lets check to make sure an rra does not already
@@ -545,15 +545,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	include_once(CACTI_LIBRARY_PATH . "/cdef.php");
 	include_once(CACTI_LIBRARY_PATH . "/graph_variables.php");
 	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
-	
-	
+
+
 	/* prevent command injection
 	 * This function prepares an rrdtool graph statement to be executed by the web server.
 	 * We have to take care, that the attacker does not insert shell code.
 	 * As some rrdtool parameters accept "Cacti variables", we have to perform the
 	 * variable substitution prior to vulnerability checks.
 	 * We will enclose all parameters in quotes and substitute quotation marks within
-	 * those parameters. 
+	 * those parameters.
 	 */
 
 	/* rrdtool fetches the default font from it's execution environment
