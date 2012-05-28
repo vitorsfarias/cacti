@@ -104,6 +104,13 @@ case 'tree':
 	if ((read_config_option("auth_method") != 0) && (empty($current_user["show_tree"]))) {
 		print "<strong><font size='+1' color='FF0000'>YOU DO NOT HAVE RIGHTS FOR TREE VIEW</font></strong>"; exit;
 	}
+	?>
+	<script type="text/javascript" >
+		$(document).ready(function() {
+			$(".graphimage").ZoomGraph({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+		});
+	</script>
+	<?php
 
 	/* if cacti's builtin authentication is turned on then make sure to take
 	graph permissions into account here. if a user does not have rights to a
@@ -215,6 +222,11 @@ case 'preview':
 	html_start_box("<strong>Graph Filters</strong>", "100%", $colors["header"], "3", "center", "");
 
 	?>
+	<script type="text/javascript" >
+		$(document).ready(function() {
+			$(".graphimage").ZoomGraph({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+		});
+	</script>
 	<tr bgcolor="#<?php print $colors['panel'];?>" class="noprint">
 		<td class="noprint">
 		<form style="margin:0px;padding:0px;" name="form_graph_view" method="post">
