@@ -1011,6 +1011,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			graph_tree_items.rra_id,
 			graph_tree_items.order_key,
 			graph_templates_graph.height,
+			graph_templates_graph.width,
 			graph_templates_graph.title_cache as title_cache
 			FROM (graph_tree_items,graph_local)
 			LEFT JOIN graph_templates_graph ON (graph_tree_items.local_graph_id=graph_templates_graph.local_graph_id AND graph_tree_items.local_graph_id>0)
@@ -1051,7 +1052,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				$graphs = db_fetch_assoc("SELECT
 					graph_templates_graph.title_cache,
 					graph_templates_graph.local_graph_id,
-					graph_templates_graph.height
+					graph_templates_graph.height,
+					graph_templates_graph.width
 					FROM (graph_local,graph_templates_graph)
 					$sql_join
 					WHERE graph_local.id=graph_templates_graph.local_graph_id
@@ -1105,6 +1107,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					graph_templates_graph.title_cache,
 					graph_templates_graph.local_graph_id,
 					graph_templates_graph.height,
+					graph_templates_graph.width,
 					graph_local.snmp_index
 					FROM (graph_local, graph_templates_graph)
 					$sql_join
