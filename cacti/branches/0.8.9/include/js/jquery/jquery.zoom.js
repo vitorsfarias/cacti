@@ -27,7 +27,8 @@
 		/* default values of the different options being offered */
 		var defaults = {
 			inputfieldStartTime	: '',	// ID of the input field that contains the start date
-			inputfieldEndTime	: ''	// ID of the input field that contains the end date
+			inputfieldEndTime	: '',	// ID of the input field that contains the end date
+			submitButton		: 'button_refresh_x'	// ID of the submit button
 		};
 
 		/* some global variables */
@@ -282,8 +283,8 @@
 
 				graphWidth		= 0;
 				graphParameters = '';
-				$("input[name='button_refresh']").trigger('click');
-				//$('#' + options.inputfieldStartTime).closest("form").submit();
+
+				$("input[name='" + options.submitButton + "']").trigger('click');
 
 				return false;
 			}else {
