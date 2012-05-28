@@ -43,7 +43,7 @@
 
 		var zoomStartPos	= 'none';
 		var zoomEndPos		= 'none';
-		var zoomAction		= 'zoom-in';
+		var zoomAction		= 'left2right';
 
 		var graphWidth		= 0;
 		var location		= window.location.href.split("?");
@@ -252,12 +252,12 @@
 			var timeSpan = graphParameters["graph_end"] - graphParameters["graph_start"];
 			var secondsPerPixel = timeSpan/graphParameters["graph_width"];
 
-			var newGraphStartTime 	= (zoomAction == 'zoom-in')
+			var newGraphStartTime 	= (zoomAction == 'left2right')
 									? parseInt(parseInt(graphParameters["graph_start"]) + (zoomStartPos - zoomBoxPosLeft)*secondsPerPixel)
-									: parseInt(parseInt(graphParameters["graph_start"]) - timeSpan);
-			var newGraphEndTime 	= (zoomAction == 'zoom-in')
+									: parseInt(parseInt(graphParameters["graph_start"]) + (zoomEndPos - zoomBoxPosLeft)*secondsPerPixel);
+			var newGraphEndTime 	= (zoomAction == 'left2right')
 									? parseInt(newGraphStartTime + (zoomEndPos-zoomStartPos)*secondsPerPixel)
-									: parseInt(parseInt(graphParameters["graph_end"]) + timeSpan);
+									: parseInt(newGraphStartTime + (zoomStartPos-zoomEndPos)*secondsPerPixel);
 
 			if(options.inputfieldStartTime != '' & options.inputfieldEndTime != ''){
 				$('#' + options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
@@ -279,7 +279,7 @@
 
 				zoomStartPos	= 'none';
 				zoomEndPos		= 'none';
-				zoomAction		= 'zoom-in';
+				zoomAction		= 'left2right';
 
 				graphWidth		= 0;
 				graphParameters = '';
@@ -329,7 +329,6 @@
 			}
 		}
 
-
 		/*
 		* updates the css parameters of the zoom area to reflect user's interaction
 		*/
@@ -337,20 +336,16 @@
 
 			if(zoomStartPos == 'none') { return; }
 
-			/* moving the mouse to the left means zoom out and will be colored blue */
+			/* mouse has been moved from right to left */
 			if((event.pageX-zoomStartPos)<0) {
-
-				zoomAction = 'zoom-in';
+				zoomAction = 'right2left';
 				zoomEndPos = (event.pageX < zoomBoxPosLeft) ? zoomBoxPosLeft : event.pageX;
-
 				$("#zoomArea").css({ background:'red', left:(zoomEndPos+1)+'px', width:Math.abs(zoomStartPos-zoomEndPos-1)+'px' });
 
-			/* moving the mouse to the right means zoom in and will be colored red */
+			/* mouse has been moved from left to right*/
 			}else {
-
-				zoomAction = 'zoom-in';
+				zoomAction = 'left2right';
 				zoomEndPos = (event.pageX > zoomBoxPosRight) ? zoomBoxPosRight : event.pageX;
-
 				$("#zoomArea").css({ background:'red', left:zoomStartPos+'px', width:Math.abs(zoomEndPos-zoomStartPos-1)+'px' });
 			}
 
