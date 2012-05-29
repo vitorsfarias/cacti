@@ -59,7 +59,6 @@
 
 		function initZoomGraph(image) {
 			var $this = image;
-
 			$this.mouseenter(
 				function(){
 					initZoomFunction($this);
@@ -67,10 +66,30 @@
 			);
 		}
 
+		function isReady(image){
+
+			if(typeof image[0].naturalWidth !== undefined && image[0].naturalWidth == 0) {
+				return false;
+			}
+
+			// necessary to support older versions of IE(6-8)
+			if(!image[0].complete) {
+				return false;
+			}
+
+			return true;
+		}
+
+
 
 		function initZoomFunction(image) {
 
 			var $this = image;
+
+			// exit if image has not been already loaded or if it is unavailable
+			if(!isReady($this)) {
+				return;
+			}
 
 			// get all graph parameters
 			graphUrl 			= $this.attr("src");
@@ -245,7 +264,7 @@
 
 
 		/*
-		* executes a dynamic zoom in / out
+		* executes a dynamic zoom in
 		*/
 		function dynamicZoom(image){
 
