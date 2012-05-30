@@ -21,6 +21,8 @@
  +-------------------------------------------------------------------------+
 */
 
+/* requirements: jQuery 1.7.x or above */
+
 (function($){
 	$.fn.ZoomGraph = function(options) {
 
@@ -154,7 +156,7 @@
 			}
 
 			// reset the zoom box
-			$("#zoomBox").css({ cursor:'crosshair', width:zoomBoxWidth + 'px', height:zoomBoxHeight + 'px', top:zoomBoxPosTop+'px', left:zoomBoxPosLeft+'px' });
+			$("#zoomBox").off().css({ cursor:'crosshair', width:zoomBoxWidth + 'px', height:zoomBoxHeight + 'px', top:zoomBoxPosTop+'px', left:zoomBoxPosLeft+'px' });
 
 			// add the zoom area if it has not been created yet.
 			if($("#zoomArea").length == 0) {
@@ -162,7 +164,7 @@
 			}
 
 			// reset the area box
-			$("#zoomArea").css({ top:zoomBoxPosTop+'px', height:zoomAreaHeight+'px' });
+			$("#zoomArea").off().css({ top:zoomBoxPosTop+'px', height:zoomAreaHeight+'px' });
 			initZoomAction(image);
 		}
 
