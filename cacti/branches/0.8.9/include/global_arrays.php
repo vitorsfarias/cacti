@@ -112,32 +112,10 @@ $input_types = array(
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => "Script Query - Script Server"
 	);
 
-$reindex_types = array(
-	DATA_QUERY_AUTOINDEX_NONE => "None",
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME => "Uptime Goes Backwards",
-	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE => "Index Count Changed",
-	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => "Verify All Fields"
-	);
-
 $snmp_query_field_actions = array(1 =>
 	"SNMP Field Name (Dropdown)",
 	"SNMP Field Value (From User)",
 	"SNMP Output Type (Dropdown)");
-
-$snmp_versions = array(0 =>
-	"Not In Use",
-	"Version 1",
-	"Version 2",
-	"Version 3");
-
-$snmp_auth_protocols = array(
-	"MD5" => "MD5 (default)",
-	"SHA" => "SHA");
-
-$snmp_priv_protocols = array(
-	"[None]" => "[None]",
-	"DES" => "DES (default)",
-	"AES128" => "AES");
 
 $banned_snmp_strings = array(
 	"End of MIB",
@@ -147,20 +125,6 @@ $logfile_options = array(1 =>
 	"Logfile Only",
 	"Logfile and Syslog/Eventlog",
 	"Syslog/Eventlog Only");
-
-$availability_options = array(
-	AVAIL_NONE => "None",
-	AVAIL_SNMP_AND_PING => "Ping and SNMP Uptime",
-	AVAIL_SNMP_OR_PING => "Ping or SNMP Uptime",
-	AVAIL_SNMP => "SNMP Uptime",
-	AVAIL_SNMP_GET_SYSDESC => "SNMP Desc",
-	AVAIL_SNMP_GET_NEXT => "SNMP getNext",
-	AVAIL_PING => "Ping");
-
-$ping_methods = array(
-	PING_ICMP => "ICMP Ping",
-	PING_TCP => "TCP Ping",
-	PING_UDP => "UDP Ping");
 
 $logfile_verbosity = array(
 	POLLER_VERBOSITY_NONE => "NONE - Syslog Only if Selected",
@@ -239,13 +203,6 @@ $rrdtool_versions = array(
 	"rrd-1.2.x" => "RRDTool 1.2.x",
 	"rrd-1.3.x" => "RRDTool 1.3.x",
 	"rrd-1.4.x" => "RRDTool 1.4.x");
-
-$tree_sort_types = array(
-	TREE_ORDERING_NONE => "Manual Ordering (No Sorting)",
-	TREE_ORDERING_ALPHABETIC => "Alphabetic Ordering",
-	TREE_ORDERING_NATURAL => "Natural Ordering",
-	TREE_ORDERING_NUMERIC => "Numeric Ordering"
-	);
 
 $tree_item_types = array(
 	TREE_ITEM_TYPE_HEADER => "Header",
@@ -494,50 +451,13 @@ $hash_type_names = array(
 	"round_robin_archive" => "Round Robin Archive"
 	);
 
-$host_struc = array(
-	"host_template_id",
-	"description",
-	"hostname",
-	"notes",
-	"snmp_community",
-	"snmp_version",
-	"snmp_username",
-	"snmp_password",
-	"snmp_auth_protocol",
-	"snmp_priv_passphrase",
-	"snmp_priv_protocol",
-	"snmp_context",
-	"snmp_port",
-	"snmp_timeout",
-	"max_oids",
-	"device_threads",
-	"availability_method",
-	"ping_method",
-	"ping_port",
-	"ping_timeout",
-	"ping_retries",
-	"disabled",
-	"status",
-	"status_event_count",
-	"status_fail_date",
-	"status_rec_date",
-	"status_last_error",
-	"min_time",
-	"max_time",
-	"cur_time",
-	"avg_time",
-	"total_polls",
-	"failed_polls",
-	"availability"
-	);
-
 /*
- * moved to include/graph/graph_arrays.php
- * moved to include/presets/preset_cdef_arrays.php
- * moved to include/presets/preset_rra_arrays.php
- * moved to include/data_source/data_source_arrays.php
+ * moved to specific files
  */
 if (CACTI_ARRAY_COMPAT === TRUE) {
+	require(CACTI_INCLUDE_PATH . '/auth/auth_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/data_query/data_query_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/device/device_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/graph/graph_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_cdef_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_rra_arrays.php');

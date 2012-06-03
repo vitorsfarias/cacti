@@ -158,7 +158,8 @@ function form_save() {
 				$_POST["ping_port"], $_POST["ping_timeout"],
 				$_POST["ping_retries"], $_POST["notes"],
 				$_POST["snmp_auth_protocol"], $_POST["snmp_priv_passphrase"],
-				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"], $_POST["device_threads"]);
+				$_POST["snmp_priv_protocol"], $_POST["snmp_context"], $_POST["max_oids"], $_POST["device_threads"],
+				$_POST["site_id"], $_POST["poller_id"], $_POST["template_enabled"]);
 		}
 
 		header("Location: host.php?action=edit&id=" . (empty($host_id) ? $_POST["id"] : $host_id));
@@ -1054,7 +1055,7 @@ function host_edit() {
 				</table>
 			</td>
 		<?php
-			form_end_row();
+		form_end_row();
 		html_end_box();
 
 		html_start_box("<strong>Associated Data Queries</strong>", "100%", $colors["header"], "3", "center", "");

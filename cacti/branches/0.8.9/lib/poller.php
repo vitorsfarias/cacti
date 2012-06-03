@@ -191,7 +191,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			}
 
 			break;
-		case DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE:
+		case DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE:
 			/* this method requires that some command/oid can be used to determine the
 			 * current number of indexes in the data query
 			 * pay ATTENTION to quoting!

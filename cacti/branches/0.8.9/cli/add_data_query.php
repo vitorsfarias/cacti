@@ -85,7 +85,7 @@ if (sizeof($parms)) {
 						$reindex_method = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
 						break;
 					case "index":
-						$reindex_method = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
+						$reindex_method = DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE;
 						break;
 					case "fields":
 						$reindex_method = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;

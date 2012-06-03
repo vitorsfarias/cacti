@@ -30,6 +30,10 @@ define('CACTI_CONST_COMPAT', TRUE);
  * set to false to verify, that including arrays here is no longer required */
 define('CACTI_ARRAY_COMPAT', TRUE);
 
+/* compatibility mode for Forms 
+ * set to false to verify, that including forms here is no longer required */
+define('CACTI_FORM_COMPAT', TRUE);
+
 define('CHECKED', 'on');
 define('ACTION_NONE', '-1');
 
@@ -52,11 +56,6 @@ define("RRDTOOL_OUTPUT_NULL", 0);
 define("RRDTOOL_OUTPUT_STDOUT", 1);
 define("RRDTOOL_OUTPUT_STDERR", 2);
 define("RRDTOOL_OUTPUT_GRAPH_DATA", 3);
-
-define("DATA_QUERY_AUTOINDEX_NONE", 0);
-define("DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME", 1);
-define("DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE", 2);
-define("DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION", 3);
 
 define("DATA_INPUT_TYPE_SCRIPT", 1);
 define("DATA_INPUT_TYPE_SNMP", 2);
@@ -88,18 +87,6 @@ define("POLLER_VERBOSITY_HIGH", 4);
 define("POLLER_VERBOSITY_DEBUG", 5);
 define("POLLER_VERBOSITY_DEVDBG", 6);
 
-define("AVAIL_NONE", 0);
-define("AVAIL_SNMP_AND_PING", 1);
-define("AVAIL_SNMP", 2);
-define("AVAIL_PING", 3);
-define("AVAIL_SNMP_OR_PING", 4);
-define("AVAIL_SNMP_GET_SYSDESC", 5);
-define("AVAIL_SNMP_GET_NEXT", 6);
-
-define("PING_ICMP", 1);
-define("PING_UDP", 2);
-define("PING_TCP", 3);
-
 define("HOST_UNKNOWN", 0);
 define("HOST_DOWN", 1);
 define("HOST_RECOVERING", 2);
@@ -126,6 +113,8 @@ define('OPER_MODE_NOTABS', 3);
  * moved to include/data_source/data_source_constants.php
  */
 if (CACTI_CONST_COMPAT === TRUE) {
+	require_once(CACTI_INCLUDE_PATH . '/auth/auth_constants.php');
+	require_once(CACTI_INCLUDE_PATH . '/data_query/data_query_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/graph/graph_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/presets/preset_rra_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/data_source/data_source_constants.php');
