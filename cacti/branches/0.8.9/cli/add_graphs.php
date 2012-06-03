@@ -140,7 +140,7 @@ if (sizeof($parms)) {
 						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
 						break;
 					case "index":
-						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
+						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE;
 						break;
 					case "fields":
 						$dsGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;

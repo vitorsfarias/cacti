@@ -62,6 +62,151 @@ function getHosts() {
 	return $hosts;
 }
 
+/** getDevices					get all matching devices for given selection criteria
+ * @param string $input_parms	array of selection criteria
+ * @return						array of devices, indexed by device_id
+ */
+function getDevices($input_parms) {
+	$devices    = array();
+
+	$sql_where = "";
+
+	if (isset($input_parms["id"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'id = ' . $input_parms["id"] . ' ';
+	}
+
+	if (isset($input_parms["site_id"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'site_id = ' . $input_parms["site_id"] . ' ';
+	}
+
+	if (isset($input_parms["poller_id"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'poller_id = ' . $input_parms["poller_id"] . ' ';
+	}
+
+	if (isset($input_parms["description"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'description like "%%' . $input_parms["description"] . '%%" ';
+	}
+
+	if (isset($input_parms["hostname"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'hostname like "%%' . $input_parms["hostname"] . '%%" ';
+	}
+
+	if (isset($input_parms["device_template_id"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'host_template_id = ' . $input_parms["host_template_id"] . ' ';
+	}
+
+	if (isset($input_parms["notes"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'notes like "%%' . $input_parms["notes"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_community"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_community like "%%' . $input_parms["snmp_community"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_version"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_version = ' . $input_parms["snmp_version"] . ' ';
+	}
+
+	if (isset($input_parms["snmp_username"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_username like "%%' . $input_parms["snmp_username"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_password"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_password like "%%' . $input_parms["snmp_password"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_auth_protocol"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_auth_protocol = "' . $input_parms["snmp_auth_protocol"] . '" ';
+	}
+
+	if (isset($input_parms["snmp_priv_passphrase"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_priv_passphrase like "%%' . $input_parms["snmp_priv_passphrase"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_priv_protocol"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_priv_protocol = "' . $input_parms["snmp_priv_protocol"] . '" ';
+	}
+
+	if (isset($input_parms["snmp_context"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_context like "%%' . $input_parms["snmp_context"] . '%%" ';
+	}
+
+	if (isset($input_parms["snmp_port"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_port = ' . $input_parms["snmp_port"] . ' ';
+	}
+
+	if (isset($input_parms["snmp_timeout"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'snmp_timeout = ' . $input_parms["snmp_timeout"] . ' ';
+	}
+
+	if (isset($input_parms["availability_method"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'availability_method = ' . $input_parms["availability_method"] . ' ';
+	}
+
+	if (isset($input_parms["ping_method"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'ping_method = ' . $input_parms["ping_method"] . ' ';
+	}
+
+	if (isset($input_parms["ping_port"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'ping_port = ' . $input_parms["ping_port"] . ' ';
+	}
+
+	if (isset($input_parms["ping_timeout"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'ping_timeout = ' . $input_parms["ping_timeout"] . ' ';
+	}
+
+	if (isset($input_parms["ping_retries"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'ping_retries = ' . $input_parms["ping_retries"] . ' ';
+	}
+
+	if (isset($input_parms["max_oids"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'max_oids = ' . $input_parms["max_oids"] . ' ';
+	}
+
+	if (isset($input_parms["device_threads"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'device_threads = ' . $input_parms["device_threads"] . ' ';
+	}
+
+	if (isset($input_parms["disabled"])) {
+		strlen($sql_where) ? ($sql_where .= ' AND ') : ($sql_where .= ' WHERE ');
+		$sql_where .= 'disabled = ' . $input_parms["disabled"] . ' ';
+	}
+
+	$sql_stmt = ("SELECT " .
+					"* " .
+				"FROM " .
+					"host " .
+	$sql_where .
+				"ORDER BY id");
+	#print $sql_stmt ."\n";
+
+	return db_fetch_assoc($sql_stmt);
+}
+
 function getInputFields($templateId) {
 	$fields    = array();
 
@@ -223,6 +368,59 @@ function getGraphTemplatesByHostTemplate($host_template_id) {
 	}
 
 	return $graph_templates;
+}
+
+/** getSNMPQueriesByDevices
+ *
+ * @param array $devices
+ * @param int $snmp_query_id
+ * @param string $header
+ * @return array
+ */
+function getSNMPQueriesByDevices($devices, $snmp_query_id='', &$header) {
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+
+	$header = array();	# provides header info for printout
+	$sql_where = "";
+
+	if (sizeof($devices)) {
+		$sql_where .= ((strlen($sql_where) === 0) ? "WHERE " : "AND ") . str_replace("id", "host_id", array_to_sql_or($devices, "id")) . " ";
+	}
+	if ($snmp_query_id != '') {
+		$sql_where .= ((strlen($sql_where) === 0) ? "WHERE " : "AND ") . " snmp_query.id =" . $snmp_query_id . " ";
+	}
+	$sql = "SELECT " .
+				"host.id as host_id, " .
+				"host.hostname as hostname, " .
+				"snmp_query.id as snmp_query_id, " .
+				"snmp_query.name as snmp_query_name, " .
+				"host_snmp_query.sort_field, " .
+				"host_snmp_query.title_format, " .
+				"host_snmp_query.reindex_method " .
+				"FROM host " .
+				"LEFT JOIN host_snmp_query ON (host.id = host_snmp_query.host_id) " .
+				"LEFT JOIN snmp_query ON (host_snmp_query.snmp_query_id = snmp_query.id) " .
+	$sql_where .
+				"ORDER by host.id, snmp_query.id";
+	#print $sql . "\n";
+
+	$tmpArray = db_fetch_assoc($sql);
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $key => $value) {	# recode reindex type in a human readable fashion
+			$tmpArray{$key}["human_reindex_method"] = $reindex_types[$tmpArray{$key}["reindex_method"]];
+		}
+		# provide human readable column headers
+		$header["host_id"]["desc"] 				= "Host Id";
+		$header["hostname"]["desc"] 			= "Hostname";
+		$header["snmp_query_id"]["desc"] 		= "Query Id";
+		$header["snmp_query_name"]["desc"] 		= "Query Name";
+		$header["sort_field"]["desc"] 			= "Sort Field";
+		$header["title_format"]["desc"] 		= "Title Format";
+		$header["reindex_method"]["desc"] 		= "#";
+		$header["human_reindex_method"]["desc"] = "Reindex Method";
+	}
+
+	return $tmpArray;
 }
 
 function displayQueryTypes($types, $quietMode = FALSE) {
@@ -598,4 +796,837 @@ function displayUsers($quietMode = FALSE) {
 	}
 }
 
-?>
+
+/** displayGenericArray	- column-save printout of arrays
+ * @param array $data			- the array to be printed; fields of each array item must relate to $req_fields
+ * @param array $req_fields		- an array of fields to be printed;
+ * 									index = field name;
+ * 									"desc" = human readable description
+ * @param string $title			- optional title of printout; skipped in quietMode
+ * @param bool $quietMode		- optionally suppress title printout
+ * @return bool					- true, if anything has been printed
+ */
+function displayGenericArray($data, $req_fields=array(), $title="", $quietMode=FALSE) {
+	$exit_code = false; # assume an error until we've printed sth
+	$pad = 2;		# default padding size
+
+	if (sizeof($data) && sizeof($req_fields)) {
+		# determine length of each data field
+		reset($req_fields);
+		foreach($req_fields as $key => $value) {
+			if(!isset($req_fields{$key}["desc"])) {	# if no explicit field description given, use field name as description
+				$req_fields{$key}["desc"] = $key;
+			}
+			# default field length equals length of header description
+			$req_fields{$key}["length"] = strlen($req_fields{$key}["desc"]);
+
+			foreach ($data as $row) {				# see, whether any data field is longer than the corresponding header
+				if (isset($row{$key}))
+				$req_fields{$key}["length"] = max($req_fields{$key}["length"],strlen($row{$key}));
+			}
+		}
+
+		if (!$quietMode) {
+			if ($title === "") {
+				#
+			} else {
+				echo $title . "\n";
+			}
+			# now print headers: field identifier and field names
+			reset($req_fields);
+			foreach($req_fields as $item) {
+				print(str_pad($item["desc"], $item["length"]+$pad));
+			}
+			print "\n";
+		}
+
+		# and data, finally
+		if (sizeof($data) > 0) {
+			foreach ($data as $row) {
+				reset($req_fields);
+				while (list ($field_name, $field_array) = each($req_fields)) {
+					if (isset($row[$field_name])) {
+						print(str_pad($row[$field_name], $req_fields[$field_name]["length"]+$pad));
+						$exit_code = true;
+					}
+				}
+				print "\n";
+			}
+		}
+	}
+	return $exit_code;
+}
+
+
+/**
+ * verifyDevice		- verifies all array items for a device array
+ * 					  recodes the device array, if necessary
+ * @param $device		- device array (part of device table)
+ * @param $ri_check	- request a referential integrity test
+ * returns			- if ok, returns true with array recoded; otherwise array containg error message
+ */
+function verifyDevice(&$device, $ri_check=false) {
+	require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
+
+	foreach($device as $key => $value) {
+
+		switch ($key) {
+			case "id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM host WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This device id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "site_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Site Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM sites WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This site id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "poller_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Poller Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM poller WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This poller id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "host_template_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Host Template Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM host_template WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This Host template id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "description":
+				break;
+			case "hostname":
+				break;
+			case "notes":
+				break;
+			case "snmp_community":
+				break;
+			case "snmp_version":
+				if (($value == 1 || $value == 2 || $value == 3)) {
+					#
+				}else{
+					$check["err_msg"] = "ERROR: Invalid SNMP Version: ($value)";
+					return $check;
+				}
+				break;
+			case "snmp_username":
+				break;
+			case "snmp_password":
+				break;
+			case "snmp_auth_protocol":
+				if (strtoupper($value) == SNMP_AUTH_PROTOCOL_MD5) {
+					$device{$key} = SNMP_AUTH_PROTOCOL_MD5;
+				} elseif (strtoupper($value) == SNMP_AUTH_PROTOCOL_SHA) {
+					$device{$key} = SNMP_AUTH_PROTOCOL_SHA;
+				} elseif (strtoupper($value) == SNMP_AUTH_PROTOCOL_NONE) {
+					$device{$key} = SNMP_AUTH_PROTOCOL_NONE;
+				} else {
+					$check["err_msg"] = "ERROR: Invalid SNMP Authentication Protocol: ($value)";
+					return $check;
+				}
+
+				break;
+			case "snmp_priv_passphrase":
+				break;
+			case "snmp_priv_protocol":
+				if (strtoupper($value) == SNMP_PRIV_PROTOCOL_DES) {
+					$device{$key} = SNMP_PRIV_PROTOCOL_DES;
+				} elseif (strtoupper($value) == SNMP_PRIV_PROTOCOL_AES128) {
+					$device{$key} = SNMP_PRIV_PROTOCOL_AES128;
+				} elseif (strtoupper($value) == SNMP_PRIV_PROTOCOL_NONE) {
+					$device{$key} = SNMP_PRIV_PROTOCOL_NONE;
+				} else {
+					$check["err_msg"] = "ERROR: Invalid SNMP Privacy Protocol: ($value)";
+					return $check;
+				}
+
+				break;
+			case "snmp_context":
+				break;
+			case "snmp_port":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid SNMP Port: ($value)";
+					return $check;
+				}
+				break;
+			case "snmp_timeout":
+				if (($value > 0) && ($value <= 20000)) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid SNMP Timeout: ($value). Valid values are from 1 to 20000";
+					return $check;
+				}
+				break;
+			case "availability_method":
+				switch(strtolower($value)) {
+					case "none":
+						$availability_method = '0'; /* tried to use AVAIL_NONE, but then ereg failes on validation, sigh */
+						break;
+					case "ping":
+						$availability_method = AVAIL_PING;
+						break;
+					case "snmp":
+						$availability_method = AVAIL_SNMP;
+						break;
+					case "pingsnmp":
+						$availability_method = AVAIL_SNMP_AND_PING;
+						break;
+					default:
+						$check["err_msg"] = "ERROR: Invalid Availability Parameter: ($value)";
+						return $check;
+				}
+				$device{$key} = $availability_method;
+				break;
+			case "ping_method":
+				switch(strtolower($value)) {
+					case "icmp":
+						$ping_method = PING_ICMP;
+						break;
+					case "tcp":
+						$ping_method = PING_TCP;
+						break;
+					case "udp":
+						$ping_method = PING_UDP;
+						break;
+					default:
+						$check["err_msg"] = "ERROR: Invalid Ping Method: ($value)";
+						return $check;
+				}
+				$device{$key} = $ping_method;
+				break;
+			case "ping_port":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid Ping Port: ($value)";
+					return $check;
+				}
+				break;
+			case "ping_timeout":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid Ping Timeout: ($value)";
+					return $check;
+				}
+				break;
+			case "ping_retries":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid Ping Retries: ($value)";
+					return $check;
+				}
+				break;
+			case "max_oids":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid Max OIDs: ($value)";
+					return $check;
+				}
+				break;
+			case "device_threads":
+				if ($value > 0) {
+					# fine
+				}else{
+					$check["err_msg"] = "ERROR: Invalid Device Threads: ($value)";
+					return $check;
+				}
+				break;
+			case "disabled":
+				switch ($value) {
+					case 1:
+					case 'on':
+					case "'on'":
+						$device["disabled"]  = CHECKED;
+						break;
+					case 0:
+					case '':
+					case "''":
+					case 'off':
+					case "'off'":
+						$device["disabled"]  = '""';
+						break;
+					default:
+						$check["err_msg"] = "ERROR: Invalid disabled flag ($value)";
+						return $check;
+				}
+				break;
+			default:
+				# device array may contain "unknown" columns due to extensions made by any plugin
+				# in future, a validation hook may be implemented here
+				/* TODO: validation hook */
+		}
+	}
+
+	# everything's fine
+	return true;
+}
+
+/**
+ * verifyDataQuery	- verifies all array items for a data query array
+ * 					  recodes the array, if necessary
+ * @param array $data_query	- data query array (part of device_snmp_query)
+ * @param bool  $ri_check	- request a referential integrity test
+ * returns			- if ok, returns true with array recoded; otherwise array containg error message
+ */
+function verifyDataQuery(&$data_query, $ri_check=false) {
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+
+	foreach($data_query as $key => $value) {
+
+		switch ($key) {
+			case "device_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM device WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This device id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "snmp_query_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: SNMP query id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM snmp_query WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This SNMP query id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "sort_field":
+				break;
+			case "title_format":
+				break;
+			case "reindex_method":
+				if ((((string) $value) === ((string)(int) $value)) &&
+				($value >= DATA_QUERY_AUTOINDEX_NONE) &&
+				($value <= DATA_QUERY_AUTOINDEX_VALUE_CHANGE)) {
+					$data_query["reindex_method"] = $value;
+				} else {
+					switch (strtolower($value)) {
+						case "none":
+							$data_query["reindex_method"] = DATA_QUERY_AUTOINDEX_NONE;
+							break;
+						case "uptime":
+							$data_query["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+							break;
+						case "index":
+							$data_query["reindex_method"] = DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE;
+							break;
+						case "fields":
+							$data_query["reindex_method"] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
+							break;
+						case "value":
+							$data_query["reindex_method"] = DATA_QUERY_AUTOINDEX_VALUE_CHANGE;
+							break;
+						default:
+							$check["err_msg"] = "ERROR: You must supply a valid reindex method for all devices!" . "\n";
+							return $check;
+					}
+				}
+				break;
+			default:
+				# device array may contain "unknown" columns due to extensions made by any plugin
+				# in future, a validation hook may be implemented here
+				/* TODO: validation hook */
+		}
+	}
+
+	# everything's fine
+	return true;
+}
+
+/**
+ * verifyDQGraph	- verifies all array items for a graph array to create a Data Query based Graph
+ * 					  recodes the dqGraph array, if necessary
+ * @param $dqGraph	- dqGraph array (part of  table)
+ * @param $ri_check	- request a referential integrity test
+ * returns			- if ok, returns true with array recoded; otherwise array containg error message
+ */
+function verifyDQGraph(&$dqGraph, $ri_check=false) {
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+
+	if (($dqGraph["snmp_query_id"] == "") ||
+	($dqGraph["snmp_query_graph_id"] == "") ||
+	($dqGraph["snmp_field"] == "") ||
+	($dqGraph["snmp_value"] == "") ||
+	($dqGraph["device_id"] == "") ||
+	($dqGraph["graph_template_id"] == "")) {
+		$check["err_msg"] = "ERROR: For graph type of 'ds' you must supply more options" . "\n";
+		return $check;
+	}
+
+	foreach($dqGraph as $key => $value) {
+
+		switch ($key) {
+			case "device_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Device id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM device WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This Host id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "graph_template_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Graph template id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM graph_templates WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This Graph template id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "snmp_query_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: SNMP query id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM snmp_query WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This SNMP query id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "snmp_query_graph_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: SNMP query type id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM snmp_query_graph WHERE id=" . $value .
+											" AND snmp_query_id=" . $dqGraph["snmp_query_id"] .
+											" AND graph_template_id=" . $dqGraph["graph_template_id"]);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This SNMP query type id does not exist ($value) for SNMP query "  . $dqGraph["snmp_query_id"] . ", graph template id " . $dqGraph["graph_template_id"];
+						return $check;
+					}
+				}
+				break;
+			case "snmp-field":
+				if ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM device_snmp_cache WHERE device_id=" . $dqGraph["device_id"] .
+											" AND snmp_query_id=" . $dqGraph["snmp_query_id"] .
+											" AND field_name='" . $value . "'");
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This SNMP field name does not exist ($value) for SNMP query " . $dqGraph["snmp_query_id"] . ", device id " . $dqGraph["device_id"];
+						return $check;
+					}
+				}
+				break;
+			case "snmp-value":
+				if ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM device_snmp_cache WHERE device_id=" . $dqGraph["device_id"] .
+											" AND snmp_query_id=" . $dqGraph["snmp_query_id"] .
+											" AND field_name='" . $dqGraph["snmp-field"] . "'" .
+											" AND field_value='" . $value . "'");
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This SNMP field value does not exist ($value) for SNMP query " . $dqGraph["snmp_query_id"] . ", device id " . $dqGraph["device_id"] . ", SNMP field " . $dqGraph["snmp-field"];
+						return $check;
+					}
+				}
+				break;
+			case "reindex-method":
+				if ((((string) $value) === ((string)(int) $value)) &&
+				($value >= DATA_QUERY_AUTOINDEX_NONE) &&
+				($value <= DATA_QUERY_AUTOINDEX_VALUE_CHANGE)) {
+					$dqGraph["reindex_method"] = $value;
+				} else {
+					switch (strtolower($value)) {
+						case "none":
+							$dqGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_NONE;
+							break;
+						case "uptime":
+							$dqGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+							break;
+						case "index":
+							$dqGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_INDEX_COUNT_CHANGE;
+							break;
+						case "fields":
+							$dqGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
+							break;
+						case "value":
+							$dqGraph["reindex_method"] = DATA_QUERY_AUTOINDEX_VALUE_CHANGE;
+							break;
+						default:
+							$check["err_msg"] = "ERROR: You must supply a valid reindex method for all devices!" . "\n";
+							return $check;
+					}
+				}
+				break;
+			default:
+				# device array may contain "unknown" columns due to extensions made by any plugin
+				# in future, a validation hook may be implemented here
+				/* TODO: validation hook */
+		}
+
+	}
+}
+
+/** verifyGraphInputFields	- verifies Graph Input Fields
+ * @param $templateId		- graph template id 
+ * @param $cgInputFields	- input fields as given by user
+ * @param $input_fields		- input fields related to the specific graph template
+ * returns					- value array as needed by graph creation function
+ */
+function verifyGraphInputFields($templateId, $cgInputFields, $input_fields) {
+
+	$values = array();
+
+	# input fields given?
+	if (strlen($cgInputFields)) {
+		$fields = explode(" ", $cgInputFields);
+
+		if (sizeof($fields)) {
+			foreach ($fields as $option) {
+				$data_template_id = 0;
+				$option_value = explode("=", $option);
+
+				if (substr_count($option_value[0], ":")) {
+					$compound 			= explode(":", $option_value[0]);
+					$data_template_id 	= $compound[0];
+					$field_name       	= $compound[1];
+				}else{
+					$field_name       	= $option_value[0];
+				}
+
+				/* check for the input fields existance */
+				$field_found = FALSE;
+				if (sizeof($input_fields)) {
+					foreach ($input_fields as $key => $row) {
+						if (substr_count($key, $field_name)) {
+							if ($data_template_id == 0) {
+								$data_template_id = $row["data_template_id"];
+							}
+							$field_found = TRUE;
+							break;
+						}
+					}
+				}
+
+				if (!$field_found) {
+					echo "ERROR: Unknown input-field ($field_name)" . "\n";
+					echo "Try php -q graph_list.php --list-input-fields" . "\n";
+					exit(1);
+				}
+
+				$value = $option_value[1];
+				$values["cg"][$templateId]["custom_data"][$data_template_id][$input_fields[$data_template_id . ":" . $field_name]["data_input_field_id"]] = $value;
+			}
+		}
+
+		return $values;
+	}
+}
+
+/** verifyPermissions
+ *
+ * @param array $perm
+ * @param string $delim
+ * @param bool $ri_check
+ */
+function verifyPermissions(&$perm, $delim, $ri_check=false) {
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
+
+	foreach($perm as $key => $value) {
+
+		switch ($key) {
+			case "user_id":
+				# non-null userids given?
+				if (strlen($value)) {
+					$userids = explode($delim, $value);
+					if (sizeof($userids)) {
+						foreach ($userids as $id) {
+							if (!(((string) $id) === ((string)(int) $id))) {
+								$check["err_msg"] = "ERROR: User id must be integer ($id)";
+								return $check;
+							} elseif ($ri_check) {
+								$match = db_fetch_cell("SELECT COUNT(*)	FROM user_auth WHERE id=" . $id);
+								if ($match == 0) {
+									$check["err_msg"] = "ERROR: This user id does not exist ($id)";
+									return $check;
+								}
+							}
+							# if we arrive here, everything has been verified
+							$perm["userids"][$id] = $id;
+						}
+					}
+				}
+				break;
+			case "item_type":
+				if ($value == $perm_item_types[PERM_GRAPHS]) {
+					$perm["item_type_id"] = PERM_GRAPHS;
+				} elseif ($value == $perm_item_types[PERM_TREES]) {
+					$perm["item_type_id"] = PERM_TREES;
+				} elseif ($value == $perm_item_types[PERM_DEVICES]) {
+					$perm["item_type_id"] = PERM_DEVICES;
+				} elseif ($value == $perm_item_types[PERM_GRAPH_TEMPLATES]) {
+					$perm["item_type_id"] = PERM_GRAPH_TEMPLATES;
+				} else {
+					$check["err_msg"] = "ERROR: Invalid Item Type: (" . $perm["item_type"] . ")";
+					return $check;
+				}
+				break;
+			case "item_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Item id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check && isset($perm["item_type"])) {
+
+					switch ($perm["item_type"]) {
+						case "graph":
+						case PERM_GRAPHS: /* graph */
+							$match = db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=" . $value);
+							if ($match == 0) {
+								$check["err_msg"] = "ERROR: Invalid Graph item id ($value)";
+								return $check;
+							}
+							break;
+						case "tree":
+						case PERM_TREES: /* tree */
+							$match = db_fetch_cell("SELECT id FROM graph_tree WHERE id=" . $value);
+							if ($match == 0) {
+								$check["err_msg"] = "ERROR: Invalid Tree item id ($value)";
+								return $check;
+							}
+							break;
+						case "device":
+						case PERM_DEVICES: /* device */
+							$match = db_fetch_cell("SELECT id FROM device WHERE id=" . $value);
+							if ($match == 0) {
+								$check["err_msg"] = "ERROR: Invalid device item id ($value)";
+								return $check;
+							}
+							break;
+						case "graph_template":
+						case PERM_GRAPH_TEMPLATES: /* graph_template */
+							$match = db_fetch_cell("SELECT id FROM graph_templates WHERE id=" . $value);
+							if ($match == 0) {
+								$check["err_msg"] = "ERROR: Invalid Graph Template item id ($value)";
+								return $check;
+							}
+							break;
+					}
+				}
+				break;
+			case "devices":
+				# has to be verified by verifyDevices()
+				break;
+			default:
+				# nothing
+		}
+	}
+}
+
+/** verifyTree
+ *
+ * @param array $tree
+ * @param bool $ri_check
+ */
+function verifyTree(&$tree, $ri_check=false) {
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+
+	foreach($tree as $key => $value) {
+
+		switch ($key) {
+			case "id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Tree id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM graph_tree WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This tree id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "name":
+				break;
+			case "sort_type_cli":
+				if ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NONE]) {
+					$tree["sort_type"] = DATA_QUERY_INDEX_SORT_TYPE_NONE;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC]) {
+					$tree["sort_type"] = DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NATURAL]) {
+					$tree["sort_type"] = DATA_QUERY_INDEX_SORT_TYPE_NATURAL;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NUMERIC]) {
+					$tree["sort_type"] = DATA_QUERY_INDEX_SORT_TYPE_NUMERIC;
+				} else {
+					$check["err_msg"] = "ERROR: Invalid Sort Type: (" . $tree["sort_type_cli"] . ")";
+					return $check;
+				}
+				break;
+			default:
+				# nothing
+		}
+	}
+}
+
+/** verifyTreeItem
+ *
+ * @param array $tree_item
+ * @param bool $ri_check
+ */
+function verifyTreeItem(&$tree_item, $ri_check=false) {
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
+
+	foreach($tree_item as $key => $value) {
+
+		switch ($key) {
+			case "id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Tree item id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM graph_tree_items WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This tree item id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "graph_tree_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Tree id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM graph_tree WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This tree id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "local_graph_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Graph id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM graph_local WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This graph id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "rra_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: RRA id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*)	FROM rra WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This rra id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "title":
+				break;
+			case "device_id":
+				if (!(((string) $value) === ((string)(int) $value))) {
+					$check["err_msg"] = "ERROR: Id must be integer ($value)";
+					return $check;
+				} elseif ($ri_check) {
+					$match = db_fetch_cell("SELECT COUNT(*) FROM device WHERE id=" . $value);
+					if ($match == 0) {
+						$check["err_msg"] = "ERROR: This device id does not exist ($value)";
+						return $check;
+					}
+				}
+				break;
+			case "parent_node":
+				if (isset($tree_item["graph_tree_id"])) {
+					if (!(((string) $value) === ((string)(int) $value))) {
+						$check["err_msg"] = "ERROR: Parent node must be integer ($value)";
+						return $check;
+					} elseif ($ri_check) {
+						$match = db_fetch_cell("SELECT COUNT(*)	" .
+											"FROM graph_tree_items " .
+											"WHERE graph_tree_id=" . $tree_item["graph_tree_id"] . " " .
+											"AND id=" . $value);
+						if ($match == 0) {
+							$check["err_msg"] = "ERROR: This parent node does not exist ($value)";
+							return $check;
+						}
+					}
+				} else {
+					$check["err_msg"] = "ERROR: Tree id must be given if parent node is specified";
+					return $check;
+				}
+				break;
+			case "device_grouping_type":
+				if ($value != TREE_DEVICE_GROUPING_GRAPH_TEMPLATE && $value != TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
+					$check["err_msg"] = "ERROR: Host Group Type must be " . TREE_DEVICE_GROUPING_GRAPH_TEMPLATE . " or " . TREE_DEVICE_GROUPING_DATA_QUERY_INDEX . " (Graph Template or Data Query Index)" . "\n";
+					return $check;
+				}
+				break;
+			case "sort_children_type":
+				if ($value != DATA_QUERY_INDEX_SORT_TYPE_NONE && $value != DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC && $value != DATA_QUERY_INDEX_SORT_TYPE_NUMERIC && $value != DATA_QUERY_INDEX_SORT_TYPE_NATURAL) {
+					$check["err_msg"] = "ERROR: Sort Children Type must be one of (" . DATA_QUERY_INDEX_SORT_TYPE_NONE . ", " . DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC . ", " . DATA_QUERY_INDEX_SORT_TYPE_NUMERIC . ", " . DATA_QUERY_INDEX_SORT_TYPE_NATURAL . " (Manual, Alphabetic, Numeric, Natural)" . "\n";
+					return $check;
+				}
+				break;
+			case "sort_type_cli":
+				if ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NONE]) {
+					$tree_item["sort_children_type"] = DATA_QUERY_INDEX_SORT_TYPE_NONE;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC]) {
+					$tree_item["sort_children_type"] = DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NATURAL]) {
+					$tree_item["sort_children_type"] = DATA_QUERY_INDEX_SORT_TYPE_NATURAL;
+				} elseif ($value == $tree_sort_types_cli[DATA_QUERY_INDEX_SORT_TYPE_NUMERIC]) {
+					$tree_item["sort_children_type"] = DATA_QUERY_INDEX_SORT_TYPE_NUMERIC;
+				} else {
+					$check["err_msg"] = "ERROR: Invalid Sort Type: (" . $tree_item["sort_type_cli"] . ")";
+					return $check;
+				}
+				break;
+			default:
+				# nothing
+		}
+	}
+}

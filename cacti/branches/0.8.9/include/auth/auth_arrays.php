@@ -1,0 +1,120 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2012 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+*/
+
+require_once(CACTI_INCLUDE_PATH . '/auth/auth_constants.php');
+
+/* auth data required fields for user */
+$auth_control_data_user_fields = array(
+	'password' =>				'',
+	'last_login_ip' =>			'',
+	'last_login' =>				'',
+	'user_type' =>				'0',
+	'must_change_password' =>	'0',
+	'show_tree' =>				'1',
+	'show_list' =>				'1',
+	'show_preview' =>			'1',
+	'graph_settings' =>			'1',
+	'login_opts' =>				'0',
+	'policy_graphs' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_trees' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_devices' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_graph_templates' =>	AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'password_expire_length' =>	read_config_option('password_expire_length'),
+	'password_change_last' =>	'',
+	'theme' => 'classic'
+);
+
+$auth_control_data_group_fields = array(
+	'group_type' =>				'0',
+	'show_tree' =>				'1',
+	'show_list' =>				'1',
+	'show_preview' =>			'1',
+	'graph_settings' =>			'1',
+	'login_opts' =>				'0',
+	'policy_graphs' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_trees' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_devices' =>			AUTH_CONTROL_DATA_POLICY_ALLOW,
+	'policy_graph_templates' =>	AUTH_CONTROL_DATA_POLICY_ALLOW
+);
+
+
+$graph_policy_array = array(
+	AUTH_CONTROL_DATA_POLICY_ALLOW =>	'Allow',
+	AUTH_CONTROL_DATA_POLICY_DENY =>	'Deny',
+);
+
+$perm_item_types = array(
+	PERM_GRAPHS =>			'graph',
+	PERM_TREES =>			'tree',
+	PERM_DEVICES =>			'device',
+	PERM_GRAPH_TEMPLATES =>	'graph_template',
+);
+
+
+$auth_methods = array(
+	AUTH_METHOD_NONE =>		'None',
+	AUTH_METHOD_BUILTIN =>	'Builtin Authentication',
+	AUTH_METHOD_WEB =>		'Web Basic Authentication',
+);
+
+// only add ldap if LDAP is available
+if (function_exists('ldap_connect')) {
+	$auth_methods[AUTH_METHOD_LDAP] = 'LDAP Authentication';
+}
+
+$auth_log_messages = array(
+	AUTH_LOGIN_RESULT_USER_INVALID =>		'User invalid',
+	AUTH_LOGIN_RESULT_SUCCESS =>			'Login successful',
+	AUTH_LOGIN_RESULT_GUEST_LOGIN_DENIED =>	'Guest login denied',
+	AUTH_LOGIN_RESULT_PASSWORD_CHANGE =>	'Password change successful',
+	AUTH_LOGIN_RESULT_BAD_PASSWORD =>		'Bad password',
+);
+
+$auth_realms = array(
+	AUTH_REALM_BUILTIN =>	'Local',
+	AUTH_REALM_WEB =>		'Web Basic',
+);
+
+// only add ldap if LDAP is available
+if (function_exists('ldap_connect')) {
+	$auth_realms[AUTH_REALM_LDAP] = 'LDAP';
+}
+
+$ldap_versions = array(
+	2 => 'Version 2',
+	3 => 'Version 3',
+);
+
+$ldap_encryption = array(
+	LDAP_ENCRYPT_NONE =>	'None',
+	LDAP_ENCRYPT_SSL =>		'SSL',
+	LDAP_ENCRYPT_TLS =>		'TLS',
+);
+
+$ldap_modes = array(
+	LDAP_SEARCHMODE_NONE =>		'No Searching',
+	LDAP_SEARCHMODE_ANON =>		'Anonymous Searching',
+	LDAP_SEARCHMODE_SPECIFIC =>	'Specific Searching',
+);
+
