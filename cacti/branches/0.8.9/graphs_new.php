@@ -23,11 +23,13 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/data_query.php");
-include_once("./lib/utility.php");
-include_once("./lib/sort.php");
-include_once("./lib/html_form_template.php");
-include_once("./lib/template.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/sort.php");
+include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/device.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -39,7 +41,7 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'query_reload':
-		host_reload_query();
+		device_reload_query();
 
 		header("Location: graphs_new.php?host_id=" . $_GET["host_id"]);
 		break;
@@ -84,39 +86,6 @@ function form_save() {
 
 		header("Location: graphs_new.php?host_id=" . $_POST["host_id"]);
 	}
-}
-
-/* ---------------------
-    Misc Functions
-   --------------------- */
-
-function draw_edit_form_row($field_array, $field_name, $previous_value) {
-	$field_array["value"] = $previous_value;
-
-	draw_edit_form(
-		array(
-			"config" => array(
-				"no_form_tag" => true,
-				"force_row_color" => "F5F5F5"
-				),
-			"fields" => array(
-				$field_name => $field_array
-				)
-			)
-		);
-}
-
-/* -------------------
-    Data Query Functions
-   ------------------- */
-
-function host_reload_query() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_id"));
-	/* ==================================================== */
-
-	run_data_query($_GET["host_id"], $_GET["id"]);
 }
 
 /* -------------------

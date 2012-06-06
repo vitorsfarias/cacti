@@ -23,9 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once('./lib/api_tree.php');
-include_once('./lib/tree.php');
-include_once('./lib/html_tree.php');
+include_once(CACTI_LIBRARY_PATH . '/tree.php');
+include_once(CACTI_LIBRARY_PATH . '/html_tree.php');
 
 input_validate_input_number(get_request_var('tree_id'));
 input_validate_input_number(get_request_var('leaf_id'));
@@ -133,7 +132,7 @@ function form_save() {
 
 function item_edit() {
 	global $colors, $tree_sort_types;
-	global $tree_item_types, $host_group_types;
+	global $tree_item_types, $tree_device_group_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -275,7 +274,7 @@ function item_edit() {
 				Choose how graphs are grouped when drawn for this particular host on the tree.
 			</td>
 			<td>
-				<?php form_dropdown("host_grouping_type", $host_group_types, "", "", (isset($tree_item["host_grouping_type"]) ? $tree_item["host_grouping_type"] : "1"), "", "");?>
+				<?php form_dropdown("host_grouping_type", $tree_device_group_types, "", "", (isset($tree_item["host_grouping_type"]) ? $tree_item["host_grouping_type"] : "1"), "", "");?>
 			</td>
 		</tr>
 		<?php form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],1); ?>

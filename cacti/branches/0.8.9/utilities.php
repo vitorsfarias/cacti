@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 load_current_session_value("page_referrer", "page_referrer", "");
 

@@ -23,15 +23,15 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/utility.php");
-include_once("./lib/api_data_source.php");
-include_once("./lib/api_tree.php");
-include_once("./lib/html_tree.php");
-include_once("./lib/api_graph.php");
-include_once("./lib/snmp.php");
-include_once("./lib/ping.php");
-include_once("./lib/data_query.php");
-include_once("./lib/api_device.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/tree.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/ping.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/device.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -59,22 +59,22 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'gt_remove':
-		host_remove_gt();
+		device_remove_gt();
 
 		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
 	case 'query_remove':
-		host_remove_query();
+		device_remove_query();
 
 		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
 	case 'query_reload':
-		host_reload_query();
+		device_reload_query();
 
 		header("Location: host.php?action=edit&id=" . $_GET["host_id"]);
 		break;
 	case 'query_verbose':
-		host_reload_query();
+		device_reload_query();
 
 		header("Location: host.php?action=edit&id=" . $_GET["host_id"] . "&display_dq_details=true");
 		break;
@@ -98,7 +98,7 @@ switch ($_REQUEST["action"]) {
     Global Form Functions
    -------------------------- */
 
-function add_tree_names_to_actions_array() {
+function add_tree_names_to_device_actions_array() {
 	global $device_actions;
 
 	/* add a list of tree names to the actions dropdown */
@@ -149,7 +149,7 @@ function form_save() {
 		if ($_POST["snmp_version"] == 3 && ($_POST["snmp_password"] != $_POST["snmp_password_confirm"])) {
 			raise_message(4);
 		}else{
-			$host_id = api_device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
+			$host_id = device_save($_POST["id"], $_POST["host_template_id"], $_POST["description"],
 				trim($_POST["hostname"]), $_POST["snmp_community"], $_POST["snmp_version"],
 				$_POST["snmp_username"], $_POST["snmp_password"],
 				$_POST["snmp_port"], $_POST["snmp_timeout"],
@@ -291,13 +291,13 @@ function form_actions() {
 
 			switch ($_POST["delete_type"]) {
 				case '1': /* leave graphs and data_sources in place, but disable the data sources */
-					api_data_source_disable_multi($data_sources_to_act_on);
+					data_source_disable_multi($data_sources_to_act_on);
 
 					plugin_hook_function('data_source_remove', $data_sources_to_act_on);
 
 					break;
 				case '2': /* delete graphs/data sources tied to this device */
-					api_data_source_remove_multi($data_sources_to_act_on);
+					data_source_remove_multi($data_sources_to_act_on);
 
 					api_graph_remove_multi($graphs_to_act_on);
 
@@ -306,7 +306,7 @@ function form_actions() {
 					break;
 			}
 
-			api_device_remove_multi($devices_to_act_on);
+			device_remove_multi($devices_to_act_on);
 
 			plugin_hook_function('device_remove', $devices_to_act_on);
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
@@ -347,7 +347,7 @@ function form_actions() {
 	include_once("./include/top_header.php");
 
 	/* add a list of tree names to the actions dropdown */
-	add_tree_names_to_actions_array();
+	add_tree_names_to_device_actions_array();
 
 	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
@@ -493,37 +493,6 @@ function form_actions() {
 	include_once("./include/bottom_footer.php");
 }
 
-/* -------------------
-    Data Query Functions
-   ------------------- */
-
-function host_reload_query() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_id"));
-	/* ==================================================== */
-
-	run_data_query($_GET["host_id"], $_GET["id"]);
-}
-
-function host_remove_query() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_id"));
-	/* ==================================================== */
-
-	api_device_dq_remove($_GET["host_id"], $_GET["id"]);
-}
-
-function host_remove_gt() {
-	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var("id"));
-	input_validate_input_number(get_request_var("host_id"));
-	/* ==================================================== */
-
-	api_device_gt_remove($_GET["host_id"], $_GET["id"]);
-}
-
 /* ---------------------
     Host Functions
    --------------------- */
@@ -542,7 +511,7 @@ function host_remove() {
 	}
 
 	if ((read_config_option("deletion_verification") == "") || (isset($_GET["confirm"]))) {
-		api_device_remove($_GET["id"]);
+		device_remove($_GET["id"]);
 	}
 }
 
@@ -1421,7 +1390,7 @@ function host() {
 	html_end_box(false);
 
 	/* add a list of tree names to the actions dropdown */
-	add_tree_names_to_actions_array();
+	add_tree_names_to_device_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);

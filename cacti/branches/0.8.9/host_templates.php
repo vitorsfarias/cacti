@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

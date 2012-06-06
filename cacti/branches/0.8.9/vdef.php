@@ -23,8 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/vdef.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
