@@ -785,7 +785,7 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 				build_html_file($leaf, "host");
 
 				if (read_config_option("export_tree_expand_hosts") == "on") {
-					if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+					if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
 						$graph_templates = db_fetch_assoc("SELECT
 							graph_templates.id,
 							graph_templates.name,
@@ -804,7 +804,7 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 								build_html_file($leaf, "gt", $graph_template);
 							}
 						}
-					}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+					}else if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
 						$data_queries = db_fetch_assoc("SELECT
 							snmp_query.id,
 							snmp_query.name
@@ -1531,7 +1531,7 @@ function create_dhtml_tree_export($tree_id) {
 						$dhtml_tree[$i] = "ou" . ($tier) . " = insFld(ou" . ($tier-1) . ", gFld(\"Host: " . $leaf["hostname"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_" . $leaf["id"]) . ".html\"))\n";
 
 						if (read_config_option("export_tree_expand_hosts") == "on") {
-							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+							if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
 								$graph_templates = db_fetch_assoc("SELECT
 									graph_templates.id,
 									graph_templates.name,
@@ -1551,7 +1551,7 @@ function create_dhtml_tree_export($tree_id) {
 										$dhtml_tree[$i] = "ou" . ($tier+1) . " = insFld(ou" . ($tier) . ", gFld(\" " . $graph_template["name"] . "\", \"" . clean_up_export_name($leaf["hostname"] . "_gt_" . $leaf["id"]) . "_" . $graph_template["id"] . ".html\"))\n";
 									}
 								}
-							}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+							}else if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
 								$data_queries = db_fetch_assoc("SELECT
 									snmp_query.id,
 									snmp_query.name

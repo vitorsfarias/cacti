@@ -56,7 +56,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 function update_poller_cache($local_data_id, $commit = false) {
 
 	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
-	include_once(CACTI_LIBRARY_PATH . "/api_poller.php");
+	include_once(CACTI_LIBRARY_PATH . "/poller.php");
 
 	$poller_items = array();
 
@@ -119,7 +119,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				$data_source_item_name = "";
 			}
 
-			$poller_items[] = api_poller_cache_item_add($data_source["host_id"], array(), $local_data_id, $data_input["rrd_step"], $action, $data_source_item_name, 1, addslashes($script_path));
+			$poller_items[] = poller_cache_item_add($data_source["host_id"], array(), $local_data_id, $data_input["rrd_step"], $action, $data_source_item_name, 1, addslashes($script_path));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 			/* get the host override fields */
 			$data_template_id = db_fetch_cell("SELECT data_template_id FROM data_template_data WHERE local_data_id=$local_data_id");
@@ -158,7 +158,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 
 			$data_template_rrd_id = db_fetch_cell("select id from data_template_rrd where local_data_id=$local_data_id");
 
-			$poller_items[] = api_poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
+			$poller_items[] = poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields["snmp_oid"]) ? $host_fields["snmp_oid"] : ""));
 		}else if ($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 			$snmp_queries = get_data_query_array($data_source["snmp_query_id"]);
 
@@ -208,7 +208,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 				}
 
 				if (!empty($oid)) {
-					$poller_items[] = api_poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
+					$poller_items[] = poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], 0, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), $oid);
 				}
 			}
 			}
@@ -269,7 +269,7 @@ function update_poller_cache($local_data_id, $commit = false) {
 					}
 
 					if (isset($script_path)) {
-						$poller_items[] = api_poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
+						$poller_items[] = poller_cache_item_add($data_source["host_id"], $host_fields, $local_data_id, $data_input["rrd_step"], $action, get_data_source_item_name($output["data_template_rrd_id"]), sizeof($outputs), addslashes($script_path));
 					}
 				}
 			}
@@ -763,7 +763,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 }
 
 function duplicate_vdef($_vdef_id, $vdef_title) {
-	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 	$vdef = db_fetch_row("select * from vdef where id=$_vdef_id");
 	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$_vdef_id");
@@ -771,7 +771,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	/* substitute the title variable */
 	$vdef["name"] = str_replace("<vdef_title>", $vdef["name"], $vdef_title);
 
-	/* create new entry: device_template */
+	/* create new entry: vdef */
 	$save["id"] = 0;
 	$save["hash"] = get_hash_vdef(0);
 
@@ -803,12 +803,12 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 }
 
 function duplicate_xaxis($_xaxis_id, $xaxis_title) {
-	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+	require_once(CACTI_LIBRARY_PATH . "/xaxis.php");
 
 	$xaxis = db_fetch_row("select * from graph_templates_xaxis where id=$_xaxis_id");
 	$xaxis_items = db_fetch_assoc("select * from graph_templates_xaxis_items where xaxis_id=$_xaxis_id ORDER BY timespan");
 
-	/* create new entry: device_template */
+	/* create new entry: xaxis */
 	$save["id"] = 0;
 	$save["hash"] = get_hash_xaxis(0);
 	/* substitute the title variable */
@@ -841,8 +841,8 @@ function duplicate_xaxis($_xaxis_id, $xaxis_title) {
  * update the font cache via browser
  */
 function repopulate_font_cache() {
-require_once(CACTI_BASE_PATH . "/lib/functions.php");
-require_once(CACTI_BASE_PATH . "/lib/fonts.php");
+require_once(CACTI_LIBRARY_PATH . "/functions.php");
+require_once(CACTI_LIBRARY_PATH . "/fonts.php");
 
 
 if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||

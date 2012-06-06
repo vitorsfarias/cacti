@@ -951,3 +951,14 @@ function html_read_cookie_element($name, $element) {
 	return '';
 }
 
+/** html_get_location - calculates the return location for nested tables */
+function html_get_location($page) {
+	if (isset($_REQUEST["parent"]) && isset($_REQUEST["parent_id"])) {
+		$parts = explode("?", $page);
+		return get_request_var_request("parent") . ".php?parent=" . get_request_var_request("parent") . "&id=" . get_request_var_request("parent_id") . (isset($parts[1]) ? $parts[1]:"") . (strstr($page, "action=") !== false ? "":"&action=edit");
+		//return $page . (strstr($page, "?") !== false ? "&":"?") . "parent=" . get_request_var_request("parent") . "&parent_id=" . get_request_var_request("parent_id") . (strstr($page, "action=") !== false ? "":"&action=ajax_view");
+	}else{
+		return $page;
+	}
+}
+

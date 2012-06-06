@@ -734,7 +734,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
  */
 function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false) {
 	global $database_default;
-	include_once(CACTI_BASE_PATH . "/lib/database.php");
+	include_once(CACTI_LIBRARY_PATH . "/database.php");
 
 	$result = db_fetch_assoc("show tables from `" . $database_default . "`") or die (mysql_error());
 	$tables = array();
