@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/graph/graph_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/graph/graph_constants.php');
 
 $graph_actions = array(
 	GRAPH_ACTION_DELETE 					=> __('Delete'),

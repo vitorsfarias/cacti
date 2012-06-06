@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/poller/poller_arrays.php');
+require(CACTI_INCLUDE_PATH . '/poller/poller_arrays.php');
 
 /* file: pollers.php, action: edit */
 $fields_poller_edit = array(

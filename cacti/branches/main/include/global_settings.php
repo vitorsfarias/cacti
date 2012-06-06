@@ -22,12 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
-require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
-require(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
-require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
+require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
+require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
+require(CACTI_INCLUDE_PATH . "/poller/poller_arrays.php");
+require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 /* tab information */
 $tabs = array(

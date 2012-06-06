@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/auth/auth_arrays.php');
+require(CACTI_INCLUDE_PATH . '/auth/auth_arrays.php');
 
 /* file: user_admin.php, action: user_edit (device) */
 $fields_user_user_edit_device = array(

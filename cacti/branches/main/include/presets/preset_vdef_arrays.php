@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/presets/preset_cdef_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/presets/preset_cdef_constants.php');
 
 $vdef_functions = array(1 =>
 	'MAXIMUM',

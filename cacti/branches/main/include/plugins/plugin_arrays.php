@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/plugins/plugin_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/plugins/plugin_constants.php');
 
 $plugin_actions = array(
 	PLUGIN_ACTION_INSTALL 	=> __('Install'),

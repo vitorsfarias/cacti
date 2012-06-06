@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/poller/poller_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/poller/poller_constants.php');
 
 $poller_options = array(
 	POLLER_CMD		=> 'cmd.php',

@@ -106,7 +106,7 @@ else
 $path2catalogue = CACTI_BASE_PATH . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
 
 /* define the path to the language file of the DHTML calendar */
-$path2calendar = CACTI_BASE_PATH . '/include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-' . $lang2locale[$cacti_locale]['filename'] . '.js';
+$path2calendar = CACTI_INCLUDE_PATH . '/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-' . $lang2locale[$cacti_locale]['filename'] . '.js';
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue) & file_exists($path2calendar))
@@ -148,8 +148,8 @@ if ($plugins && sizeof($plugins) > 0)
 }
 
 /* load php-gettext class */
-require(CACTI_BASE_PATH . '/include/gettext/streams.php');
-require(CACTI_BASE_PATH . '/include/gettext/gettext.php');
+require(CACTI_INCLUDE_PATH . '/gettext/streams.php');
+require(CACTI_INCLUDE_PATH . '/gettext/gettext.php');
 
 /* prefetch all language files to work in memory only,
    die if one of the language files is corrupted */
@@ -422,7 +422,7 @@ function get_installed_locales(){
 	$dhandle = opendir(CACTI_BASE_PATH . '/locales/LC_MESSAGES');
 	while (false !== ($filename = readdir($dhandle))) {
 		/* check if language file for DHTML calendar is also available */
-		$path2calendar = CACTI_BASE_PATH . '/include/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-' . str_replace('.mo', '.js', $filename);
+		$path2calendar = CACTI_INCLUDE_PATH . '/js/jquery/locales/LC_MESSAGES/jquery.ui.datepicker-' . str_replace('.mo', '.js', $filename);
 		if(isset($locations[$filename]) & file_exists($path2calendar)) {
 			$supported_languages[$locations[$filename]['locale']] = $locations[$filename]['language'];
 		}

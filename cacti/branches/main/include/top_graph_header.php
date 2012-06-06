@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once(CACTI_BASE_PATH . '/include/graph/graph_constants.php');
-include_once(CACTI_BASE_PATH . '/lib/time.php');
-include_once(CACTI_BASE_PATH . '/lib/graph_view.php');
+include_once(CACTI_INCLUDE_PATH . '/graph/graph_constants.php');
+include_once(CACTI_LIBRARY_PATH . '/time.php');
+include_once(CACTI_LIBRARY_PATH . '/graph_view.php');
 
 global $lang2locale;
 
