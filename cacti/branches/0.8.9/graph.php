@@ -28,11 +28,11 @@ if (!isset($_REQUEST["view_type"])) { $_REQUEST["view_type"] = ""; }
 
 $guest_account = true;
 include("./include/auth.php");
-include_once("./lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 plugin_hook_function('graph');
 
-include_once("./lib/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
 include_once("./include/top_graph_header.php");
 
 /* ================= input validation ================= */

@@ -91,7 +91,7 @@ if ($action == 'login') {
 		/* LDAP Auth */
  		if ((get_request_var_post("realm") == "ldap") && (strlen(get_request_var_post("login_password")) > 0)) {
 			/* include LDAP lib */
-			include_once("./lib/ldap.php");
+			include_once(CACTI_LIBRARY_PATH . "/ldap.php");
 
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);

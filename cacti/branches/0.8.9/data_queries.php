@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

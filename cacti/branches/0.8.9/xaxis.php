@@ -23,8 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/xaxis.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

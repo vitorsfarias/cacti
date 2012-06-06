@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/import.php");
+include_once(CACTI_LIBRARY_PATH . "/import.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }

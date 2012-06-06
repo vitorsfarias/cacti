@@ -23,13 +23,13 @@
 */
 
 include ("./include/auth.php");
-include_once("./lib/utility.php");
-include_once("./lib/api_graph.php");
-include_once("./lib/api_data_source.php");
-include_once("./lib/template.php");
-include_once("./lib/html_form_template.php");
-include_once("./lib/rrd.php");
-include_once("./lib/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -351,7 +351,7 @@ function form_actions() {
 				/* ==================================================== */
 			}
 
-			api_data_source_remove_multi($selected_items);
+			data_source_remove_multi($selected_items);
 
 			plugin_hook_function('data_source_remove', $selected_items);
 		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
@@ -392,18 +392,18 @@ function form_actions() {
 			}
 		}elseif ($_POST["drp_action"] == "6") { /* data source enable */
 			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_enable($selected_items[$i]);
+				data_source_enable($selected_items[$i]);
 			}
 		}elseif ($_POST["drp_action"] == "7") { /* data source disable */
 			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_disable($selected_items[$i]);
+				data_source_disable($selected_items[$i]);
 			}
 		}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-				api_reapply_suggested_data_source_title($selected_items[$i]);
+				reapply_suggested_data_source_title($selected_items[$i]);
 				update_data_source_title_cache($selected_items[$i]);
 			}
 		} else {
@@ -992,18 +992,6 @@ function ds_edit() {
 	plugin_hook('data_source_edit_bottom');
 
 	include_once("./include/bottom_footer.php");
-}
-
-function get_poller_interval($seconds) {
-	if ($seconds == 0) {
-		return "<em>External</em>";
-	}else if ($seconds < 60) {
-		return "<em>" . $seconds . " Seconds</em>";
-	}else if ($seconds == 60) {
-		return "1 Minute";
-	}else{
-		return "<em>" . ($seconds / 60) . " Minutes</em>";
-	}
 }
 
 function ds() {

@@ -23,10 +23,10 @@
 */
 
 include ("./include/auth.php");
-include_once("./lib/tree.php");
-include_once("./lib/html_tree.php");
-include_once("./lib/utility.php");
-include_once("./lib/template.php");
+include_once(CACTI_LIBRARY_PATH . "/tree.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 

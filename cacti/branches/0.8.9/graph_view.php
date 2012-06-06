@@ -24,8 +24,8 @@
 
 $guest_account = true;
 include("./include/auth.php");
-include_once("./lib/html_tree.php");
-include_once("./lib/timespan_settings.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/timespan_settings.php");
 
 /* ================= input validation ================= */
 input_validate_input_number(get_request_var("branch_id"));
