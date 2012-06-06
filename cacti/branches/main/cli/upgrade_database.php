@@ -32,8 +32,8 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 ini_set('max_execution_time', '0');
 
 include(dirname(__FILE__)."/../include/global.php");
-include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 /* UPDATE THIS FOR NEW VERSIONS!! */
 $includes = array(

@@ -29,7 +29,7 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 include(dirname(__FILE__)."/../include/global.php");
-include_once(CACTI_BASE_PATH."/lib/auth.php");
+include_once(CACTI_LIBRARY_PATH . "/auth.php");
 
 if (empty($_SERVER["argv"][2])) {
 	echo "\n";
