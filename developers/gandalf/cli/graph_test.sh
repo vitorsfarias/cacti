@@ -33,10 +33,11 @@ echo -----------------------
 echo update
 echo -----------------------
 php -q graph_create.php --graph-type=cg --device-id=1 --graph-template-id=11
+# get graph id from above and replace here: 49
 php -q graph_list.php --graph-id=49
 
 php -q graph_update.php --help
-php -q graph_update.php --graph-id=49 --graph-title='New Title1'
+php -q graph_update.php --graph-title='New Title1' --graph-id=49
 php -q graph_list.php --graph-id=49
 
 php -q graph_create.php --graph-type=cg --device-id=1 --graph-template-id=11 --force
