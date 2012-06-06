@@ -31,9 +31,9 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
+include(dirname(__FILE__) . "/../include/global.php");
 require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
-include_once(CACTI_LIBRARY_PATH . "/api_automation_tools.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
 include_once(CACTI_LIBRARY_PATH . "/data_source.php");
 include_once(CACTI_LIBRARY_PATH . "/graph.php");
 include_once(CACTI_LIBRARY_PATH . "/device.php");
@@ -88,13 +88,13 @@ if (sizeof($parms)) {
 			case "--help":
 			case "--version":		display_help($me);								exit(0);
 			case "--quiet":			$quietMode = TRUE;								break;
-			default:				echo "ERROR: Invalid Argument: ($arg)" . "\n\n"; display_help($me); exit(1);
+			default:				echo __("ERROR: Invalid Argument: (%s)", $arg) . "\n\n"; display_help($me); exit(1);
 		}
 	}
 
 	# at least one matching criteria has to be defined
 	if (!sizeof($device)) {
-		print "ERROR: No device matching criteria found\n";
+		print __("ERROR: No device matching criteria found\n");
 		exit(1);
 	}
 
@@ -109,8 +109,8 @@ if (sizeof($parms)) {
 	/* get devices matching criteria */
 	$devices = getDevices($device);
 	if (!sizeof($devices)) {
-		echo "ERROR: No matching Devices found" . "\n";
-		echo "Try php -q device_list.php" . "\n";
+		echo __("ERROR: No matching Devices found") . "\n";
+		echo __("Try php -q device_list.php") . "\n";
 		exit(1);
 	}
 
@@ -146,21 +146,21 @@ if (sizeof($parms)) {
 				data_source_remove_multi($data_sources_to_act_on);
 				graph_remove_multi($graphs_to_act_on);
 			}
-			echo "Removing device and all resources for device id " . $item["id"];
+			echo __("Removing device and all resources for device id ") . $item["id"];
 		} else {
 			/* leave graphs and data_sources in place, but disable the data sources */
 			if (!$debug) {
 				data_source_disable_multi($data_sources_to_act_on);
 			}
-			echo "Removing device but keeping resources for device id " . $item["id"];
+			echo __("Removing device but keeping resources for device id ") . $item["id"];
 		}
 
 		device_remove($item["id"]);
 
 		if (is_error_message()) {
-			echo ". ERROR: Failed to remove this device" . "\n";
+			echo __(". ERROR: Failed to remove this device") . "\n";
 		} else {
-			echo ". Success - removed device id: " . ($item["id"]) . "\n";
+			echo __(". Success - removed device id: ") . ($item["id"]) . "\n";
 		}
 	}
 }else{
@@ -169,42 +169,42 @@ if (sizeof($parms)) {
 }
 
 function display_help($me) {
-	echo "Remove Device Script 1.0" . ", " . "Copyright 2004-2011 - The Cacti Group" . "\n";
-	echo "A simple command line utility to remove a device from Cacti" . "\n\n";
-	echo "usage: " . $me . " [--device-id=] [--site-id=] [--poller-id=]\n";
+	echo "Remove Device Script 1.0" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo __("A simple command line utility to remove a device from Cacti") . "\n\n";
+	echo __("usage: ") . $me . " [--device-id=] [--site-id=] [--poller-id=]\n";
 	echo "       [--description=] [--ip=] [--template=] [--notes=\"[]\"] [--disabled]\n";
 	echo "       [--avail=[pingsnmp]] [--ping-method=[tcp] --ping-port=[N/A, 1-65534]] --ping-retries=[2] --ping-timeout=[500]\n";
 	echo "       [--version=1] [--community=] [--port=161] [--timeout=500]\n";
 	echo "       [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n";
 	echo "       [-d]\n\n";
-	echo "At least one device related parameter is required. All matching devices will be deleted" . "\n";
-	echo "   --device-id       " . "the numerical ID of the device" . "\n";
-	echo "   --site-id         " . "the numerical ID of the site" . "\n";
-	echo "   --poller-id       " . "the numerical ID of the poller" . "\n";
-	echo "   --description     " . "the name that will be displayed by Cacti in the graphs" . "\n";
-	echo "   --ip              " . "self explanatory (can also be a FQDN)" . "\n";
-	echo "   --template        " . "denotes the device template to be used" . "\n";
-	echo "                     " . "In case a device template is given, all values are fetched from this one." . "\n";
-	echo "                     " . "For a device template=0 (NONE), Cacti default settings are used." . "\n";
-	echo "                     " . "Optionally overwrite by any of the following:" . "\n";
-	echo "   --notes           " . "General information about this device. Must be enclosed using double quotes." . "\n";
-	echo "   --disable         " . "to add this device but to disable checks and 0 to enable it" . " [0|1]\n";
-	echo "   --avail           " . "device availability check" . " [ping][none, snmp, pingsnmp]\n";
-	echo "     --ping-method   " . "if ping selected" . " [icmp|tcp|udp]\n";
-	echo "     --ping-port     " . "port used for tcp|udp pings" . " [1-65534]\n";
-	echo "     --ping-retries  " . "the number of time to attempt to communicate with a device" . "\n";
-	echo "     --ping-timeout  " . "ping timeout" . "\n";
-	echo "   --version         " . "snmp version" . " [1|2|3]\n";
-	echo "   --community       " . "snmp community string for snmpv1 and snmpv2. Leave blank for no community" . "\n";
-	echo "   --port            " . "snmp port" . "\n";
-	echo "   --timeout         " . "snmp timeout" . "\n";
-	echo "   --username        " . "snmp username for snmpv3" . "\n";
-	echo "   --password        " . "snmp password for snmpv3" . "\n";
-	echo "   --authproto       " . "snmp authentication protocol for snmpv3" . " [".SNMP_AUTH_PROTOCOL_MD5."|".SNMP_AUTH_PROTOCOL_SHA."]\n";
-	echo "   --privpass        " . "snmp privacy passphrase for snmpv3" . "\n";
-	echo "   --privproto       " . "snmp privacy protocol for snmpv3" . " [".SNMP_PRIV_PROTOCOL_DES."|".SNMP_PRIV_PROTOCOL_AES128."]\n";
-	echo "   --context         " . "snmp context for snmpv3" . "\n";
-	echo "   --max-oids        " . "the number of OID's that can be obtained in a single SNMP Get request" . " [1-60]\n";
-	echo "Optional:" . "\n";
-	echo "   --force       " . "delete all graphs, graph permissions, device permissions and data sources" . "\n\n";
+	echo __("At least one device related parameter is required. All matching devices will be deleted") . "\n";
+	echo "   --device-id       " . __("the numerical ID of the device") . "\n";
+#	echo "   --site-id         " . __("the numerical ID of the site") . "\n";
+#	echo "   --poller-id       " . __("the numerical ID of the poller") . "\n";
+	echo "   --description     " . __("the name that will be displayed by Cacti in the graphs") . "\n";
+	echo "   --ip              " . __("self explanatory (can also be a FQDN)") . "\n";
+	echo "   --template        " . __("denotes the device template to be used") . "\n";
+	echo "                     " . __("In case a device template is given, all values are fetched from this one.") . "\n";
+	echo "                     " . __("For a device template=0 (NONE), Cacti default settings are used.") . "\n";
+	echo "                     " . __("Optionally overwrite by any of the following:") . "\n";
+	echo "   --notes           " . __("General information about this device. Must be enclosed using double quotes.") . "\n";
+	echo "   --disable         " . __("to add this device but to disable checks and 0 to enable it") . " [0|1]\n";
+	echo "   --avail           " . __("device availability check") . " [ping][none, snmp, pingsnmp]\n";
+	echo "     --ping-method   " . __("if ping selected") . " [icmp|tcp|udp]\n";
+	echo "     --ping-port     " . __("port used for tcp|udp pings") . " [1-65534]\n";
+	echo "     --ping-retries  " . __("the number of time to attempt to communicate with a device") . "\n";
+	echo "     --ping-timeout  " . __("ping timeout") . "\n";
+	echo "   --version         " . __("snmp version") . " [1|2|3]\n";
+	echo "   --community       " . __("snmp community string for snmpv1 and snmpv2. Leave blank for no community") . "\n";
+	echo "   --port            " . __("snmp port") . "\n";
+	echo "   --timeout         " . __("snmp timeout") . "\n";
+	echo "   --username        " . __("snmp username for snmpv3") . "\n";
+	echo "   --password        " . __("snmp password for snmpv3") . "\n";
+	echo "   --authproto       " . __("snmp authentication protocol for snmpv3") . " [".SNMP_AUTH_PROTOCOL_MD5."|".SNMP_AUTH_PROTOCOL_SHA."]\n";
+	echo "   --privpass        " . __("snmp privacy passphrase for snmpv3") . "\n";
+	echo "   --privproto       " . __("snmp privacy protocol for snmpv3") . " [".SNMP_PRIV_PROTOCOL_DES."|".SNMP_PRIV_PROTOCOL_AES128."]\n";
+	echo "   --context         " . __("snmp context for snmpv3") . "\n";
+	echo "   --max-oids        " . __("the number of OID's that can be obtained in a single SNMP Get request") . " [1-60]\n";
+	echo __("Optional:") . "\n";
+	echo "   --force           " . __("delete all graphs, graph permissions, device permissions and data sources") . "\n\n";
 }

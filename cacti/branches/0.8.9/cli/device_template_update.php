@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -32,37 +33,38 @@ ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
+require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
 include_once(CACTI_LIBRARY_PATH . "/snmp.php");
 include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
-array_shift($parms);
+$me = array_shift($parms);
 
 /* utility requires input parameters */
 if (sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
-	display_help();
+	display_help($me);
 	exit;
 }
 
 $debug    = FALSE;
 $template = "";
-$hostid   = "";
+$deviceid   = "";
 
 foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
 
 	switch ($arg) {
-	case "--host-template":
-	case "--host-template-id":
+	case "--device-template":
+	case "--device-template-id":
 		$template = $value;
 		break;
-	case "--host-id":
+	case "--device-id":
 		$host_id = $value;
 		break;
-	case "--list-host-templates":
+	case "--list-device-templates":
 		displayHostTemplates(getHostTemplates());
 		exit(0);
 	case "-d":
@@ -73,23 +75,23 @@ foreach($parms as $parameter) {
 	case "-v":
 	case "--version":
 	case "--help":
-		display_help();
+		display_help($me);
 		exit;
 	default:
 		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
+		display_help($me);
 		exit;
 	}
 }
 
-/* determine the hosts to reindex */
+/* determine the devices to reindex */
 if (strtolower($host_id) == "all") {
 	$sql_where = "";
 }else if (is_numeric($host_id)) {
-	$sql_where = " WHERE id='$host_id'";
+	$sql_where = " WHERE host_id='$host_id'";
 }else{
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
-	display_help();
+	print "ERROR: You must specify either a --device-id or 'all' to proceed.\n\n";
+	display_help($me);
 	exit;
 }
 
@@ -97,72 +99,62 @@ if (strtolower($host_id) == "all") {
 if (is_numeric($template)) {
 	$sql_where .= (strlen($sql_where) ? " AND host_template_id=$template": "WHERE host_template_id=$template");
 }else{
-	print "ERROR: You must specify a Host Template to proceed.\n\n";
-	display_help();
+	print "ERROR: You must specify a Device Template to proceed.\n\n";
+	display_help($me);
 	exit;
 }
 
-/* verify that the host template is accurate */
+/* verify that the device template is accurate */
 if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
-	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
+	$devices = db_fetch_assoc("SELECT * FROM host $sql_where");
 
-	if (sizeof($hosts)) {
-	foreach($hosts as $host) {
-		echo "NOTE: Updating Host '" . $host["description"] . "'\n";
+	if (sizeof($devices)) {
+	foreach($devices as $device) {
+		echo __("NOTE: Updating Device '") . $device["description"] . "'\n";
 		$snmp_queries = db_fetch_assoc("SELECT snmp_query_id
 			FROM host_template_snmp_query
-			WHERE host_template_id=" . $host["host_template_id"]);
+			WHERE host_template_id=" . $device["host_template_id"]);
 
 		if (sizeof($snmp_queries) > 0) {
-			echo "NOTE: Updating Data Queries. There were '" . sizeof($snmp_queries) . "' Found\n";
+			echo __("NOTE: Updating Data Queries. There were %d found)", sizeof($snmp_queries)) . "\n";
 			foreach ($snmp_queries as $snmp_query) {
-				echo "NOTE: Updating Data Query ID '" . $snmp_query["snmp_query_id"] . "'\n";
+				echo __("NOTE: Updating Data Query ID ", $snmp_query["snmp_query_id"]) . "'\n";
 				db_execute("REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
-					VALUES (" . $host["id"] . ", " . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
+					VALUES (" . $device["id"] . ", " . $snmp_query["snmp_query_id"] . "," . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ")");
 
 				/* recache snmp data */
-				run_data_query($host["id"], $snmp_query["snmp_query_id"]);
+				run_data_query($device["id"], $snmp_query["snmp_query_id"]);
 			}
 		}
 
-		$graph_templates = db_fetch_assoc("SELECT graph_template_id FROM host_template_graph WHERE host_template_id=" . $host["host_template_id"]);
+		$graph_templates = db_fetch_assoc("SELECT graph_template_id FROM host_template_graph WHERE host_template_id=" . $device["host_template_id"]);
 
 		if (sizeof($graph_templates) > 0) {
-			echo "NOTE: Updating Graph Templates. There were '" . sizeof($graph_templates) . "' Found\n";
+			echo __("NOTE: Updating Graph Templates. There were %d found", sizeof($graph_templates)) . "\n";
 
 			foreach ($graph_templates as $graph_template) {
-				db_execute("REPLACE INTO host_graph (host_id, graph_template_id) VALUES (" . $host["id"] . ", " . $graph_template["graph_template_id"] . ")");
-				plugin_hook_function('add_graph_template_to_host', array("host_id" => $host["id"], "graph_template_id" => $graph_template["graph_template_id"]));
+				db_execute("REPLACE INTO host_graph (host_id, graph_template_id) VALUES (" . $device["id"] . ", " . $graph_template["graph_template_id"] . ")");
+				plugin_hook_function('add_graph_template_to_device', array("host_id" => $device["id"], "graph_template_id" => $graph_template["graph_template_id"]));
 			}
 		}
 	}
 	}
 }else{
-	echo "ERROR: The selected Host Template does not exist, try --list-host-templates\n\n";
+	echo __("ERROR: The selected Device Template does not exist, try --list-device-templates") . "\n\n";
 	exit(1);
 }
 
 
 /*	display_help - displays the usage of the function */
-function display_help () {
-print "Cacti Retemplate Host Script 1.0, Copyright 2004-2012 - The Cacti Group\n";
-	print "usage: host_update_template.php --host-id=[host-id|All] [--host-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
-	print "--host-id=host_id  - The host_id to have templates reapplied 'all' to do all hosts\n";
-	print "--host-template=ID - Which Host Template to Refresh\n\n";
-	print "Optional:\n";
-	print "-d --debug    - Display verbose output during execution\n";
-	print "-v --version  - Display this help message\n";
-	print "-h --help     - Display this help message\n";
-	print "List Options:\n\n";
-	print "--list-host-templates - Lists all available Host Templates\n\n";
+function display_help($me) {
+	echo "Cacti Device Template Update Script 1.0" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo __("usage: ") . $me . " --device-id=[device-id|All] [--device-template=[ID]] [-d] [-h] [--help] [-v] [--version]\n\n";
+	echo "   --device-id        " . __("the numerical ID of the device") . "\n";
+	echo "   --device-template  " . __("The Device Template to Refresh") . "\n\n";
+	echo __("Optional:") . "\n";
+	echo "   -d --debug            " . __("Display verbose output during execution") . "\n";
+	echo "   -v --version            " . __("Display this help message") . "\n";
+	echo "   -h --help               " . __("Display this help message") . "\n";
+	echo __("List Options:") . "\n\n";
+	echo "   --list-device-templates " . __("Lists all available Device Templates") . "\n\n";
 }
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print("DEBUG: " . $message . "\n");
-	}
-}
-
-?>

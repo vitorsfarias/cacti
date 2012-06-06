@@ -31,14 +31,14 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
+include(dirname(__FILE__) . "/../include/global.php");
 require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
-include_once(CACTI_LIBRARY_PATH . "/api_automation_tools.php");
-#include_once(CACTI_LIBRARY_PATH . "/utility.php");
-#include_once(CACTI_LIBRARY_PATH . "/data_source.php");
-#include_once(CACTI_LIBRARY_PATH . "/graph.php");
-#include_once(CACTI_LIBRARY_PATH . "/snmp.php");
-#include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 include_once(CACTI_LIBRARY_PATH . "/device.php");
 
 /* process calling arguments */
@@ -92,7 +92,7 @@ if (sizeof($parms)) {
 			case "--help":
 			case "--version":		display_help($me);								exit(0);
 			case "--quiet":			$quietMode = TRUE;								break;
-			default:				echo "ERROR: Invalid Argument: ($arg)" . "\n\n"; display_help($me); exit(1);
+			default:				echo __("ERROR: Invalid Argument: (%s)", $arg) . "\n\n"; display_help($me); exit(1);
 		}
 	}
 	#print "parms: "; print_r($device);
@@ -115,20 +115,20 @@ if (sizeof($parms)) {
 
 	# we do not want to change the device["id"] because that's the autoincremented table index
 	if (isset($new["id"])) {
-		echo("ERROR: Update of device id not permitted\n");
+		echo(__("ERROR: Update of device id not permitted\n"));
 		exit(1);
 	}
 	if (isset($new["host_template_id"])) {
-		echo("ERROR: Update of device template id not permitted\n");
+		echo(__("ERROR: Update of device template id not permitted\n"));
 		exit(1);
 	}
 	# at least one matching criteria has to be defined
 	if (!sizeof($old)) {
-		print "ERROR: No device matching criteria found\n";
+		print __("ERROR: No device matching criteria found\n");
 		exit(1);
 	}
 	if (!sizeof($new)) {
-		print "ERROR: No Update Parameters found\n";
+		print __("ERROR: No Update Parameters found\n");
 		exit(1);
 	}
 	#print "old1: "; print_r($old);
@@ -153,8 +153,8 @@ if (sizeof($parms)) {
 	# get all devices matching criteria
 	$devices = getDevices($old);
 	if (!sizeof($devices)) {
-		echo "ERROR: No matching Devices found" . "\n";
-		echo "Try php -q device_list.php" . "\n";
+		echo __("ERROR: No matching Devices found") . "\n";
+		echo __("Try php -q device_list.php") . "\n";
 		exit(1);
 	}
 
@@ -172,9 +172,9 @@ if (sizeof($parms)) {
 	/*	if (isset($template_id) && $template_id == 0) { # allow for a template of "None"
 		$device_template["name"] = "None";
 		} else {
-		$device_template = db_fetch_row("SELECT name FROM device_template WHERE id = " . $template_id);
+		$device_template = db_fetch_row("SELECT name FROM host_template WHERE id = " . $template_id);
 		if (!isset($device_template["name"])) {
-		printf("ERROR: Unknown template id (%d)\n", $template_id);
+		printf(__("ERROR: Unknown template id (%d)\n"), $template_id);
 		exit(1);
 		}
 		}
@@ -185,26 +185,26 @@ if (sizeof($parms)) {
 	 */
 	/*	if ($template_id != 0) { # fetch values from a valid device_template
 		$device_template = db_fetch_row("SELECT
-		device_template.id,
-		device_template.name,
-		device_template.snmp_community,
-		device_template.snmp_version,
-		device_template.snmp_username,
-		device_template.snmp_password,
-		device_template.snmp_port,
-		device_template.snmp_timeout,
-		device_template.availability_method,
-		device_template.ping_method,
-		device_template.ping_port,
-		device_template.ping_timeout,
-		device_template.ping_retries,
-		device_template.snmp_auth_protocol,
-		device_template.snmp_priv_passphrase,
-		device_template.snmp_priv_protocol,
-		device_template.snmp_context,
-		device_template.max_oids,
-		device_template.device_threads
-		FROM device_template
+		host_template.id,
+		host_template.name,
+		host_template.snmp_community,
+		host_template.snmp_version,
+		host_template.snmp_username,
+		host_template.snmp_password,
+		host_template.snmp_port,
+		host_template.snmp_timeout,
+		host_template.availability_method,
+		host_template.ping_method,
+		host_template.ping_port,
+		host_template.ping_timeout,
+		host_template.ping_retries,
+		host_template.snmp_auth_protocol,
+		host_template.snmp_priv_passphrase,
+		host_template.snmp_priv_protocol,
+		host_template.snmp_context,
+		host_template.max_oids,
+		host_template.device_threads
+		FROM host_template
 		WHERE id=" . $template_id);
 		} else { # no device template given, so fetch system defaults
 		$device_template["snmp_community"]		= read_config_option("snmp_community");
@@ -272,9 +272,9 @@ if (sizeof($parms)) {
 			$ok = db_execute($sql_upd1 . $sql_upd2 . $sql_upd3);
 			if (!$quietMode) {
 				if ($ok) {
-					print("Devices successfully updated: " . sizeof($devices)) . "\n";
+					print(__("Devices successfully updated: %s", sizeof($devices)) . "\n");
 				} else {
-					print("ERROR: Device update failed due to SQL error") . "\n";
+					print(__("ERROR: Device update failed due to SQL error") . "\n");
 				}
 			}
 		}
@@ -285,54 +285,54 @@ if (sizeof($parms)) {
 }
 
 function display_help($me) {
-	echo "Change Device Script 1.0" . ", " . "Copyright 2004-2012 - The Cacti Group" . "\n";
-	echo "A simple command line utility to change existing devices in Cacti" . "\n\n";
-	echo "usage: " . $me . " [--device-id=] [--site-id=] [--poller-id=]\n";
+	echo "Change Device Script 1.0" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo __("A simple command line utility to change existing devices in Cacti") . "\n\n";
+	echo __("usage: ") . $me . " [--device-id=] [--site-id=] [--poller-id=]\n";
 	echo "       [--description=] [--ip=] [--template=] [--notes=\"[]\"] [--disabled]\n";
 	echo "       [--avail=[pingsnmp]] [--ping-method=[tcp] --ping-port=[N/A, 1-65534]] --ping-retries=[2] --ping-timeout=[500]\n";
 	echo "       [--version=1] [--community=] [--port=161] [--timeout=500]\n";
 	echo "       [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=]\n";
 	echo "       [--quiet] [-d] [--delim]\n\n";
-	echo "All Parameters are optional. Any parameters given must match. A non-empty selection is required." . "\n";
-	echo "   " . "Values are given in format [<old>][:<new>]" . "\n";
-	echo "   " . "If <old> is given, all devices matching the selection will be acted upon. Multiple <old> parameters are allowed" . "\n";
-	echo "   " . "All new values must be seperated by a delimiter (defaults to ':') from <old>. Multiple <new> parameters are allowed" . "\n";
-	echo "Optional:" . "\n";
-	echo "   --device-id                 " . "the numerical ID of the device" . "\n";
-	echo "   --site-id        0          " . "the numerical ID of the site" . "\n";
-	echo "   --poller-id      0          " . "the numerical ID of the poller" . "\n";
-	echo "   --description               " . "the name that will be displayed by Cacti in the graphs" . "\n";
-	echo "   --ip                        " . "self explanatory (can also be a FQDN)" . "\n";
-	echo "   --template                  " . "denotes the device template to be used" . "\n";
-	echo "                               " . "In case a device template is given, all values are fetched from this one." . "\n";
-	echo "                               " . "For a device template=0 (NONE), Cacti default settings are used." . "\n";
-	echo "                               " . "Optionally overwrite by any of the following:" . "\n";
-	echo "   --notes                     " . "General information about this device. Must be enclosed using double quotes." . "\n";
-	echo "   --disable         1         " . "to add this device but to disable checks and 0 to enable it" . " [0|1]\n";
-	echo "   --avail           pingsnmp  " . "device availability check" . " [ping][none, snmp, pingsnmp]\n";
-	echo "     --ping-method   tcp       " . "if ping selected" . " [icmp|tcp|udp]\n";
-	echo "     --ping-port     23        " . "port used for tcp|udp pings" . " [1-65534]\n";
-	echo "     --ping-retries  2         " . "the number of time to attempt to communicate with a device" . "\n";
-	echo "     --ping-timeout  500       " . "ping timeout" . "\n";
-	echo "   --version         1         " . "snmp version" . " [1|2|3]\n";
-	echo "   --community       ''        " . "snmp community string for snmpv1 and snmpv2. Leave blank for no community" . "\n";
-	echo "   --port            161       " . "snmp port" . "\n";
-	echo "   --timeout         500       " . "snmp timeout" . "\n";
-	echo "   --username        ''        " . "snmp username for snmpv3" . "\n";
-	echo "   --password        ''        " . "snmp password for snmpv3" . "\n";
-	echo "   --authproto       ''        " . "snmp authentication protocol for snmpv3" . " [".SNMP_AUTH_PROTOCOL_MD5."|".SNMP_AUTH_PROTOCOL_SHA."]\n";
-	echo "   --privpass        ''        " . "snmp privacy passphrase for snmpv3" . "\n";
-	echo "   --privproto       ''        " . "snmp privacy protocol for snmpv3" . " [".SNMP_PRIV_PROTOCOL_DES."|".SNMP_PRIV_PROTOCOL_AES128."]\n";
-	echo "   --context         ''        " . "snmp context for snmpv3" . "\n";
-	echo "   --max-oids        10        " . "the number of OID's that can be obtained in a single SNMP Get request" . " [1-60]\n";
-	echo "   --delim           :         " . "sets the delimiter" . "\n";
-	echo "   -d                          " . "Debug Mode, no updates made, but printing the SQL for updates" . "\n";
-	echo "   --quiet                     " . "batch mode value return" . "\n\n";
-	echo "Examples:" . "\n";
+	echo __("All Parameters are optional. Any parameters given must match. A non-empty selection is required.") . "\n";
+	echo "   " . __("Values are given in format [<old>][:<new>]") . "\n";
+	echo "   " . __("If <old> is given, all devices matching the selection will be acted upon. Multiple <old> parameters are allowed") . "\n";
+	echo "   " . __("All new values must be seperated by a delimiter (defaults to ':') from <old>. Multiple <new> parameters are allowed") . "\n";
+	echo __("Optional:") . "\n";
+	echo "   --device-id                 " . __("the numerical ID of the device") . "\n";
+#	echo "   --site-id        0          " . __("the numerical ID of the site") . "\n";
+#	echo "   --poller-id      0          " . __("the numerical ID of the poller") . "\n";
+	echo "   --description               " . __("the name that will be displayed by Cacti in the graphs") . "\n";
+	echo "   --ip                        " . __("self explanatory (can also be a FQDN)") . "\n";
+	echo "   --template                  " . __("denotes the device template to be used") . "\n";
+	echo "                               " . __("In case a device template is given, all values are fetched from this one.") . "\n";
+	echo "                               " . __("For a device template=0 (NONE), Cacti default settings are used.") . "\n";
+	echo "                               " . __("Optionally overwrite by any of the following:") . "\n";
+	echo "   --notes                     " . __("General information about this device. Must be enclosed using double quotes.") . "\n";
+	echo "   --disable         1         " . __("to add this device but to disable checks and 0 to enable it") . " [0|1]\n";
+	echo "   --avail           pingsnmp  " . __("device availability check") . " [ping][none, snmp, pingsnmp]\n";
+	echo "     --ping-method   tcp       " . __("if ping selected") . " [icmp|tcp|udp]\n";
+	echo "     --ping-port     23        " . __("port used for tcp|udp pings") . " [1-65534]\n";
+	echo "     --ping-retries  2         " . __("the number of time to attempt to communicate with a device") . "\n";
+	echo "     --ping-timeout  500       " . __("ping timeout") . "\n";
+	echo "   --version         1         " . __("snmp version") . " [1|2|3]\n";
+	echo "   --community       ''        " . __("snmp community string for snmpv1 and snmpv2. Leave blank for no community") . "\n";
+	echo "   --port            161       " . __("snmp port") . "\n";
+	echo "   --timeout         500       " . __("snmp timeout") . "\n";
+	echo "   --username        ''        " . __("snmp username for snmpv3") . "\n";
+	echo "   --password        ''        " . __("snmp password for snmpv3") . "\n";
+	echo "   --authproto       ''        " . __("snmp authentication protocol for snmpv3") . " [".SNMP_AUTH_PROTOCOL_MD5."|".SNMP_AUTH_PROTOCOL_SHA."]\n";
+	echo "   --privpass        ''        " . __("snmp privacy passphrase for snmpv3") . "\n";
+	echo "   --privproto       ''        " . __("snmp privacy protocol for snmpv3") . " [".SNMP_PRIV_PROTOCOL_DES."|".SNMP_PRIV_PROTOCOL_AES128."]\n";
+	echo "   --context         ''        " . __("snmp context for snmpv3") . "\n";
+	echo "   --max-oids        10        " . __("the number of OID's that can be obtained in a single SNMP Get request") . " [1-60]\n";
+	echo "   --delim           :         " . __("sets the delimiter") . "\n";
+	echo "   -d                          " . __("Debug Mode, no updates made, but printing the SQL for updates") . "\n";
+	echo "   --quiet                     " . __("batch mode value return") . "\n\n";
+	echo __("Examples:") . "\n";
 	echo "   php -q " . $me . " --device-id=0 --description=:foobar\n";
-	echo "   " . "  changes the description of device 0 to foobar" . "\n";
+	echo "   " . __("  changes the description of device 0 to foobar") . "\n";
 	echo "   php -q " . $me . " --community=public#secret --delim=#\n";
-	echo "   " . "   changes the SNMP community string for all (matching) devices from 'public' to 'secret' using a custom delimiter of '#'" . "\n";
+	echo "   " . __("   changes the SNMP community string for all (matching) devices from 'public' to 'secret' using a custom delimiter of '#'") . "\n";
 	echo "   php -q " . $me . " --template=7 --version=:1 --timeout=:1000\n";
-	echo "   " . "   changes both SNMP version and timeout for all devices related to the device template id of 7" . "\n";
+	echo "   " . __("   changes both SNMP version and timeout for all devices related to the device template id of 7") . "\n";
 }

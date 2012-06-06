@@ -32,7 +32,7 @@ ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
-include_once(CACTI_LIBRARY_PATH . "/api_graph.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -135,7 +135,7 @@ $i = 1;
 foreach ($graph_list as $graph) {
 	if (!$debug) print ".";
 	debug("Graph Name '" . $graph["title_cache"] . "' starting");
-	api_reapply_suggested_graph_title($graph["local_graph_id"]);
+	reapply_suggested_graph_title($graph["local_graph_id"]);
 	update_graph_title_cache($graph["local_graph_id"]);
 	debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
 	$i++;
