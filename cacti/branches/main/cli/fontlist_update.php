@@ -31,8 +31,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
-require_once(CACTI_BASE_PATH . "/lib/functions.php");
-require_once(CACTI_BASE_PATH . "/lib/fonts.php");
+require_once(CACTI_LIBRARY_PATH . "/functions.php");
+require_once(CACTI_LIBRARY_PATH . "/fonts.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];

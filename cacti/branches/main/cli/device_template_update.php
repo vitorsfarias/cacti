@@ -33,10 +33,10 @@ ini_set("max_execution_time", "0");
 $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
-require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-include_once(CACTI_BASE_PATH."/lib/snmp.php");
-include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/automation_tools.php");
+require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];

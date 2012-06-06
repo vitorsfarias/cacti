@@ -31,8 +31,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 /* required includes */
 include(dirname(__FILE__)."/../include/global.php");
-require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
-include_once(CACTI_BASE_PATH."/lib/api_rrd.php");
+require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
+include_once(CACTI_LIBRARY_PATH . "/api_rrd.php");
 
 /* verify required PHP extension */
 if (!extension_loaded("DOM")) {
@@ -206,7 +206,7 @@ function verify_min_max($value) {
 
 
 function display_help($me) {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
 	echo "Add Datasource to RRD File Script 1.0" . ", " . __("Copyright 2004-2011 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to add a new datasource to an existing RRD file") . "\n\n";
 	echo __("usage: ") . $me . " --ds= [--data-template-id=] [--data-source-id=] [--rrd=]\n";

@@ -31,10 +31,10 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
-require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-include_once(CACTI_BASE_PATH . "/lib/automation_tools.php");
-include_once(CACTI_BASE_PATH . '/lib/tree.php');
+require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
+require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
+include_once(CACTI_LIBRARY_PATH . '/tree.php');
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];

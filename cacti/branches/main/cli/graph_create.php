@@ -31,18 +31,18 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__)."/../include/global.php");
-require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
-include_once(CACTI_BASE_PATH."/lib/automation_tools.php");
-include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/utility.php");
-include_once(CACTI_BASE_PATH."/lib/sort.php");
-include_once(CACTI_BASE_PATH."/lib/template.php");
-include_once(CACTI_BASE_PATH."/lib/data_source.php");
-include_once(CACTI_BASE_PATH."/lib/graph.php");
-include_once(CACTI_BASE_PATH."/lib/snmp.php");
-include_once(CACTI_BASE_PATH."/lib/data_query.php");
-include_once(CACTI_BASE_PATH."/lib/device.php");
+require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/sort.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/device.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
