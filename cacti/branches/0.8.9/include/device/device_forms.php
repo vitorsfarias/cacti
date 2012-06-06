@@ -46,21 +46,22 @@ $fields_host_edit = array(
 		"max_length" => "250",
 		"size" => "70"
 		),
-	"poller_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Poller",
-		"description" => "Choose which poller will be the polling of this device.",
-		"value" => "|arg1:poller_id|",
-		"sql" => "select id,description as name from poller order by name",
-		),
-	"site_id" => array(
-		"method" => "drop_sql",
-		"friendly_name" => "Site",
-		"description" => "Choose the site that is to be associated with this device.",
-		"value" => "|arg1:site_id|",
-		"none_value" => "N/A",
-		"sql" => "select id,name from sites order by name",
-		),
+# TODO: deactivated until poller and site management is ready
+#	"poller_id" => array(
+#		"method" => "drop_sql",
+#		"friendly_name" => "Poller",
+#		"description" => "Choose which poller will be the polling of this device.",
+#		"value" => "|arg1:poller_id|",
+#		"sql" => "select id,description as name from poller order by name",
+#		),
+#	"site_id" => array(
+#		"method" => "drop_sql",
+#		"friendly_name" => "Site",
+#		"description" => "Choose the site that is to be associated with this device.",
+#		"value" => "|arg1:site_id|",
+#		"none_value" => "N/A",
+#		"sql" => "select id,name from sites order by name",
+#		),
 	"host_template_id" => array(
 		"method" => "drop_sql",
 		"friendly_name" => "Device Template",
@@ -94,14 +95,15 @@ $fields_host_edit = array(
 		"default" => "",
 #		"form_id" => false
 		),
-	"template_enabled" => array(
-		"method" => "checkbox",
-		"friendly_name" => "Enable Template Propagation",
-		"description" => "Check this box to maintain Availability and SNMP settings at the Device Template.",
-		"value" => "|arg1:template_enabled|",
-		"default" => "",
+# TODO: deactivated, until extended host templates are ready
+#	"template_enabled" => array(
+#		"method" => "checkbox",
+#		"friendly_name" => "Enable Template Propagation",
+#		"description" => "Check this box to maintain Availability and SNMP settings at the Device Template.",
+#		"value" => "|arg1:template_enabled|",
+#		"default" => "",
 #		"form_id" => false
-		),
+#		),
 	"id" => array(								# to be replced by form_hidden_box
 		"method" => "hidden_zero",
 		"value" => "|arg1:id|"

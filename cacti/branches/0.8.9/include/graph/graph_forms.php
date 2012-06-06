@@ -500,10 +500,10 @@ $struct_graph_item = array(
 		'friendly_name' => 'Data Source',
 		'method' => 'drop_sql',
 		'sql' => "select
-			CONCAT_WS('', CASE WHEN device.description IS NULL THEN 'No Host' WHEN device.description IS NOT NULL THEN device.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') AS name,
+			CONCAT_WS('', CASE WHEN host.description IS NULL THEN 'No Host' WHEN host.description IS NOT NULL THEN host.description end,' - ',data_template_data.name,' (',data_template_rrd.data_source_name,')') AS name,
 			data_template_rrd.id
 			FROM (data_template_data,data_template_rrd,data_local)
-			LEFT JOIN device ON (data_local.device_id=device.id)
+			LEFT JOIN host ON (data_local.host_id=host.id)
 			WHERE data_template_rrd.local_data_id=data_local.id
 			AND data_template_data.local_data_id=data_local.id
 			ORDER BY name",
@@ -663,13 +663,13 @@ $struct_graph_header = array(
 			"id" => "|arg1:graph_template_id|",
 			"sql" => "SELECT name FROM graph_templates WHERE id=|arg1:graph_template_id|"
 			),
-		"device_id" => array(
+		"host_id" => array(
 			"method" => "autocomplete",
 			"callback_function" => "graphs.php?action=ajax_get_devices_detailed",
 			"friendly_name" => "Host",
 			"description" => "Choose the device that this graph belongs to.",
-			"id" => "|arg2:device_id|",
-			"sql" => "SELECT CONCAT_WS('',description,' (',hostname,')') FROM device WHERE id=|arg2:device_id|"
+			"id" => "|arg2:host_id|",
+			"sql" => "SELECT CONCAT_WS('',description,' (',hostname,')') FROM host WHERE id=|arg2:host_id|"
 			),
 		"graph_template_graph_id" => array(
 			"method" => "hidden",
@@ -687,8 +687,8 @@ $struct_graph_header = array(
 			"method" => "hidden",
 			"value" => "|arg1:graph_template_id|"
 			),
-		"hidden_device_id" => array(
+		"hidden_host_id" => array(
 			"method" => "hidden",
-			"value" => "|arg2:device_id|"
+			"value" => "|arg2:host_id|"
 			)
 		);

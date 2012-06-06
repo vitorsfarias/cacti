@@ -150,7 +150,7 @@ $fields_data_source = array(
 			"friendly_name" => "Selected Data Source Template",
 			"description" => "The name given to this data template.",
 			),
-		"device_id" => array(
+		"host_id" => array(
 			"method" => "autocomplete",
 			"callback_function" => "layout.php?action=ajax_get_devices_detailed",
 			"friendly_name" => "Host",

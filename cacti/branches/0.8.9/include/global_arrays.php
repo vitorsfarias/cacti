@@ -134,10 +134,6 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_DEBUG => "DEBUG - Statistics, Errors, Results, I/O and Program Flow",
 	POLLER_VERBOSITY_DEVDBG => "DEVEL - Developer DEBUG Level");
 
-$poller_options = array(1 =>
-	"cmd.php",
-	"spine");
-
 $poller_intervals = array(
 	10 => "Every 10 Seconds",
 	15 => "Every 15 Seconds",
@@ -203,17 +199,6 @@ $rrdtool_versions = array(
 	"rrd-1.2.x" => "RRDTool 1.2.x",
 	"rrd-1.3.x" => "RRDTool 1.3.x",
 	"rrd-1.4.x" => "RRDTool 1.4.x");
-
-$tree_item_types = array(
-	TREE_ITEM_TYPE_HEADER => "Header",
-	TREE_ITEM_TYPE_GRAPH => "Graph",
-	TREE_ITEM_TYPE_HOST => "Host"
-	);
-
-$host_group_types = array(
-	HOST_GROUPING_GRAPH_TEMPLATE => "Graph Template",
-	HOST_GROUPING_DATA_QUERY_INDEX => "Data Query Index"
-	);
 
 $menu = array(
 	"Create" => array(
@@ -402,7 +387,7 @@ $hash_type_codes = array(
 	'data_query_graph'			=> '11',
 	'data_query_sv_graph'		=> '12',
 	'data_query_sv_data_source'	=> '13',
-	'device_template'			=> '02',
+	'host_template'				=> '02',
 );
 
 $hash_version_codes = array(
@@ -459,6 +444,8 @@ if (CACTI_ARRAY_COMPAT === TRUE) {
 	require(CACTI_INCLUDE_PATH . '/data_query/data_query_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/device/device_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/graph/graph_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_arrays.php');
+	require(CACTI_INCLUDE_PATH . '/poller/poller_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_cdef_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_rra_arrays.php');
 	require(CACTI_INCLUDE_PATH . '/data_source/data_source_arrays.php');
