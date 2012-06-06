@@ -938,7 +938,7 @@ function update_pre_089_graph_items($items) {
 #	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
 #	require_once(CACTI_BASE_PATH . "/include/presets/preset_rra_constants.php");
 	require_once(CACTI_BASE_PATH . "/include/global_constants.php");
-	require_once(CACTI_BASE_PATH . "/lib/template.php");
+	require_once(CACTI_LIBRARY_PATH . "/template.php");
 
 	if (sizeof($items)) {
 		foreach ($items as $key => $graph_item) {

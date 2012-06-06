@@ -598,7 +598,7 @@ function create_dhtml_tree() {
 						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
 						if (read_graph_config_option("expand_hosts") == "on") {
-							if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+							if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
 								$graph_templates = db_fetch_assoc("select
 									graph_templates.id,
 									graph_templates.name
@@ -617,7 +617,7 @@ function create_dhtml_tree() {
 										$dhtml_tree[$i] = "ou" . ($tier+1) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "_hgd_gt_" . $graph_template["id"] . "\"\n";
 									}
 								}
-							}else if ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+							}else if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
 								$data_queries = db_fetch_assoc("select
 									snmp_query.id,
 									snmp_query.name
@@ -1025,7 +1025,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			ORDER BY graph_tree_items.order_key");
 	}elseif ($leaf_type == "host") {
 		/* graph template grouping */
-		if ($leaf["host_grouping_type"] == HOST_GROUPING_GRAPH_TEMPLATE) {
+		if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
 			$graph_templates = db_fetch_assoc("SELECT
 				graph_templates.id,
 				graph_templates.name
@@ -1074,7 +1074,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			}
 			}
 		/* data query index grouping */
-		}elseif ($leaf["host_grouping_type"] == HOST_GROUPING_DATA_QUERY_INDEX) {
+		}elseif ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
 			$data_queries = db_fetch_assoc("SELECT
 				snmp_query.id,
 				snmp_query.name

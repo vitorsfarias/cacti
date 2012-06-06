@@ -611,14 +611,14 @@ function device_reload_query() {
 
 	run_data_query(get_request_var("host_id"), get_request_var("id"));
 
-	if ((isset($_GET["action"]) && $_GET["action"] == "query_verbose") && (isset($_SESSION["debug_log"]["data_query"]))) {
-		print "<div style='overflow:auto;height:300px;'>\n";
-		print "<span class=\"log\">" . debug_log_return("data_query") . "</span>";
-		print "</div>";
-		print "<div align='right'><input type='button' onClick='javascript:$(\"#cdialog\").dialog(\"close\");(\"#cdialog\").empty();' value='Close'></div>\n";
-	}
-
-	debug_log_clear("data_query");
+#	if ((isset($_GET["action"]) && $_GET["action"] == "query_verbose") && (isset($_SESSION["debug_log"]["data_query"]))) {
+#		print "<div style='overflow:auto;height:300px;'>\n";
+#		print "<span class=\"log\">" . debug_log_return("data_query") . "</span>";
+#		print "</div>";
+#		print "<div align='right'><input type='button' onClick='javascript:$(\"#cdialog\").dialog(\"close\");(\"#cdialog\").empty();' value='Close'></div>\n";
+#	}
+#
+#	debug_log_clear("data_query");
 }
 
 /**
@@ -1954,8 +1954,6 @@ function device_gt_remove($host_id, $graph_template_id) {
 /** device_save - save a device to the database
  *
  * @param int $id
- * @param int $site_id
- * @param int $poller_id
  * @param int $host_template_id
  * @param string $description
  * @param string $hostname
@@ -1978,6 +1976,8 @@ function device_gt_remove($host_id, $graph_template_id) {
  * @param string $snmp_context
  * @param int $max_oids
  * @param int $device_threads
+ * @param int $site_id
+ * @param int $poller_id
  * @param string $template_enabled
  * @return unknown_type
  */
@@ -1997,8 +1997,9 @@ function device_save($id, $host_template_id, $description, $hostname, $snmp_comm
 	}
 
 	$save["id"] = $id;
-	$save["site_id"]          = form_input_validate($site_id, "site_id", "^[0-9]+$", false, 3);
-	$save["poller_id"]        = form_input_validate($poller_id, "poller_id", "^[0-9]+$", false, 3);
+# TODO: deactivated, until site and poller present
+#	$save["site_id"]          = form_input_validate($site_id, "site_id", "^[0-9]+$", false, 3);
+#	$save["poller_id"]        = form_input_validate($poller_id, "poller_id", "^[0-9]+$", false, 3);
 	$save["host_template_id"] = form_input_validate($host_template_id, "host_template_id", "^[0-9]+$", false, 3);
 	$save["description"]      = form_input_validate($description, "description", "", false, 3);
 	$save["hostname"]         = form_input_validate(trim($hostname), "hostname", "", false, 3);

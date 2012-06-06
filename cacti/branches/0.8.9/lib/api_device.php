@@ -24,36 +24,31 @@
 
 include_once(CACTI_LIBRARY_PATH . "/device.php");
 
-/* api_device_remove - removes a device
-   @arg $device_id - the id of the device to remove */
-function api_device_remove($device_id) {
-	cacti_log("function " . __FUNCTION__ . " called using $device_id", false, "DEPRECATION WARNING");
-	device_remove($device_id);
+/** DEPRECATED!  */
+function api_device_remove($host_id) {
+	cacti_log("function " . __FUNCTION__ . " called using $host_id", false, "DEPRECATION WARNING");
+	device_remove($host_id);
 }
 
-/* api_device_remove_multi - removes multiple devices in one call
-   @arg $device_ids - an array of device id's to remove */
-function api_device_remove_multi($device_ids) {
+/** DEPRECATED!  */
+function api_device_remove_multi($host_ids) {
 	cacti_log("function " . __FUNCTION__ . " called", false, "DEPRECATION WARNING");
-	device_remove_multi($device_ids);
+	device_remove_multi($host_ids);
 }
 
-/* api_device_dq_remove - removes a device->data query mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for */
-function api_device_dq_remove($device_id, $data_query_id) {
+/** DEPRECATED!  */
+function api_device_dq_remove($host_id, $data_query_id) {
 	cacti_log("function " . __FUNCTION__ . " called", false, "DEPRECATION WARNING");
-	device_dq_remove($device_id, $data_query_id);
+	device_dq_remove($host_id, $data_query_id);
 }
 
-/* api_device_gt_remove - removes a device->graph template mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $graph_template_id - the id of the graph template to remove the mapping for */
-function api_device_gt_remove($device_id, $graph_template_id) {
+/** DEPRECATED!  */
+function api_device_gt_remove($host_id, $graph_template_id) {
 	cacti_log("function " . __FUNCTION__ . " called", false, "DEPRECATION WARNING");
-	device_gt_remove($device_id, $graph_template_id);
+	device_gt_remove($host_id, $graph_template_id);
 }
 
+/** DEPRECATED!  */
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled, $availability_method, $ping_method, $ping_port,
 	$ping_timeout, $ping_retries, $notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context,
