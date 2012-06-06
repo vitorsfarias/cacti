@@ -23,8 +23,8 @@
  */
 
 function grow_edit_graph_tree($tree_id, $user_id, $options) {
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$tree_sorting_type = db_fetch_cell("select sort_type from graph_tree where id='$tree_id'");
 
@@ -209,7 +209,7 @@ function tree_tier_string($order_key, $chars_per_tier = CHARS_PER_TIER) {
 }
 
 function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$tree = db_fetch_assoc("select
 		graph_tree_items.id,
@@ -242,8 +242,8 @@ function grow_dropdown_tree($tree_id, $form_name, $selected_tree_item_id) {
 }
 
 function grow_dhtml_trees() {
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	?>
 <script type="text/javascript">
@@ -286,7 +286,7 @@ function grow_dhtml_trees() {
 }
 
 function create_dhtml_tree() {
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	/* Record Start Time */
 	list($micro,$seconds) = explode(" ", microtime());
@@ -585,7 +585,7 @@ function get_trees($tree_id) {
 
 function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_parent = false) {
 	global $current_user;
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	// prototype
 	// $items = array($tree_id, $leaf_id, $type, $id, $name);
@@ -597,10 +597,10 @@ function get_tree_leaf_items($tree_id, $leaf_id, $device_group_type, $include_pa
 	// the following types are only valid if $device_group_data = true
 	// dqn|dqi|gtn
 
-	include(CACTI_BASE_PATH . "/include/global_arrays.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/html_utility.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/html_utility.php");
 
 	/* get the trees that the user has access to */
 	$items = array();
@@ -832,12 +832,12 @@ function get_device_grouping_data_query_items($leaf, $device_group_data) {
 function get_graph_tree_content($tree_id, $leaf_id, $device_group_data) {
 	global $current_user, $graphs_per_page;
 
-	include(CACTI_BASE_PATH . "/include/global_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/html_utility.php");
-	include_once(CACTI_BASE_PATH . "/lib/graph.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/html_utility.php");
+	include_once(CACTI_LIBRARY_PATH . "/graph.php");
 	define("MAX_DISPLAY_PAGES", 21);
 
 	if (empty($tree_id)) { return; }

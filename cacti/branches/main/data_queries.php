@@ -23,8 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -82,18 +82,18 @@ switch (get_request_var_request("action")) {
 		header("Location: data_queries.php?action=edit&id=" . $_GET["snmp_query_id"]);
 		break;
 	case 'item_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_query_item_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_query_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'ajax_dt_save':
 		data_query_dt_dnd();
@@ -104,11 +104,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_query();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -367,9 +367,9 @@ function data_query_item_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
+		include(CACTI_INCLUDE_PATH . "/top_header.php");
 		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the Data Query Graph") . " <strong>'" . db_fetch_cell("select name from snmp_query_graph where id=" . $_GET["id"]) . "'</strong>?", "data_queries.php?action=edit&id=" . $_GET["snmp_query_id"], "data_queries.php?action=item_remove&id=" . $_GET["id"] . "&snmp_query_id=" . $_GET["snmp_query_id"]);
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		exit;
 	}
 
@@ -394,7 +394,7 @@ function data_query_item_remove() {
 }
 
 function data_query_item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -831,7 +831,7 @@ function data_query_display_image($image) {
 }
 
 function data_query_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

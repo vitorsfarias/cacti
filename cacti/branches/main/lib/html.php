@@ -1194,7 +1194,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
  *       the correct break location.
  * @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 	$string = trim($string);
 	$new_string = "";
 	$j    = 0;
@@ -1310,9 +1310,9 @@ function html_create_nav($current_page, $max_pages, $rows_per_page, $total_rows,
  *   external url
  * @param $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
-	include(CACTI_BASE_PATH . "/include/global_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 
 	$header_items = array(
 		array("name" => __("Graph Item"), "align" => "left"),
@@ -1422,7 +1422,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
  * @param bool	$disable_controls	- disable controls
  */
 function draw_data_template_items_list($item_list, $filename, $url_data, $disable_controls) {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
 
 	$header_items = array(
 		array("name" => __("Item")),

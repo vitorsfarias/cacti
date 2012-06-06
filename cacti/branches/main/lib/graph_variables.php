@@ -31,7 +31,7 @@
    @param $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
 function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0) {
-	include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+	include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 	$values_array = array();
 
@@ -465,7 +465,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
    @param $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;

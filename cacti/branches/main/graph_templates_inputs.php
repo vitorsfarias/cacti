@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,11 +40,11 @@ switch (get_request_var_request("action")) {
 		header("Location: graph_templates.php?action=edit&id=" . get_request_var("graph_template_id") . "&template_id=" . get_request_var("graph_template_id") . "&tab=items");
 		break;
 	case 'input_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		input_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -129,9 +129,9 @@ function input_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
+		include(CACTI_INCLUDE_PATH . "/top_header.php");
 		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the input item <strong>%s</strong>?<br><strong>NOTE:</strong> Deleting this item will NOT affect graphs that use this template.", db_fetch_cell("select name from graph_template_input where id=" . $_GET["id"])), "graph_templates.php?action=edit&id=" . $_GET["graph_template_id"], "graph_templates_inputs.php?action=input_remove&id=" . $_GET["id"] . "&graph_template_id=" . $_GET["graph_template_id"]);
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		exit;
 	}
 
@@ -142,10 +142,10 @@ function input_remove() {
 }
 
 function input_edit() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

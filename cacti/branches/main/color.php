@@ -44,9 +44,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		color_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_edit':
@@ -61,13 +61,13 @@ switch (get_request_var_request("action")) {
 		if (isset($_REQUEST["export_x"])) {
 			export_colors();
 		}elseif (isset($_REQUEST["import_x"])) {
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			import_colors();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		}else{
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			color();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		}
 		break;
 }
@@ -490,7 +490,7 @@ function color_remove() {
 }
 
 function color_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/color.php");
+	require_once(CACTI_LIBRARY_PATH . "/color.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

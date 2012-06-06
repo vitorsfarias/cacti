@@ -28,7 +28,7 @@ ob_start();
 $guest_account = true;
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 plugin_hook_function('graph_image');
 

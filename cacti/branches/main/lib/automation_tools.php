@@ -475,7 +475,7 @@ function getSNMPQueries() {
  * @return array
  */
 function getSNMPQueriesByDevices($devices, $snmp_query_id='', &$header) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
 
 	$header = array();	# provides header info for printout
 	$sql_where = "";
@@ -946,24 +946,22 @@ function displayRealms($perm, $quietMode = FALSE) {
 	}
 
 	$sql_where = "";
-	if (!isset($perm["realm_id"])) {
-		echo __("ERROR: Missing realm id") . "\n";
-		return (1);
-	} elseif (!(((string) $perm["realm_id"]) === ((string)(int) $perm["realm_id"]))) {
-		echo __("ERROR: Invalid realm id (%s)", $perm["realm_id"]) . "\n";
-		return (1);
-	} elseif ($perm["realm_id"] > 0) {
-		$sql_where .= (strlen($sql_where) ? " AND " : " WHERE ") . " realm_id=" . $perm["realm_id"];
+	if (isset($perm["realm_id"])) {
+		if (!(((string) $perm["realm_id"]) === ((string)(int) $perm["realm_id"]))) {
+			echo __("ERROR: Invalid realm id (%s)", $perm["realm_id"]) . "\n";
+			return (1);
+		} elseif ($perm["realm_id"] > 0) {
+			$sql_where .= (strlen($sql_where) ? " AND " : " WHERE ") . " realm_id=" . $perm["realm_id"];
+		}
 	}
 
-	if (!isset($perm["user_id"])) {
-		echo __("ERROR: Missing user id") . "\n";
-		return (1);
-	} elseif (!(((string) $perm["user_id"]) === ((string)(int) $perm["user_id"]))) {
-		echo __("ERROR: Invalid user id (%s)", $perm["user_id"]) . "\n";
-		return (1);
-	} elseif ($perm["user_id"] > 0) {
-		$sql_where .= (strlen($sql_where) ? " AND " : " WHERE ") . " user_id=" . $perm["user_id"];
+	if (isset($perm["user_id"])) {
+		if (!(((string) $perm["user_id"]) === ((string)(int) $perm["user_id"]))) {
+			echo __("ERROR: Invalid user id (%s)", $perm["user_id"]) . "\n";
+			return (1);
+		} elseif ($perm["user_id"] > 0) {
+			$sql_where .= (strlen($sql_where) ? " AND " : " WHERE ") . " user_id=" . $perm["user_id"];
+		}
 	}
 
 
@@ -993,7 +991,7 @@ function displayRealms($perm, $quietMode = FALSE) {
  * @param bool $quietMode
  */
 function displayPerms($perm, $quietMode = FALSE) {
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	if (!$quietMode) {
 		echo __("Permissions: (userid, username, item type, default policy, item id, item policy, item name)") . "\n";
@@ -1080,7 +1078,7 @@ function displayPerms($perm, $quietMode = FALSE) {
  * @param bool $quietMode
  */
 function displayTrees($quietMode = FALSE) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
 
 	if (!$quietMode) {
 		echo __("Known Trees: (id, sort method, name)") . "\n";
@@ -1113,8 +1111,8 @@ function displayTrees($quietMode = FALSE) {
  * @param bool $quietMode
  */
 function displayTreeNodes($tree_id, $nodeType = "", $parentNode = "", $quietMode = FALSE) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	if (!$quietMode) {
 		echo __("Known Tree Nodes: (type, id, parentid, text)") . "\n";
@@ -1256,7 +1254,7 @@ function displayRRAs($quietMode = FALSE) {
  * @param bool $quietMode
  */
 function displayUsers($quietMode = FALSE) {
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	if (!$quietMode) {
 		echo __("Known Users: (id, username, full_name, graph policy, tree policy, device policy, graph templates policy)") . "\n";
@@ -1315,7 +1313,7 @@ function displayGroups($quietMode = FALSE) {
  * returns			- if ok, returns true with array recoded; otherwise array containg error message
  */
 function verifyDevice(&$device, $ri_check=false) {
-	require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
 
 	foreach($device as $key => $value) {
 
@@ -1549,7 +1547,7 @@ function verifyDevice(&$device, $ri_check=false) {
  * returns			- if ok, returns true with array recoded; otherwise array containg error message
  */
 function verifyDataQuery(&$data_query, $ri_check=false) {
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
 
 	foreach($data_query as $key => $value) {
 
@@ -1629,7 +1627,7 @@ function verifyDataQuery(&$data_query, $ri_check=false) {
  * returns			- if ok, returns true with array recoded; otherwise array containg error message
  */
 function verifyDQGraph(&$dqGraph, $ri_check=false) {
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
 
 	if (($dqGraph["snmp_query_id"] == "") ||
 	($dqGraph["snmp_query_graph_id"] == "") ||
@@ -1817,7 +1815,7 @@ function verifyGraphInputFields($templateId, $cgInputFields, $input_fields) {
  * @param bool $ri_check
  */
 function verifyPermissions(&$perm, $delim, $ri_check=false) {
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	foreach($perm as $key => $value) {
 
@@ -1915,7 +1913,7 @@ function verifyPermissions(&$perm, $delim, $ri_check=false) {
  * @param bool $ri_check
  */
 function verifyTree(&$tree, $ri_check=false) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
 
 	foreach($tree as $key => $value) {
 
@@ -1960,8 +1958,8 @@ function verifyTree(&$tree, $ri_check=false) {
  * @param bool $ri_check
  */
 function verifyTreeItem(&$tree_item, $ri_check=false) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	foreach($tree_item as $key => $value) {
 

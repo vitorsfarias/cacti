@@ -50,9 +50,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		user_edit(true);
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'user_edit':
@@ -80,9 +80,9 @@ switch (get_request_var_request("action")) {
 		break;
 	default:
 		if (!plugin_hook_function('user_admin_action', get_request_var_request("action"))) {
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			user();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		}
 		break;
 }
@@ -95,7 +95,7 @@ switch (get_request_var_request("action")) {
  */
 function form_actions() {
 	global $user_actions, $user_auth_realms;
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -388,7 +388,7 @@ function form_actions() {
  */
 function form_save() {
 	global $settings_graphs;
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
@@ -557,7 +557,7 @@ function form_save() {
  * parms passed as request vars
  */
 function perm_remove() {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -610,7 +610,7 @@ function user_global_edit($user){
  */
 
 function graph_perms_edit() {
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -1284,7 +1284,7 @@ function user_get_table_format() {
  */
 function user($refresh = true) {
 	global $user_actions, $item_rows;
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	$table = New html_table;
 

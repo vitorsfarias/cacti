@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . "/lib/graph.php");
+require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 /** draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
      with a particular graph template
@@ -213,7 +213,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
    @param int $snmp_query_graph_id 		- if this data template is part of a data query, specify the graph id here. this
      									  will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = "|field|", $header_title = "", $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -296,7 +296,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
    @param int $snmp_query_graph_id 			- if this graph template is part of a data query, specify the graph id here. this
      										  will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = "|field_id|", $header_title = "", $draw_title_for_each_item = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	$draw_any_items = false;
 	$num_fields_drawn = 0;

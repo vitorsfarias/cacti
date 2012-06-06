@@ -51,6 +51,6 @@ function die_html_input_error() {
 	</table>
 	<?php
 
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+	include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 	exit;
 }

@@ -23,7 +23,7 @@
 */
 
 function send_mail($to, $from, $subject, $message, $filename = '', $headers = '') {
-	include_once(CACTI_BASE_PATH . "/lib/CactiMailer.php");
+	include_once(CACTI_LIBRARY_PATH . "/CactiMailer.php");
 
 	$message = str_replace('<SUBJECT>', $subject, $message);
 	$message = str_replace('<TO>', $to, $message);

@@ -26,7 +26,7 @@
    @param $vdef_item_id - the id of the individual vdef item
    @returns - a text-based representation of the vdef item */
 function get_vdef_item_name($vdef_item_id) 	{
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_arrays.php");
 
 	$vdef_item = db_fetch_row("select type,value from vdef_items where id=$vdef_item_id");
 	$current_vdef_value = $vdef_item["value"];
@@ -68,13 +68,13 @@ function get_vdef($vdef_id, $display = false) {
 }
 
 function &preset_vdef_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_forms.php");
 
 	return $fields_vdef_edit;
 }
 
 function &preset_vdef_item_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_forms.php");
 
 	return $fields_vdef_item_edit;
 }

@@ -508,7 +508,7 @@ class Net_Ping
 	} /* end ping_tcp */
 
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
-		require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
+		require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
 		/* initialize variables */
 		$ping_ping = true;
 		$ping_snmp = true;

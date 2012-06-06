@@ -303,7 +303,7 @@ function site_remove_confirm() {
 }
 
 function site_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/site.php");
+	require_once(CACTI_LIBRARY_PATH . "/site.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

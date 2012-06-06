@@ -101,7 +101,7 @@ function plugin_hook_function($name, $parm=NULL) {
  */
 function plugin_db_table_create($plugin, $table, $data, $sql_install_cache=false) {
 	global $database_default;
-	include_once(CACTI_BASE_PATH . "/lib/database.php");
+	include_once(CACTI_LIBRARY_PATH . "/database.php");
 
 	$result = db_fetch_assoc("show tables from `" . $database_default . "`") or die (mysql_error());
 	$tables = array();
@@ -191,7 +191,7 @@ function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false
 	// Example: plugin_db_add_column ('thold', 'plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
 	global $database_default;
-	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	include_once(CACTI_LIBRARY_PATH . '/database.php');
 
 	$result = db_fetch_assoc('show columns from `' . $table . '`') or die (mysql_error());
 	$columns = array();
@@ -482,7 +482,7 @@ function plugin_menu_item_add($menu_id, $menu_items) {
  * @return int				encoded plugin type
  */
 function plugin_is_system($plugin) {
-	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 	$system_plugin = (in_array($plugin, $plugins_system));
 
@@ -504,7 +504,7 @@ function plugin_is_system($plugin) {
  * @return bool				true, if deprecated
  */
 function plugin_is_deprecated($plugin) {
-	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 	return (in_array($plugin, $plugins_deprecated));
 }
@@ -536,7 +536,7 @@ function plugin_is_deprecated($plugin) {
  */
 function plugin_upgrade_table($plugin, $table, $data, $sql_install_cache=false, $drop_items=false) {
 	global $database_default;
-	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	include_once(CACTI_LIBRARY_PATH . '/database.php');
 	
 	/* which tables are defined right now? */
 	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`') or die (mysql_error());
@@ -701,7 +701,7 @@ function plugin_upgrade_comment($plugin, $table, $comment, $sql_install_cache=fa
  */
 function plugin_rename_table($plugin, $old_table, $new_table, $sql_install_cache=false) {
 	global $database_default;
-	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	include_once(CACTI_LIBRARY_PATH . '/database.php');
 	
 	/* which tables are defined right now? */
 	$result = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`') or die (mysql_error());
@@ -727,7 +727,7 @@ function plugin_rename_table($plugin, $old_table, $new_table, $sql_install_cache
  */
 function plugin_rename_column($plugin, $table, $old_column, $new_column, $sql_install_cache=false) {
 	global $database_default;
-	include_once(CACTI_BASE_PATH . '/lib/database.php');
+	include_once(CACTI_LIBRARY_PATH . '/database.php');
 
 	/* get the columns of that table */
 	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '` FROM `' . $database_default . '` ') or die (mysql_error());

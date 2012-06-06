@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -59,9 +59,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'item_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		xaxis_item_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_edit':
@@ -69,9 +69,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		xaxis_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
@@ -79,9 +79,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		xaxis();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -281,8 +281,8 @@ function xaxis_form_actions() {
  --------------------- */
 
 function xaxis_item_remove_confirm() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_xaxis_info.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/presets/preset_xaxis_info.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
@@ -339,7 +339,7 @@ function xaxis_item_remove() {
 }
 
 function xaxis_item_edit() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_forms.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -372,8 +372,8 @@ function xaxis_item_edit() {
 }
 
 function xaxis_edit() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/xaxis.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

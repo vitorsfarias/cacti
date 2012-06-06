@@ -116,10 +116,10 @@ function file_exists_2gb($filename) {
    @param $device_id - the id of the device to which the data query belongs
    @param $data_query_id - the id of the data query to rebuild the reindex cache for */
 function update_reindex_cache($device_id, $data_query_id) {
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/snmp.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/snmp.php");
 
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
@@ -323,7 +323,7 @@ function poller_update_poller_reindex_from_buffer($device_id, $data_query_id, &$
   @param $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @param $remainder - don't use LIMIT if TRUE */
 function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
-	include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+	include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 	/* let's count the number of rrd files we processed */
 	$rrds_processed = 0;
@@ -448,7 +448,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 }
 
 function &poller_form_list() {
-	require(CACTI_BASE_PATH . "/include/poller/poller_forms.php");
+	require(CACTI_INCLUDE_PATH . "/poller/poller_forms.php");
 
 	return $fields_poller_edit;
 }

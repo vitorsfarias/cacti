@@ -23,7 +23,7 @@
 */
 
 function &device_template_form_list() {
-	require(CACTI_BASE_PATH . "/include/device_template/device_template_forms.php");
+	require(CACTI_INCLUDE_PATH . "/device_template/device_template_forms.php");
 
 	return $fields_device_template_edit;
 }

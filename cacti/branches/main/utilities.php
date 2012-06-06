@@ -23,8 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/time.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 load_current_session_value("page_referrer", "page_referrer", "");
 
@@ -67,7 +67,7 @@ if (isset($_REQUEST["purge_x"])) {
 
 switch (get_request_var_request("action")) {
 	case 'rebuild_font_cache':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		/* obtain timeout settings */
 		$max_execution = ini_get("max_execution_time");
@@ -78,28 +78,28 @@ switch (get_request_var_request("action")) {
 
 		utilities_view_font_cache();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'view_font_cache':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		utilities_view_font_cache();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'view_snmp_cache':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		utilities_view_snmp_cache();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'view_poller_cache':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		utilities_view_poller_cache();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'view_logfile':
 		utilities_view_logfile();
@@ -109,22 +109,22 @@ switch (get_request_var_request("action")) {
 		utilities_clear_logfile();
 		utilities_view_logfile();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'view_user_log':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		utilities_view_user_log();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'clear_user_log':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		utilities_clear_user_log();
 		utilities_view_user_log();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
@@ -136,9 +136,9 @@ switch (get_request_var_request("action")) {
 		
 		break;
 	case 'view_tech':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		utilities_view_tech(true);
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_get_devices_brief':
@@ -147,9 +147,9 @@ switch (get_request_var_request("action")) {
 	default:
 
 		if (!plugin_hook_function('utilities_action', get_request_var_request('action'))) {
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			utilities();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		}
 		break;
 }
@@ -317,8 +317,8 @@ function display_php() {
 
 function display_general() {
 	global $rrdtool_versions;
-	require(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
-	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/poller/poller_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
 
 	/* Get poller stats */
 	$poller_item = db_fetch_assoc("SELECT action, count(action) as total FROM poller_item GROUP BY action");
@@ -775,7 +775,7 @@ function utilities_view_logfile() {
 	$refresh["seconds"] = $_REQUEST["refresh"];
 	$refresh["page"] = "utilities.php?action=view_logfile";
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 	?>
 	<script type="text/javascript">
@@ -947,7 +947,7 @@ function utilities_view_logfile() {
 
 	html_end_box();
 
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+	include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 }
 
 function utilities_clear_logfile() {
@@ -956,7 +956,7 @@ function utilities_clear_logfile() {
 	$refresh["seconds"] = $_REQUEST["refresh"];
 	$refresh["page"] = "utilities.php?action=view_logfile";
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 	$logfile = read_config_option("path_cactilog");
 

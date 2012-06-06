@@ -89,7 +89,7 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			break;
 	}
 }
-include(CACTI_BASE_PATH . "/include/top_header.php");
+include(CACTI_INCLUDE_PATH . "/top_header.php");
 
 #plugin_draw_tabs($ptabs, $current_tab);
 #html_start_box('<strong>' . __('Plugins') . ' (' . $ptabs[$current_tab] . ')</strong>', '100', '3', 'center', '');
@@ -106,7 +106,7 @@ switch ($current_tab) {
 #print "</td></tr>";
 #html_end_box();
 
-include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 
 
@@ -355,7 +355,7 @@ function get_plugin_records(&$total_rows, &$rowspp) {
 
 function plugin_filter() {
 	global $item_rows;
-	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 	html_start_box(__("Plugin Management (Cacti Version:") . " " . CACTI_VERSION .
 		(isset($plugin_architecture['version']) ? ", " . __("Plugin Architecture Version:") . " " . $plugin_architecture['version']:"") .

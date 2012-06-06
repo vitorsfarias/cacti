@@ -23,10 +23,10 @@
  */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
-include_once(CACTI_BASE_PATH . "/lib/tree.php");
-include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/tree.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -61,9 +61,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'input_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		input_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_edit':
@@ -71,9 +71,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once (CACTI_BASE_PATH . "/include/top_header.php");
+		include_once (CACTI_INCLUDE_PATH . "/top_header.php");
 		template_edit(true);
-		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once (CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_item_dnd':
@@ -85,9 +85,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		template();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -430,7 +430,7 @@ function template_edit($tabs = false) {
 
 		switch (get_request_var_request("tab")) {
 			case "graphs":
-				include_once(CACTI_BASE_PATH . "/lib/graph.php");
+				include_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 				cacti_graph();
 
@@ -493,8 +493,8 @@ function graph_template_item_save() {
 }
 
 function graph_template_display_general($graph_template, $header_label) {
-	include_once(CACTI_BASE_PATH . "/lib/graph.php");
-	include_once(CACTI_BASE_PATH . "/lib/graph_template.php");
+	include_once(CACTI_LIBRARY_PATH . "/graph.php");
+	include_once(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	# fetch all settings for this graph template
 	if (isset($graph_template["id"])) {
@@ -642,7 +642,7 @@ function graph_template_display_general($graph_template, $header_label) {
 
 
 function graph_template_display_items() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

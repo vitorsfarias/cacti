@@ -191,10 +191,10 @@ function device_form_save() {
  * The "actions" function
  */
 function device_form_actions() {
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	$fields_device_edit = device_form_list();
 	$fields_device_edit_availability = device_availability_form_list();
@@ -755,8 +755,8 @@ function device_edit($tab = false) {
  * display general device tab that shows configuration data for that device
  */
 function device_display_general($device, $device_text) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 	if (isset($device["id"])) {
 
@@ -1241,8 +1241,8 @@ function device_display_general($device, $device_text) {
  * display general device tab that shows configuration data for that device
  */
 function device_display_graph_template($device, $device_text) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 
 	print "<form id='device_edit_graph_template' name='device_edit_graph_template' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
@@ -1362,8 +1362,8 @@ function device_display_graph_template($device, $device_text) {
  * display general device tab that shows configuration data for that device
  */
 function device_display_data_query($device, $device_text) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 
 	print "<form id='device_edit_data_query' name='device_edit_data_query' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
@@ -1746,7 +1746,7 @@ function get_device_records(&$total_rows, &$rowspp) {
  */
 function device($refresh = true) {
 	global $item_rows;
-	require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 	$table = New html_table;
 
@@ -1860,7 +1860,7 @@ function device($refresh = true) {
  * return device field list for form engine
  */
 function &device_form_list() {
-	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_forms.php");
 
 	return $fields_device_edit;
 }
@@ -1869,7 +1869,7 @@ function &device_form_list() {
  * return device availability options list for form engine
  */
 function &device_availability_form_list() {
-	require(CACTI_BASE_PATH . "/include/device/device_forms.php");
+	require(CACTI_INCLUDE_PATH . "/device/device_forms.php");
 
 	return $fields_device_edit_availability;
 }
@@ -1878,7 +1878,7 @@ function &device_availability_form_list() {
  * device_remove - removes a device
  * @param $device_id - the id of the device to remove */
 function device_remove($device_id) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	db_execute("delete from device             where id=$device_id");
 	db_execute("delete from device_graph       where device_id=$device_id");
@@ -1898,7 +1898,7 @@ function device_remove($device_id) {
  * device_remove_multi - removes multiple devices in one call
  * @param $device_ids - an array of device id's to remove */
 function device_remove_multi($device_ids) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$devices_to_delete = "";
 	$i = 0;
@@ -1985,9 +1985,9 @@ function device_save($id, $site_id, $poller_id, $device_template_id, $descriptio
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
 	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $max_oids, $device_threads, $template_enabled) {
-	require_once(CACTI_BASE_PATH . "/lib/utility.php");
-	require_once(CACTI_BASE_PATH . "/lib/variables.php");
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/utility.php");
+	require_once(CACTI_LIBRARY_PATH . "/variables.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* fetch some cache variables */
 	if (empty($id)) {

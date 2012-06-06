@@ -32,9 +32,9 @@ $no_http_headers = true;
 
 /* Start Initialization Section */
 include(dirname(__FILE__) . "/include/global.php");
-include_once(CACTI_BASE_PATH . "/lib/poller.php");
-include_once(CACTI_BASE_PATH . "/lib/graph_export.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/graph_export.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 /* Let PHP Run Just as Long as It Has To */
 ini_set("max_execution_time", "0");

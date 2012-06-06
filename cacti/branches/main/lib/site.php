@@ -23,7 +23,7 @@
 */
 
 function &site_form_list() {
-	require(CACTI_BASE_PATH . "/include/site/site_forms.php");
+	require(CACTI_INCLUDE_PATH . "/site/site_forms.php");
 
 	return $fields_site_edit;
 }

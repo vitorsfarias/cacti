@@ -23,13 +23,13 @@
 */
 
 include ("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/graph.php");
-include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
-include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -54,11 +54,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'data_source_data_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_source_data_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'edit':
 		data_source_edit();
@@ -77,11 +77,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_source();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 

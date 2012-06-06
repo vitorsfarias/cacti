@@ -27,9 +27,9 @@
  * @param int $snmp_query_id
  */
 function run_data_query($device_id, $snmp_query_id) {
-	require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
-	include_once(CACTI_BASE_PATH . "/lib/poller.php");
-	include_once(CACTI_BASE_PATH . "/lib/utility.php");
+	require(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
+	include_once(CACTI_LIBRARY_PATH . "/poller.php");
+	include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 	debug_log_insert("data_query", __("Running data query") . " [$snmp_query_id].");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
@@ -69,7 +69,7 @@ function run_data_query($device_id, $snmp_query_id) {
 function get_data_query_array($snmp_query_id) {
 	global $data_query_xml_arrays;
 
-	include_once(CACTI_BASE_PATH . "/lib/xml.php");
+	include_once(CACTI_LIBRARY_PATH . "/xml.php");
 
 	/* load the array into memory if it hasn't been done yet */
 	if (!isset($data_query_xml_arrays[$snmp_query_id])) {
@@ -184,8 +184,8 @@ function query_script_device($device_id, $snmp_query_id) {
  * @param int $snmp_query_id
  */
 function query_snmp_device($device_id, $snmp_query_id) {
-	include_once(CACTI_BASE_PATH . "/lib/snmp.php");
-	include_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+	include_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
 
 	$device = db_fetch_row("SELECT
 		hostname,
@@ -669,7 +669,7 @@ function update_data_source_data_query_cache($local_data_id) {
    @return array 				- an array formatted like the following:
 									$arr[snmp_index] = "formatted data query index string" */
 function get_formatted_data_query_indexes($device_id, $data_query_id) {
-	include_once(CACTI_BASE_PATH . "/lib/sort.php");
+	include_once(CACTI_LIBRARY_PATH . "/sort.php");
 
 	if (empty($data_query_id)) {
 		return array("" => __("Unknown Index"));
@@ -868,7 +868,7 @@ function get_best_data_query_index_type($device_id, $data_query_id) {
    @param int $device_id 		- the id of the device that this script query belongs to
    @return string 				- a full path to the script query script containing all arguments */
 function get_script_query_path($args, $script_path, $device_id) {
-	include_once(CACTI_BASE_PATH . "/lib/variables.php");
+	include_once(CACTI_LIBRARY_PATH . "/variables.php");
 
 	/* get any extra arguments that need to be passed to the script */
 	if (!empty($args)) {
@@ -1059,13 +1059,13 @@ function verify_index_order($raw_xml) {
 }
 
 function &data_query_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_forms.php");
 
 	return $fields_data_query_edit;
 }
 
 function &data_query_item_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_forms.php");
 
 	return $fields_data_query_item_edit;
 }

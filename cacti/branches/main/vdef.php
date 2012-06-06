@@ -23,8 +23,8 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/vdef.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -54,9 +54,9 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'item_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		vdef_item_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_edit':
@@ -64,9 +64,9 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		vdef_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_dnd':
@@ -78,9 +78,9 @@ switch ($_REQUEST["action"]) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		vdef();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -263,8 +263,8 @@ function vdef_form_actions() {
    -------------------------- */
 
 function vdef_item_remove_confirm() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/presets/preset_vdef_info.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/presets/preset_vdef_info.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));
@@ -323,7 +323,7 @@ function vdef_item_remove() {
 
 function vdef_item_edit() {
 	global $custom_vdef_data_source_types;
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -453,8 +453,8 @@ function vdef_item_dnd() {
 }
 
 function vdef_edit() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_vdef_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_vdef_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

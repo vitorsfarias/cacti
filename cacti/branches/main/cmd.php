@@ -66,13 +66,13 @@ ini_set("memory_limit", "512M");
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/include/global.php");
-require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-require_once(CACTI_BASE_PATH . "/include/poller/poller_constants.php");
-include_once(CACTI_BASE_PATH . "/lib/snmp.php");
-include_once(CACTI_BASE_PATH . "/lib/poller.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-include_once(CACTI_BASE_PATH . "/lib/ping.php");
-include_once(CACTI_BASE_PATH . "/lib/variables.php");
+require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
+require_once(CACTI_INCLUDE_PATH . "/poller/poller_constants.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
+include_once(CACTI_LIBRARY_PATH . "/ping.php");
+include_once(CACTI_LIBRARY_PATH . "/variables.php");
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if (CACTI_SERVER_OS == "win32") {

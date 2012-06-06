@@ -162,7 +162,7 @@ function graph_view_filter_table($mode = "mode") {
 
 function get_graph_list_content() {
 	global $graphs_per_page;
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* Make sure nothing is cached */
 	header("Cache-Control: must-revalidate");
@@ -566,7 +566,7 @@ function get_graph_list_content() {
 }
 
 function get_graph_preview_content() {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* Make sure nothing is cached */
 	header("Cache-Control: must-revalidate");
@@ -797,7 +797,7 @@ function get_graph_preview_content() {
 }
 
 function graph_view_timespan_selector($mode = "tree") {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	?>
 	<script type='text/javascript'>

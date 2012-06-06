@@ -23,7 +23,7 @@
 */
 
 function &preset_gprint_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_gprint_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_gprint_forms.php");
 
 	return $fields_gprint_presets_edit;
 }

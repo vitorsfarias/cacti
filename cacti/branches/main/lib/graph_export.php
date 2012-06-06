@@ -488,7 +488,7 @@ function export() {
 }
 
 function classical_export($cacti_root_path, $cacti_export_path) {
-	require_once(CACTI_BASE_PATH . "/lib/time.php");
+	require_once(CACTI_LIBRARY_PATH . "/time.php");
 
 	$total_graphs_created = 0;
 
@@ -648,7 +648,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 }
 
 function tree_export() {
-	require_once(CACTI_BASE_PATH . "/lib/time.php");
+	require_once(CACTI_LIBRARY_PATH . "/time.php");
 
 	$total_graphs_created = 0;
 
@@ -735,7 +735,7 @@ function tree_export() {
 }
 
 function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	/* auth check for devices on the trees */
 	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
@@ -844,7 +844,7 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 }
 
 function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index = "") {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$cacti_export_path = read_config_option("path_html_export");
 
@@ -1165,9 +1165,9 @@ function export_is_tree_allowed($tree_id) {
 }
 
 function export_tree_graphs_and_graph_html($path, $tree_id) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* start the count of graphs */
 	$total_graphs_created = 0;
@@ -1381,8 +1381,8 @@ function draw_html_left_tree($fp, $tree_id)  {
 
 function grow_dhtml_trees_export($fp, $tree_id) {
 	global $dhtml_trees;
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	fwrite($fp, "<script type='text/javascript'>\n");
 	fwrite($fp, "<!--
@@ -1426,7 +1426,7 @@ function grow_dhtml_trees_export($fp, $tree_id) {
    @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array_export($return_sql = false, $force_refresh = false) {
 	global $config;
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* set the tree update time if not already set */
 	if (!isset($config["config_options_array"]["tree_update_time"])) {
@@ -1472,8 +1472,8 @@ function get_graph_tree_array_export($return_sql = false, $force_refresh = false
 }
 
 function create_dhtml_tree_export($tree_id) {
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* record start time */
 	list($micro,$seconds) = explode(" ", microtime());

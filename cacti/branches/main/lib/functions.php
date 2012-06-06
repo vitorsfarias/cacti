@@ -459,7 +459,7 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	include(CACTI_BASE_PATH . "/include/global_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 
 	if (isset($_SESSION["sess_messages"])) {
 		if (is_array($_SESSION["sess_messages"])) {
@@ -697,7 +697,7 @@ function display_user_status($status) {
  * @param $policy - id of graph policy
  */
 function display_policy_graphs($policy) {
-	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 	return $graph_policy_array[$policy];
 }
 
@@ -706,7 +706,7 @@ function display_policy_graphs($policy) {
  * @param $realm - id of realm
  */
 function display_auth_realms($realm=NULL) {
-	include(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	if (isset($auth_realms[$realm]))	{
 		return $auth_realms[$realm];
@@ -716,7 +716,7 @@ function display_auth_realms($realm=NULL) {
 }
 
 function row_plugin_class($plugin_type) {
-	require_once(CACTI_BASE_PATH . "/include/plugins/plugin_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/plugins/plugin_constants.php");
 	if ($plugin_type == PLUGIN_TYPE_SYSTEM) {
 		return "nodrag nodrop";
 	} else {
@@ -729,7 +729,7 @@ function display_plugin_directory($plugin_name, $website) {
 }
 
 function display_plugin_type($plugin_name, $status) {
-	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 	$system_plugin = (in_array($plugin_name, $plugins_system));
 
@@ -743,13 +743,13 @@ function display_plugin_type($plugin_name, $status) {
 }
 
 function display_plugin_status($status) {
-	require(CACTI_BASE_PATH . "/include/plugins/plugin_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 	return $plugin_status_names[$status];
 }
 
 function display_plugin_actions($plugin_name, $status) {
-	require_once(CACTI_BASE_PATH . "/include/plugins/plugin_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/plugins/plugin_constants.php");
 
 	$link = "";
 	switch ($status) {
@@ -1074,7 +1074,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = "
  * @param $devices 		- (array) a memory resident device table for speed
  * @param $ping 		- (class array) results of the ping command			*/
 function update_device_status($status, $device_id, &$devices, &$ping, $ping_availability, $print_data_to_stdout) {
-	require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
 
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option("ping_failure_count");
@@ -1413,7 +1413,7 @@ function validate_result(&$result) {
  * @returns - the full script path or (bool) false for an error */
 function get_full_script_path($local_data_id) {
 	global $config;
-	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
 
 	$data_source = db_fetch_row("select
 		data_template_data.id,
@@ -1738,7 +1738,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
  *  @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
 	global $rrd_cfs;
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
 
 	$rrdfile = get_data_source_path($local_data_id, TRUE);
 
@@ -2099,7 +2099,7 @@ function get_web_browser() {
  * @param $force_refresh - (bool) Force the refresh of the array from the database
  * @returns - (array) an array containing a list of graph trees */
 function get_graph_tree_array($return_sql = false, $force_refresh = false) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	/* set the tree update time if not already set */
 	if (!isset($_SESSION["tree_update_time"])) {
@@ -2149,7 +2149,7 @@ function get_graph_tree_array($return_sql = false, $force_refresh = false) {
  * returns a list of devices taking permissions into account if necessary
  * @returns - (array) an array containing a list of devices */
 function get_device_array() {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	if (read_config_option("auth_method") != AUTH_METHOD_NONE) {
 		$current_user = db_fetch_row("select policy_devices from user_auth where id=" . $_SESSION["sess_user_id"]);

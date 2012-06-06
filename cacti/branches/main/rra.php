@@ -44,9 +44,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		rra_edit();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
@@ -54,9 +54,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		rra();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -212,7 +212,7 @@ function form_save() {
    ------------------- */
 
 function rra_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/rra.php");
+	require_once(CACTI_LIBRARY_PATH . "/rra.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
