@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once(CACTI_BASE_PATH . "/lib/time.php");
+include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 global $lang2locale;
 

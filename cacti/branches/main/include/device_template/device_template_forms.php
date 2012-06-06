@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/device/device_arrays.php");
+require(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 /* file: device_templates.php, action: edit */
 $fields_device_template_edit = array(

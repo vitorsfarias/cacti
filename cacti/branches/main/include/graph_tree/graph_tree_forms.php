@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/graph_tree/graph_tree_arrays.php');
-require(CACTI_BASE_PATH . '/include/data_query/data_query_arrays.php');
+require(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_arrays.php');
+require(CACTI_INCLUDE_PATH . '/data_query/data_query_arrays.php');
 
 /* file: tree.php, action: edit */
 $fields_tree_edit = array(

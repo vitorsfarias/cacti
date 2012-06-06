@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/graph_tree/graph_tree_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
 
 $tree_types = array(
 	TREE_TYPE_TREE => __('Tree'),

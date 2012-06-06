@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/auth/auth_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/auth/auth_constants.php');
 
 /* auth data required fields for user */
 $auth_control_data_user_fields = array(

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/auth/auth_arrays.php');
+require(CACTI_INCLUDE_PATH . '/auth/auth_arrays.php');
 
 if (! defined('VALID_HOST_FIELDS'))
 {

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/presets/preset_xaxis_arrays.php');
+require(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_arrays.php');
 
 /* file: xaxis.php, action: edit */
 $fields_xaxis_edit = array(

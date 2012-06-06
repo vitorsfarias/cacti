@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+require(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
 
 /* file: data_input.php, action: edit */
 $fields_data_input_edit = array(

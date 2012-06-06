@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/graph/graph_arrays.php');
-require(CACTI_BASE_PATH . '/include/presets/preset_rra_arrays.php');
+require(CACTI_INCLUDE_PATH . '/graph/graph_arrays.php');
+require(CACTI_INCLUDE_PATH . '/presets/preset_rra_arrays.php');
 
 /* file: (graphs.php|graph_templates.php), action: (graph|template)_edit
  *

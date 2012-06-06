@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
+require_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
 
 $input_types = array(
 	DATA_INPUT_TYPE_SNMP => "SNMP", // Action 0:

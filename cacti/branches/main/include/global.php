@@ -84,6 +84,27 @@ else
 	define('CACTI_BASE_PATH', preg_replace('/(.*)[\/]include/', '\\1', dirname(__FILE__)));
 }
 
+/* setup paths */
+/* CACTI_BASE_PATH is platform dependant and has been defined above */
+/* this is were distro package maintainers should look at */
+define('CACTI_URL_PATH', $config['url_path']);
+define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
+define('CACTI_LIBRARY_PATH', CACTI_BASE_PATH . '/lib');
+define('CACTI_INCLUDE_PATH', CACTI_BASE_PATH . '/include');
+define('CACTI_PLUGIN_PATH', CACTI_BASE_PATH . '/plugins');
+define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');		# no compat required
+define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');	# no compat required
+
+#$config = array();									# compat
+#$config['url_path'] = $url_path;					# compat
+#$config['base_path']    = CACTI_BASE_PATH;			# compat
+#$config['library_path'] = CACTI_BASE_PATH . '/lib';	# compat
+#$config['include_path'] = CACTI_BASE_PATH . '/include';	# compat
+#$config['rra_path'] 	= CACTI_BASE_PATH . '/rra';	# compat
+#$config['plugin_path'] 	= CACTI_BASE_PATH . '/plugins';	# compat
+
+#$config['cacti_server_os'] = CACTI_SERVER_OS;		# compat
+
 /* Files that do not need http header information - Command line scripts */
 $no_http_header_files = array(
 	'add_device.php',
@@ -126,12 +147,6 @@ $no_http_header_files = array(
 /* built-in snmp support */
 define('PHP_SNMP_SUPPORT', function_exists('snmpget'));
 
-/* define constants */
-define('CACTI_RRA_PATH', CACTI_BASE_PATH . '/rra');
-define('CACTI_URL_PATH', $config['url_path']);
-define('CACTI_CACHE_PATH', CACTI_BASE_PATH . '/cache');
-define('CACTI_CACHE_URL_PATH', CACTI_URL_PATH . '/cache');
-
 /* display ALL errors */
 error_reporting(E_ALL);
 
@@ -140,8 +155,8 @@ define('CACTI_VERSION', '1.0.0');
 define('CACTI_WIKI_URL', 'http://docs.cacti.net/reference:100:');
 
 /* include base modules */
-//include(CACTI_BASE_PATH . '/lib/adodb/adodb.inc.php');
-include(CACTI_BASE_PATH . '/lib/database.php');
+//include(CACTI_LIBRARY_PATH . '/adodb/adodb.inc.php');
+include(CACTI_LIBRARY_PATH . '/database.php');
 
 /* check that the absolute necessary mysql PHP module is loaded  (install checks the rest), and report back if not */
 if (! function_exists('mysql_data_seek'))
@@ -165,27 +180,27 @@ session_name($cacti_session_name);
 session_start();
 
 /* include additional modules */
-include_once(CACTI_BASE_PATH . '/lib/functions.php');
-include_once(CACTI_BASE_PATH . '/include/global_constants.php');
-include_once(CACTI_BASE_PATH . '/include/global_language.php');
-include_once(CACTI_BASE_PATH . '/include/global_timezones.php');
-include_once(CACTI_BASE_PATH . '/lib/log.php');
-include_once(CACTI_BASE_PATH . '/include/global_arrays.php');
-include_once(CACTI_BASE_PATH . '/include/global_settings.php');
-include_once(CACTI_BASE_PATH . '/include/plugins/plugin_arrays.php');
-include_once(CACTI_BASE_PATH . '/lib/plugins.php');
-include_once(CACTI_BASE_PATH . '/lib/html.php');
-include_once(CACTI_BASE_PATH . '/lib/html_form.php');
-include_once(CACTI_BASE_PATH . '/lib/html_utility.php');
-include_once(CACTI_BASE_PATH . '/lib/html_validate.php');
-include_once(CACTI_BASE_PATH . '/lib/variables.php');
-include_once(CACTI_BASE_PATH . '/lib/auth.php');
-include_once(CACTI_BASE_PATH . '/lib/ajax.php');
+include_once(CACTI_LIBRARY_PATH . '/functions.php');
+include_once(CACTI_INCLUDE_PATH . '/global_constants.php');
+include_once(CACTI_INCLUDE_PATH . '/global_language.php');
+include_once(CACTI_INCLUDE_PATH . '/global_timezones.php');
+include_once(CACTI_LIBRARY_PATH . '/log.php');
+include_once(CACTI_INCLUDE_PATH . '/global_arrays.php');
+include_once(CACTI_INCLUDE_PATH . '/global_settings.php');
+include_once(CACTI_INCLUDE_PATH . '/plugins/plugin_arrays.php');
+include_once(CACTI_LIBRARY_PATH . '/plugins.php');
+include_once(CACTI_LIBRARY_PATH . '/html.php');
+include_once(CACTI_LIBRARY_PATH . '/html_form.php');
+include_once(CACTI_LIBRARY_PATH . '/html_utility.php');
+include_once(CACTI_LIBRARY_PATH . '/html_validate.php');
+include_once(CACTI_LIBRARY_PATH . '/variables.php');
+include_once(CACTI_LIBRARY_PATH . '/auth.php');
+include_once(CACTI_LIBRARY_PATH . '/ajax.php');
 
 if(! $database_empty)
 {
 	// avoid running read_config_option against an empty DB - this isn't needed during the install process anyway
-	include_once(CACTI_BASE_PATH . '/include/global_form.php');
+	include_once(CACTI_INCLUDE_PATH . '/global_form.php');
 }
 
 plugin_load_realms();

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/presets/preset_xaxis_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/presets/preset_xaxis_constants.php');
 
 $rrd_xaxis_timespans = array(
 	RRD_XAXIS_SECOND		=> __('Second'),

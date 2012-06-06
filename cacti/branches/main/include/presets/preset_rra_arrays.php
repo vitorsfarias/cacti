@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . '/include/presets/preset_rra_constants.php');
+require_once(CACTI_INCLUDE_PATH . '/presets/preset_rra_constants.php');
 
 $consolidation_functions = array(
 	RRA_CF_TYPE_AVERAGE		=> 'AVERAGE',
