@@ -30,7 +30,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
 
-include(dirname(__FILE__)."/../include/global.php");
+include(dirname(__FILE__) . "/../include/global.php");
 include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 include_once(CACTI_LIBRARY_PATH . "/utility.php");
 

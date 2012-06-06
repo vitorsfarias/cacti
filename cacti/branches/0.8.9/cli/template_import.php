@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -31,11 +32,11 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include(dirname(__FILE__) . "/../include/global.php");
-include_once(CACTI_LIBRARY_PATH . "/import.php");
+include_once("../lib/import.php");
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
-array_shift($parms);
+$me = array_shift($parms);
 
 if (sizeof($parms)) {
 	$filename = "";
@@ -58,8 +59,14 @@ if (sizeof($parms)) {
 				$rra_set = trim($value);
 
 				break;
+			case "--version":
+			case "-V":
+			case "-H":
+			case "--help":
+				display_help($me);
+				exit(0);
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				printf(__("ERROR: Invalid Argument: (%s)\n\n"), $arg);
 				exit(1);
 		}
 	}
@@ -73,9 +80,9 @@ if (sizeof($parms)) {
 				foreach ($rra_array as $key => $value) {
 					$name = db_fetch_cell("SELECT name FROM rra WHERE id=" . intval($value));
 					if (strlen($name)) {
-						echo "using RRA $name\n";
+						print (__("using RRA %s\n", $name));
 					} else {
-						echo "RRA id $value not found\n";
+						print (__("RRA id %s not found\n", $value));
 						unset($rra_array[$key]);
 					}
 				}
@@ -84,7 +91,7 @@ if (sizeof($parms)) {
 	}else{
 		$rra_array = array();
 		if (!$import_custom_rra_settings) {
-			echo "ERROR: neither '--with-template-rras' given nor '--with-user-rras' given. Exiting'\n";
+			print (__("ERROR: neither '--with-template-rras' given nor '--with-user-rras' given. Exiting'\n"));
 			return false;
 		}
 	}
@@ -95,7 +102,7 @@ if (sizeof($parms)) {
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo "Read ".strlen($xml_data)." bytes of XML data\n";
+			printf(__("Read %d bytes of XML data\n"), strlen($xml_data));
 
 			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
 
@@ -104,25 +111,25 @@ if (sizeof($parms)) {
 
 				while (list($index, $vals) = each($type_array)) {
 					if ($vals["result"] == "success") {
-						$result_text = " [success]";
+						$result_text = __(" [success]");
 					}else{
-						$result_text = " [fail]";
+						$result_text = __(" [fail]");
 					}
 
 					if ($vals["type"] == "update") {
-						$type_text = " [update]";
+						$type_text = __(" [update]");
 					}else{
-						$type_text = " [new]";
+						$type_text = __(" [new]");
 					}
-					echo "   $result_text " . $vals["title"] . " $type_text\n";
+					echo "   $result_text " . $vals["title"] . " $type_text" . "\n";
 
 					$dep_text = ""; $errors = false;
 					if ((isset($vals["dep"])) && (sizeof($vals["dep"]) > 0)) {
 						while (list($dep_hash, $dep_status) = each($vals["dep"])) {
 							if ($dep_status == "met") {
-								$dep_status_text = "Found Dependency: ";
+								$dep_status_text = __("Found Dependency: ");
 							} else {
-								$dep_status_text = "Unmet Dependency: ";
+								$dep_status_text = __("Unmet Dependency: ");
 								$errors = true;
 							}
 
@@ -134,31 +141,35 @@ if (sizeof($parms)) {
 					if ($errors) {
 						echo $dep_text;
 						exit(-1);
+					}else{
+						exit(0);
 					}
 				}
 			}
 		} else {
-			echo "ERROR: file $filename is not readable, or does not exist\n\n";
+			printf(__("ERROR: file %s is not readable, or does not exist\n\n"), $filename);
 			exit(1);
 		}
 	} else {
-		echo "ERROR: no filename specified\n\n";
-		display_help();
+		echo __("ERROR: no filename specified") . "\n\n";
+		display_help($me);
 		exit(1);
 	}
 } else {
-	echo "ERROR: no parameters given\n\n";
-	display_help();
+	echo __("ERROR: no parameters given") . "\n\n";
+	display_help($me);
 	exit(1);
 }
 
-function display_help() {
-	echo "Import Template Script 1.1, Copyright 2004-2012 - The Cacti Group\n\n";
-	echo "A simple command line utility to import a Template into Cacti\n\n";
-	echo "usage: import_template.php --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]]\n";
-	echo "Required:\n";
-	echo "    --filename     the name of the XML file to import\n";
-	echo "Optional:\n";
-	echo "    --with-template-rras    also import custom RRA definitions from the template\n";
-	echo "    --with-user-rras        use your own set of RRA like '1:2:3:4'\n";
+function display_help($me) {
+	echo "Template Import Script 1.1" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo __("A simple command line utility to import a Template into Cacti") . "\n\n";
+	echo __("usage: ") . $me . " --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]] [-h] [--help] [-v] [--version]\n";
+	echo __("Required:") . "\n";
+	echo "   --filename     " . __("the name of the XML file to import") . "\n";
+	echo __("Optional:") . "\n";
+	echo "   --with-template-rras " . __("also import custom RRA definitions from the template\n");
+	echo "   --with-user-rras     " . __("use your own set of RRA like '1:2:3:4'\n");
+	echo "   -v --version         " . __("Display this help message") . "\n";
+	echo "   -h --help            " . __("Display this help message") . "\n";
 }

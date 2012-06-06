@@ -31,8 +31,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
-include_once(CACTI_LIBRARY_PATH . "/api_automation_tools.php");
+include(dirname(__FILE__) . "/../include/global.php");
+include_once(CACTI_LIBRARY_PATH . "/automation_tools.php");
 include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 /* process calling arguments */

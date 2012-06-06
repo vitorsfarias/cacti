@@ -32,7 +32,7 @@ if (!isset ($_SERVER["argv"][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset 
 $no_http_headers = true;
 
 include (dirname(__FILE__) . "/../include/global.php");
-include_once (CACTI_LIBRARY_PATH . "/api_automation_tools.php");
+include_once (CACTI_LIBRARY_PATH . "/automation_tools.php");
 include_once (CACTI_LIBRARY_PATH . "/data_source.php");
 include_once (CACTI_LIBRARY_PATH . "/graph.php");
 
@@ -42,7 +42,7 @@ $me = array_shift($parms);
 
 if (sizeof($parms)) {
 	$dry_run = "";
-	$device_id = 0;
+	$host_id = 0;
 
 	foreach ($parms as $parameter) {
 		@ list ($arg, $value) = @ explode("=", $parameter);
@@ -53,7 +53,7 @@ if (sizeof($parms)) {
 
 				break;
 			case "--device-id" :
-				$device_id = $value;
+				$host_id = $value;
 
 				break;
 			case "--data-source-id" :
@@ -75,11 +75,11 @@ if (sizeof($parms)) {
 				display_help($me);
 				exit (0);
 			case "--dry-run" :
-				$dry_run = "DRY RUN >>>";
+				$dry_run = __("DRY RUN >>>");
 
 				break;
 			default :
-				printf("ERROR: Invalid Argument: (%s)\n\n", $arg);
+				printf(__("ERROR: Invalid Argument: (%s)\n\n"), $arg);
 				display_help($me);
 				exit (1);
 		}
@@ -91,22 +91,22 @@ if (sizeof($parms)) {
 		exit (0);
 	}
 
-	if (isset ($device_id) && ($device_id > 0)) {
+	if (isset ($host_id) && ($host_id > 0)) {
 		if (!isset($snmp_field) || ($snmp_field === 0)) {
-			echo "ERROR: You must supply a valid --snmp-field" . "\n";
-			echo "Try php -q graph_list.php --list-snmp-fields" . "\n";
+			echo __("ERROR: You must supply a valid --snmp-field") . "\n";
+			echo __("Try php -q graph_list.php --list-snmp-fields") . "\n";
 			exit (1);
 		}
 		if (!isset($snmp_value) || ($snmp_value === 0)) {
-			echo "ERROR: You must supply a valid --snmp-value" . "\n";
-			echo "Try php -q graph_list.php --list-snmp-values" . "\n";
+			echo __("ERROR: You must supply a valid --snmp-value") . "\n";
+			echo __("Try php -q graph_list.php --list-snmp-values") . "\n";
 			exit (1);
 		}
 		$data_sources = db_fetch_assoc("SELECT data_local.id " .
 				"FROM      host_snmp_cache " .
 				"LEFT JOIN data_local USING (host_id, snmp_query_id, snmp_index) " .
 				"LEFT JOIN data_template_data ON (data_local.id=data_template_data.local_data_id) " .
-				"WHERE     host_snmp_cache.host_id=$device_id " .
+				"WHERE     host_snmp_cache.host_id=$host_id " .
 				"AND       host_snmp_cache.field_name='$snmp_field' " .
 				"AND       host_snmp_cache.field_value='$snmp_value' " .
 				"AND       data_local.id > 0 " .
@@ -114,14 +114,14 @@ if (sizeof($parms)) {
 
 		if (sizeof($data_sources) > 0) {
 			echo $dry_run;
-		       	printf("Removing all Data Sources for Device=%1s, SNMP Field=%2s, SNMP Value=%3d\n", $device_id, $snmp_field, $snmp_value);
+		       	printf(__("Removing all Data Sources for Device=%1s, SNMP Field=%2s, SNMP Value=%3d\n"), $host_id, $snmp_field, $snmp_value);
 			$i = 0;
 			foreach ($data_sources as $data_source) {
 				remove_data_source($data_source["id"], $dry_run);
 				$i++;
 			}
 			echo $dry_run;
-			printf("Removed %4d Data Sources for Device=%1s, SNMP Field=%2s, SNMP Value=%3d\n", $device_id, $snmp_field, $snmp_value, $i);
+			printf(__("Removed %4d Data Sources for Device=%1s, SNMP Field=%2s, SNMP Value=%3d\n"), $host_id, $snmp_field, $snmp_value, $i);
 		}
 		exit (0);
 	}
@@ -136,11 +136,11 @@ if (sizeof($parms)) {
 
 function remove_data_source($data_source_id, $dry_run) {
 
-	$dry_run ? $dry_run = "DRY RUN >>>" : $dry_run = "";
+	$dry_run ? $dry_run = __("DRY RUN >>>") : $dry_run = "";
 
 	/* Verify the data source's existance */
 	if (!db_fetch_cell("SELECT id FROM data_local WHERE id=$data_source_id")) {
-		printf("ERROR: Unknown Data Source ID (%d)\n", $data_source_id);
+		printf(__("ERROR: Unknown Data Source ID (%d)\n"), $data_source_id);
 		exit (1);
 	}
 
@@ -158,14 +158,14 @@ function remove_data_source($data_source_id, $dry_run) {
 
 	if (sizeof($graphs) > 0) {
 		echo $dry_run . "\n";
-		echo "Delete Graph(s): ";
+		echo __("Delete Graph(s): ");
 		foreach ($graphs as $graph) {
 
 			if ($dry_run) {
-				printf("Graph: %d", $graph["local_graph_id"]);
+				printf(__("Graph: %d"), $graph["local_graph_id"]);
 			} else {
 				echo $graph["local_graph_id"] . " ";
-				graph_remove($graph["local_graph_id"], true);
+				graph_remove($graph["local_graph_id"]);
 			}
 		}
 		echo "\n";
@@ -173,32 +173,32 @@ function remove_data_source($data_source_id, $dry_run) {
 
 	if ($dry_run) {
 		echo $dry_run . "\n";
-		printf("Data Source: %d", $data_source_id);
+		printf(__("Data Source: %d"), $data_source_id);
 	} else {
-		printf("Delete Data Source: %d", $data_source_id);
+		printf(__("Delete Data Source: %d", $data_source_id));
 		data_source_remove($data_source_id);
 	}
 
 	if (is_error_message()) {
-		echo " - ERROR: Failed to remove this data source" . "\n";
+		echo __(" - ERROR: Failed to remove this data source") . "\n";
 		exit (1);
 	} else {
-		printf(" - SUCCESS: Removed data-source-id: (%d)\n", $data_source_id);
+		printf(__(" - SUCCESS: Removed data-source-id: (%d)\n"), $data_source_id);
 	}
 }
 
 function display_help($me) {
-	echo "Remove Data Source Script 1.0" . ", " . "Copyright 2004-2012 - The Cacti Group" . "\n";
-	echo "A simple command line utility to remove a data source from Cacti" . "\n\n";
-	echo "usage: " . $me . " [--data-source-id=[ID]|--device-id=[ID]] [--dry-run]\n\n";
-	echo "Required is either of:" . "\n";
-	echo "   --device-id           " . "the numerical ID of the device" . "\n";
-	echo "   --data-source-id=[id] " . "the numerical id of the graph" . "\n";
-	echo "When using a device-id, the following is required (ds graphs only!):" . "\n";
-	echo "   --snmp-field=[field]  " . "snmp-field to be checked" . "\n";
-	echo "   --snmp-value=[value]  " . "snmp-value to be checked" . "\n\n";
-	echo "Optional:" . "\n";
-	echo "   --dry-run             " . "produce list output only, do NOT remove anything" . "\n\n";
-	printf("e.g. php -q %s --device-id=[ID] --snmp-field=ifOperStatus --snmp-value=DOWN\n", $me);
-	echo "to remove all data sources and graphs for interfaces with ifOperStatus = DOWN" . "\n\n";
+	echo "Remove Data Source Script 1.0" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo __("A simple command line utility to remove a data source from Cacti") . "\n\n";
+	echo __("usage: ") . $me . " [--data-source-id=[ID]|--device-id=[ID]] [--dry-run]\n\n";
+	echo __("Required is either of:") . "\n";
+	echo "   --device-id           " . __("the numerical ID of the device") . "\n";
+	echo "   --data-source-id=[id] " . __("the numerical id of the graph") . "\n";
+	echo __("When using a device-id, the following is required (ds graphs only!):") . "\n";
+	echo "   --snmp-field=[field]  " . __("snmp-field to be checked") . "\n";
+	echo "   --snmp-value=[value]  " . __("snmp-value to be checked") . "\n\n";
+	echo __("Optional:") . "\n";
+	echo "   --dry-run             " . __("produce list output only, do NOT remove anything") . "\n\n";
+	printf(__("e.g. php -q %s --device-id=[ID] --snmp-field=ifOperStatus --snmp-value=DOWN\n"), $me);
+	echo __("to remove all data sources and graphs for interfaces with ifOperStatus = DOWN") . "\n\n";
 }
