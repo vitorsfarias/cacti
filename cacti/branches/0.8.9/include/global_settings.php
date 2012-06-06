@@ -90,6 +90,32 @@ $settings = array(
 			"method" => "filepath",
 			"max_length" => "255"
 			),
+		"path_perl_binary" => array(
+			"friendly_name" => __("Perl Binary Path"),
+			"description" => __("The path to your Perl binary file."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
+		"path_sh_binary" => array(
+			"friendly_name" => __("Shell Binary Path"),
+			"description" => __("The path to your Shell binary file."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
+		"path_fc_list_binary" => array(
+			"friendly_name" => __("fc-list Binary Path (Required for RRDTool 1.3.x and higher)"),
+			"description" => __("The path to your fc-list binary file for listing available fonts."),
+			"method" => "filepath",
+			"max_length" => "255"
+			),
+		"path_font_dir" => array(
+			"friendly_name" => __("System Font Directory (Required for RRDTool 1.2.x and lower)"),
+			"description" => __("The path to the directory, where fonts are stored. Multiple directory names must be separated by ':'"),
+			"method" => "multiple_dirpath",
+			"textarea_rows" => "3",
+			"textarea_cols" => "37",
+			"class" => "textAreaNotes"
+			),
 		"logging_header" => array(
 			"friendly_name" => "Logging",
 			"method" => "spacer",

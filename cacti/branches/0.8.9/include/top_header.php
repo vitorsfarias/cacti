@@ -24,7 +24,7 @@
 
 global $colors, $menu, $refresh;
 
-include_once(CACTI_BASE_PATH . "/lib/time.php");
+include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 $oper_mode = plugin_hook_function('top_header', OPER_MODE_NATIVE);
 if ($oper_mode == OPER_MODE_RESKIN) {

@@ -41,15 +41,15 @@ $fields_data_query_edit = array(
 		"textarea_cols" => "60",
 		"class" => "textAreaNotes"
 		),
-	"image" => array(
-		"method" => "drop_image",
-		"path" => "/images/",
-		"friendly_name" => "Image",
-		"description" => "A useful icon to use to associate with this Device Template.",
-		"default" => "dataquery.png",
-		"width" => "220",
-		"value" => "|arg1:image|"
-		),
+#	"image" => array(
+#		"method" => "drop_image",
+#		"path" => "/images/",
+#		"friendly_name" => "Image",
+#		"description" => "A useful icon to use to associate with this Device Template.",
+#		"default" => "dataquery.png",
+#		"width" => "220",
+#		"value" => "|arg1:image|"
+#		),
 	"xml_path" => array(
 		"method" => "textbox",
 		"friendly_name" => "XML Path",

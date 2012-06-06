@@ -220,32 +220,6 @@ $fields_host_template_edit = array(
 		)
 	);
 
-/* file: tree.php, action: edit */
-$fields_tree_edit = array(
-	"name" => array(
-		"method" => "textbox",
-		"friendly_name" => "Name",
-		"description" => "A useful name for this graph tree.",
-		"value" => "|arg1:name|",
-		"max_length" => "255",
-		),
-	"sort_type" => array(
-		"method" => "drop_array",
-		"friendly_name" => "Sorting Type",
-		"description" => "Choose how items in this tree will be sorted.",
-		"value" => "|arg1:sort_type|",
-		"array" => $tree_sort_types,
-		),
-	"id" => array(
-		"method" => "hidden_zero",
-		"value" => "|arg1:id|"
-		),
-	"save_component_tree" => array(
-		"method" => "hidden",
-		"value" => "1"
-		)
-	);
-
 /* file: user_admin.php, action: user_edit (host) */
 $fields_user_user_edit_host = array(
 	"username" => array(
@@ -455,6 +429,8 @@ if (CACTI_FORM_COMPAT === TRUE) {
 	require(CACTI_INCLUDE_PATH . '/device/device_forms.php');
 	require(CACTI_INCLUDE_PATH . '/graph/graph_forms.php');
 	require(CACTI_INCLUDE_PATH . '/graph_template/graph_template_forms.php');
+	require(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_forms.php');
+	require(CACTI_INCLUDE_PATH . '/poller/poller_forms.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_cdef_forms.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_color_forms.php');
 	require(CACTI_INCLUDE_PATH . '/presets/preset_rra_forms.php');

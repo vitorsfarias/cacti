@@ -40,17 +40,10 @@ define('ACTION_NONE', '-1');
 define('CACTI_ESCAPE_CHARACTER', '"');
 #define("CACTI_ESCAPE_CHARACTER", "\"");
 
-define("HOST_GROUPING_GRAPH_TEMPLATE", 1);
-define("HOST_GROUPING_DATA_QUERY_INDEX", 2);
-
 define("TREE_ORDERING_NONE", 1);
 define("TREE_ORDERING_ALPHABETIC", 2);
 define("TREE_ORDERING_NUMERIC", 3);
 define("TREE_ORDERING_NATURAL", 4);
-
-define("TREE_ITEM_TYPE_HEADER", 1);
-define("TREE_ITEM_TYPE_GRAPH", 2);
-define("TREE_ITEM_TYPE_HOST", 3);
 
 define("RRDTOOL_OUTPUT_NULL", 0);
 define("RRDTOOL_OUTPUT_STDOUT", 1);
@@ -63,22 +56,6 @@ define("DATA_INPUT_TYPE_SNMP_QUERY", 3);
 define("DATA_INPUT_TYPE_SCRIPT_QUERY", 4);
 define("DATA_INPUT_TYPE_PHP_SCRIPT_SERVER", 5);
 define("DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER", 6);
-
-/* used both for polling and reindexing */
-define("POLLER_ACTION_SNMP", 0);
-define("POLLER_ACTION_SCRIPT", 1);
-define("POLLER_ACTION_SCRIPT_PHP", 2);
-/* used for reindexing only:
- * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
- * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found
- * so this is more of a REINDEX_ACTION_... thingy
- */
-define("POLLER_ACTION_SNMP_COUNT", 10);
-define("POLLER_ACTION_SCRIPT_COUNT", 11);
-define("POLLER_ACTION_SCRIPT_PHP_COUNT", 12);
-
-define("POLLER_COMMAND_REINDEX", 1);
-define("POLLER_COMMAND_RRDPURGE", 2);
 
 define("POLLER_VERBOSITY_NONE", 1);
 define("POLLER_VERBOSITY_LOW", 2);
@@ -116,6 +93,8 @@ if (CACTI_CONST_COMPAT === TRUE) {
 	require_once(CACTI_INCLUDE_PATH . '/auth/auth_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/data_query/data_query_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/graph/graph_constants.php');
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	require_once(CACTI_INCLUDE_PATH . '/poller/poller_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/presets/preset_rra_constants.php');
 	require_once(CACTI_INCLUDE_PATH . '/data_source/data_source_constants.php');
 }
