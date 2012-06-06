@@ -23,20 +23,20 @@
 */
 
 include("./include/auth.php");
-require_once(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-include_once(CACTI_BASE_PATH . "/lib/device.php");
-include_once(CACTI_BASE_PATH . "/lib/graph.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/tree.php");
-include_once(CACTI_BASE_PATH . "/lib/snmp.php");
-include_once(CACTI_BASE_PATH . "/lib/ping.php");
-include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-include_once(CACTI_BASE_PATH . "/lib/sort.php");
-include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
-include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+require_once(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
+include_once(CACTI_LIBRARY_PATH . "/device.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/tree.php");
+include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+include_once(CACTI_LIBRARY_PATH . "/ping.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/sort.php");
+include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
+include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -89,9 +89,9 @@ switch (get_request_var_request('action')) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		device_edit(true);
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'graphs':
@@ -111,9 +111,9 @@ switch (get_request_var_request('action')) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		device();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }

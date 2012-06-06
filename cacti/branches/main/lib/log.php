@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_BASE_PATH . "/include/log/constants.php");
-require_once(CACTI_BASE_PATH . "/include/log/arrays.php");
+require_once(CACTI_INCLUDE_PATH . "/log/constants.php");
+require_once(CACTI_INCLUDE_PATH . "/log/arrays.php");
 
 /*
  * Log viewing actions

@@ -381,7 +381,7 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
    @param $status - the status type of the device as defined in global_constants.php
    @returns - a string containing html that represents the device's current status */
 function get_colored_device_status($disabled, $status) {
-	require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/device/device_constants.php");
 
 	if ($disabled) {
 		return "<span class=\"disabled\">" . __("Disabled") . "</span>";
@@ -422,7 +422,7 @@ function get_colored_poller_status($disabled, $last_update) {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
 
 	if (isset($_SESSION["sess_current_timespan_begin_now"])) {
 		return $_SESSION["sess_current_timespan_begin_now"];

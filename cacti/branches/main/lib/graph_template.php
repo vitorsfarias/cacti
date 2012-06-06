@@ -23,13 +23,13 @@
 */
 
 function &graph_template_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph_template/graph_template_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph_template/graph_template_forms.php");
 
 	return $fields_graph_template_template_edit;
 }
 
 function &graph_template_input_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph_template/graph_template_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph_template/graph_template_forms.php");
 
 	return $fields_graph_template_input_edit;
 }

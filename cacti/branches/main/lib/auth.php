@@ -212,7 +212,7 @@ function user_authorized($realm_id, $user_id = 0) {
    @param $policy_graph_templates - (int) the current graph template policy
    @returns - an SQL "where" statement */
 function get_graph_permissions_sql($policy_graphs, $policy_devices, $policy_graph_templates) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$sql = "";
 	$sql_or = "";
@@ -268,7 +268,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_devices, $policy_grap
    @param $local_graph_id - (int) the ID of the graph to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph or not */
 function is_graph_allowed($local_graph_id) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$current_user = db_fetch_row("select policy_graphs,policy_devices,policy_graph_templates from user_auth where id=" . $_SESSION["sess_user_id"]);
 
@@ -297,7 +297,7 @@ function is_graph_allowed($local_graph_id) {
    @param $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function is_tree_allowed($tree_id) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$current_user = db_fetch_row("select policy_trees from user_auth where id=" . $_SESSION["sess_user_id"]);
 
@@ -324,7 +324,7 @@ function is_tree_allowed($tree_id) {
 }
 
 function &user_auth_form_list() {
-	require(CACTI_BASE_PATH . "/include/auth/auth_forms.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_forms.php");
 
 	return $fields_user_user_edit_device;
 }

@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/export.php");
+include_once(CACTI_LIBRARY_PATH . "/export.php");
 
 /* define global constants to rule available options */
 define("EXPORT_OUTPUT_BROWSER", 1);
@@ -42,11 +42,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		/* display the export functions available */
 		export();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -65,9 +65,9 @@ function form_save() {
 		$xml_data = get_item_xml($_POST["export_type"], $_POST["export_item_id"], (((isset($_POST["include_deps"]) ? $_POST["include_deps"] : "") == "") ? false : true));
 
 		if (get_request_var_post("output_format") == EXPORT_OUTPUT_BROWSER) {
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			print "<table class='wp100 left'><tr><td><pre>" . htmlspecialchars($xml_data) . "</pre></td></tr></table>";
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		}elseif (get_request_var_post("output_format") == EXPORT_OUTPUT_RAW_XML) {
 			header("Content-type: application/xml");
 			if ($export_errors) echo __("WARNING: Export Errors Encountered. Refresh Browser Window for Details!") . "\n";

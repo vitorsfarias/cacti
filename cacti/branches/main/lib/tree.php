@@ -210,9 +210,9 @@ function reset_session_variables($pre_tree) {
      DATA_QUERY_INDEX_SORT_TYPE_ALPHABETIC (2) - alphabetic sorting
      DATA_QUERY_INDEX_SORT_TYPE_NUMERIC (3) - numeric sorting */
 function sort_tree($sort_type, $item_id, $sort_style) {
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-	require_once(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/sort.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/sort.php");
 
 	if (empty($item_id)) { return 0; }
 	if ($sort_style == DATA_QUERY_INDEX_SORT_TYPE_NONE) { return 0; }
@@ -450,13 +450,13 @@ function tree_add_tree_names_to_actions_array() {
  */
 function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
 	$device_id, $device_grouping_type, $sort_children_type, $propagate_changes) {
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	input_validate_input_number($tree_id);
 	input_validate_input_number($parent_tree_item_id);
 
-	require_once(CACTI_BASE_PATH . "/include/data_query/data_query_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/tree.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_query/data_query_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 
 	$parent_order_key = db_fetch_cell("select order_key from graph_tree_items where id=$parent_tree_item_id");
 

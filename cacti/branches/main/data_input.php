@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once("./lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -50,25 +50,25 @@ switch (get_request_var_request("action")) {
 		header("Location: data_input.php?action=edit&id=" . $_GET["data_input_id"]);
 		break;
 	case 'field_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		field_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -270,9 +270,9 @@ function field_remove() {
 	/* ==================================================== */
 
 	if ((read_config_option("deletion_verification") == CHECKED) && (!isset($_GET["confirm"]))) {
-		include(CACTI_BASE_PATH . "/include/top_header.php");
+		include(CACTI_INCLUDE_PATH . "/top_header.php");
 		form_confirm(__("Are You Sure?"), __("Are you sure you want to delete the field") ." <strong>'" . db_fetch_cell("select name from data_input_fields where id=" . $_GET["id"]) . "'</strong>?", "data_input.php?action=edit&id=" . $_GET["data_input_id"], "data_input.php?action=field_remove&id=" . $_GET["id"] . "&data_input_id=" . $_GET["data_input_id"]);
-		include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		exit;
 	}
 
@@ -297,7 +297,7 @@ function field_remove() {
 
 function field_edit() {
 	global $registered_cacti_names;
-	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -394,7 +394,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -591,7 +591,7 @@ function get_data_input_records(&$total_rows, &$rowspp) {
 
 function data($refresh = true) {
 	global $di_actions, $item_rows;
-	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
 
 	$table = New html_table;
 
@@ -644,6 +644,6 @@ function data($refresh = true) {
 }
 
 function display_data_input_type($type_id) {
-	include(CACTI_BASE_PATH . "/include/data_input/data_input_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
 	return $input_types[$type_id];
 }

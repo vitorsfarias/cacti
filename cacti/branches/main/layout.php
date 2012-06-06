@@ -25,7 +25,7 @@
 $guest_account = true;
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/include/data_source/data_source_forms.php");
+include_once(CACTI_INCLUDE_PATH . "/data_source/data_source_forms.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = "";

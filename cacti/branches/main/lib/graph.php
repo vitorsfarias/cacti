@@ -26,7 +26,7 @@
  * return graph field list for form engine
  */
 function graph_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph;
 }
@@ -35,7 +35,7 @@ function graph_form_list() {
  * return graph labels field list for form engine
  */
 function graph_labels_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_labels;
 }
@@ -44,7 +44,7 @@ function graph_labels_form_list() {
  * return graph xaxis list for form engine
  */
 function graph_right_axis_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_right_axis;
 }
@@ -53,7 +53,7 @@ function graph_right_axis_form_list() {
  * return graph size list for form engine
  */
 function graph_size_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_size;
 }
@@ -62,13 +62,13 @@ function graph_size_form_list() {
  * return graph limits list for form engine
  */
 function graph_limits_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_limits;
 }
 
 function graph_grid_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_grid;
 }
@@ -77,7 +77,7 @@ function graph_grid_form_list() {
  * return graph colors list for form engine
  */
 function graph_color_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_color;
 }
@@ -86,7 +86,7 @@ function graph_color_form_list() {
  * return graph legend list for form engine
  */
 function graph_legend_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_legend;
 }
@@ -95,7 +95,7 @@ function graph_legend_form_list() {
  * return graph misc list for form engine
  */
 function graph_misc_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_misc;
 }
@@ -104,7 +104,7 @@ function graph_misc_form_list() {
  * return graph cacti specifics list for form engine
  */
 function graph_cacti_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_cacti;
 }
@@ -113,7 +113,7 @@ function graph_cacti_form_list() {
  * return graph item fields list for form engine
  */
 function graph_item_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_item;
 }
@@ -122,7 +122,7 @@ function graph_item_form_list() {
  * return graph fields list for graph management
  */
 function graph_header_form_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_forms.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_forms.php");
 
 	return $struct_graph_header;
 }
@@ -131,7 +131,7 @@ function graph_header_form_list() {
  * return graph actions list for form engine
  */
 function graph_actions_list() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 	global $graph_actions;
 
 	return $graph_actions;
@@ -253,7 +253,7 @@ function get_graph_tree_items() {
 }
 
 function get_graph_tree_graphs() {
-	include_once(CACTI_BASE_PATH . "/lib/timespan_settings.php");
+	include_once(CACTI_LIBRARY_PATH . "/timespan_settings.php");
 
 	/* Make sure nothing is cached */
 	header("Cache-Control: must-revalidate");
@@ -538,7 +538,7 @@ function graph_form_save() {
    ------------------------ */
 
 function graph_form_actions() {
-	require(CACTI_BASE_PATH . "/include/graph_tree/graph_tree_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -954,8 +954,8 @@ function graph_item_dnd() {
 }
 
 function graph_diff() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_arrays.php");
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -1793,7 +1793,7 @@ function get_graph_records(&$total_rows, &$rowspp) {
 
 function cacti_graph($refresh = true) {
 	global $item_rows;
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$table = New html_table;
 
@@ -2049,7 +2049,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 	fields are actually drawn */
 	ob_start();
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 	print "<form action='" . html_get_location("graphs_new.php") . "' method='post'>\n";
 
@@ -2169,7 +2169,7 @@ function device_new_graphs($device_id, $device_template_id, $selected_graphs_arr
 
 	form_save_button_alt("device_id!$device_id");
 
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+	include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 }
 
 /* -------------------
@@ -2748,7 +2748,7 @@ function graphs_new() {
  * @return unknown_type
  */
 function graph_remove($local_graph_id, $delete_ds) {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 		
 	if (empty($local_graph_id)) {
 		return;

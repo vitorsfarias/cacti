@@ -37,7 +37,7 @@ if (isset($_REQUEST["date2"])) {
 	$_REQUEST["date2"] = sanitize_search_string(get_request_var("date2"));
 }
 
-include_once(CACTI_BASE_PATH . "/lib/time.php");
+include_once(CACTI_LIBRARY_PATH . "/time.php");
 
 /* initialize the timespan array */
 $timespan = array();
@@ -77,7 +77,7 @@ function initialize_timespan(&$timespan) {
 /** initialize_timespan 	preformat for timespan selector
  */
 function process_html_variables() {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
 
 	if (isset($_REQUEST["predefined_timespan"])) {
 		if (!is_numeric(get_request_var_request("predefined_timespan"))) {
@@ -260,7 +260,7 @@ function finalize_timespan(&$timespan) {
  */
 
 function set_timeshift() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION["sess_current_timeshift"])) ||

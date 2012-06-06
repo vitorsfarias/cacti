@@ -266,10 +266,10 @@ function ajax_get_graph_templates()  {
 }
 
 function ajax_get_graph_tree_content() {
-	include_once(CACTI_BASE_PATH . "/include/global.php");
-	include_once(CACTI_BASE_PATH . "/lib/functions.php");
-	include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-	include_once(CACTI_BASE_PATH . "/lib/timespan_settings.php");
+	include_once(CACTI_INCLUDE_PATH . "/global.php");
+	include_once(CACTI_LIBRARY_PATH . "/functions.php");
+	include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+	include_once(CACTI_LIBRARY_PATH . "/timespan_settings.php");
 
 	/* Make sure nothing is cached */
 	header("Cache-Control: must-revalidate");

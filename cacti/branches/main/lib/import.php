@@ -25,7 +25,7 @@
 function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = array()) {
 	global $hash_type_codes, $hash_version_codes;
 
-	include_once(CACTI_BASE_PATH . "/lib/xml.php");
+	include_once(CACTI_LIBRARY_PATH . "/xml.php");
 
 	$info_array = array();
 
@@ -112,8 +112,8 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = 
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
 	global $hash_version_codes;
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");
@@ -284,7 +284,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 }
 
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings, $rra_array) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* import into: data_template */
 	$_data_template_id = db_fetch_cell("select id from data_template where hash='$hash'");
@@ -423,7 +423,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_r
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* import into: snmp_query */
 	$_data_query_id = db_fetch_cell("select id from snmp_query where hash='$hash'");
@@ -554,7 +554,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/gprint.php");
+	require_once(CACTI_LIBRARY_PATH . "/gprint.php");
 
 	/* import into: graph_templates_gprint */
 	$_gprint_preset_id = db_fetch_cell("select id from graph_templates_gprint where hash='$hash'");
@@ -583,7 +583,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/rra.php");
+	require_once(CACTI_LIBRARY_PATH . "/rra.php");
 
 	/* import into: rra */
 	$_rra_id = db_fetch_cell("select id from rra where hash='$hash'");
@@ -621,7 +621,7 @@ function xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_device_template($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/device_template/device_template_info.php");
+	require_once(CACTI_LIBRARY_PATH . "/device_template/device_template_info.php");
 
 	/* import into: graph_templates_gprint */
 	$_device_template_id = db_fetch_cell("select id from device_template where hash='$hash'");
@@ -684,7 +684,7 @@ function xml_to_device_template($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/cdef.php");
 
 	/* import into: cdef */
 	$_cdef_id = db_fetch_cell("select id from cdef where hash='$hash'");
@@ -757,7 +757,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 	/* import into: vdef */
 	$_vdef_id = db_fetch_cell("select id from vdef where hash='$hash'");
@@ -816,7 +816,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_xaxis($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+	require_once(CACTI_LIBRARY_PATH . "/xaxis.php");
 
 	/* import into: xaxis */
 	$_xaxis_id = db_fetch_cell("select id from graph_templates_xaxis where hash='$hash'");
@@ -875,7 +875,7 @@ function xml_to_xaxis($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
-	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit = data_input_field_form_list() + data_input_field1_form_list();
@@ -1101,9 +1101,9 @@ function xml_character_decode($text) {
 }
 
 function update_pre_089_graph_items($items) {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
-	require_once(CACTI_BASE_PATH . "/include/presets/preset_rra_constants.php");
-	require_once(CACTI_BASE_PATH . "/lib/template.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/presets/preset_rra_constants.php");
+	require_once(CACTI_LIBRARY_PATH . "/template.php");
 
 	if (sizeof($items)) {
 		foreach ($items as $key => $graph_item) {

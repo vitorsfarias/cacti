@@ -61,11 +61,11 @@ $no_http_headers = true;
 
 /* start initialization section */
 include(dirname(__FILE__) . "/include/global.php");
-include_once(CACTI_BASE_PATH . "/include/poller/poller_arrays.php");
-include_once(CACTI_BASE_PATH . "/lib/poller.php");
-include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-include_once(CACTI_BASE_PATH . "/lib/graph_export.php");
-include_once(CACTI_BASE_PATH . "/lib/rrd.php");
+include_once(CACTI_INCLUDE_PATH . "/poller/poller_arrays.php");
+include_once(CACTI_LIBRARY_PATH . "/poller.php");
+include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+include_once(CACTI_LIBRARY_PATH . "/graph_export.php");
+include_once(CACTI_LIBRARY_PATH . "/rrd.php");
 
 /* initialize some variables */
 $force     = FALSE;

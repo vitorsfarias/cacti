@@ -230,19 +230,19 @@ function reapply_suggested_data_source_title($local_data_id) {
 }
 
 function data_source_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_forms.php");
 
 	return $struct_data_source;
 }
 
 function data_source_item_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_forms.php");
 
 	return $struct_data_source_item;
 }
 
 function fields_data_source_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_forms.php");
 
 	return $fields_data_source;
 }
@@ -463,7 +463,7 @@ function data_source_form_save() {
    ------------------------ */
 
 function data_source_form_actions() {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -864,7 +864,7 @@ function data_source_rrd_add() {
 }
 
 function data_source_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -917,7 +917,7 @@ function data_source_edit() {
 		}
 	}
 
-	include_once(CACTI_BASE_PATH . "/include/top_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 	if (!empty($_GET["id"])) {
 		?>
@@ -1088,7 +1088,7 @@ function data_source_edit() {
 	form_save_button_alt();
 
 	include_once(CACTI_BASE_PATH . "/access/js/data_source_item.js");
-	include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+	include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 }
 
 function get_poller_interval($seconds) {
@@ -1378,7 +1378,7 @@ function get_data_source_records(&$total_rows, &$rowspp) {
 function data_source($refresh = true) {
 	global $item_rows;
 
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
 
 	$table = New html_table;
 

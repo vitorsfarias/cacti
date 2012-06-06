@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -39,11 +39,11 @@ switch (get_request_var_request("action")) {
 		header("Location: graphs.php?action=edit&id=" . $_GET["local_graph_id"]);
 		break;
 	case 'item_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		item_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 	case 'item_movedown':
 		item_movedown();
@@ -62,7 +62,7 @@ switch (get_request_var_request("action")) {
    -------------------------- */
 
 function form_save() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	if (isset($_POST["save_component_item"])) {
 
@@ -206,7 +206,7 @@ function form_save() {
    ----------------------- */
 
 function item_movedown() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -231,7 +231,7 @@ function item_movedown() {
 }
 
 function item_moveup() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -264,7 +264,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("id"));

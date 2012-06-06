@@ -23,7 +23,7 @@
 */
 
 function &preset_rra_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_rra_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_forms.php");
 
 	return $fields_rra_edit;
 }

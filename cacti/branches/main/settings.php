@@ -61,7 +61,7 @@ case 'save':
 	header("Location: settings.php?tab=" . $_POST["tab"]);
 	break;
 case 'emailtest':
-	include(CACTI_BASE_PATH . "/lib/mail.php");
+	include(CACTI_LIBRARY_PATH . "/mail.php");
 	test_mail();
 	break;
 case 'ajax_view':
@@ -144,7 +144,7 @@ case 'ajax_view':
 
 	break;
 default:
-	include(CACTI_BASE_PATH . "/include/top_header.php");
+	include(CACTI_INCLUDE_PATH . "/top_header.php");
 
 	/* draw the categories tabs on the top of the page */
 	print "<table width='100%' cellspacing='0' cellpadding='0' align='center'><tr>";
@@ -168,6 +168,6 @@ default:
 		});
 	</script>\n";
 
-	include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+	include(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 	break;
 }

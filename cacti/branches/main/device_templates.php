@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -71,9 +71,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		device_template_edit(true);
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
@@ -81,9 +81,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		device_template();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -149,7 +149,7 @@ function device_template_form_save() {
  * Optionally, ask for confirmation to update related devices.
  */
 function device_template_form_save_gt() {
-	require_once(CACTI_BASE_PATH . "/lib/functions.php");
+	require_once(CACTI_LIBRARY_PATH . "/functions.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_post("id"));
@@ -204,7 +204,7 @@ function device_template_form_save_gt() {
 			}
 
 			/* now draw the html page */
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			html_start_box(__("Confirm"), "60", "3", "center", "");
 
 			print "<form action='device_templates.php' method='post' id='device_template_add_gt'>";
@@ -223,7 +223,7 @@ function device_template_form_save_gt() {
 
 			form_continue2(serialize($device_array), "save_gt");
 			html_end_box();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 			exit;
 		}
 	} else {
@@ -253,7 +253,7 @@ function device_template_form_save_gt() {
 
 function device_template_form_save_dq() {
 	/* required for "run_data_query" */
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* We are on the data queries tab.
 	 *
@@ -341,7 +341,7 @@ function device_template_form_save_dq() {
 			}
 
 			/* now draw the html page */
-			include_once(CACTI_BASE_PATH . "/include/top_header.php");
+			include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 			html_start_box(__("Confirm"), "60", "3", "center", "");
 
 			print "<form action='device_templates.php' method='post' id='device_template_add_dq'>";
@@ -361,7 +361,7 @@ function device_template_form_save_dq() {
 
 			form_continue2(serialize($device_array), "save_dq");
 			html_end_box();
-			include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+			include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 			exit;
 		}
 	} else {
@@ -589,18 +589,18 @@ function device_template_edit($tabs = false) {
 
 		switch (get_request_var_request("tab")) {
 			case "devices":
-				require_once(CACTI_BASE_PATH . "/include/device/device_arrays.php");
-				include_once(CACTI_BASE_PATH . "/lib/device.php");
-				include_once(CACTI_BASE_PATH . "/lib/graph.php");
-				include_once(CACTI_BASE_PATH . "/lib/utility.php");
-				include_once(CACTI_BASE_PATH . "/lib/tree.php");
-				include_once(CACTI_BASE_PATH . "/lib/snmp.php");
-				include_once(CACTI_BASE_PATH . "/lib/ping.php");
-				include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-				include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-				include_once(CACTI_BASE_PATH . "/lib/sort.php");
-				include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-				include_once(CACTI_BASE_PATH . "/lib/template.php");
+				require_once(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
+				include_once(CACTI_LIBRARY_PATH . "/device.php");
+				include_once(CACTI_LIBRARY_PATH . "/graph.php");
+				include_once(CACTI_LIBRARY_PATH . "/utility.php");
+				include_once(CACTI_LIBRARY_PATH . "/tree.php");
+				include_once(CACTI_LIBRARY_PATH . "/snmp.php");
+				include_once(CACTI_LIBRARY_PATH . "/ping.php");
+				include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+				include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+				include_once(CACTI_LIBRARY_PATH . "/sort.php");
+				include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+				include_once(CACTI_LIBRARY_PATH . "/template.php");
 
 				device();
 
@@ -627,8 +627,8 @@ function device_template_edit($tabs = false) {
 
 
 function device_template_display_general($device_template, $header_label) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
-	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
+	require_once(CACTI_LIBRARY_PATH . "/device_template.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_edit'>\n";
 	html_start_box(__("Device Templates") . " $header_label", "100", "0", "center", "", true);
@@ -981,7 +981,7 @@ function device_template_display_gt($device_template, $header_label) {
 
 
 function device_template_display_dq($device_template, $header_label) {
-	require(CACTI_BASE_PATH . "/include/data_query/data_query_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_arrays.php");
 
 	print "<form method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "' name='device_template_dq_edit'>\n";
 	html_start_box(__("Associated Data Queries") . " $header_label", "100", "3", "center", "", true);

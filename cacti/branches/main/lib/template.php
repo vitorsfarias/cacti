@@ -207,7 +207,7 @@ function push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_i
 	children
    @param int $data_template_rrd_id - the id of the data template item to push out values for */
 function push_out_data_source_item($data_template_rrd_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* get information about this data template */
 	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
@@ -229,7 +229,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 /** push_out_data_source - pushes out templated data template fields to all matching children
    @param int $data_template_data_id - the id of the data template to push out values for */
 function push_out_data_source($data_template_data_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* get information about this data template */
 	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
@@ -258,7 +258,7 @@ function push_out_data_source($data_template_data_id) {
    @param int $local_data_id 	- the id of the data source to change the data template for
    @param int $data_template_id - id the of the data template to change to. specify '0' for no data template */
 function change_data_template($local_data_id, $data_template_id) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* always update tables to new data template (or no data template) */
 	db_execute("UPDATE data_local SET data_template_id=$data_template_id WHERE id=$local_data_id");
@@ -365,7 +365,7 @@ function change_data_template($local_data_id, $data_template_id) {
 /** push_out_graph - pushes out templated graph template fields to all matching children
    @param int $graph_template_graph_id - the id of the graph template to push out values for */
 function push_out_graph($graph_template_graph_id) {
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* get information about this graph template */
 	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where id=$graph_template_graph_id");
@@ -445,7 +445,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	pushed out
    @param int $graph_template_item_id - the id of the graph template item to push out values for */
 function push_out_graph_item($graph_template_item_id) {
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* get information about this graph template */
 	$graph_template_item = db_fetch_row("select * from graph_templates_item where id=$graph_template_item_id");
@@ -497,7 +497,7 @@ function push_out_graph_item($graph_template_item_id) {
 	the current graph, remove or add the items from the current graph to make them equal.
 	(false) leave the graph item count alone */
 function change_graph_template($local_graph_id, $graph_template_id, $intrusive) {
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* always update tables to new graph template (or no graph template) */
 	db_execute("update graph_local set graph_template_id=$graph_template_id where id=$local_graph_id");
@@ -675,7 +675,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	  $values["sg"][data_query_id][data_template_id]["data_template"][field_name] = $value  // data template (w/ data query)
 	  $values["sg"][data_query_id][data_template_id]["data_template_item"][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
 function create_complete_graph_from_template($graph_template_id, $device_id, $snmp_query_array, &$suggested_values_array) {
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* create the graph */
 	$save["id"] = 0;

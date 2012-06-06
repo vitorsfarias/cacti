@@ -23,7 +23,7 @@
  */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -40,11 +40,11 @@ switch (get_request_var_request("action")) {
 		header("Location: data_templates.php?action=edit&id=" . get_request_var("data_template_id"));
 		break;
 	case 'item_edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		data_template_item_edit();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -55,7 +55,7 @@ switch (get_request_var_request("action")) {
  * data_template_item_save	- save data to table data_template_rrd
  */
 function data_template_item_save() {
-	require_once(CACTI_BASE_PATH . "/include/data_source/data_source_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_source/data_source_constants.php");
 
 	if (isset($_POST["save_component_item"])) {
 		/* ================= input validation ================= */
@@ -133,7 +133,7 @@ function data_template_item_remove() {
  * data_template_item_edit	- edit a data template item (aka data source in rrdtool lingo)
  */
 function data_template_item_edit() {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

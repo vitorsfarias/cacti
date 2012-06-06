@@ -23,10 +23,10 @@
 */
 
 include ("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/tree.php");
-include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-include_once(CACTI_BASE_PATH . "/lib/utility.php");
-include_once(CACTI_BASE_PATH . "/lib/template.php");
+include_once(CACTI_LIBRARY_PATH . "/tree.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/template.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -66,9 +66,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	case 'edit':
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		data_source_template_edit(true);
-		include_once (CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once (CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 	case 'ajax_view':
@@ -76,9 +76,9 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 		data_source_template();
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 
 		break;
 }
@@ -90,7 +90,7 @@ switch (get_request_var_request("action")) {
  * data_source_template_save	- save to data_template and data_template_data
  */
 function data_source_template_save() {
-	require(CACTI_BASE_PATH . "/include/data_source/data_source_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/data_source/data_source_arrays.php");
 
 	if (isset($_POST["save_component_template"])) {
 		/* ================= input validation ================= */
@@ -480,14 +480,14 @@ function data_source_template_edit($tabs = false) {
 	
 		switch (get_request_var_request("tab")) {
 			case "datasources":
-				include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-				include_once(CACTI_BASE_PATH . "/lib/utility.php");
-				include_once(CACTI_BASE_PATH . "/lib/graph.php");
-				include_once(CACTI_BASE_PATH . "/lib/data_source.php");
-				include_once(CACTI_BASE_PATH . "/lib/template.php");
-				include_once(CACTI_BASE_PATH . "/lib/html_form_template.php");
-				include_once(CACTI_BASE_PATH . "/lib/rrd.php");
-				include_once(CACTI_BASE_PATH . "/lib/data_query.php");
+				include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+				include_once(CACTI_LIBRARY_PATH . "/utility.php");
+				include_once(CACTI_LIBRARY_PATH . "/graph.php");
+				include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+				include_once(CACTI_LIBRARY_PATH . "/template.php");
+				include_once(CACTI_LIBRARY_PATH . "/html_form_template.php");
+				include_once(CACTI_LIBRARY_PATH . "/rrd.php");
+				include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 	
 				data_source();
 	
@@ -509,8 +509,8 @@ function data_source_template_edit($tabs = false) {
 }
 
 function data_source_template_display_general($data_template, $header_label) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
-	require_once(CACTI_BASE_PATH . "/lib/data_template.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_template.php");
 
 	# fetch all settings for this graph template
 	if (isset($data_template["id"])) {
@@ -588,7 +588,7 @@ function data_source_template_display_general($data_template, $header_label) {
  * data_source_template_item	- list all data template items
  */
 function data_template_display_items() {
-	require(CACTI_BASE_PATH . "/include/graph/graph_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));

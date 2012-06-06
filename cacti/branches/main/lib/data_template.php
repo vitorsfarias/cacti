@@ -23,7 +23,7 @@
 */
 
 function &data_template_form_list() {
-	require(CACTI_BASE_PATH . "/include/data_template/data_template_forms.php");
+	require(CACTI_INCLUDE_PATH . "/data_template/data_template_forms.php");
 
 	return $fields_data_template_template_edit;
 }

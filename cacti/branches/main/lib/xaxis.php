@@ -23,13 +23,13 @@
 */
 
 function &preset_xaxis_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_forms.php");
 
 	return $fields_xaxis_edit;
 }
 
 function &preset_xaxis_item_form_list() {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_forms.php");
 
 	return $fields_xaxis_item_edit;
 }

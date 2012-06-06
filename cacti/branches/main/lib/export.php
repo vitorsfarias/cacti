@@ -29,8 +29,8 @@
 function graph_template_to_xml($graph_template_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
-	require_once(CACTI_BASE_PATH . "/lib/graph_template.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	$hash["graph_template"] = get_hash_version("graph_template") . get_hash_graph_template($graph_template_id);
 	$xml_text = "";
@@ -155,7 +155,7 @@ function graph_template_to_xml($graph_template_id) {
 function data_template_to_xml($data_template_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	$hash["data_template"] = get_hash_version("data_template") . get_hash_data_template($data_template_id);
 	$xml_text = "";
@@ -281,7 +281,7 @@ function data_template_to_xml($data_template_id) {
 function data_input_method_to_xml($data_input_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_input.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit = data_input_field_form_list() + data_input_field1_form_list();
@@ -350,7 +350,7 @@ function data_input_method_to_xml($data_input_id) {
 function cdef_to_xml($cdef_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/cdef.php");
 
 	$hash["cdef"] = get_hash_version("cdef") . get_hash_cdef($cdef_id);
 	$xml_text = "";
@@ -419,7 +419,7 @@ function cdef_to_xml($cdef_id) {
  * @return string		- XML text of encoded VDEF
  */
 function vdef_to_xml($vdef_id) {
-	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 	$hash["vdef"] = get_hash_version("vdef") . get_hash_vdef($vdef_id);
 	$xml_text = "";
@@ -479,7 +479,7 @@ function vdef_to_xml($vdef_id) {
  * @return string		- XML text of encoded XAXIS
  */
 function xaxis_to_xml($xaxis_id) {
-	require_once(CACTI_BASE_PATH . "/lib/xaxis.php");
+	require_once(CACTI_LIBRARY_PATH . "/xaxis.php");
 
 	$hash["xaxis"] = get_hash_version("xaxis") . get_hash_xaxis($xaxis_id);
 	$xml_text = "";
@@ -542,7 +542,7 @@ function xaxis_to_xml($xaxis_id) {
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/gprint.php");
+	require_once(CACTI_LIBRARY_PATH . "/gprint.php");
 
 	$hash = get_hash_version("gprint_preset") . get_hash_gprint($gprint_preset_id);
 	$xml_text = "";
@@ -580,7 +580,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 function round_robin_archive_to_xml($round_robin_archive_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/rra.php");
+	require_once(CACTI_LIBRARY_PATH . "/rra.php");
 
 	$hash = get_hash_version("round_robin_archive") . get_hash_round_robin_archive($round_robin_archive_id);
 	$xml_text = "";
@@ -638,7 +638,7 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
  */
 function device_template_to_xml($device_template_id) {
 	global $export_errors;
-	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
+	require_once(CACTI_LIBRARY_PATH . "/device_template.php");
 
 	$hash = get_hash_version("device_template") . get_hash_device_template($device_template_id);
 	$xml_text = "";
@@ -714,7 +714,7 @@ function device_template_to_xml($device_template_id) {
 function data_query_to_xml($data_query_id) {
 	global $export_errors;
 
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	$hash["data_query"] = get_hash_version("data_query") . get_hash_data_query($data_query_id);
 	$xml_text = "";
@@ -860,7 +860,7 @@ function data_query_to_xml($data_query_id) {
  * @return string			- $dep_array
  */
 function resolve_dependencies($type, $id, $dep_array) {
-	require_once(CACTI_BASE_PATH . "/include/presets/preset_cdef_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/presets/preset_cdef_constants.php");
 
 	/* make sure we define our variables */
 	if (!isset($dep_array[$type])) {

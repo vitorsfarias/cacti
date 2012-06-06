@@ -24,11 +24,11 @@
 
 $guest_account = true;
 include_once("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/html_tree.php");
-include_once(CACTI_BASE_PATH . "/lib/timespan_settings.php");
-include_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
-include_once(CACTI_BASE_PATH . "/lib/graph_view.php");
-include_once(CACTI_BASE_PATH . "/lib/graph.php");
+include_once(CACTI_LIBRARY_PATH . "/html_tree.php");
+include_once(CACTI_LIBRARY_PATH . "/timespan_settings.php");
+include_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
+include_once(CACTI_LIBRARY_PATH . "/graph_view.php");
+include_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 if (isset($_REQUEST["action"])) {
 switch(get_request_var_request("action")){
@@ -109,7 +109,7 @@ if (!isset($_REQUEST["action"])) {
 
 switch (get_request_var_request("action")) {
 case 'tree':
-	include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_graph_header.php");
 
 	if ((read_config_option("auth_method") != AUTH_METHOD_NONE) && (empty($current_user["show_tree"]))) {
 		print "<strong><font size='+1' color='FF0000'>" . __("YOU DO NOT HAVE RIGHTS FOR TREE VIEW") . "</font></strong>"; exit;
@@ -269,7 +269,7 @@ case 'tree':
 
 	break;
 case 'preview':
-	include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_graph_header.php");
 
 	?>
 	<script type='text/javascript'>
@@ -286,7 +286,7 @@ case 'preview':
 
 	break;
 case 'list':
-	include_once(CACTI_BASE_PATH . "/include/top_graph_header.php");
+	include_once(CACTI_INCLUDE_PATH . "/top_graph_header.php");
 
 	?>
 	<script type='text/javascript'>
@@ -305,4 +305,4 @@ case 'list':
 	break;
 }
 
-include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");

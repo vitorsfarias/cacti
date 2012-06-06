@@ -32,7 +32,7 @@
    @param int $first_weekdayid	- first weekday (numeric representation)
  */
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
 	# unless changed later, $span["end_now"] is always $curr_time
 	$span["begin_now"] 	= $curr_time; # initialization only!
 	$span["end_now"] 	= $curr_time;
@@ -207,7 +207,7 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
  * @param array $_POST		- set to CUSTOM
  */
 function shift_time(&$span, $direction, $shift_size) {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
 	# move left/right according to $direction
 	# amount to be moved is derived from $shift_size
 	# base dates are taken from array $span
@@ -238,7 +238,7 @@ function shift_time(&$span, $direction, $shift_size) {
  * @param string returns	date time format
  */
 function date_time_format() {
-	require_once(CACTI_BASE_PATH . "/include/graph/graph_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/graph/graph_constants.php");
 
 	$graph_date = "";
 

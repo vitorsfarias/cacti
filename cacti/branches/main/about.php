@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include(CACTI_BASE_PATH . "/include/top_header.php");
+include(CACTI_INCLUDE_PATH . "/top_header.php");
 
 html_start_box(__("About Cacti"), "100", "3", "center", "");
 ?>
@@ -88,4 +88,4 @@ html_start_box(__("About Cacti"), "100", "3", "center", "");
 
 <?php
 html_end_box();
-include(CACTI_BASE_PATH . "/include/bottom_footer.php");
+include(CACTI_INCLUDE_PATH . "/bottom_footer.php");

@@ -263,7 +263,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 
 
 function substitute_graph_data($graph_items, $graph, $graph_data_array, $rrdtool_version) {
-	require_once(CACTI_BASE_PATH . "/lib/time.php");
+	require_once(CACTI_LIBRARY_PATH . "/time.php");
 	
 	$graph_date = date_time_format();
 

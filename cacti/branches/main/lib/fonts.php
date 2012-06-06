@@ -126,6 +126,8 @@ function create_pango_fontlist($debug=false) {
 				}
 			}
 		}			
+	} else {
+		cacti_log("Error accessing fc-list binary to find pango fonts");
 	}
 	return $success;
 }

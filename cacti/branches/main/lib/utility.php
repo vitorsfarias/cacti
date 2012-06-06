@@ -54,9 +54,9 @@ function update_poller_cache_from_query($device_id, $data_query_id) {
 }
 
 function update_poller_cache($local_data_id, $commit = false) {
-	require_once(CACTI_BASE_PATH . "/include/data_input/data_input_constants.php");
-	include_once(CACTI_BASE_PATH . "/lib/data_query.php");
-	include_once(CACTI_BASE_PATH . "/lib/poller.php");
+	require_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
+	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
+	include_once(CACTI_LIBRARY_PATH . "/poller.php");
 
 	$poller_items = array();
 
@@ -486,7 +486,7 @@ function push_out_device($device_id, $local_data_id = 0, $data_template_id = 0) 
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	require_once(CACTI_BASE_PATH . "/lib/graph.php");
+	require_once(CACTI_LIBRARY_PATH . "/graph.php");
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
@@ -592,7 +592,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	require_once(CACTI_BASE_PATH . "/lib/data_source.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
@@ -703,7 +703,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 }
 
 function duplicate_device_template($_device_template_id, $device_template_title) {
-	require_once(CACTI_BASE_PATH . "/lib/device_template.php");
+	require_once(CACTI_LIBRARY_PATH . "/device_template.php");
 
 	$device_template = db_fetch_row("select * from device_template where id=$_device_template_id");
 	$device_template_graphs = db_fetch_assoc("select * from device_template_graph where device_template_id=$_device_template_id");
@@ -742,7 +742,7 @@ function duplicate_device_template($_device_template_id, $device_template_title)
 }
 
 function duplicate_data_query($data_query_id, $data_query_name) {
-	require_once(CACTI_BASE_PATH . "/lib/data_query.php");
+	require_once(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	$_data_query = db_fetch_row("select * from snmp_query where id=$data_query_id");
 
@@ -807,7 +807,7 @@ function duplicate_data_query($data_query_id, $data_query_name) {
 }
 
 function duplicate_cdef($_cdef_id, $cdef_title) {
-	require_once(CACTI_BASE_PATH . "/lib/cdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/cdef.php");
 
 	$cdef = db_fetch_row("select * from cdef where id=$_cdef_id");
 	$cdef_items = db_fetch_assoc("select * from cdef_items where cdef_id=$_cdef_id");
@@ -847,7 +847,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 }
 
 function duplicate_vdef($_vdef_id, $vdef_title) {
-	require_once(CACTI_BASE_PATH . "/lib/vdef.php");
+	require_once(CACTI_LIBRARY_PATH . "/vdef.php");
 
 	$vdef = db_fetch_row("select * from vdef where id=$_vdef_id");
 	$vdef_items = db_fetch_assoc("select * from vdef_items where vdef_id=$_vdef_id");
@@ -887,7 +887,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 }
 
 function duplicate_xaxis($_xaxis_id, $xaxis_title) {
-	require(CACTI_BASE_PATH . "/include/presets/preset_xaxis_forms.php");
+	require(CACTI_INCLUDE_PATH . "/presets/preset_xaxis_forms.php");
 
 	$xaxis = db_fetch_row("select * from graph_templates_xaxis where id=$_xaxis_id");
 	$xaxis_items = db_fetch_assoc("select * from graph_templates_xaxis_items where xaxis_id=$_xaxis_id ORDER BY timespan");
@@ -899,6 +899,7 @@ function duplicate_xaxis($_xaxis_id, $xaxis_title) {
 	$save["name"] = str_replace(__("<xaxis_title>"), $xaxis["name"], $xaxis_title);
 
 	$xaxis_id = sql_save($save, "graph_templates_xaxis");
+	$fields_xaxis_item_edit = preset_xaxis_item_form_list();
 
 	/* create new entry(s): xaxis_items */
 	if (sizeof($xaxis_items) > 0) {
@@ -1206,7 +1207,7 @@ function utilities_format_timestamp($date) {
 }
 
 function utilities_format_authentication_result($type) {
-#	require_once(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+#	require_once(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 	global $auth_log_messages;
 	/* return the authentication type in a human readable format */
 	return $auth_log_messages["$type"];
@@ -1388,7 +1389,7 @@ function userlog_get_records(&$total_rows, &$rowspp) {
 
 function utilities_view_user_log($refresh=true) {
 	global $item_rows, $colors;
-	require(CACTI_BASE_PATH . "/include/auth/auth_arrays.php");
+	require(CACTI_INCLUDE_PATH . "/auth/auth_arrays.php");
 
 	define("MAX_DISPLAY_PAGES", 21);
 
@@ -1467,8 +1468,8 @@ function utilities_view_user_log($refresh=true) {
  * update the font cache via browser
  */
 function repopulate_font_cache() {
-require_once(CACTI_BASE_PATH . "/lib/functions.php");
-require_once(CACTI_BASE_PATH . "/lib/fonts.php");
+require_once(CACTI_LIBRARY_PATH . "/functions.php");
+require_once(CACTI_LIBRARY_PATH . "/fonts.php");
 
 
 if (read_config_option("rrdtool_version") == "rrd-1.0.x" ||

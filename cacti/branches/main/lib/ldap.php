@@ -66,7 +66,7 @@ Error codes:
 
 */
 function cacti_ldap_auth($username,$password = "",$ldap_dn = "",$ldap_device = "",$ldap_port = "",$ldap_port_ssl = "",$ldap_version = "",$ldap_encryption = "",$ldap_referrals = "",$ldap_group_require = "",$ldap_group_dn = "",$ldap_group_attrib = "",$ldap_group_member_type = "") {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$output = array();
 
@@ -287,7 +287,7 @@ Error codes:
 
 */
 function cacti_ldap_search_dn($username,$ldap_dn = "",$ldap_device = "",$ldap_port = "",$ldap_port_ssl = "",$ldap_version = "",$ldap_encryption = "",$ldap_referrals = "", $ldap_mode = "",$ldap_search_base = "", $ldap_search_filter = "",$ldap_specific_dn = "",$ldap_specific_password = "") {
-	require_once(CACTI_BASE_PATH . "/include/auth/auth_constants.php");
+	require_once(CACTI_INCLUDE_PATH . "/auth/auth_constants.php");
 
 	$output = array();
 

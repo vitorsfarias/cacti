@@ -23,7 +23,7 @@
 */
 
 include("./include/auth.php");
-include_once(CACTI_BASE_PATH . "/lib/import.php");
+include_once(CACTI_LIBRARY_PATH . "/import.php");
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -35,11 +35,11 @@ switch (get_request_var_request("action")) {
 
 		break;
 	default:
-		include_once(CACTI_BASE_PATH . "/include/top_header.php");
+		include_once(CACTI_INCLUDE_PATH . "/top_header.php");
 
 		import();
 
-		include_once(CACTI_BASE_PATH . "/include/bottom_footer.php");
+		include_once(CACTI_INCLUDE_PATH . "/bottom_footer.php");
 		break;
 }
 
@@ -87,7 +87,7 @@ function form_save() {
 
 function import() {
 	global $hash_type_names;
-	include_once(CACTI_BASE_PATH . "/include/template_import/import_forms.php");
+	include_once(CACTI_INCLUDE_PATH . "/template_import/import_forms.php");
 
 	?>
 	<form action="templates_import.php" method="post" enctype="multipart/form-data">
