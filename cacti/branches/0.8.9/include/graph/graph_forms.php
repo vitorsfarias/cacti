@@ -477,7 +477,7 @@ $struct_graph_misc = array(
 );
 
 $struct_graph_cacti = array(
-		'auto_padding' => array(
+	'auto_padding' => array(
 		'friendly_name' => 'Auto Padding',
 		'method' => 'checkbox',
 		'default' => CHECKED,
