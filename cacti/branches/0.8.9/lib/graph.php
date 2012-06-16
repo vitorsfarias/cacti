@@ -322,16 +322,26 @@ function get_graph_tree_graphs() {
    -------------------------- */
 
 function graph_form_save() {
+
+
 	if ((isset($_POST["save_component_graph_new"])) && (!empty($_POST["graph_template_id"]))) {
+		/* we will save graph_local for templated graphs only 
+		 * else we will fall through all if clauses
+		 * until we reach the code for calling next page
+		 * which will be graph_edit for given graph
+		 * in case of non-templated graph we will then re-call the edit screen to add more options 
+		 * then, we will again call graph_form_save, but this time we will have 
+		 * save_component_graph set! */
+		
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("graph_template_id"));
 		/* ==================================================== */
 
-		$save["id"] = $_POST["local_graph_id"];
-		$save["graph_template_id"] = $_POST["graph_template_id"];
-		$save["host_id"] = $_POST["host_id"];
+		$save1["id"] = $_POST["local_graph_id"];
+		$save1["host_id"] = $_POST["host_id"];
+		$save1["graph_template_id"] = $_POST["graph_template_id"];
 
-		$local_graph_id = sql_save($save, "graph_local");
+		$local_graph_id = sql_save($save1, "graph_local");
 
 		change_graph_template($local_graph_id, get_request_var_post("graph_template_id"), true);
 
@@ -344,6 +354,9 @@ function graph_form_save() {
 		input_validate_input_number(get_request_var_post("graph_template_id"));
 		input_validate_input_number(get_request_var_post("hidden_graph_template_id"));
 		/* ==================================================== */
+		
+		/* mark local_graph_id to know, if save operation was successful */
+		$local_graph_id = 0;
 
 		$save1["id"] = form_input_validate($_POST["local_graph_id"], "local_graph_id", "^[0-9]+$", false, 3);
 		$save1["host_id"] = form_input_validate($_POST["host_id"], "host_id", "^[-0-9]+$", false, 3);
@@ -353,11 +366,11 @@ function graph_form_save() {
 		$save2["local_graph_template_graph_id"] = form_input_validate($_POST["local_graph_template_graph_id"], "local_graph_template_graph_id", "^[0-9]+$", false, 3);
 		$save2["graph_template_id"] = form_input_validate($_POST["graph_template_id"], "graph_template_id", "^[0-9]+$", false, 3);
 		$save2["image_format_id"] = form_input_validate((isset($_POST["image_format_id"]) ? $_POST["image_format_id"] : ""), "image_format_id", "", true, 3);
-		$save2["title"] = form_input_validate((isset($_POST["title"]) ? $_POST["title"] : ""), "title", "", (isset($_POST["t_title"]) ? true : false), 3);
-		$save2["height"] = form_input_validate((isset($_POST["height"]) ? $_POST["height"] : ""), "height", "^[0-9]+$", (isset($_POST["t_height"]) ? true : false), 3);
-		$save2["width"] = form_input_validate((isset($_POST["width"]) ? $_POST["width"] : ""), "width", "^[0-9]+$", (isset($_POST["t_width"]) ? true : false), 3);
-		$save2["upper_limit"] = form_input_validate((isset($_POST["upper_limit"]) ? $_POST["upper_limit"] : ""), "upper_limit", "", ((isset($_POST["t_upper_limit"]) || (strlen($_POST["upper_limit"]) === 0)) ? true : false), 3);
-		$save2["lower_limit"] = form_input_validate((isset($_POST["lower_limit"]) ? $_POST["lower_limit"] : ""), "lower_limit", "", ((isset($_POST["t_lower_limit"]) || (strlen($_POST["lower_limit"]) === 0)) ? true : false), 3);
+		$save2["title"] = form_input_validate((isset($_POST["title"]) ? $_POST["title"] : ""), "title", "", false, 3);	# we need a non-empty title
+		$save2["height"] = form_input_validate((isset($_POST["height"]) ? $_POST["height"] : ""), "height", "^[0-9]+$", (isset($_POST["t_height"]) ? false : true), 3);
+		$save2["width"] = form_input_validate((isset($_POST["width"]) ? $_POST["width"] : ""), "width", "^[0-9]+$", (isset($_POST["t_width"]) ? false : true), 3);
+		$save2["upper_limit"] = form_input_validate((isset($_POST["upper_limit"]) ? $_POST["upper_limit"] : ""), "upper_limit", "", ((isset($_POST["t_upper_limit"]) || (strlen($_POST["upper_limit"]) === 0)) ? false : true), 3);
+		$save2["lower_limit"] = form_input_validate((isset($_POST["lower_limit"]) ? $_POST["lower_limit"] : ""), "lower_limit", "", ((isset($_POST["t_lower_limit"]) || (strlen($_POST["lower_limit"]) === 0)) ? false : true), 3);
 		$save2["vertical_label"] = form_input_validate((isset($_POST["vertical_label"]) ? $_POST["vertical_label"] : ""), "vertical_label", "", true, 3);
 		$save2["slope_mode"] = form_input_validate((isset($_POST["slope_mode"]) ? $_POST["slope_mode"] : ""), "slope_mode", "", true, 3);
 		$save2["auto_scale"] = form_input_validate((isset($_POST["auto_scale"]) ? $_POST["auto_scale"] : ""), "auto_scale", "", true, 3);
@@ -367,7 +380,7 @@ function graph_form_save() {
 		$save2["auto_scale_rigid"] = form_input_validate((isset($_POST["auto_scale_rigid"]) ? $_POST["auto_scale_rigid"] : ""), "auto_scale_rigid", "", true, 3);
 		$save2["alt_y_grid"] = form_input_validate((isset($_POST["alt_y_grid"]) ? $_POST["alt_y_grid"] : ""), "alt_y_grid", "", true, 3);
 		$save2["auto_padding"] = form_input_validate((isset($_POST["auto_padding"]) ? $_POST["auto_padding"] : ""), "auto_padding", "", true, 3);
-		$save2["base_value"] = form_input_validate((isset($_POST["base_value"]) ? $_POST["base_value"] : ""), "base_value", "^(1000|1024)$", (isset($_POST["t_base_value"]) ? true : false), 3);
+		$save2["base_value"] = form_input_validate((isset($_POST["base_value"]) ? $_POST["base_value"] : ""), "base_value", "^(1000|1024)$", (isset($_POST["t_base_value"]) ? false : true), 3);
 		$save2["export"] = form_input_validate((isset($_POST["export"]) ? $_POST["export"] : ""), "export", "", true, 3);
 		$save2["unit_value"] = form_input_validate((isset($_POST["unit_value"]) ? $_POST["unit_value"] : ""), "unit_value", "^(none|NONE|[0-9]+:[0-9]+$)", true, 3);
 		$save2["unit_exponent_value"] = form_input_validate((isset($_POST["unit_exponent_value"]) ? $_POST["unit_exponent_value"] : ""), "unit_exponent_value", "^-?[0-9]+$", true, 3);
@@ -455,7 +468,7 @@ function graph_form_save() {
 						db_execute("update graph_local set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where id=$local_graph_id");
 						db_execute("update graph_templates_graph set graph_template_id=" . $_POST["hidden_graph_template_id"] . " where local_graph_id=$local_graph_id");
 
-						header("Location: " . html_get_location("graphs.php") . "action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
+						header("Location: " . html_get_location("graphs.php") . "?action=graph_diff&id=$local_graph_id&graph_template_id=" . $_POST["graph_template_id"]);
 						exit;
 					}
 				}
@@ -523,12 +536,14 @@ function graph_form_save() {
 	}
 	
 	if ((isset($_POST["save_component_graph_new"])) && (empty($_POST["graph_template_id"]))) {
-		header("Location: " . html_get_location("graphs.php") . "?action=graph_edit&host_id=" . $_POST["host_id"] . "&new=1");
-#	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["host_id"] != $_POST["hidden_host_id"])) {
-#		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&host_id=" . $_POST["host_id"] . "&new=1");
+#	}elseif ((isset($_POST["save_component_graph"])) && ($local_graph_id == 0)) {	# in case a new, non-templated graph shall be saved but throws an error
+#		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : "") . "&new=1");
+	}elseif ((is_error_message()) || (empty($_POST["local_graph_id"])) || (isset($_POST["save_component_graph_diff"])) || ($_POST["graph_template_id"] != $_POST["hidden_graph_template_id"]) || ($_POST["host_id"] != $_POST["hidden_host_id"])) {
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
 	}else{
 		/* for existing graphs: always stay on page unless user decides to RETURN */
-		header("Location: " . html_get_location("graphs.php") . "?action=graph_edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
+		header("Location: " . html_get_location("graphs.php") . "?action=edit&id=" . (empty($local_graph_id) ? $_POST["local_graph_id"] : $local_graph_id) . (isset($_POST["host_id"]) ? "&host_id=" . $_POST["host_id"] : ""));
 	}
 
 	exit;
@@ -906,7 +921,7 @@ function graph_item() {
 			order by graph_templates_item.sequence");
 
 		$host_id = db_fetch_cell("select host_id from graph_local where id=" . get_request_var("id"));
-		$header_label = "[edit: " . get_graph_title(get_request_var("id") . "]");
+		$header_label = "[edit: " . get_graph_title(get_request_var("id")) . "]";
 	}
 
 	$graph_template_id = db_fetch_cell("select graph_template_id from graph_local where id=" . get_request_var("id"));
@@ -917,7 +932,7 @@ function graph_item() {
 		$add_text = "";
 	}
 
-	html_start_box("Graph Items" . " $header_label", "100", "3", "center", $add_text);
+	html_start_box2("Graph Items" . " $header_label", "100", "3", "center", $add_text);
 	draw_graph_items_list($template_item_list, "graphs_items.php", "local_graph_id=" . get_request_var("id"), (empty($graph_template_id) ? false : true));
 	html_end_box();
 }
@@ -1031,7 +1046,7 @@ function graph_diff() {
 	<br>
 	<?php
 
-	html_start_box("Graph Preview", "100", "3", "center", "");
+	html_start_box2("Graph Preview", "100", "3", "center", "");
 
 	$graph_item_actions = array("normal" => "", "add" => "+", "delete" => "-");
 
@@ -1201,18 +1216,19 @@ function graph_diff() {
 	<input type="hidden" name="graph_template_id" value="<?php print get_request_var("graph_template_id");?>">
 	<?php
 
-	form_save_button_alt("action!edit|id!" . get_request_var("id"));
+	form_save_button("graphs.php?action=graph_edit&id=" . get_request_var("id"));
 }
 
 /** edit a plain graph
  * @param bool $tabs whether a row of tabs shall be printed
  */
 function graph_edit($tabs = false) {
+	global $colors;
 	/* we have to deal with different situations:
 	 * non-templated vs. templated graph:
 	 * 		graph items (explicit) are allowed for non-templated graphs only
 	 * 		graph configuration (explicit) is allowed for non-templated graphs only
-	 * 	  wheras
+	 * 	  whereas
 	 * 		data input is shown for templated graphs only
 	 * 
 	 * new vs. existing graph:
@@ -1379,9 +1395,10 @@ function graph_edit($tabs = false) {
 
 
 	/* handle the dynamic menu to be shown on the upper right */
-	if (isset($graphs["local_graph_id"])) $dd_menu_options = 'cacti_dd_menu=graph_options&local_graph_id=' . $graphs["local_graph_id"];
-	if (isset($graphs["graph_template_id"])) $dd_menu_options .= '&graph_template_id=' . $graphs["graph_template_id"];
-	if ($host_id > 0) $dd_menu_options .= '&host_id=' . $host_id;
+	$dd_menu_options = 'cacti_dd_menu=graph_options';
+	if (isset($graphs["local_graph_id"])) 		$dd_menu_options .= '&local_graph_id=' . $graphs["local_graph_id"];
+	if (isset($graphs["graph_template_id"])) 	$dd_menu_options .= '&graph_template_id=' . $graphs["graph_template_id"];
+	if ($host_id > 0) 							$dd_menu_options .= '&host_id=' . $host_id;
 
 
 	/* now start the huge form that holds all graph options
@@ -1389,12 +1406,13 @@ function graph_edit($tabs = false) {
 	 * in case you do NOT like how options are seperated into chunks, 
 	 * please change associations of options into arrays 
 	 * in include/graph/graph_forms.php */
-	print "<form id='graph_edit' name='graph_edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
+	print "<form id='edit' name='edit' method='post' action='" .  basename($_SERVER["PHP_SELF"]) . "'>\n";
 
 	# the graph header
 	print "<div id='t_header'>";
 	$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_header:html_start_box:" . $dd_menu_options : "");
-	html_start_box("Graph" . " $header_label", "100", 0, "center", $add_text, false, "table_graph_template_header");
+	html_start_box2("Graph" . " $header_label", "100", 3, "center", $add_text, false, "table_graph_template_header");
+#	html_start_box("Graph" . " $header_label", "100%", $colors["header"], 3, "center", $add_text);
 	$device["host_id"] = $host_id;
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -1404,12 +1422,18 @@ function graph_edit($tabs = false) {
 	
 	/* draw additional sections on the first screen
 	 * especially those fields, that are required for a "save" operation
+	 * do this
+	 *   - for an existing graph (local_graph_id > 0)
+	 *   - for a new graph ($_GET("new") exists)
+	 * but only when this is a non-templated graph!
 	 */
-	if (((isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) || (isset($_GET["new"]))) && ($graphs["graph_template_id"] == 0)) {
-		html_start_box("Labels", "100", "0", "center", "", false);
+	if (((isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) || (isset($_GET["new"])) || isset($_GET["id"])) && ($graphs["graph_template_id"] == 0)) {
+		html_start_box2("Labels", "100", "0", "center", "", false);
+#		html_start_box("Labels", "100%", $colors["header"], 3, "center", $add_text);
 		draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
-		html_start_box("Graph Template Cacti Specifics", "100", "0", "center", "", false, "table_graph_template_cacti");
+		html_start_box2("Graph Template Cacti Specifics", "100", "0", "center", "", false, "table_graph_template_cacti");
+#		html_start_box("Graph Template Cacti Specifics", "100%", $colors["header"], 3, "center", $add_text);
 		draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 	}
@@ -1437,9 +1461,10 @@ function graph_edit($tabs = false) {
 		/* only display the "inputs" area if we are using a graph template for this graph */
 		print "<div id='t_supp_data'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_supp_data:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Supplemental Graph Template Data", "100", "0", "center", $add_text, false);
-		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "Graph Fields", true, 0);
-		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "Graph Item Fields");
+		html_start_box2("Supplemental Graph Template Data" . " $header_label", "100", "0", "center", $add_text, false);
+#		html_start_box("Supplemental Graph Template Data", "100%", $colors["header"], 3, "center", $add_text);
+		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "Graph Fields", true, true, 0);
+		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "Graph Item Fields", true);
 		html_end_box(false);
 		print "</div>";
 	}else{
@@ -1465,7 +1490,7 @@ function graph_edit($tabs = false) {
 	if (isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) {
 		print "<div id='t_graph'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_graph:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph", "100", "0", "center", $add_text, false);
+		html_start_box2("Graph" . " $header_label", "100", "0", "center", $add_text, false);
 		print "<div class='center'>";
 		print "<img src='" . htmlspecialchars("graph_image.php?action=edit&local_graph_id=" . get_request_var("id") . "&rra_id=" . read_graph_config_option("default_rra_id")) . "'>";
 		print "</div>";
@@ -1504,7 +1529,7 @@ function graph_edit($tabs = false) {
 		if ( read_config_option("rrdtool_version") != RRD_VERSION_1_0 && read_config_option("rrdtool_version") != RRD_VERSION_1_2) {
 			print "<div id='t_right_axis'>";
 			$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_right_axis:html_start_box:" . $dd_menu_options : "");
-			html_start_box("Right Axis Settings", "100", "0", "center", $add_text, false, "table_graph_template_right_axis");
+			html_start_box2("Right Axis Settings" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_right_axis");
 			draw_template_edit_form('header_graph_right_axis', graph_right_axis_form_list(), $graphs, $use_graph_template);
 			html_end_box(false);
 			print "</div>";
@@ -1512,37 +1537,37 @@ function graph_edit($tabs = false) {
 
 		print "<div id='t_size'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_size:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Size", "100", "0", "center", $add_text, false, "table_graph_template_size");
+		html_start_box2("Graph Template Size" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_size");
 		draw_template_edit_form('header_graph_size', graph_size_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
 		print "<div id='t_limits'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_limits:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Limits", "100", "0", "center", $add_text, false, "table_graph_template_limits");
+		html_start_box2("Graph Template Limits" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_limits");
 		draw_template_edit_form('header_graph_limits', graph_limits_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
 		print "<div id='t_grid'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_grid:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Grid", "100", "0", "center", $add_text, false, "table_graph_template_grid");
+		html_start_box2("Graph Template Grid" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_grid");
 		draw_template_edit_form('header_graph_grid', graph_grid_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
 		print "<div id='t_color'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_color:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Color", "100", "0", "center", $add_text, false, "table_graph_template_color");
+		html_start_box2("Graph Template Color" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_color");
 		draw_template_edit_form('header_graph_color', graph_color_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
 		print "<div id='t_legend'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_legend:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Legend", "100", "0", "center", $add_text, false, "table_graph_template_misc");
+		html_start_box2("Graph Template Legend" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_misc");
 		draw_template_edit_form('header_graph_legend', graph_legend_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
 		print "<div id='t_misc'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_misc:html_start_box:" . $dd_menu_options : "");
-		html_start_box("Graph Template Misc", "100", "0", "center", $add_text, false, "table_graph_template_misc");
+		html_start_box2("Graph Template Misc" . " $header_label", "100", "0", "center", $add_text, false, "table_graph_template_misc");
 		draw_template_edit_form('header_graph_misc', graph_misc_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		print "</div>";
@@ -2125,13 +2150,13 @@ function device_new_graphs($host_id, $host_template_id, $selected_graphs_array) 
 				and graph_templates_graph.local_graph_id=0");
 			$graph_template_name = db_fetch_cell("select name from graph_templates where id=" . $graph_template_id);
 
-			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "Graph [Template: " . $graph_template["graph_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "Graph Items [Template: " . $graph_template_name . "]"));
+			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . "_" . $graph_template_id . "_|field|", "<strong>Graph</strong> [Template: " . $graph_template["graph_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, "gi_" . $snmp_query_id . "_" . $graph_template_id . "_|id|_|field|", "<strong>Graph Items</strong> [Template: " . $graph_template_name . "]", false));
 
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates) > 0) {
 			foreach ($data_templates as $data_template) {
-				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "Data Source [Template: " . $data_template["data_template_name"] . "]", false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template["data_template_id"], 0, $data_template, "d_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|field|", "<strong>Data Source</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 
 				$data_template_items = db_fetch_assoc("select
 					data_template_rrd.*
@@ -2139,8 +2164,8 @@ function device_new_graphs($host_id, $host_template_id, $selected_graphs_array) 
 					where data_template_rrd.data_template_id=" . $data_template["data_template_id"] . "
 					and local_data_id=0");
 
-				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "Custom Data [Template: " . $data_template["data_template_name"] . "]", false, $snmp_query_id));
+				array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template["data_template_id"], $data_template_items, "di_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|_|field|", "", false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+				array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template["id"], "c_" . $snmp_query_id . "_" . $graph_template_id . "_" . $data_template["data_template_id"] . "_|id|", "<strong>Custom Data</strong> [Template: " . $data_template["data_template_name"] . "]", false, false, $snmp_query_id));
 			}
 			}
 
