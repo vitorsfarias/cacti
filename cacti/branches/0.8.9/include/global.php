@@ -225,7 +225,7 @@ include_once(CACTI_BASE_PATH . '/lib/html_utility.php');
 include_once(CACTI_BASE_PATH . '/lib/html_validate.php');
 include_once(CACTI_BASE_PATH . '/lib/variables.php');
 include_once(CACTI_BASE_PATH . '/lib/auth.php');
-#include_once(CACTI_BASE_PATH . '/lib/ajax.php');
+include_once(CACTI_BASE_PATH . '/lib/ajax.php');
 
 if(! $database_empty)
 {
