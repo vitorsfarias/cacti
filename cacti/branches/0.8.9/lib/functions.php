@@ -201,15 +201,16 @@ function read_config_option($config_name, $force = FALSE) {
 	return $config_array[$config_name];
 }
 
-/* form_input_validate - validates the value of a form field and takes the appropriate action if the input
-     is not valid
-   @arg $field_value - the value of the form field
-   @arg $field_name - the name of the $_POST field as specified in the HTML
-   @arg $regexp_match - (optionally) enter a regular expression to match the value against
-   @arg $allow_nulls - (bool) whether to allow an empty string as a value or not
-   @arg $custom_message - (int) the ID of the message to raise upon an error which is defined in the
-     $messages array in 'include/global_arrays.php'
-   @returns - the original $field_value */
+/**
+ * validates the value of a form field and takes the appropriate action if the input
+ * 							is not valid
+ * @param $field_value		- the value of the form field
+ * @param $field_name 		- the name of the $_POST field as specified in the HTML
+ * @param $regexp_match 	- (optionally) enter a regular expression to match the value against
+ * @param $allow_nulls 		- (bool) whether to allow an empty string as a value or not
+ * @param $custom_message 	- (int) the ID of the message to raise upon an error which is defined in the
+ * 							  $messages array in 'include/global_arrays.php'
+ * @returns 				- the original $field_value */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	global $messages;
 	/* write current values to the "field_values" array so we can retain them */
@@ -225,7 +226,6 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	if ((!preg_match('/' . $regexp_match . '/', $field_value) || (($allow_nulls == false) && ($field_value === "")))) {
 		raise_message($custom_message);
 		cacti_log("Validation Error on field '".$field_name."', value '".$field_value."': " . $messages[$custom_message]["message"], false);
-
 		$_SESSION["sess_error_fields"][$field_name] = $field_name;
 	}else{
 		$_SESSION["sess_field_values"][$field_name] = $field_value;
@@ -1736,10 +1736,10 @@ function draw_navigation_text($type = "url") {
 		"index.php:" => array("title" => "Console", "mapping" => "", "url" => CACTI_URL_PATH . "index.php", "level" => "0"),
 		"index.php:login" => array("title" => "Console", "mapping" => "", "url" => CACTI_URL_PATH . "index.php", "level" => "0"),
 		"graphs.php:" => array("title" => "Graph Management", "mapping" => "index.php:", "url" => "graphs.php", "level" => "1"),
-		"graphs.php:graph_edit" => array("title" => "(Edit)", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
-		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
+		"graphs.php:edit" => array("title" => "(Edit)", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
+		"graphs.php:graph_diff" => array("title" => "Change Graph Template", "mapping" => "index.php:,graphs.php:,graphs.php:edit", "url" => "", "level" => "3"),
 		"graphs.php:actions" => array("title" => "Actions", "mapping" => "index.php:,graphs.php:", "url" => "", "level" => "2"),
-		"graphs_items.php:graph_item_edit" => array("title" => "Graph Items", "mapping" => "index.php:,graphs.php:,graphs.php:graph_edit", "url" => "", "level" => "3"),
+		"graphs_items.php:item_edit" => array("title" => "Graph Items", "mapping" => "index.php:,graphs.php:,graphs.php:edit", "url" => "", "level" => "3"),
 		"graphs_new.php:" => array("title" => "Create New Graphs", "mapping" => "index.php:", "url" => "graphs_new.php", "level" => "1"),
 		"graphs_new.php:save" => array("title" => "Create Graphs from Data Query", "mapping" => "index.php:,graphs_new.php:", "url" => "", "level" => "2"),
 		"gprint_presets.php:" => array("title" => "GPRINT Presets", "mapping" => "index.php:", "url" => "gprint_presets.php", "level" => "1"),
