@@ -36,7 +36,7 @@
    @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
      will be used to determine if a given field is using suggested values */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = "|field|", $header_title = "", $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
-	global $struct_graph, $colors;
+	global $colors;
 
 	$form_array = array();
 	$draw_any_items = false;
@@ -44,6 +44,8 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	/* fetch information about the graph template */
 	$graph_template = db_fetch_row("select * from graph_templates_graph where graph_template_id=$graph_template_id and local_graph_id=0");
 
+	$struct_graph = graph_form_list();
+	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* find our field name */
 		$form_field_name = str_replace("|field|", $field_name, $field_name_format);
@@ -69,7 +71,9 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
-				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+#				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+				print "<tr><td>";
+				html_header(array($header_title, "&nbsp;"), 1, false, 'template_graph_' . $field_name);
 			}
 
 			$draw_any_items = true;
@@ -169,7 +173,9 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				unset($form_array[$form_field_name]);
 			}else{
 				if (($draw_any_items == false) && ($header_title != "")) {
-					print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+#					print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+					print "<tr><td>";
+					html_header(array($header_title, "&nbsp;"), 1, false, 'template_graph_item');
 				}
 
 				$draw_any_items = true;
@@ -253,7 +259,9 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != "")) {
-				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+#				print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+				print "<tr><td>";
+				html_header(array($header_title, "&nbsp;"), 1, false, 'template_data_source_' . $field_name);
 			}
 
 			$draw_any_items = true;
@@ -354,9 +362,13 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					}
 				}else{
 					if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != "")) {
-						print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+						$header_items = array(array("name" => $header_title), array("name" => ""));
+						print "<tr><td>";
+						html_header($header_items, 1, false, 'template_data_source_item_' . $form_field_name);
 					}elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != "")) {
-						print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title [" . $rrd["data_source_name"] . "]</td></tr>\n";
+						$header_items = array(array("name" => $header_title ." [" . $rrd["data_source_name"] . "]"), array("name" => ""));
+						print "<tr><td>";
+						html_header($header_items, 1, false, 'template_data_source_item_' . $form_field_name);
 					}
 
 					$draw_any_items = true;
@@ -447,7 +459,9 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				}
 			}else{
 				if (($draw_any_items == false) && ($header_title != "")) {
-					print "<tr bgcolor='#" . $colors["header_panel"] . "'><td colspan='2' style='font-size: 10px; color: white;'>$header_title</td></tr>\n";
+					$header_items = array(array("name" => $header_title), array("name" => ""));
+					print "<tr><td>";
+					html_header($header_items, 1, false, 'template_custom_data');
 				}
 
 				if ($alternate_colors == true) {
