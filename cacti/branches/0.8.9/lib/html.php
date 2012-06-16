@@ -49,6 +49,105 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 
 <?php }
 
+/** html_start_box2 - draws the start of an HTML box with an optional title
+   @param $title - the title of this box ("" for no title)
+   @param $width - the width of the box in pixels or percent
+   @param $cell_padding - the amount of cell padding to use inside of the box
+   @param $align - the HTML alignment to use for the box (center, left, or right)
+   @param $add_text - the url to use when the user clicks 'Add' in the upper-right
+     corner of the box ("" for no 'Add' link) or use "menu::menu_title:menu_id:menu_class:ajax_parameters"
+     to show a drop down menu instead
+   @param $collapsing - tells wether or not the table collapses
+   @param $table_id - the table id to make the table addressable by jQuery's table DND plugin */
+function html_start_box2($title, $width, $cell_padding, $align, $add_text = "", $collapsing = false, $table_id = "") {
+	/*
+	 * deactivate collapsing for now
+	 */
+	static $form_number = 0;
+	$form_number++;
+
+	$function_name = "addObject" . $form_number . "()";
+
+	$temp_string = str_replace("strong", "", $title);
+	if (strpos($temp_string, "[")) {
+		$temp_string = substr($temp_string, 0, strpos($temp_string, "[")-1);
+	}
+
+	if ($title != "") {
+		$item_id = clean_up_name($temp_string);
+	}else{
+		$item_id = "item_" . rand(255, 65535);
+	}
+
+#	if ($collapsing) {
+#		$ani  = "style=\"cursor:pointer;\" onClick=\"htmlStartBoxFilterChange('" . $item_id . "')\"";
+#		$ani3 = "onClick=\"htmlStartBoxFilterChange('" . $item_id . "')\"";
+#	}else{
+		$ani  = "";
+		$ani3 = "";
+#	}
+
+	$table_id = ($table_id != '') ? "id=\"$table_id\"" : "";
+
+	/* we need the addObject function definition in case we have an "$add_text" */
+	if ($collapsing || (strlen($add_text))) { ?>
+		<script type="text/javascript">
+		<!--
+		function <?php print $function_name;?> {
+			document.location = '<?php echo $add_text;?>';
+			return false;
+		}
+		$().ready(function() {
+//			htmlStartBoxFilterChange('<?php print $item_id;?>', true);
+		});
+		-->
+		</script>
+	<?php } ?>
+		<table cellpadding='0' cellspacing='0' align='<?php print $align;?>' class='startBoxHeader <?php print 'wp' . $width;?> startBox0'>
+			<?php if ($title != '') {?><tr class='rowHeader'>
+				<td colspan='100'>
+					<table cellpadding='0' cellspacing='0' class='startBox0'>
+						<tr>
+							<td>
+								<table cellpadding='0' cellspacing='0' class='startBox0' <?php print $ani;?>>
+									<tr>
+										<?php
+/*										if ($collapsing) {
+											?>
+											<td class='textHeaderDark nw9'>
+											<img id='<?php print $item_id . '_twisty';?>' src='<?php print CACTI_URL_PATH; ?>images/tw_open.gif' alt='<?php print __('Filter');?>' align='middle'>
+											</td>
+											<?php
+										}
+*/										?>
+										<td onMouseDown='return false' class='textHeaderDark'><?php print $title;?>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<?php
+							if ($add_text != '') {
+								if (strpos($add_text, 'menu::') !== false) {
+										list($menu_title, $menu_id, $menu_class, $ajax_parameters) = explode(':', str_replace('menu::', '', $add_text));?>
+							<td class='textHeaderDark w1 right'>
+								<span name='<?php print $menu_title;?>' id='<?php print $menu_id;?>' class='<?php print $menu_class;?> cacti_dd_link' rel='<?php print htmlspecialchars($ajax_parameters);?>'><img src='<?php print CACTI_URL_PATH; ?>images/cog.png' id='cog' width='16' height='16' alt='cog'></span>
+							</td><?php
+								}else {	?>
+							<td class='textHeaderDark w1 right'>
+								<input type='button' onClick='<?php print $function_name;?>' style='font-size:10px;' value='Add'>
+							</td><?php
+								}
+							}?>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<?php }?>
+			<tr style='border: 0px;' id='<?php print $item_id;?>'>
+				<td>
+					<table cellpadding='0' cellspacing='1' <?php print $table_id;?> class='startBox<?php print $cell_padding;?>'><?php
+}
+
 /** html_end_box - draws the end of an HTML box
  * @param bool $trailing_br - whether to draw a trailing <br> tag after ending the box */
 function html_end_box($trailing_br = true) { ?>
