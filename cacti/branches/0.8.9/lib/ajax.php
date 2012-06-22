@@ -34,7 +34,7 @@ function ajax_get_data_dd_menus() {
 			$output .= "<h6><a href='" . htmlspecialchars('graphs.php?action=edit&id=' . $_GET["local_graph_id"] . "&debug=" . (isset($_SESSION["graph_debug_mode"]) ? "0" : "1")) . "'>" . (isset($_SESSION["graph_debug_mode"]) ? __("Turn <strong>Off</strong> Debug Mode") : __("Turn <strong>On</strong> Debug Mode")) . "</a></h6>";
 
 			if (!empty($_GET["graph_template_id"]) && $_GET["graph_template_id"] > 0) {
-				$output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
+				$output .= "<h6><a href='" . htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_GET["graph_template_id"] ) . "'>" . __("Edit Template") . "</a></h6>";
 			}
 			if (!empty($_GET["host_id"]) && $_GET["host_id"] > 0) {
 				$output .= "<h6><a href='" . htmlspecialchars('host.php?action=edit&id=' . $_GET["host_id"] ) . "'>" . __("Edit Host") . "</a></h6>";
