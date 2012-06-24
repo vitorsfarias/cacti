@@ -264,4 +264,51 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 	return $string;
 }
 
-?>
+/**
+ * substitute graph start/end with respective values
+ * @param string $graph_items 	- graph items
+ * @param array $graph			- array with all graph parameters
+ * @param array $graph_data_array - array with start/end time
+ * @param string $rrdtool_version - rrdtool version
+ * @return string				- substituted graph items string
+ */
+function substitute_graph_data($graph_items, $graph, $graph_data_array, $rrdtool_version) {
+	require_once(CACTI_LIBRARY_PATH . "/time.php");
+	
+	$graph_date = date_time_format();
+
+	/* explicit start/end options given */
+	if (strpos($graph_items, '|graph_start|') > 0 ||
+		strpos($graph_items, '|graph_end|') > 0) {
+			
+		$start = date($graph_date, time()+$graph["graph_start"]);
+		$end = date($graph_date, time()+$graph["graph_end"]);
+		
+		/* reformat depending on rrdtool version */
+		if ($rrdtool_version != RRD_VERSION_1_0) {
+			$start = str_replace(":", "\:", $start); 
+			$end = str_replace(":", "\:", $end);
+		}
+		/* and finally replace */
+		$graph_items = str_replace('|graph_start|', $start, $graph_items);
+		$graph_items = str_replace('|graph_end|', $end, $graph_items);
+		 
+	}elseif ((isset($graph_data_array["graph_start"])) && (isset($graph_data_array["graph_end"]))) {
+		if (($graph_data_array["graph_start"] < 0) && ($graph_data_array["graph_end"] < 0)) {
+			$start = date($graph_date, time()+$graph_data_array["graph_start"]);
+			$end = date($graph_date, time()+$graph_data_array["graph_end"]);
+		} else {
+			$start = date($graph_date, $graph_data_array["graph_start"]);
+			$end = date($graph_date, $graph_data_array["graph_end"]);
+		}
+		/* reformat depending on rrdtool version */
+		if ($rrdtool_version != RRD_VERSION_1_0) {
+			$start = str_replace(":", "\:", $start); 
+			$end = str_replace(":", "\:", $end);
+		}
+		/* and finally replace */
+		$graph_items = "COMMENT:\"" . __("From %s To %s", $start, $end) . "\\c\"" . RRD_NL . "COMMENT:\"  \\n\"" . RRD_NL . $graph_items;
+	}
+	
+	return $graph_items;
+}
