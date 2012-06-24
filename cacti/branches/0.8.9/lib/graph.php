@@ -697,7 +697,7 @@ function graph_form_actions() {
 
 	print "<form id='gactions' name='gactions' action='graphs.php' method='post'>\n";
 
-	html_start_box("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
+	html_start_box2("<strong>" . $graph_actions{$_POST["drp_action"]} . "</strong>", "60", "3", "center", "");
 
 	if (sizeof($graph_array)) {
 		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
@@ -1059,7 +1059,7 @@ function graph_diff() {
 			reset($struct_graph_item);
 
 			/* graph grouping display logic */
-			$bold_this_row = false; $use_custom_row_color = false; $action_css = ""; unset($graph_preview_item_values);
+			$bold_this_row = false; $use_custom_row_color = false; $action_css = ""; $graph_preview_item_values = array();
 
 			if ((sizeof($graph_template_items) > sizeof($graph_items)) && ($i >= sizeof($graph_items))) {
 				$mode = "add";
@@ -1218,6 +1218,7 @@ function graph_diff() {
 
 	form_save_button("graphs.php?action=graph_edit&id=" . get_request_var("id"));
 }
+
 
 /** edit a plain graph
  * @param bool $tabs whether a row of tabs shall be printed
@@ -1412,7 +1413,6 @@ function graph_edit($tabs = false) {
 	print "<div id='t_header'>";
 	$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_header:html_start_box:" . $dd_menu_options : "");
 	html_start_box2("Graph" . " $header_label", "100", 3, "center", $add_text, false, "table_graph_template_header");
-#	html_start_box("Graph" . " $header_label", "100%", $colors["header"], 3, "center", $add_text);
 	$device["host_id"] = $host_id;
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
@@ -1429,11 +1429,9 @@ function graph_edit($tabs = false) {
 	 */
 	if (((isset($graphs["local_graph_id"]) && $graphs["local_graph_id"] > 0) || (isset($_GET["new"])) || isset($_GET["id"])) && ($graphs["graph_template_id"] == 0)) {
 		html_start_box2("Labels", "100", "0", "center", "", false);
-#		html_start_box("Labels", "100%", $colors["header"], 3, "center", $add_text);
 		draw_template_edit_form('header_graph_labels', graph_labels_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 		html_start_box2("Graph Template Cacti Specifics", "100", "0", "center", "", false, "table_graph_template_cacti");
-#		html_start_box("Graph Template Cacti Specifics", "100%", $colors["header"], 3, "center", $add_text);
 		draw_template_edit_form('header_graph_cacti', graph_cacti_form_list(), $graphs, $use_graph_template);
 		html_end_box(false);
 	}
@@ -1462,7 +1460,6 @@ function graph_edit($tabs = false) {
 		print "<div id='t_supp_data'>";
 		$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_supp_data:html_start_box:" . $dd_menu_options : "");
 		html_start_box2("Supplemental Graph Template Data" . " $header_label", "100", "0", "center", $add_text, false);
-#		html_start_box("Supplemental Graph Template Data", "100%", $colors["header"], 3, "center", $add_text);
 		draw_nontemplated_fields_graph($graphs["graph_template_id"], $graphs, "|field|", "Graph Fields", true, true, 0);
 		draw_nontemplated_fields_graph_item($graphs["graph_template_id"], get_request_var("id"), "|field|_|id|", "Graph Item Fields", true);
 		html_end_box(false);
