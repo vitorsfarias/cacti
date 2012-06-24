@@ -213,7 +213,7 @@ session_start();
 include_once(CACTI_BASE_PATH . '/lib/functions.php');
 include_once(CACTI_BASE_PATH . '/include/global_constants.php');
 include_once(CACTI_BASE_PATH . '/include/global_language.php');		# no real i18n yet, use __() wrapper only to ease backports
-#include_once(CACTI_BASE_PATH . '/include/global_timezones.php');
+include_once(CACTI_BASE_PATH . '/include/global_timezones.php');
 #include_once(CACTI_BASE_PATH . '/lib/log.php');
 include_once(CACTI_BASE_PATH . '/include/global_arrays.php');
 include_once(CACTI_BASE_PATH . '/include/global_settings.php');
