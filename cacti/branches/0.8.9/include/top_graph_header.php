@@ -82,9 +82,13 @@ $page_title = plugin_hook_function('page_title', draw_navigation_text("title"));
 	?>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="<?php echo CACTI_URL_PATH; ?>include/main.css" type="text/css" rel="stylesheet">
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery.zoom.css' rel='stylesheet'>
+	<link type='text/css' media='screen' href='<?php echo CACTI_URL_PATH; ?>include/css/jquery-ui.all.css' rel='stylesheet'>
 	<link href="<?php echo CACTI_URL_PATH; ?>images/favicon.ico" rel="shortcut icon"/>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/layout.js"></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery-ui.js'></script>
+	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.cookie.js'></script>
 	<script type='text/javascript' src='<?php echo CACTI_URL_PATH; ?>include/js/jquery/jquery.zoom.js'></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/treeview/ua.js"></script>
 	<script type="text/javascript" src="<?php echo CACTI_URL_PATH; ?>include/treeview/ftiens4.js"></script>
