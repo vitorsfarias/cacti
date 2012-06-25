@@ -107,7 +107,7 @@ case 'tree':
 	?>
 	<script type="text/javascript" >
 		$(document).ready(function() {
-			$(".graphimage").ZoomGraph({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
 		});
 	</script>
 	<?php
@@ -224,7 +224,7 @@ case 'preview':
 	?>
 	<script type="text/javascript" >
 		$(document).ready(function() {
-			$(".graphimage").ZoomGraph({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
+			$(".graphimage").zoom({inputfieldStartTime : 'date1', inputfieldEndTime : 'date2'});
 		});
 	</script>
 	<tr bgcolor="#<?php print $colors['panel'];?>" class="noprint">

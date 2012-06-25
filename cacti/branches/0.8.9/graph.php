@@ -231,7 +231,7 @@ case 'zoom':
 		</td>
 	</tr>
 	<script type="text/javascript" >
-		$(document).ready(function() { $(".graphimage").ZoomGraph(); });
+		$(document).ready(function() { $(".graphimage").zoom(); });
 	</script>
 	<?php
 
