@@ -29,73 +29,58 @@
 (function($){
 	$.fn.zoom = function(options) {
 
-		/* default values of the different options being offered */
+		/* +++++++++++++++++++++++ Global Variables +++++++++++++++++++++++++ */
+
+		// default values of the different options being offered
 		var defaults = {
-			inputfieldStartTime	: '',					// ID of the input field that contains the start date
-			inputfieldEndTime	: '',					// ID of the input field that contains the end date
-			submitButton		: 'button_refresh_x',	// ID of the submit button
-			cookieName			: 'cacti_zoom'			// default name required for session cookie
+			inputfieldStartTime	: '',                                           // ID of the input field that contains the start date
+			inputfieldEndTime	: '',                                           // ID of the input field that contains the end date
+			submitButton		: 'button_refresh_x',                           // ID of the submit button
+			cookieName			: 'cacti_zoom'                                  // default name required for session cookie
 		};
 
-		/* some global variables */
-		var zoom			= new Array();
-		zoom.marker			= new Array();
-		zoom.marker[1]		= new Array();
-		zoom.marker[2]		= new Array();
+		// define global variables / objects here
+		var zoom = {
+			// "image" means the image tag and its properties
+			image: { top:0, left:0, width:0, height:0 },
+			// "graph" stands for the rrdgraph itself excluding legend, graph title etc.
+			graph: { timespan:0, secondsPerPixel:0 },
+			// "box" describes the area in front of the graph whithin jQueryZoom will allow interaction
+			box: { top:0, left:0, right:0, width:0, height:0 },
+			// "markers" are selectors useable within the advanced mode
+			marker: { 1 : {}, 2 : {} },
+			// "custom" holds the local configuration done by the user
+			custom: {},
+			// "options" contains the start input parameters
+			options: $.extend(defaults, options),
+			// "attributes" holds all values that will describe the selected area
+			attr: { start:'none', end:'none', action:'left2right', location: window.location.href.split("?") }
+		};
 
 
+		/* ++++++++++++++++++++++++ Initialization ++++++++++++++++++++++++++ */
 
-		var rrdgraph;										// reference to the rrdgraph itself
-		var graphUrl		= '';
-		var localGraphID	= 0;
-		var imagePosTop		= 0;
-		var imagePosLeft	= 0;
+		// use a cookie to support local settings
+		zoom.custom =  $.cookie(zoom.options.cookieName) ? unserialize( $.cookie(zoom.options.cookieName) ) : {};
+		if(zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
+		if(zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
+		if(zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
+		if(zoom.custom.zoomMarkers == undefined) zoom.custom.zoomMarkers = true;
+		if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = true;
+		if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
 
-		var zoomBoxWidth	= 0;
-		var zoomBoxHeight	= 0;
-		var zoomBoxPosTop	= 0;
-		var zoomBoxPosRight	= 0;
-		var zoomBoxPosLeft	= 0;
+		// create or update a session cookie
+		$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: null} );
 
-		var zoomAreaHeight  = 0;
+		// support jQuery's concatination
+		return this.each(function() { zoom_init( $(this) );	});
 
 
-		var zoomStartPos	= 'none';
-		var zoomEndPos		= 'none';
-		var zoomAction		= 'left2right';
-
-		var graphWidth		= 0;
-		var graphTimespan	= 0;
-		var secondsPerPixel = 0;
-		var location		= window.location.href.split("?");
-		var locationBase	= location[0];
-		var graphParameters = '';
-
-		var options 		= $.extend(defaults, options);
-
-		/* use a cookie to support local settings */
-		var cookie = $.cookie(options.cookieName);
-		var zoomCustomSettings = cookie ?  unserialize(cookie) : new Array();
-
-		if(zoomCustomSettings.zoomMode == undefined) zoomCustomSettings.zoomMode = 'quick';
-		if(zoomCustomSettings.zoomOutPositioning == undefined) zoomCustomSettings.zoomOutPositioning = 'center';
-		if(zoomCustomSettings.zoomOutFactor == undefined) zoomCustomSettings.zoomOutFactor = '2';
-		if(zoomCustomSettings.zoomMarkers == undefined) zoomCustomSettings.zoomMarkers = true;
-		if(zoomCustomSettings.zoomTimestamps == undefined) zoomCustomSettings.zoomTimestamps = true;
-		if(zoomCustomSettings.zoom3rdMouseButton == undefined) zoomCustomSettings.zoom3rdMouseButton = false;
-
-		/* create or update a session cookie */
-		$.cookie( options.cookieName, serialize(zoomCustomSettings), {expires: null} );
-
-		/* support jQuery's concatination */
-		return this.each(function() {
-			rrdgraph = $(this);
-			zoom_init();
-		});
+		/* ++++++++++++++++++++++++ Functions +++++++++++++++++++++++++++++++ */
 
 		/* init zoom */
-		function zoom_init() {
-			var $this = rrdgraph;
+		function zoom_init(image) {
+			var $this = image;
 			$this.mouseenter(
 				function(){
 					zoomFunction_init($this);
@@ -104,13 +89,12 @@
 		}
 
 
-
 		/* check if image has been already loaded or if broken */
 		function isReady(image){
 			if(typeof image[0].naturalWidth !== undefined && image[0].naturalWidth == 0) {
 				return false;
 			}
-			// necessary to support older versions of IE(6-8)
+			// support older versions of IE(6-8)
 			if(!image[0].complete) {
 				return false;
 			}
@@ -122,92 +106,73 @@
 
 			var $this = image;
 
-			// exit if image has not been already loaded or if it is unavailable
-			if(!isReady($this)) {
-				return;
-			}
-
-			var image = rrdgraph;
-
-			// get all graph parameters
-			graphUrl 			= $this.attr("src");
-			graphParameters		= getUrlVars(graphUrl);
-
-			if(zoomStartPos != 'none' && localGraphID != graphParameters["local_graph_id"]) {
-				return;
-			}
-
-			localGraphID		= graphParameters["local_graph_id"];
-			graphStartTime		= graphParameters["graph_start"];
-			graphEndTime		= graphParameters["graph_end"];
-			graphTimespan		= graphParameters["graph_end"] - graphParameters["graph_start"];
-			secondsPerPixel 	= graphTimespan/graphParameters["graph_width"];
-
-
-			graphWidth			= graphParameters["graph_width"];
-			graphHeight			= graphParameters["graph_height"];
-
-			if((graphParameters["title_font_size"] <= 0) || (graphParameters["title_font_size"] == "")) {
-				graphTitleFontSize = 12;
+			// exit if image has not been already loaded or if image is not available
+			if(isReady($this)) {
+				// update zoom.image object with the attributes of this image
+				zoom.image.width	= parseInt($this.width());
+				zoom.image.height	= parseInt($this.height());
+				zoom.image.top		= parseInt($this.offset().top);
+				zoom.image.left		= parseInt($this.offset().left);
 			}else {
-				graphTitleFontSize = graphParameters["title_font_size"];
+				return;
 			}
 
-			if("graph_nolegend" in graphParameters) {
-				graphTitleFontSize	*= .70;
+			// get all graph parameters and merge results with zoom.graph object
+			$.extend(zoom.graph, getUrlVars( $this.attr("src") ));
+			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
+			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
+
+			if((zoom.graph.title_font_size <= 0) || (zoom.graph.title_font_size == "")) {
+				zoom.graph.title_font_size = 10;
 			}
 
-			imageWidth			= $this.width();
-			imageHeight			= $this.height();
-			imagePosTop			= $this.offset().top;
-			imagePosLeft		= $this.offset().left;
+			if(zoom.graph.nolegend != undefined) {
+				zoom.graph.title_font_size	*= .70;
+			}
 
-			// define the zoom box
-			zoomBoxWidth		= graphWidth;
-			zoomBoxHeight		= graphHeight;
-			zoomAreaHeight		= graphHeight;
+			// update all zoom box attributes. Unfortunately we have to use that best fit way
+			// to support RRDtool 1.2 and below. With RRDtool 1.3 or higher there would be a
+			// much more elegant solution available. (see RRDdtool graph option "graphv")
+			zoom.box.width		= zoom.graph.width;
+			zoom.box.height		= zoom.graph.height;
 
-			if(graphTitleFontSize == null) {
-				zoomBoxPosTop = 32 - 1;
+			if(zoom.graph.title_font_size == null) {
+				zoom.box.top = 32 - 1;
 			}else {
 				//default multiplier
 				var multiplier = 2.4;
-
 				// array of "best fit" multipliers
 				multipliers = new Array("-5", "-2", "0", "1.7", "1.6", "1.7", "1.8", "1.9", "2", "2", "2.1", "2.1", "2.2", "2.2", "2.3", "2.3", "2.3", "2.3", "2.3");
-
-				if(multipliers[Math.round(graphTitleFontSize)] != null) {
-					multiplier = multipliers[Math.round(graphTitleFontSize)];
+				if(multipliers[Math.round(zoom.graph.title_font_size)] != null) {
+					multiplier = multipliers[Math.round(zoom.graph.title_font_size)];
 				}
-
-				zoomBoxPosTop = imagePosTop + parseInt(Math.abs(graphTitleFontSize) * multiplier) + 15;
+				zoom.box.top = zoom.image.top + parseInt(Math.abs(zoom.graph.title_font_size) * multiplier) + 15;
 			}
 
-			zoomBoxPosBottom = parseInt(zoomBoxPosTop) + parseInt(zoomBoxHeight);
-			zoomBoxPosRight	= parseInt(imagePosLeft) + parseInt(imageWidth) - 30;
-			zoomBoxPosLeft	= parseInt(zoomBoxPosRight) - parseInt(graphWidth);
+			zoom.box.bottom = zoom.box.top + zoom.box.height;
+			zoom.box.right	= zoom.image.left + zoom.image.width - 30;
+			zoom.box.left	= zoom.box.right - zoom.graph.width;
 
-			// add the zoom box if it has not been created yet.
+			// add all additional HTML elements to the DOM if necessary and register
+			// the individual events needed. Once added we will only reset
+			// and reposition these elements.
+
+			// add the "zoomBox"
 			if($("#zoomBox").length == 0) {
-				/* IE does not fire hover or click behaviors on completely transparent elements.
-					Use a background color and set opacity to 1% as a workaround.(see CSS file) */
+				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
+				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$("<div id='zoomBox'></div>").appendTo("body");
 			}
-
-			// reset the zoom box
-			$("#zoomBox").off().css({ cursor:'crosshair', width:zoomBoxWidth + 'px', height:zoomBoxHeight + 'px', top:zoomBoxPosTop+'px', left:zoomBoxPosLeft+'px' });
+			$("#zoomBox").off().css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
 			$("#zoomBox").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 
-			// add the zoom area if it has not been created yet.
+			// add the "zoomSelectedArea"
 			if($("#zoomArea").length == 0) {
 				$("<div id='zoomArea'></div>").appendTo("body");
 			}
+			$("#zoomArea").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
 
-			// reset the area box
-			$("#zoomArea").off().css({ top:zoomBoxPosTop+'px', height:zoomAreaHeight+'px' });
-			init_ZoomAction(image);
-
-			// add two markers if they has not been created yet.
+			// add two markers for the advanced mode
 			if($("#zoom-marker-1").length == 0) {
 				$('<div id="zoom-excluded-area-1" class="zoomExcludedArea"></div>').appendTo("body");
 				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
@@ -218,9 +183,7 @@
 				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
 				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
 			}
-
-			// basic setup for both markers
-			$(".zoom-marker-arrow-up").css({ top:(zoomBoxHeight-6) + 'px' });
+			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
 
 			// add right click menu if not being defined so far
 			if($("#zoom-menu").length == 0) {
@@ -293,7 +256,10 @@
 					+ 		'<div class="ui-icon ui-icon-close"></div><span class="zoomContextMenuAction__close">Close</span>'
 					+ '</div>').appendTo('body');
 			}
+
 			zoomContextMenu_init();
+
+			init_ZoomAction(image);
 		}
 
 
@@ -310,7 +276,7 @@
 
 			for(var i=0; i<urlParameters.length; i++) {
 				parameter = urlParameters[i].split("=");
-				parameters[parameter[0]] = parameter[1];
+				parameters[parameter[0].replace(/^graph_/, "")] = $.isNumeric(parameter[1]) ? +parameter[1] : parameter[1];
 			}
 			return parameters;
 		}
@@ -352,7 +318,7 @@
 		*/
 		function init_ZoomAction(image) {
 
-			if(zoomCustomSettings.zoomMode == 'quick') {
+			if(zoom.custom.zoomMode == 'quick') {
 
 				$("#zoomBox").mousedown( function(e) {
 					switch(e.which) {
@@ -360,14 +326,14 @@
 						case 1:
 							zoomContextMenu_hide();
 							// reset the zoom area
-							zoomStartPos = e.pageX;
-							if(zoomCustomSettings.zoomMode != 'quick') {
-								$("#zoom-marker-1").css({ height:zoomBoxHeight+'px', top:zoomBoxPosTop+'px', left:zoomStartPos+'px', display:'block' });
-								$("#zoom-marker-tooltip-1").css({ top:zoomBoxPosTop+'px', left:zoomStartPos+'px'});
+							zoom.attr.start = e.pageX;
+							if(zoom.custom.zoomMode != 'quick') {
+								$("#zoom-marker-1").css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:zoom.attr.start+'px', display:'block' });
+								$("#zoom-marker-tooltip-1").css({ top:zoom.box.top+'px', left:zoom.attr.start+'px'});
 								//$(".zoom-marker-tooltip").css({ display:'block' });
 							}
 							$("#zoomBox").css({ cursor:'e-resize' });
-							$("#zoomArea").css({ width:'0px', left:zoomStartPos+'px' });
+							$("#zoomArea").css({ width:'0px', left:zoom.attr.start+'px' });
 						break;
 					}
 				});
@@ -388,14 +354,14 @@
 					/* leaving the left mouse button will execute a zoom in */
 					case 1:
 						/* execute a simple click if the parent node is an anchor */
-					//	if(image.parent().attr("href") !== undefined && zoomStartPos == e.pageX) {
+					//	if(image.parent().attr("href") !== undefined && zoom.attr.start == e.pageX) {
 					//		open(image.parent().attr("href"), "_self");
 					//		return false;
 					//	}
 
-						if(zoomCustomSettings.zoomMode == 'quick' && zoomStartPos != 'none') {
+						if(zoom.custom.zoomMode == 'quick' && zoom.attr.start != 'none') {
 							dynamicZoom(image);
-							//$("#zoom-marker-2").css({ height:zoomBoxHeight + 'px', top:zoomBoxPosTop+'px', left:(zoomBoxPosLeft+parseInt(zoomBoxWidth)-1)+'px' });
+							//$("#zoom-marker-2").css({ height:zoom.box.height + 'px', top:zoom.box.top+'px', left:(zoom.box.left+parseInt(zoom.box.width)-1)+'px' });
 						}
 					break;
 				}
@@ -446,7 +412,7 @@
 							var $this = $("#zoom-marker-" + marker);
 
 							/* place the marker and make it visible */
-							$this.css({ height:zoomBoxHeight+'px', top:zoomBoxPosTop+'px', left:e.pageX+'px', display:'block' });
+							$this.css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:e.pageX+'px', display:'block' });
 
 							/* make the excluded areas visible directly in that moment both markers are set */
 							if($("#zoom-marker-1").is(":visible") && $("#zoom-marker-2").is(":visible")) {
@@ -455,18 +421,18 @@
 								zoom.marker.distance	= zoom.marker[1].left - zoom.marker[2].left;
 
 								$("#zoom-excluded-area-1").css({
-									height:zoomBoxHeight+'px',
-									top:zoomBoxPosTop+'px',
-									left: (zoom.marker.distance > 0) ? zoom.marker[1].left : zoomBoxPosLeft,
-									width: (zoom.marker.distance > 0) ? zoomBoxPosRight - zoom.marker[1].left : zoom.marker[1].left - zoomBoxPosLeft,
+									height:zoom.box.height+'px',
+									top:zoom.box.top+'px',
+									left: (zoom.marker.distance > 0) ? zoom.marker[1].left : zoom.box.left,
+									width: (zoom.marker.distance > 0) ? zoom.box.right - zoom.marker[1].left : zoom.marker[1].left - zoom.box.left,
 									display:'block'
 								});
 
 								$("#zoom-excluded-area-2").css({
-									height:zoomBoxHeight+'px',
-									top:zoomBoxPosTop+'px',
-									left: (zoom.marker.distance < 0) ? zoom.marker[2].left : zoomBoxPosLeft,
-									width: (zoom.marker.distance < 0) ? zoomBoxPosRight - zoom.marker[2].left : zoom.marker[2].left - zoomBoxPosLeft,
+									height:zoom.box.height+'px',
+									top:zoom.box.top+'px',
+									left: (zoom.marker.distance < 0) ? zoom.marker[2].left : zoom.box.left,
+									width: (zoom.marker.distance < 0) ? zoom.box.right - zoom.marker[2].left : zoom.marker[2].left - zoom.box.left,
 									display:'block'
 								});
 							}
@@ -474,11 +440,11 @@
 
 							/* make it draggable */
 							$this.draggable({
-								containment:[ zoomBoxPosLeft-1, 0 , zoomBoxPosLeft+parseInt(zoomBoxWidth), 0 ],
+								containment:[ zoom.box.left-1, 0 , zoom.box.left+parseInt(zoom.box.width), 0 ],
 								axis: "x",
 								start:
 									function(event, ui) {
-										$("#zoom-marker-tooltip-" + marker).css({ top: ( (marker == 1) ? zoomBoxPosTop+3 : zoomBoxPosBottom-30 )+'px', left:ui.position["left"]+'px'}).fadeIn(250);
+										$("#zoom-marker-tooltip-" + marker).css({ top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px', left:ui.position["left"]+'px'}).fadeIn(250);
 									},
 								drag:
 									function(event, ui) {
@@ -486,7 +452,7 @@
 
 										/* update the timestamp shown in tooltip */
 										$("#zoom-marker-tooltip-value-" + marker).html(
-											unixTime2Date(parseInt(parseInt(graphParameters["graph_start"]) + (zoom.marker[marker].left + 1 - zoomBoxPosLeft)*secondsPerPixel)).replace(" ", "<br>")
+											unixTime2Date(parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel)).replace(" ", "<br>")
 										);
 
 										zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
@@ -510,8 +476,8 @@
 
 										//$("#zoom-marker-tooltip-1-arrow-left").css({display: (zoom.marker[marker].excludeArea == 'right') ?
 
-										$("#zoom-excluded-area-" + marker).css({ left: (zoom.marker.distance > 0) ? zoom.marker[marker].left : zoomBoxPosLeft, width: (zoom.marker.distance > 0) ? zoomBoxPosRight - zoom.marker[marker].left : zoom.marker[marker].left - zoomBoxPosLeft});
-										$("#zoom-excluded-area-" + secondmarker).css({ left: (zoom.marker.distance > 0) ? zoomBoxPosLeft : zoom.marker[secondmarker].left, width: (zoom.marker.distance > 0) ? zoom.marker[secondmarker].left - zoomBoxPosLeft : zoomBoxPosRight - zoom.marker[secondmarker].left});
+										$("#zoom-excluded-area-" + marker).css({ left: (zoom.marker.distance > 0) ? zoom.marker[marker].left : zoom.box.left, width: (zoom.marker.distance > 0) ? zoom.box.right - zoom.marker[marker].left : zoom.marker[marker].left - zoom.box.left});
+										$("#zoom-excluded-area-" + secondmarker).css({ left: (zoom.marker.distance > 0) ? zoom.box.left : zoom.marker[secondmarker].left, width: (zoom.marker.distance > 0) ? zoom.marker[secondmarker].left - zoom.box.left : zoom.box.right - zoom.marker[secondmarker].left});
 									},
 								stop:
 									function(event,ui) {
@@ -522,7 +488,7 @@
 
 							break;
 						case 2:
-							if(zoomCustomSettings.zoom3rdMouseButton != false) {
+							if(zoom.custom.zoom3rdMouseButton != false) {
 								zoomContextMenu_hide();
 								alert("double");
 							}
@@ -541,43 +507,42 @@
 		*/
 		function dynamicZoom(image){
 
-			var newGraphStartTime 	= (zoomAction == 'left2right')
-									? parseInt(parseInt(graphParameters["graph_start"]) + (zoomStartPos - zoomBoxPosLeft)*secondsPerPixel)
-									: parseInt(parseInt(graphParameters["graph_start"]) + (zoomEndPos - zoomBoxPosLeft)*secondsPerPixel);
-			var newGraphEndTime 	= (zoomAction == 'left2right')
-									? parseInt(newGraphStartTime + (zoomEndPos-zoomStartPos)*secondsPerPixel)
-									: parseInt(newGraphStartTime + (zoomStartPos-zoomEndPos)*secondsPerPixel);
+			var newGraphStartTime 	= (zoom.attr.action == 'left2right')
+									? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start - zoom.box.left)*zoom.graph.secondsPerPixel)
+									: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end - zoom.box.left)*zoom.graph.secondsPerPixel);
+			var newGraphEndTime 	= (zoom.attr.action == 'left2right')
+									? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
+									: parseInt(newGraphStartTime + (zoom.attr.start-zoom.attr.end)*zoom.graph.secondsPerPixel);
 
-			if(options.inputfieldStartTime != '' & options.inputfieldEndTime != ''){
-				$('#' + options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
-				$('#' + options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
+			if(zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
+				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
+				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				image.unbind();
 				$("#zoomBox").unbind();
 				$("#zoomArea").unbind();
 				$("#zoomBox").remove();
 				$("#zoomArea").remove();
-				graphUrl		= '';
-				localGraphID	= 0;
-				imagePosTop		= 0;
-				imagePosLeft	= 0;
 
-				zoomBoxPosTop	= 0;
-				zoomBoxPosRight	= 0;
-				zoomBoxPosLeft	= 0;
+				zoom.graph.local_graph_id	= 0;
+				zoom.image.top		= 0;
+				zoom.image.left	= 0;
 
-				zoomStartPos	= 'none';
-				zoomEndPos		= 'none';
+				zoom.box.top	= 0;
+				zoom.box.right	= 0;
+				zoom.box.left	= 0;
+
+				zoom.attr.start	= 'none';
+				zoom.attr.end		= 'none';
 				zoomAction		= 'left2right';
 
-				graphWidth		= 0;
-				graphParameters = '';
+				zoom.graph.width		= 0;
 
-				$("input[name='" + options.submitButton + "']").trigger('click');
+				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
 
 				return false;
 			}else {
-				open(locationBase + "?action=" + graphParameters["action"] + "&local_graph_id=" + graphParameters["local_graph_id"] + "&rra_id=" + graphParameters["rra_id"] + "&view_type=" + graphParameters["view_type"] + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + graphParameters["graph_height"] + "&graph_width=" + graphParameters["graph_width"] + "&title_font_size=" + graphParameters["title_font_size"], "_self");
+				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
 		}
 
@@ -604,28 +569,25 @@
 		*/
 		function zoomAction_zoom_out(multiplier){
 
-			var timeSpan = (graphParameters["graph_end"] - graphParameters["graph_start"]);
-			var secondsPerPixel = timeSpan/graphParameters["graph_width"];
-
 			multiplier--;
-			if(zoomCustomSettings.zoomOutPositioning == 'begin') {
-				var newGraphStartTime = parseInt(graphParameters["graph_start"]);
-				var newGraphEndTime = parseInt(parseInt(graphParameters["graph_end"]) + (multiplier * timeSpan));
-			}else if(zoomCustomSettings.zoomOutPositioning == 'end') {
-				var newGraphStartTime = parseInt(parseInt(graphParameters["graph_start"]) - (multiplier * timeSpan));
-				var newGraphEndTime = parseInt(graphParameters["graph_end"]);
+			if(zoom.custom.zoomOutPositioning == 'begin') {
+				var newGraphStartTime = parseInt(zoom.graph.start);
+				var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (multiplier * zoom.graph.timespan));
+			}else if(zoom.custom.zoomOutPositioning == 'end') {
+				var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (multiplier * zoom.graph.timespan));
+				var newGraphEndTime = parseInt(zoom.graph.end);
 			}else {
 				// define the new start and end time, so that the selected area will be centered per default
-				var newGraphStartTime = parseInt(parseInt(graphParameters["graph_start"]) - (0.5 * multiplier * timeSpan));
-				var newGraphEndTime = parseInt(parseInt(graphParameters["graph_end"]) + (0.5 * multiplier * timeSpan));
+				var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (0.5 * multiplier * zoom.graph.timespan));
+				var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (0.5 * multiplier * zoom.graph.timespan));
 			}
 
-			if(options.inputfieldStartTime != '' & options.inputfieldEndTime != ''){
-				$('#' + options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
-				$('#' + options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
-				$('#' + options.inputfieldStartTime).closest("form").submit();
+			if(zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
+				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
+				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
+				$('#' + zoom.options.inputfieldStartTime).closest("form").submit();
 			}else {
-				open(locationBase + "?action=" + graphParameters["action"] + "&local_graph_id=" + graphParameters["local_graph_id"] + "&rra_id=" + graphParameters["rra_id"] + "&view_type=" + graphParameters["view_type"] + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + graphParameters["graph_height"] + "&graph_width=" + graphParameters["graph_width"] + "&title_font_size=" + graphParameters["title_font_size"], "_self");
+				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
 		}
 
@@ -635,23 +597,23 @@
 		*/
 		function drawZoomArea(event) {
 
-			if(zoomStartPos == 'none') { return; }
+			if(zoom.attr.start == 'none') { return; }
 
 			/* mouse has been moved from right to left */
-			if((event.pageX-zoomStartPos)<0) {
-				zoomAction = 'right2left';
-				zoomEndPos = (event.pageX < zoomBoxPosLeft) ? zoomBoxPosLeft : event.pageX;
-				$("#zoomArea").css({ background:'red', left:(zoomEndPos+1)+'px', width:Math.abs(zoomStartPos-zoomEndPos-1)+'px' });
+			if((event.pageX-zoom.attr.start)<0) {
+				zoom.attr.action = 'right2left';
+				zoom.attr.end = (event.pageX < zoom.box.left) ? zoom.box.left : event.pageX;
+				$("#zoomArea").css({ background:'red', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
 			/* mouse has been moved from left to right*/
 			}else {
-				zoomAction = 'left2right';
-				zoomEndPos = (event.pageX > zoomBoxPosRight) ? zoomBoxPosRight : event.pageX;
-				$("#zoomArea").css({ background:'red', left:zoomStartPos+'px', width:Math.abs(zoomEndPos-zoomStartPos-1)+'px' });
+				zoom.attr.action = 'left2right';
+				zoom.attr.end = (event.pageX > zoom.box.right) ? zoom.box.right : event.pageX;
+				$("#zoomArea").css({ background:'red', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
 			}
 			/* move second marker if necessary */
-			if(zoomCustomSettings.zoomMode != 'quick') {
-				$("#zoom-marker-2").css({ left:(zoomEndPos+1)+'px' });
-				$("#zoom-marker-tooltip-2").css({ top:zoomBoxPosTop+'px', left:(zoomEndPos-5)+'px' });
+			if(zoom.custom.zoomMode != 'quick') {
+				$("#zoom-marker-2").css({ left:(zoom.attr.end+1)+'px' });
+				$("#zoom-marker-tooltip-2").css({ top:zoom.box.top+'px', left:(zoom.attr.end-5)+'px' });
 			}
 		}
 
@@ -663,17 +625,17 @@
 		function zoomContextMenu_init(){
 
 			/* sync menu with cookie parameters */
-			$(".zoomContextMenuAction__set_zoomMode__" + zoomCustomSettings.zoomMode).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoomMarkers__" + ((zoomCustomSettings.zoomMarkers === true) ? "on" : "off") ).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoomTimestamps__" + ((zoomCustomSettings.zoomTimestamps) ? "on" : "off") ).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoomOutFactor__" + zoomCustomSettings.zoomOutFactor).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoomOutPositioning__" + zoomCustomSettings.zoomOutPositioning).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoom3rdMouseButton__" + ((zoomCustomSettings.zoom3rdMouseButton === false) ? "off" : zoomCustomSettings.zoom3rdMouseButton) ).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomMode__" + zoom.custom.zoomMode).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomMarkers__" + ((zoom.custom.zoomMarkers === true) ? "on" : "off") ).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomTimestamps__" + ((zoom.custom.zoomTimestamps) ? "on" : "off") ).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomOutFactor__" + zoom.custom.zoomOutFactor).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomOutPositioning__" + zoom.custom.zoomOutPositioning).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoom3rdMouseButton__" + ((zoom.custom.zoom3rdMouseButton === false) ? "off" : zoom.custom.zoom3rdMouseButton) ).addClass("ui-state-highlight");
 
-			if(zoomCustomSettings.zoomMode == "quick") {
+			if(zoom.custom.zoomMode == "quick") {
 				$("#zoom-menu > .advanced_mode").hide();
 			}else {
-				$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" + zoomCustomSettings.zoomOutFactor + "x)");
+				$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" + zoom.custom.zoomOutFactor + "x)");
 			}
 
 			/* init click on events */
@@ -711,7 +673,7 @@
 				function () {
 					$(this).css({backgroundColor : '#E0EDFE' , cursor : 'pointer'});
 					if ( $(this).children().size() >0 )
-						if(zoomCustomSettings.zoomMode == "quick") {
+						if(zoom.custom.zoomMode == "quick") {
 							$(this).children('.inner_li:not(.advanced_mode)').show();
 						}else {
 							$(this).children('.inner_li').show();
@@ -732,8 +694,8 @@
 		function zoomContextMenuAction_set(object, value){
 			switch(object) {
 				case "mode":
-					if( zoomCustomSettings.zoomMode != value) {
-						zoomCustomSettings.zoomMode = value;
+					if( zoom.custom.zoomMode != value) {
+						zoom.custom.zoomMode = value;
 						$('[class*=zoomContextMenuAction__set_zoomMode__]').toggleClass("ui-state-highlight");
 
 						if(value == "quick") {
@@ -741,54 +703,54 @@
 							$("#zoom-menu > .advanced_mode").hide();
 							$(".zoomContextMenuAction__zoom_out").text("Zoom Out (2x)");
 
-							zoomCustomSettings.zoomMode			= 'quick';
-							$.cookie( options.cookieName, serialize(zoomCustomSettings));
+							zoom.custom.zoomMode			= 'quick';
+							$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						}else {
 							// switch to advanced mode
 							$("#zoom-menu > .advanced_mode").show();
-							$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" +  + zoomCustomSettings.zoomOutFactor + "x)");
+							$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" +  + zoom.custom.zoomOutFactor + "x)");
 
-							zoomCustomSettings.zoomMode			= 'advanced';
-							$.cookie( options.cookieName, serialize(zoomCustomSettings));
+							zoom.custom.zoomMode			= 'advanced';
+							$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						}
 						init_ZoomAction(rrdgraph);
 					}
 					break;
 				case "markers":
-					if( zoomCustomSettings.zoomMarkers != value) {
-						zoomCustomSettings.zoomMarkers = value;
-						$.cookie( options.cookieName, serialize(zoomCustomSettings));
+					if( zoom.custom.zoomMarkers != value) {
+						zoom.custom.zoomMarkers = value;
+						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomMarkers__]').toggleClass('ui-state-highlight');
 					}
 					break;
 				case "timestamps":
-					if( zoomCustomSettings.zoomTimestamps != value) {
-						zoomCustomSettings.zoomTimestamps = value;
-						$.cookie( options.cookieName, serialize(zoomCustomSettings));
+					if( zoom.custom.zoomTimestamps != value) {
+						zoom.custom.zoomTimestamps = value;
+						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomTimestamps__]').toggleClass('ui-state-highlight');
 					}
 					break;
 				case "outfactor":
-					if( zoomCustomSettings.zoomOutFactor != value) {
-						zoomCustomSettings.zoomOutFactor = value;
-						$.cookie( options.cookieName, serialize(zoomCustomSettings));
+					if( zoom.custom.zoomOutFactor != value) {
+						zoom.custom.zoomOutFactor = value;
+						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomOutFactor__]').removeClass('ui-state-highlight');
 						$('.zoomContextMenuAction__set_zoomOutFactor__' + value).addClass('ui-state-highlight');
 						$('.zoomContextMenuAction__zoom_out').text('Zoom Out (' + value + 'x)');
 					}
 					break;
 				case "outpositioning":
-					if( zoomCustomSettings.zoomOutPositioning != value) {
-						zoomCustomSettings.zoomOutPositioning = value;
-						$.cookie( options.cookieName, serialize(zoomCustomSettings));
+					if( zoom.custom.zoomOutPositioning != value) {
+						zoom.custom.zoomOutPositioning = value;
+						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomOutPositioning__]').removeClass('ui-state-highlight');
 						$('.zoomContextMenuAction__set_zoomOutPositioning__' + value).addClass('ui-state-highlight');
 					}
 					break;
 				case "3rdmousebutton":
-					if( zoomCustomSettings.zoom3rdMouseButton != value) {
-						zoomCustomSettings.zoom3rdMouseButton = value;
-						$.cookie( options.cookieName, serialize(zoomCustomSettings));
+					if( zoom.custom.zoom3rdMouseButton != value) {
+						zoom.custom.zoom3rdMouseButton = value;
+						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoom3rdMouseButton__]').removeClass('ui-state-highlight');
 						$('.zoomContextMenuAction__set_zoom3rdMouseButton__' + ((value === false) ? "off" : value)).addClass('ui-state-highlight');
 					}
@@ -803,7 +765,7 @@
 					break;
 				case "zoom_out":
 					if(value == undefined) {
-						value = (zoomCustomSettings.zoomMode != "quick") ? zoomCustomSettings.zoomOutFactor : 2;
+						value = (zoom.custom.zoomMode != "quick") ? zoom.custom.zoomOutFactor : 2;
 					}
 					zoomAction_zoom_out(value);
 					break;
