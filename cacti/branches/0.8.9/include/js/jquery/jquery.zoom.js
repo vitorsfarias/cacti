@@ -54,7 +54,7 @@
 			// "options" contains the start input parameters
 			options: $.extend(defaults, options),
 			// "attributes" holds all values that will describe the selected area
-			attr: { start:'none', end:'none', action:'left2right', location: window.location.href.split("?") }
+			attr: { activeElement:'', start:'none', end:'none', action:'left2right', location: window.location.href.split("?") }
 		};
 
 
@@ -83,7 +83,14 @@
 			var $this = image;
 			$this.mouseenter(
 				function(){
-					zoomFunction_init($this);
+					if(zoom.attr.activeElement == '') {
+						zoom.attr.activeElement = $(this).attr('id');
+						zoomFunction_init($this);
+					// focusing another image has to trigger a reset of Zoom
+					}else if(zoom.attr.activeElement != $(this).attr('id')) {
+						zoom.attr.activeElement = $(this).attr('id');
+						zoomFunction_init($this);
+					}
 				}
 			);
 		}
@@ -158,19 +165,16 @@
 			// and reposition these elements.
 
 			// add the "zoomBox"
-			if($("#zoomBox").length == 0) {
+			if($("#zoom-box").length == 0) {
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
-				$("<div id='zoomBox'></div>").appendTo("body");
+				$("<div id='zoom-box'></div>").appendTo("body");
 			}
-			$("#zoomBox").off().css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
-			$("#zoomBox").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 
 			// add the "zoomSelectedArea"
-			if($("#zoomArea").length == 0) {
-				$("<div id='zoomArea'></div>").appendTo("body");
+			if($("#zoom-area").length == 0) {
+				$("<div id='zoom-area'></div>").appendTo("body");
 			}
-			$("#zoomArea").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
 
 			// add two markers for the advanced mode
 			if($("#zoom-marker-1").length == 0) {
@@ -183,7 +187,8 @@
 				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
 				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
 			}
-			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
+
+			zoomElemtents_reset()
 
 			// add right click menu if not being defined so far
 			if($("#zoom-menu").length == 0) {
@@ -263,6 +268,19 @@
 		}
 
 
+		/**
+		 * resets all elements of Zoom
+		 **/
+		function zoomElemtents_reset() {
+			$('div[id^="zoom-"]').each( function () {
+				$(this).removeAttr('style');
+			});
+			$("#zoom-box").off().css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
+			$("#zoom-box").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$("#zoom-area").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
+			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
+		}
+
 		/*
 		* splits off the parameters of a given url
 		*/
@@ -320,7 +338,7 @@
 
 			if(zoom.custom.zoomMode == 'quick') {
 
-				$("#zoomBox").mousedown( function(e) {
+				$("#zoom-box").mousedown( function(e) {
 					switch(e.which) {
 						/* clicking the left mouse button will initiates a zoom-in */
 						case 1:
@@ -332,14 +350,14 @@
 								$("#zoom-marker-tooltip-1").css({ top:zoom.box.top+'px', left:zoom.attr.start+'px'});
 								//$(".zoom-marker-tooltip").css({ display:'block' });
 							}
-							$("#zoomBox").css({ cursor:'e-resize' });
-							$("#zoomArea").css({ width:'0px', left:zoom.attr.start+'px' });
+							$("#zoom-box").css({ cursor:'e-resize' });
+							$("#zoom-area").css({ width:'0px', left:zoom.attr.start+'px' });
 						break;
 					}
 				});
 
 			/* register all mouse up events */
-			$("#zoomBox").mouseup(function(e) {
+			$("#zoom-box").mouseup(function(e) {
 				switch(e.which) {
 					case 3:
 						//zoomAction_zoom_out()();
@@ -368,14 +386,14 @@
 			});
 
 			/* stretch the zoom area in that direction the user moved the mouse pointer */
-			$("#zoomBox").mousemove( function(e) { drawZoomArea(e) } );
+			$("#zoom-box").mousemove( function(e) { drawZoomArea(e) } );
 
 			/* stretch the zoom area in that direction the user moved the mouse pointer.
 			   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-			$("#zoomArea").mousemove( function(e) { drawZoomArea(e); } );
+			$("#zoom-area").mousemove( function(e) { drawZoomArea(e); } );
 
 			/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
-			$("#zoomBox").mouseout( function(e) { drawZoomArea(e) } );
+			$("#zoom-box").mouseout( function(e) { drawZoomArea(e) } );
 
 
 
@@ -392,7 +410,7 @@
 
 			}else{
 
-				$("#zoomBox").off("mousedown").on("mousedown", function(e) {
+				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
 						case 1:
 							/* hide context menu if open */
@@ -406,7 +424,6 @@
 								var marker = $("#zoom-marker-1").is(":hidden") ? 1 : 2;
 								var secondmarker = (marker == 1) ? 2 : 1;
 							}
-
 
 							/* select marker */
 							var $this = $("#zoom-marker-" + marker);
@@ -436,7 +453,6 @@
 									display:'block'
 								});
 							}
-
 
 							/* make it draggable */
 							$this.draggable({
@@ -519,10 +535,10 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				image.unbind();
-				$("#zoomBox").unbind();
-				$("#zoomArea").unbind();
-				$("#zoomBox").remove();
-				$("#zoomArea").remove();
+				$("#zoom-box").unbind();
+				$("#zoom-area").unbind();
+				$("#zoom-box").remove();
+				$("#zoom-area").remove();
 
 				zoom.graph.local_graph_id	= 0;
 				zoom.image.top		= 0;
@@ -603,12 +619,12 @@
 			if((event.pageX-zoom.attr.start)<0) {
 				zoom.attr.action = 'right2left';
 				zoom.attr.end = (event.pageX < zoom.box.left) ? zoom.box.left : event.pageX;
-				$("#zoomArea").css({ background:'red', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
+				$("#zoom-area").css({ background:'red', left:(zoom.attr.end+1)+'px', width:Math.abs(zoom.attr.start-zoom.attr.end-1)+'px' });
 			/* mouse has been moved from left to right*/
 			}else {
 				zoom.attr.action = 'left2right';
 				zoom.attr.end = (event.pageX > zoom.box.right) ? zoom.box.right : event.pageX;
-				$("#zoomArea").css({ background:'red', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
+				$("#zoom-area").css({ background:'red', left:zoom.attr.start+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
 			}
 			/* move second marker if necessary */
 			if(zoom.custom.zoomMode != 'quick') {
