@@ -1,4 +1,4 @@
-#zoomBox {
+#zoom-box {
 	background:transparent;
 	z-index:auto;
 	filter:alpha(opacity=10);
@@ -16,7 +16,7 @@
 	margin:0;
 }
 
-#zoomArea {
+#zoom-area {
 	cursor:e-resize;
 	background-color:red;
 	height:0px;
