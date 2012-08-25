@@ -35,34 +35,34 @@ if($system_config == false) {
 }
 
 define("CACTI_SYSTEM_TIME_ZONE", $system_return);
-define("CACTI_SYSTEM_POSIX_TZ_STRING", get_posix_tz_string(CACTI_SYSTEM_TIME_ZONE));
+#define("CACTI_SYSTEM_POSIX_TZ_STRING", get_posix_tz_string(CACTI_SYSTEM_TIME_ZONE));
 
 /* return to main if time zone support has been deactivated */
-if (read_config_option("i18n_timezone_support") == 0) {
-	define("CACTI_CUSTOM_TIME_ZONE", CACTI_SYSTEM_TIME_ZONE);
-	define("CACTI_CUSTOM_POSIX_TZ_STRING", CACTI_SYSTEM_POSIX_TZ_STRING);
-	return;
-}
+#if (read_config_option("i18n_timezone_support") == 0) {
+#	define("CACTI_CUSTOM_TIME_ZONE", CACTI_SYSTEM_TIME_ZONE);
+#	define("CACTI_CUSTOM_POSIX_TZ_STRING", CACTI_SYSTEM_POSIX_TZ_STRING);
+#	return;
+#}
 
 /* determine whether or not we can support a different time zone */
 /* user requests another timezone (Validation is not required!)*/
-if (isset($_GET['time_zone'])) {
-	if(init_time_zone($_GET['time_zone'])) {
-		set_user_config_option('time_zone', $_GET['time_zone']);
-	}
+#if (isset($_GET['time_zone'])) {
+#	if(init_time_zone($_GET['time_zone'])) {
+#		set_user_config_option('time_zone', $_GET['time_zone']);
+#	}
 
 /* time zone definition is stored in the SESSION */
-}elseif (isset($_SESSION['sess_i18n_timezone'])) {
-	init_time_zone($_SESSION['sess_i18n_timezone'], false);
+#}elseif (isset($_SESSION['sess_i18n_timezone'])) {
+#	init_time_zone($_SESSION['sess_i18n_timezone'], false);
 
 /* look up for user customized time zone stored in Cacti DB */
-}elseif ($time_zone = read_user_config_option('time_zone')) {
-	init_time_zone($time_zone);
+#}elseif ($time_zone = read_user_config_option('time_zone')) {
+#	init_time_zone($time_zone);
 
-/* use the default time zone defined under "general" or fall back to sytsem time zone*/
-}else {
-	init_time_zone(read_config_option("i18n_default_timezone"), false);
-}
+/* use the default time zone defined under "general" or fall back to system time zone*/
+#}else {
+#	init_time_zone(read_config_option("i18n_default_timezone"), false);
+#}
 
 
 /**
