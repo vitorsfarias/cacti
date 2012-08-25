@@ -144,7 +144,7 @@ function item_edit() {
 
 		if ($tree_item["local_graph_id"] > 0) { $db_type = TREE_ITEM_TYPE_GRAPH; }
 		if ($tree_item["title"] != "") { $db_type = TREE_ITEM_TYPE_HEADER; }
-		if ($tree_item["host_id"] > 0) { $db_type = TREE_ITEM_TYPE_HOST; }
+		if ($tree_item["host_id"] > 0) { $db_type = TREE_ITEM_TYPE_DEVICE; }
 	}
 
 	if (isset($_GET["type_select"])) {
@@ -258,7 +258,7 @@ function item_edit() {
 		</tr>
 		<?php
 		break;
-	case TREE_ITEM_TYPE_HOST:
+	case TREE_ITEM_TYPE_DEVICE:
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],0); ?>
 			<td width="50%">
 				<font class="textEditTitle">Host</font><br>
