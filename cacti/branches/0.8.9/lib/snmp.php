@@ -48,7 +48,9 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	if ((snmp_get_method($version) == SNMP_METHOD_PHP) &&
 		(!strlen($context) || ($version != 3))) {
 		/* make sure snmp* is verbose so we can see what types of data
-		we are getting back */
+		   we are getting back
+		   remember: php snmp function expect timeout to be in microseconds 
+		*/
 		snmp_set_quick_print(0);
 
 		if ($version == "1") {
@@ -67,7 +69,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		}
 
 		if ($snmp_value === false) {
-			cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
+			cacti_log("WARNING: PHP-SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
 		}
 	}else {
 		$snmp_value = '';
@@ -133,7 +135,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 	}
 
 	if (substr_count($snmp_value, "Timeout:")) {
-		cacti_log("WARNING: SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
+		cacti_log("WARNING: NET-SNMP Get Timeout for Host:'$hostname', and OID:'$oid'", false);
 	}
 
 	/* strip out non-snmp data */
