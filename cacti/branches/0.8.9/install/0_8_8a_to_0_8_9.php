@@ -278,6 +278,12 @@ function upgrade_to_0_8_9() {
 	# add SHIFT
 	$columns[] = array('name' => 'shift', 'type' => 'char(2)', 'default' => NULL, 'after' => 'vdef_id');
 	plugin_upgrade_columns('0.8.9', 'graph_templates_item', $columns, $show_output, $no_drop_items);
+	
+
+	/* changes to insert parent_id */
+	unset($columns);
+	$columns[] = array('name' => 'parent_id', 'type' => 'bigint(20)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0, 'after' => 'graph_tree_id');
+	plugin_upgrade_columns('0.8.9', 'graph_tree_items', $columns, $show_output, $no_drop_items);
 
 	/* add the poller id for devices to allow for multiple pollers */
 	unset($columns);
