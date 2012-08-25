@@ -455,16 +455,16 @@ function tree_add_tree_names_to_actions_array() {
 /** tree_item_save - add a tree item to the database
  *
  * @param int $id
- * @param int $tree_id
- * @param string $type
- * @param int $parent_tree_item_id
- * @param string $title
- * @param int $local_graph_id
- * @param int $rra_id
- * @param int $device_id
- * @param int $device_grouping_type
- * @param int $sort_children_type
- * @param string $propagate_changes
+ * @param int $tree_id				- the tree, to which the item shall be added
+ * @param string $type				- type of tree item, e.g. device, graph, ...
+ * @param int $parent_tree_item_id	- parent tree item, below which the current item shall be added
+ * @param string $title				- title, in case tree item type is a header
+ * @param int $local_graph_id		- graph id, in case item type is a graph
+ * @param int $rra_id				- rra to be used for display
+ * @param int $device_id			- device id, in case item type is a device
+ * @param int $device_grouping_type	- grouping type (e.g. alpha) for a device item
+ * @param int $sort_children_type	- shall item children be sorted
+ * @param string $propagate_changes - shall changes be propagated
  * @return unknown_type
  */
 function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, $rra_id,
@@ -513,7 +513,7 @@ function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $loc
 	$save["local_graph_id"] 	= form_input_validate($local_graph_id, "local_graph_id", "", true, 3);
 	$save["rra_id"]				= form_input_validate($rra_id, "rra_id", "", true, 3);
 	$save["host_id"] 			= form_input_validate($device_id, "host_id", "", true, 3);
-	$save["device_grouping_type"] = form_input_validate($device_grouping_type, "device_grouping_type", "", true, 3);
+	$save["host_grouping_type"] = form_input_validate($device_grouping_type, "host_grouping_type", "", true, 3);
 	$save["sort_children_type"] = form_input_validate($sort_children_type, "sort_children_type", "", true, 3);
 
 	$tree_item_id = 0;
