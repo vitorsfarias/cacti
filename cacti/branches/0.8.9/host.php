@@ -177,7 +177,66 @@ function form_actions() {
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
-		if ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
+		if ($_POST["drp_action"] == "1") { /* delete */
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+
+			$data_sources_to_act_on = array();
+			$graphs_to_act_on       = array();
+			$devices_to_act_on      = array();
+
+			for ($i=0; $i<count($selected_items); $i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				$data_sources = db_fetch_assoc("select
+					data_local.id as local_data_id
+					from data_local
+					where " . array_to_sql_or($selected_items, "data_local.host_id"));
+
+				if (sizeof($data_sources) > 0) {
+				foreach ($data_sources as $data_source) {
+					$data_sources_to_act_on[] = $data_source["local_data_id"];
+				}
+				}
+
+				if ($_POST["delete_type"] == 2) {
+					$graphs = db_fetch_assoc("select
+						graph_local.id as local_graph_id
+						from graph_local
+						where " . array_to_sql_or($selected_items, "graph_local.host_id"));
+
+					if (sizeof($graphs) > 0) {
+					foreach ($graphs as $graph) {
+						$graphs_to_act_on[] = $graph["local_graph_id"];
+					}
+					}
+				}
+
+				$devices_to_act_on[] = $selected_items[$i];
+			}
+
+			switch ($_POST["delete_type"]) {
+				case '1': /* leave graphs and data_sources in place, but disable the data sources */
+					data_source_disable_multi($data_sources_to_act_on);
+
+					plugin_hook_function('data_source_remove', $data_sources_to_act_on);
+
+					break;
+				case '2': /* delete graphs/data sources tied to this device */
+					data_source_remove_multi($data_sources_to_act_on);
+
+					api_graph_remove_multi($graphs_to_act_on);
+
+					plugin_hook_function('graphs_remove', $graphs_to_act_on);
+
+					break;
+			}
+
+			device_remove_multi($devices_to_act_on);
+
+			plugin_hook_function('device_remove', $devices_to_act_on);
+		}elseif ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -250,65 +309,6 @@ function form_actions() {
 
 				push_out_host($selected_items[$i]);
 			}
-		}elseif ($_POST["drp_action"] == "1") { /* delete */
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
-
-			$data_sources_to_act_on = array();
-			$graphs_to_act_on       = array();
-			$devices_to_act_on      = array();
-
-			for ($i=0; $i<count($selected_items); $i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				$data_sources = db_fetch_assoc("select
-					data_local.id as local_data_id
-					from data_local
-					where " . array_to_sql_or($selected_items, "data_local.host_id"));
-
-				if (sizeof($data_sources) > 0) {
-				foreach ($data_sources as $data_source) {
-					$data_sources_to_act_on[] = $data_source["local_data_id"];
-				}
-				}
-
-				if ($_POST["delete_type"] == 2) {
-					$graphs = db_fetch_assoc("select
-						graph_local.id as local_graph_id
-						from graph_local
-						where " . array_to_sql_or($selected_items, "graph_local.host_id"));
-
-					if (sizeof($graphs) > 0) {
-					foreach ($graphs as $graph) {
-						$graphs_to_act_on[] = $graph["local_graph_id"];
-					}
-					}
-				}
-
-				$devices_to_act_on[] = $selected_items[$i];
-			}
-
-			switch ($_POST["delete_type"]) {
-				case '1': /* leave graphs and data_sources in place, but disable the data sources */
-					data_source_disable_multi($data_sources_to_act_on);
-
-					plugin_hook_function('data_source_remove', $data_sources_to_act_on);
-
-					break;
-				case '2': /* delete graphs/data sources tied to this device */
-					data_source_remove_multi($data_sources_to_act_on);
-
-					api_graph_remove_multi($graphs_to_act_on);
-
-					plugin_hook_function('graphs_remove', $graphs_to_act_on);
-
-					break;
-			}
-
-			device_remove_multi($devices_to_act_on);
-
-			plugin_hook_function('device_remove', $devices_to_act_on);
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
@@ -317,7 +317,7 @@ function form_actions() {
 				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
-				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
+				tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_DEVICE, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
 		} else {
 			plugin_hook_function('device_action_execute', $_POST['drp_action']);
@@ -1330,7 +1330,7 @@ function host() {
 	$url_page_select = get_page_list(get_request_var_request("page"), MAX_DISPLAY_PAGES, get_request_var_request("host_rows"), $total_rows, "host.php?filter=" . get_request_var_request("filter") . "&host_template_id=" . get_request_var_request("host_template_id") . "&host_status=" . get_request_var_request("host_status"));
 
 	$nav = "<tr bgcolor='#" . $colors["header"] . "'>
-			<td colspan='11'>
+			<td colspan='12'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
 						<td align='left' class='textHeaderDark'>
@@ -1359,7 +1359,8 @@ function host() {
 		"hostname" => array("Hostname", "ASC"),
 		"cur_time" => array("Current (ms)", "DESC"),
 		"avg_time" => array("Average (ms)", "DESC"),
-		"availability" => array("Availability", "ASC"));
+		"availability" => array("Availability", "ASC"),
+		"polling_time" => array("Polling Time", "ASC"));
 
 	html_header_sort_checkbox($display_text, get_request_var_request("sort_column"), get_request_var_request("sort_direction"), false);
 
@@ -1378,6 +1379,7 @@ function host() {
 			form_selectable_cell(round(($host["cur_time"]), 2), $host["id"]);
 			form_selectable_cell(round(($host["avg_time"]), 2), $host["id"]);
 			form_selectable_cell(round($host["availability"], 2), $host["id"]);
+			form_selectable_cell(round($host["polling_time"], 2), $host["id"]);
 			form_checkbox_cell($host["description"], $host["id"]);
 			form_end_row();
 		}
