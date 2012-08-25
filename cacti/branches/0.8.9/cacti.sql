@@ -1964,6 +1964,7 @@ INSERT INTO graph_tree VALUES (1,1,'Default Tree');
 CREATE TABLE graph_tree_items (
   id mediumint(8) unsigned NOT NULL auto_increment,
   graph_tree_id smallint(5) unsigned NOT NULL default '0',
+  `parent_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   local_graph_id mediumint(8) unsigned NOT NULL default '0',
   rra_id smallint(8) unsigned NOT NULL default '0',
   title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci default NULL,
