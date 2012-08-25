@@ -837,7 +837,7 @@ function displayTreeNodes($tree_id, $nodeType = "", $parentNode = "", $quietMode
 			$current_type = TREE_ITEM_TYPE_HEADER;
 			if ($node["local_graph_id"] > 0) { $current_type = TREE_ITEM_TYPE_GRAPH; }
 			if ($node["title"] != "") { $current_type = TREE_ITEM_TYPE_HEADER; }
-			if ($node["host_id"] > 0) { $current_type = TREE_ITEM_TYPE_HOST; }
+			if ($node["host_id"] > 0) { $current_type = TREE_ITEM_TYPE_DEVICE; }
 
 			switch ($current_type) {
 				case TREE_ITEM_TYPE_HEADER:
@@ -901,7 +901,7 @@ function displayTreeNodes($tree_id, $nodeType = "", $parentNode = "", $quietMode
 					}
 					break;
 
-				case TREE_ITEM_TYPE_HOST:
+				case TREE_ITEM_TYPE_DEVICE:
 					if ($nodeType == '' || $nodeType == 'host') {
 						if ($parentNode == '' || $parentNode == $parentID) {
 							echo $tree_item_types[$current_type]."\t";
