@@ -100,6 +100,22 @@ $image_types = array(
 	IMAGE_TYPE_GIF	=> 'GIF',
 	IMAGE_TYPE_SVG	=> 'SVG',
 );
+	
+/* the following fields will be searched for graph variables */
+$variable_fields = array(
+	"text_format" => array(
+		"process_no_legend" => false	# conditional legend processing
+		),
+	"value" => array(
+		"process_no_legend" => true		# unconditional legend processing
+		),
+	"cdef_cache" => array(
+		"process_no_legend" => true		# unconditional legend processing
+		),
+	"vdef_cache" => array(
+		"process_no_legend" => true		# unconditional legend processing
+		)
+	);
 
 $graph_color_alpha = array(
 		'00' => '  0%',
