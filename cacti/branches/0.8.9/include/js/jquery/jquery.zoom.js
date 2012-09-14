@@ -248,12 +248,12 @@
 
 			// add two markers for the advanced mode
 			if($("#zoom-marker-1").length == 0) {
-				$('<div id="zoom-excluded-area-1" class="zoomExcludedArea"></div>').appendTo("body");
+				$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo("body");
 				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
 				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
 			}
 			if($("#zoom-marker-2").length == 0) {
-				$('<div id="zoom-excluded-area-2" class="zoomExcludedArea"></div>').appendTo("body");
+				$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo("body");
 				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
 				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
 			}
@@ -346,6 +346,7 @@
 			$("#zoom-box").off().css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
 			$("#zoom-box").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$("#zoom-area").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
+			$(".zoom-area-excluded").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
 			$(".zoom-marker-tooltip-value").disableSelection();
 		}
