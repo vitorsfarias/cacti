@@ -347,6 +347,7 @@
 			$("#zoom-box").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$("#zoom-area").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
 			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
+			$(".zoom-marker-tooltip-value").disableSelection();
 		}
 
 
