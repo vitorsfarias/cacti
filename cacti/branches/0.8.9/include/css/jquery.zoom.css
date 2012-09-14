@@ -32,8 +32,7 @@
 	margin:0';
 }
 
-.zoomExcludedArea {
-	cursor:e-resize;
+.zoom-area-excluded {
 	background-color:black;
 	height:0px;
 	position:absolute;
