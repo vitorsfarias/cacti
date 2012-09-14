@@ -24,6 +24,7 @@
 /* requirements:
 	jQuery 1.7.x or above
 	jQuery UI 1.8.x or above
+	jQuery cookie plugin
 */
 
 (function($){
@@ -41,6 +42,8 @@
 
 		// define global variables / objects here
 		var zoom = {
+			// "initiator" is the element that initiates Zoom
+			initiator: $(this),
 			// "image" means the image tag and its properties
 			image: { top:0, left:0, width:0, height:0 },
 			// "graph" stands for the rrdgraph itself excluding legend, graph title etc.
@@ -73,30 +76,14 @@
 		$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: null} );
 
 		// support jQuery's concatination
-		return this.each(function() { zoom_init( $(this) );	});
+		return this.each(function() { zoom_init( $(this) ); });
 
 
-		/* ++++++++++++++++++++++++ Functions +++++++++++++++++++++++++++++++ */
+		/* ++++++++++++++++++++ Universal Functions +++++++++++++++++++++++++ */
 
-		/* init zoom */
-		function zoom_init(image) {
-			var $this = image;
-			$this.mouseenter(
-				function(){
-					if(zoom.attr.activeElement == '') {
-						zoom.attr.activeElement = $(this).attr('id');
-						zoomFunction_init($this);
-					// focusing another image has to trigger a reset of Zoom
-					}else if(zoom.attr.activeElement != $(this).attr('id')) {
-						zoom.attr.activeElement = $(this).attr('id');
-						zoomFunction_init($this);
-					}
-				}
-			);
-		}
-
-
-		/* check if image has been already loaded or if broken */
+		/**
+		 * checks if an image has been already loaded or if the link is broken
+		 **/
 		function isReady(image){
 			if(typeof image[0].naturalWidth !== undefined && image[0].naturalWidth == 0) {
 				return false;
@@ -108,6 +95,89 @@
 			return true;
 		}
 
+		/**
+		 * splits off the parameters of a given url
+		 **/
+		function getUrlVars(url) {
+			var parameters = [], name, value;
+
+			urlBaseAndParameters = url.split("?");
+			urlBase = urlBaseAndParameters[0];
+			urlParameters = urlBaseAndParameters[1].split("&");
+			parameters["urlBase"] = urlBase;
+
+			for(var i=0; i<urlParameters.length; i++) {
+				parameter = urlParameters[i].split("=");
+				parameters[parameter[0].replace(/^graph_/, "")] = $.isNumeric(parameter[1]) ? +parameter[1] : parameter[1];
+			}
+			return parameters;
+		}
+
+		/**
+		 * transforms an object into a comma separated string of key-value pairs
+		 **/
+		function serialize(object){
+			var str = "";
+			for(var key in object) { str += (key + '=' + object[key] + ','); }
+			return str.slice(0, -1);
+		}
+
+		/**
+		 * transforms a comma separated string of key-values pairs into an object
+		 * including a change of the value type from string to boolean or numeric if reasonable.
+		 **/
+		function unserialize(string){
+			var obj = new Array();
+			pairs = string.split(',');
+			for(var i=0; i<pairs.length; i++) {
+				pair = pairs[i].split("=");
+				if(pair[1] == "true") {
+					pair[1] = true;
+				}else if(pair[1] == "false") {
+					pair[1] = false;
+				}else if($.isNumeric(pair[1])) {
+					pair[1] = +pair[1];
+				}
+				obj[pair[0]] = pair[1];
+			}
+			return obj;
+		}
+
+		/**
+		 * converts a Unix time stamp to a formatted date string
+		 **/
+		function unixTime2Date(unixTime){
+			var date	= new Date(unixTime*1000);
+			var year	= date.getFullYear();
+			var month	= ((date.getMonth()+1) < 9 ) ? '0' + (date.getMonth()+1) : date.getMonth()+1;
+			var day		= (date.getDate() > 9) ? date.getDate() : '0' + date.getDate();
+			var hours	= (date.getHours() > 9) ? date.getHours() : '0' + date.getHours();
+			var minutes	= (date.getMinutes() > 9) ? date.getMinutes() : '0' + date.getMinutes();
+			var seconds	= (date.getSeconds() > 9) ? date.getSeconds() : '0' + date.getSeconds();
+
+			var formattedTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+			return formattedTime;
+		}
+
+
+		/* +++++++++++++++++++++++ Core Functions +++++++++++++++++++++++++++ */
+
+		/* init zoom */
+		function zoom_init(image) {
+			var $this = image;
+			$this.mouseenter(
+				function(){
+					if(zoom.attr.activeElement == '') {
+						zoom.attr.activeElement = $(this).attr('id');
+						zoomFunction_init($this);
+					// focusing another image will trigger a reset of Zoom
+					}else if(zoom.attr.activeElement != $(this).attr('id')) {
+						zoom.attr.activeElement = $(this).attr('id');
+						zoomFunction_init($this);
+					}
+				}
+			);
+		}
 
 		function zoomFunction_init(image) {
 
@@ -188,9 +258,7 @@
 				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
 			}
 
-			zoomElemtents_reset()
-
-			// add right click menu if not being defined so far
+			// add the context (right click) menu
 			if($("#zoom-menu").length == 0) {
 				$('<div id="zoom-menu" class="zoom-menu">'
 					+ '<div class="first_li">'
@@ -262,11 +330,11 @@
 					+ '</div>').appendTo('body');
 			}
 
+			zoomElemtents_reset()
 			zoomContextMenu_init();
 
 			init_ZoomAction(image);
 		}
-
 
 		/**
 		 * resets all elements of Zoom
@@ -281,55 +349,9 @@
 			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
 		}
 
-		/*
-		* splits off the parameters of a given url
-		*/
-		function getUrlVars(url) {
-			var parameters = [], name, value;
 
-			urlBaseAndParameters = url.split("?");
-			urlBase = urlBaseAndParameters[0];
-			urlParameters = urlBaseAndParameters[1].split("&");
-			parameters["urlBase"] = urlBase;
 
-			for(var i=0; i<urlParameters.length; i++) {
-				parameter = urlParameters[i].split("=");
-				parameters[parameter[0].replace(/^graph_/, "")] = $.isNumeric(parameter[1]) ? +parameter[1] : parameter[1];
-			}
-			return parameters;
-		}
 
-		/**
-		 *
-		 * @access public
-		 * @return void
-		 **/
-		function serialize(object){
-			var str = "";
-			for(var key in object) { str += (key + '=' + object[key] + ','); }
-			return str.slice(0, -1);
-		}
-
-		/**
-		 *
-		 * @access public
-		 * @return void
-		 **/
-		function unserialize(string){
-			var obj = new Array();
-			pairs = string.split(',');
-
-			for(var i=0; i<pairs.length; i++) {
-				pair = pairs[i].split("=");
-				if(pair[1] == "true") {
-					pair[1] = true;
-				}else if(pair[1] == "false") {
-					pair[1] = false;
-				}
-				obj[pair[0]] = pair[1];
-			}
-			return obj;
-		}
 
 		/*
 		* registers all the different mouse click event handler
@@ -460,7 +482,10 @@
 								axis: "x",
 								start:
 									function(event, ui) {
-										$("#zoom-marker-tooltip-" + marker).css({ top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px', left:ui.position["left"]+'px'}).fadeIn(250);
+										$("#zoom-marker-tooltip-" + marker).css({ top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px', left:ui.position["left"]+'px'});
+										if(zoom.custom.zoomTimestamps) {
+											$("#zoom-marker-tooltip-" + marker).fadeIn(500);
+										}
 									},
 								drag:
 									function(event, ui) {
@@ -563,21 +588,6 @@
 		}
 
 
-		/*
-		* converts a Unix time stamp to a formatted date string
-		*/
-		function unixTime2Date(unixTime){
-			var date	= new Date(unixTime*1000);
-			var year	= date.getFullYear();
-			var month	= ((date.getMonth()+1) < 9 ) ? '0' + (date.getMonth()+1) : date.getMonth()+1;
-			var day		= (date.getDate() > 9) ? date.getDate() : '0' + date.getDate();
-			var hours	= (date.getHours() > 9) ? date.getHours() : '0' + date.getHours();
-			var minutes	= (date.getMinutes() > 9) ? date.getMinutes() : '0' + date.getMinutes();
-			var seconds	= (date.getSeconds() > 9) ? date.getSeconds() : '0' + date.getSeconds();
-
-			var formattedTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-			return formattedTime;
-		}
 
 
 		/*
@@ -729,7 +739,8 @@
 							zoom.custom.zoomMode			= 'advanced';
 							$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						}
-						init_ZoomAction(rrdgraph);
+						zoomElemtents_reset();
+						init_ZoomAction(zoom.initiator);
 					}
 					break;
 				case "markers":
@@ -744,6 +755,11 @@
 						zoom.custom.zoomTimestamps = value;
 						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomTimestamps__]').toggleClass('ui-state-highlight');
+						if(zoom.custom.zoomTimestamps) {
+							$('.zoom-marker-tooltip').fadeIn(500);
+						}else {
+							$('.zoom-marker-tooltip').fadeOut(500);
+						}
 					}
 					break;
 				case "outfactor":
