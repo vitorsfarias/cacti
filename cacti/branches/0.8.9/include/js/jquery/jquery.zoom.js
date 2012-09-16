@@ -51,7 +51,7 @@
 			// "box" describes the area in front of the graph whithin jQueryZoom will allow interaction
 			box: { top:0, left:0, right:0, width:0, height:0 },
 			// "markers" are selectors useable within the advanced mode
-			marker: { 1 : {}, 2 : {} },
+			marker: { 1 : { placed:false }, 2 : { placed:false} },
 			// "custom" holds the local configuration done by the user
 			custom: {},
 			// "options" contains the start input parameters
@@ -69,7 +69,7 @@
 		if(zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
 		if(zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
 		if(zoom.custom.zoomMarkers == undefined) zoom.custom.zoomMarkers = true;
-		if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = true;
+		if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
 		if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
 
 		// create or update a session cookie
@@ -250,13 +250,15 @@
 			if($("#zoom-marker-1").length == 0) {
 				$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo("body");
 				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
-				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
+				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-1-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('body');
 			}
 			if($("#zoom-marker-2").length == 0) {
 				$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo("body");
 				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo("body");
-				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="test-arrow-left"></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="test-arrow-right"></div></div>').appendTo('body');
+				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-2-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('body');
 			}
+			zoom.marker[1].placed = false;
+			zoom.marker[2].placed = false;
 
 			// add the context (right click) menu
 			if($("#zoom-menu").length == 0) {
@@ -291,13 +293,14 @@
 					+ 						'<span class="zoomContextMenuAction__set_zoomMarkers__on">Enabled</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomMarkers__off">Disabled</span>'
 					+ 					'</div>'
-					+				'</div>'
+					+ 				'</div>'
 					+ 				'<div class="sec_li"><span>Timestamps</span></span>'
 					+ 					'<div class="inner_li advanced_mode">'
-					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Enabled</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__off">Disabled</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Always On</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">Auto</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__off">Always Off</span>'
 					+ 					'</div>'
-					+				'</div>'
+					+ 				'</div>'
 					+ 				'<div class="sep_li"></div>'
 					+ 				'<div class="sec_li"><span>Zoom Out Factor</span>'
 					+ 					'<div class="inner_li advanced_mode">'
@@ -314,14 +317,14 @@
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">Center</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
 					+ 					'</div>'
-					+				'</div>'
+					+ 				'</div>'
 					+ 				'<div class="sec_li"><span>3rd Mouse Button</span>'
 					+ 					'<div class="inner_li advanced_mode">'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">Disabled</span>'
 					+ 					'</div>'
-					+				'</div>'
+					+ 				'</div>'
 					+ 			'</div>'
 					+ 		'</div>'
 					+ '<div class="sep_li"></div>'
@@ -329,7 +332,6 @@
 					+ 		'<div class="ui-icon ui-icon-close"></div><span class="zoomContextMenuAction__close">Close</span>'
 					+ '</div>').appendTo('body');
 			}
-
 			zoomElemtents_reset()
 			zoomContextMenu_init();
 
@@ -359,10 +361,8 @@
 		* registers all the different mouse click event handler
 		*/
 		function init_ZoomAction(image) {
-
 			if(zoom.custom.zoomMode == 'quick') {
-
-				$("#zoom-box").mousedown( function(e) {
+				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
 						/* clicking the left mouse button will initiates a zoom-in */
 						case 1:
@@ -441,11 +441,11 @@
 							zoomContextMenu_hide();
 
 							/* find out which marker has to be added */
-							if($("#zoom-marker-1").is(":visible") && $("#zoom-marker-2").is(":visible")) {
+							if(zoom.marker[1].placed && zoom.marker[2].placed) {
 								/* both markers are in - do nothing */
 								return;
 							}else {
-								var marker = $("#zoom-marker-1").is(":hidden") ? 1 : 2;
+								var marker = zoom.marker[1].placed ? 2 : 1;
 								var secondmarker = (marker == 1) ? 2 : 1;
 							}
 
@@ -454,11 +454,32 @@
 
 							/* place the marker and make it visible */
 							$this.css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:e.pageX+'px', display:'block' });
+							zoom.marker[marker].placed = true;
+							zoom.marker[marker].left = e.pageX;
+
+							/* place the marker's tooltip, update its value and make it visible if necessary (Setting: "Always On") */
+							$("#zoom-marker-tooltip-value-" + marker).html(
+								unixTime2Date(parseInt(parseInt(zoom.graph.start) + (e.pageX + 1 - zoom.box.left)*zoom.graph.secondsPerPixel)).replace(" ", "<br>")
+							);
+							zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
+
+							$("#zoom-marker-tooltip-" + marker).css({
+								top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px',
+								left:( (marker == 1) ? e.pageX - zoom.marker[marker].width : e.pageX )+'px'}
+							);
+
+							if(zoom.custom.zoomTimestamps === true) {
+								$("#zoom-marker-tooltip-" + marker).fadeIn(500);
+							}
+
+							if(e.pageX == $("#zoom-marker-tooltip-" + marker).position().left) {
+								$("#zoom-marker-tooltip-" + marker + "-arrow-right").css({ visibility:'hidden'});
+							}else {
+								$("#zoom-marker-tooltip-" + marker + "-arrow-left").css({ visibility:'hidden'});
+							}
 
 							/* make the excluded areas visible directly in that moment both markers are set */
-							if($("#zoom-marker-1").is(":visible") && $("#zoom-marker-2").is(":visible")) {
-								zoom.marker[1].left		= $("#zoom-marker-1").position().left;
-								zoom.marker[2].left		= $("#zoom-marker-2").position().left;
+							if(zoom.marker[1].placed && zoom.marker[2].placed) {
 								zoom.marker.distance	= zoom.marker[1].left - zoom.marker[2].left;
 
 								$("#zoom-excluded-area-1").css({
@@ -476,21 +497,30 @@
 									width: (zoom.marker.distance < 0) ? zoom.box.right - zoom.marker[2].left : zoom.marker[2].left - zoom.box.left,
 									display:'block'
 								});
+
+								/* reposition both tooltips */
+								$("#zoom-marker-tooltip-1").css({ left: $("#zoom-marker-1").position().left - ( (zoom.marker.distance > 0) ? 0 : $("#zoom-marker-tooltip-1").width() ) + 'px' });
+								$("#zoom-marker-tooltip-1-arrow-left").css({ visibility: (($("#zoom-marker-tooltip-1").position().left < $("#zoom-marker-1").position().left ) ? 'hidden' : 'visible') });
+								$("#zoom-marker-tooltip-1-arrow-right").css({ visibility: (($("#zoom-marker-tooltip-1").position().left < $("#zoom-marker-1").position().left ) ? 'visible' : 'hidden') });
+
+								$("#zoom-marker-tooltip-2").css({ left: $("#zoom-marker-2").position().left - ( (zoom.marker.distance < 0) ? 0 : $("#zoom-marker-tooltip-2").width() ) + 'px' });
+								$("#zoom-marker-tooltip-2-arrow-left").css({ visibility: (($("#zoom-marker-tooltip-2").position().left < $("#zoom-marker-2").position().left ) ? 'hidden' : 'visible') });
+								$("#zoom-marker-tooltip-2-arrow-right").css({ visibility: (($("#zoom-marker-tooltip-2").position().left < $("#zoom-marker-2").position().left ) ? 'visible' : 'hidden') });
 							}
 
-							/* make it draggable */
+							/* make the marker draggable */
 							$this.draggable({
 								containment:[ zoom.box.left-1, 0 , zoom.box.left+parseInt(zoom.box.width), 0 ],
 								axis: "x",
 								start:
 									function(event, ui) {
-										$("#zoom-marker-tooltip-" + marker).css({ top: ( (marker == 1) ? zoom.box.top+3 : zoom.box.bottom-30 )+'px', left:ui.position["left"]+'px'});
-										if(zoom.custom.zoomTimestamps) {
-											$("#zoom-marker-tooltip-" + marker).fadeIn(500);
+										if(zoom.custom.zoomTimestamps == "auto") {
+											$(".zoom-marker-tooltip").fadeIn(500);
 										}
 									},
 								drag:
 									function(event, ui) {
+
 										zoom.marker[marker].left = ui.position["left"];
 
 										/* update the timestamp shown in tooltip */
@@ -500,9 +530,9 @@
 
 										zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
 
-										/* show the execludedArea if both markers are in */
-										if($("#zoom-marker-" + marker).is(":visible") && $("#zoom-marker-" + secondmarker).is(":visible")) {
-											zoom.marker.distance = $("#zoom-marker-" + marker).position().left - $("#zoom-marker-" + secondmarker).position().left;
+										/* update the execludedArea if both markers have been placed */
+										if(zoom.marker[1].placed && zoom.marker[2].placed) {
+											zoom.marker.distance = zoom.marker[marker].left - zoom.marker[secondmarker].left;
 
 											if( zoom.marker.distance > 0 ) {
 												zoom.marker[marker].excludeArea = 'right';
@@ -511,20 +541,30 @@
 												zoom.marker[marker].excludeArea = 'left';
 												zoom.marker[secondmarker].excludeArea = 'right';
 											}
+
+											/* in that case we have to update the tooltip of both marker */
+											$("#zoom-excluded-area-" + marker).css({ left: (zoom.marker.distance > 0) ? zoom.marker[marker].left : zoom.box.left, width: (zoom.marker.distance > 0) ? zoom.box.right - zoom.marker[marker].left : zoom.marker[marker].left - zoom.box.left});
+											$("#zoom-marker-tooltip-" + marker).css({ left: zoom.marker[marker].left + ( (zoom.marker[marker].excludeArea == 'right') ? (0) : (-zoom.marker[marker].width) ) });
+											$("#zoom-marker-tooltip-" + marker + "-arrow-left").css({ visibility: ( zoom.marker[marker].excludeArea == 'left' ? 'hidden' : 'visible') });
+											$("#zoom-marker-tooltip-" + marker + "-arrow-right").css({ visibility: ( zoom.marker[marker].excludeArea == 'left' ? 'visible' : 'hidden') });
+
+											$("#zoom-excluded-area-" + secondmarker).css({ left: (zoom.marker.distance > 0) ? zoom.box.left : zoom.marker[secondmarker].left, width: (zoom.marker.distance > 0) ? zoom.marker[secondmarker].left - zoom.box.left : zoom.box.right - zoom.marker[secondmarker].left});
+											$("#zoom-marker-tooltip-" + secondmarker ).css({ left: zoom.marker[secondmarker].left + ( (zoom.marker[secondmarker].excludeArea == 'right') ? (0) : (-zoom.marker[secondmarker].width) ) });
+											$("#zoom-marker-tooltip-" + secondmarker + "-arrow-left").css({ visibility: ( zoom.marker[secondmarker].excludeArea == 'left' ? 'hidden' : 'visible') });
+											$("#zoom-marker-tooltip-" + secondmarker + "-arrow-right").css({ visibility: ( zoom.marker[secondmarker].excludeArea == 'left' ? 'visible' : 'hidden') });
+
+										}else {
+											/* let the tooltip follow its marker */
+											$("#zoom-marker-tooltip-" + marker).css({ left: zoom.marker[marker].left -zoom.marker[marker].width });
 										}
 
-										/* let the tooltip follow its marker - this has to be done for both markers too */
-										$("#zoom-marker-tooltip-" + marker).css({ left: zoom.marker[marker].left + ( (zoom.marker[marker].excludeArea == 'right') ? (2) : (-2-zoom.marker[marker].width) ) });
-										$("#zoom-marker-tooltip-" + secondmarker ).css({ left: zoom.marker[secondmarker].left + ( (zoom.marker[secondmarker].excludeArea == 'right') ? (2) : (-2-zoom.marker[secondmarker].width) ) });
-
-										//$("#zoom-marker-tooltip-1-arrow-left").css({display: (zoom.marker[marker].excludeArea == 'right') ?
-
-										$("#zoom-excluded-area-" + marker).css({ left: (zoom.marker.distance > 0) ? zoom.marker[marker].left : zoom.box.left, width: (zoom.marker.distance > 0) ? zoom.box.right - zoom.marker[marker].left : zoom.marker[marker].left - zoom.box.left});
-										$("#zoom-excluded-area-" + secondmarker).css({ left: (zoom.marker.distance > 0) ? zoom.box.left : zoom.marker[secondmarker].left, width: (zoom.marker.distance > 0) ? zoom.marker[secondmarker].left - zoom.box.left : zoom.box.right - zoom.marker[secondmarker].left});
 									},
 								stop:
 									function(event,ui) {
-
+										/* hide all tooltip if we are in auto mode */
+										if(zoom.custom.zoomTimestamps == "auto") {
+											$(".zoom-marker-tooltip").fadeOut(1000);
+										}
 									}
 
 							});
@@ -655,7 +695,7 @@
 			/* sync menu with cookie parameters */
 			$(".zoomContextMenuAction__set_zoomMode__" + zoom.custom.zoomMode).addClass("ui-state-highlight");
 			$(".zoomContextMenuAction__set_zoomMarkers__" + ((zoom.custom.zoomMarkers === true) ? "on" : "off") ).addClass("ui-state-highlight");
-			$(".zoomContextMenuAction__set_zoomTimestamps__" + ((zoom.custom.zoomTimestamps) ? "on" : "off") ).addClass("ui-state-highlight");
+			$(".zoomContextMenuAction__set_zoomTimestamps__" + ((zoom.custom.zoomTimestamps == 'auto') ? "auto" : ((zoom.custom.zoomTimestamps) ? "on" : "off" ))).addClass("ui-state-highlight");
 			$(".zoomContextMenuAction__set_zoomOutFactor__" + zoom.custom.zoomOutFactor).addClass("ui-state-highlight");
 			$(".zoomContextMenuAction__set_zoomOutPositioning__" + zoom.custom.zoomOutPositioning).addClass("ui-state-highlight");
 			$(".zoomContextMenuAction__set_zoom3rdMouseButton__" + ((zoom.custom.zoom3rdMouseButton === false) ? "off" : zoom.custom.zoom3rdMouseButton) ).addClass("ui-state-highlight");
@@ -756,8 +796,11 @@
 					if( zoom.custom.zoomTimestamps != value) {
 						zoom.custom.zoomTimestamps = value;
 						$.cookie( zoom.options.cookieName, serialize(zoom.custom));
-						$('[class*=zoomContextMenuAction__set_zoomTimestamps__]').toggleClass('ui-state-highlight');
-						if(zoom.custom.zoomTimestamps) {
+						$('[class*=zoomContextMenuAction__set_zoomTimestamps__]').removeClass('ui-state-highlight');
+						$('.zoomContextMenuAction__set_zoomTimestamps__' + ((zoom.custom.zoomTimestamps == 'auto') ? "auto" : ((zoom.custom.zoomTimestamps) ? "on" : "off" ))).addClass('ui-state-highlight');
+
+						/* make them visible only for mode "Always On" */
+						if(zoom.custom.zoomTimestamps === true) {
 							$('.zoom-marker-tooltip').fadeIn(500);
 						}else {
 							$('.zoom-marker-tooltip').fadeOut(500);

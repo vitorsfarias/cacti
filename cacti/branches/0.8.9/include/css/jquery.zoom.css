@@ -1,10 +1,9 @@
 #zoom-box {
-	background:transparent;
-	z-index:auto;
-	filter:alpha(opacity=10);
-	-moz-opacity:0.1;
-	-khtml-opacity:0.1;
-	opacity:0.1;
+	background: #000000;
+	filter:alpha(opacity=1);
+	-moz-opacity:0.01;
+	-khtml-opacity:0.01;
+	opacity:0.01;
 	width:0px;
 	height:0px;
 	top:0px;
@@ -14,6 +13,7 @@
 	border:0;
 	padding:0;
 	margin:0;
+	z-index:auto;
 }
 
 #zoom-area {
@@ -30,21 +30,35 @@
 	border:0;
 	padding:0;
 	margin:0';
+	background: rgba(0,0,0,0.25);
+	box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-o-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	border: 1px solid rgba(0,0,0,0.5);
+	border-radius: 2px 2px 2px 2px;
 }
 
 .zoom-area-excluded {
-	background-color:black;
+	background-color: black;
 	height:0px;
 	position:absolute;
 	z-index:auto;
-	filter:alpha(opacity=50);
-	-moz-opacity:0.5;
-	-khtml-opacity:0.5;
-	opacity:0.5;
+	filter:alpha(opacity=30);
+	-moz-opacity:0.3;
+	-khtml-opacity:0.3;
+	opacity:0.3;
 	overflow:hidden;
 	border:0;
 	padding:0;
 	margin:0';
+	background: rgba(0,0,0,0.5);
+	box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-o-box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+	border: 1px solid rgba(0,0,0,0.75);
+	border-radius: 2px 2px 2px 2px;
 }
 
 .zoom-marker {
@@ -87,57 +101,58 @@
 	white-space: pre-line;
 	font-size: 0.8em;
 	float: left;
-	border: 1px solid black;
 	background: #FFE87C;
 	padding-left: 3px;
 	padding-right: 3px;
+	border: 1px solid rgba(0,0,0,0.75);
 }
 
-
-.zoom-marker-tooltip .zoom-marker-tooltip-arrow-down, .zoom-marker-tooltip .zoom-marker-tooltip-arrow-down-inner{
-	position: absolute;
-	width:0;
-	height:0;
-	border-bottom-width: 0;
-}
-
-
-.test-arrow-left {
+.zoom-marker-tooltip-arrow-left {
 	float:left;
 	width: 0;
 	height: 0;
-	margin-right: -2px;
-	border-top: 0.45em solid transparent;
-	border-bottom: 0.45em solid transparent;
-	border-right: 0.9em solid #FFE87C;
+	margin-right: -1px;
+	margin-top: 4px;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-right: 8px solid #111111;
 }
 
-.test-arrow-right {
+.zoom-marker-tooltip-arrow-left-inner {
+	position: relative;
+	top: -4px;
+	left: 2px;
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-right: 8px solid #FFE87C;
+	z-index: auto;
+}
+
+.zoom-marker-tooltip-arrow-right {
 	float:left;
 	width: 0;
 	height: 0;
-	margin-left: -2px;
-	border-top: 0.45em solid transparent;
-	border-bottom: 0.45em solid transparent;
-	border-left: 0.9em solid #3B6AA0;
+	margin-left: -1px;
+	margin-top: 4px;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-left: 8px solid #111111;
 }
 
-
-.zoom-marker-tooltip-arrow-down {
-	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	border-top: 8px solid gray;
-	bottom:	-8px;
-	margin-left: -2px;
+.zoom-marker-tooltip-arrow-right-inner {
+	position: relative;
+	top: -4px;
+	left: -10px;
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-left: 8px solid #FFE87C;
+	z-index: auto;
 }
 
-.zoom-marker-tooltip-arrow-down-inner {
-	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	border-top: 8px solid #F5F5DC;
-	bottom:	2px;
-	margin-left: -4px;
-}
 
 .zoom-menu {
 	border:1px solid #aaa;
