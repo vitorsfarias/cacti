@@ -334,33 +334,32 @@
 			}
 			zoomElemtents_reset()
 			zoomContextMenu_init();
-
-			init_ZoomAction(image);
+			zoomAction_init(image);
 		}
 
 		/**
 		 * resets all elements of Zoom
 		 **/
 		function zoomElemtents_reset() {
-			$('div[id^="zoom-"]').each( function () {
+			zoom.marker = { 1 : { placed:false }, 2 : { placed:false} };
+			$('div[id^="zoom-"]').not('#zoom-menu').each( function () {
 				$(this).removeAttr('style');
 			});
-			$("#zoom-box").off().css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
+			$("#zoom-box").off();
+			$("#zoom-box").css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
 			$("#zoom-box").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$("#zoom-area").off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
+			$(".zoom-area-excluded").off();
 			$(".zoom-area-excluded").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$(".zoom-area-excluded").bind('click', function(e) { zoomContextMenu_hide(); return false;} );
 			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
 			$(".zoom-marker-tooltip-value").disableSelection();
 		}
 
-
-
-
-
 		/*
 		* registers all the different mouse click event handler
 		*/
-		function init_ZoomAction(image) {
+		function zoomAction_init(image) {
 			if(zoom.custom.zoomMode == 'quick') {
 				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
@@ -782,7 +781,8 @@
 							$.cookie( zoom.options.cookieName, serialize(zoom.custom));
 						}
 						zoomElemtents_reset();
-						init_ZoomAction(zoom.initiator);
+						zoomAction_init(zoom.initiator);
+
 					}
 					break;
 				case "markers":
