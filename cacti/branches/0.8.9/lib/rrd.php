@@ -40,7 +40,7 @@ include_once(CACTI_INCLUDE_PATH . "/rrd/rrd_constants.php");
 function escape_command($command) {
 	return $command;		# we escape every single argument now, no need for "special" escaping
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
-	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
+	#return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
 
@@ -579,17 +579,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	/* update execution environment */
 	rrdgraph_put_environment();
 	
-	/* call cache hook at start 
-	 * and, if found, return with that data */
+	/* +++++++++++++++++++++++ Hook +++++++++++++++++++++++++++++++++++++++++++++++
+	 * call cache hook at start and, if found, return with that data 
+	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 	$data = plugin_hook_function('rrdtool_function_graph_cache_check', array('local_graph_id' => $local_graph_id,'rra_id' => $rra_id,'rrd_struc' => $rrdtool_pipe,'graph_data_array' => $graph_data_array, 'return' => false));
 	if (isset($data['return']) && $data['return'] != false)
 		return $data['return'];
 	
 	
 	
-	/* +++++++++++++++++++++++ FETCH DATA +++++++++++++++++++++++++++++ *
-	 * find the step and how often this graph is updated with new data  *
-	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ FETCH DATA +++++++++++++++++++++++++++++ */
 	$ds_step = get_step($local_graph_id);
 	/* get graph data for given graph id */
 	$graph = get_graph_data($local_graph_id);
@@ -693,22 +692,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			$current_graph_item_type = $graph_item["graph_type_id"];
 
 			
+			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
 			/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 			 * data source or global cdef, but is unique when those two variables combine. */
-			$cdef_graph_defs = rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, $cdef_cache);
-			/* add the cdef string to the end of the def string */
-			$graph_defs .= $cdef_graph_defs;
-#cacti_log(__FUNCTION__ . " graph cdefs: " . $cdef_graph_defs, false, "TEST");
-			
-			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEF's +++++++++++++++++++++++ */
-			if ($rrdtool_version != RRD_VERSION_1_0) {
-				
-				/* make vdef string here, copied from cdef stuff */
-				$vdef_graph_defs = rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache, $vdef_cache);
-				/* add the cdef string to the end of the def string */
-				$graph_defs .= $vdef_graph_defs;
-#cacti_log(__FUNCTION__ . " graph vdefs: " . $vdef_graph_defs, false, "TEST");
-			}
+			$graph_defs .= rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, $cdef_cache);
+#cacti_log(__FUNCTION__ . " graph cdefs: " . $graph_defs, false, "TEST");
 
 			/* IF this graph item has a data source... get a DEF name for it, 
 			 * or the cdef if that applies to this graph item */
@@ -723,21 +711,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			}
 
 			
-			/* IF this graph item has a data source... 
-			 * get a the vdef if that applies to this graph item */
-			if ($graph_item["vdef_id"] == "0") {
-				/* do not overwrite $data_source_name that stems from cdef above */
-			}else{
-				$data_source_name = "vdef" . generate_graph_def_name(strval($vdef_cache{$graph_item["vdef_id"]}{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]));
-			}
+			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEF's +++++++++++++++++++++++ */
+			if ($rrdtool_version != RRD_VERSION_1_0) {
+				/* make vdef string here, copied from cdef stuff */
+				$graph_defs .= rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache, $vdef_cache);
+				/* add the cdef string to the end of the def string */
+				#$graph_defs .= $vdef_graph_defs;
+#cacti_log(__FUNCTION__ . " graph vdefs: " . $graph_defs, false, "TEST");
 
-			
-			/* to make things easier... if there is no text format set; set blank text */
-			if (!isset($graph_variables["text_format"][$graph_item_id])) {
-				$graph_variables["text_format"][$graph_item_id] = "";
-			} else {
-				$graph_variables["text_format"][$graph_item_id] = str_replace(':', '\:', $graph_variables["text_format"][$graph_item_id]); /* escape colons */
-				$graph_variables["text_format"][$graph_item_id] = str_replace('"', '\"', $graph_variables["text_format"][$graph_item_id]); /* escape doublequotes */
+				/* IF this graph item has a data source... 
+				 * get a the vdef if that applies to this graph item */
+				if ($graph_item["vdef_id"] == "0") {
+					/* do not overwrite $data_source_name that stems from cdef above */
+				}else{
+					$data_source_name = "vdef" . generate_graph_def_name(strval($vdef_cache{$graph_item["vdef_id"]}{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]));
+				}
 			}
 
 
@@ -745,6 +733,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			/* most of the calculations have been done above. now we have for print everything out
 			 * in an RRDTool-friendly fashion */
 			$need_rrd_nl = TRUE;
+			/* to make things easier... if there is no text format set; set blank text */
+			if (!isset($graph_variables["text_format"][$graph_item_id])) {
+				$graph_variables["text_format"][$graph_item_id] = "";
+			} else {
+				$graph_variables["text_format"][$graph_item_id] = str_replace(':', '\:', $graph_variables["text_format"][$graph_item_id]); /* escape colons */
+				$graph_variables["text_format"][$graph_item_id] = str_replace('"', '\"', $graph_variables["text_format"][$graph_item_id]); /* escape doublequotes */
+			}
 
 			/* now build the legend text, 
 			 * use all arrays and variables that have been prepared
@@ -763,46 +758,52 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 #cacti_log(__FUNCTION__ . " graph items: " . $txt_graph_items, false, "TEST");
 	
 	
-	
-	
+	/* +++++++++++++++++++++++ Hook +++++++++++++++++++++++++++++++++++++++++++++++ */
 #cacti_log(__FUNCTION__ . " RRDTOOL: " . (read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items"), false, "TEST");
-	$graph_array = plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
+	$graph_array = plugin_hook_function('rrd_graph_graph_options', 
+						array('graph_opts' 		=> $graph_opts, 
+							'graph_defs' 		=> $graph_defs, 
+							'txt_graph_items' 	=> $txt_graph_items, 
+							'graph_id' 			=> $local_graph_id, 
+							'start' 			=> $graph_start, 
+							'end' 				=> $graph_end));
+	/* retrieve information from last hook */
 	if (!empty($graph_array)) {
-		
 		/* display the timespan for zoomed graphs,
 		 * but prefer any setting made by the user */
 		$graph_array['txt_graph_items'] = substitute_graph_data($graph_array['txt_graph_items'], $graph, $graph_data_array, $rrdtool_version);
-		
 		$graph_defs = $graph_array['graph_defs'];
 		$txt_graph_items = $graph_array['txt_graph_items'];
 		$graph_opts = $graph_array['graph_opts'];
 	}
 	
+	/* +++++++++++++++++++++++ Output Phase +++++++++++++++++++++++++++++++++++++++ */
 	/* either print out the source or pass the source onto rrdtool to get us a nice graph */
 #cacti_log(__FUNCTION__ . " RRDTOOL: " . (read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items"), false, "TEST");
 	if (isset($graph_data_array["print_source"])) {
 		# since pango markup allows for <span> tags, we need to escape this stuff using htmlspecialchars
 		print htmlspecialchars(read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items");
+		/* TODO: delete, when tests finished */
 		print "<br><br><br><strong>NEW</strong><br>";
 		rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe);
+	}elseif (isset($graph_data_array["export"])) {
+		rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
+		return 0;
 	}else{
-		if (isset($graph_data_array["export"])) {
-			rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
-			return 0;
+		/* +++++++++++++++++++++++ Hook ++++++++++++++++++++++++++++++++++++++++++++ */
+		$graph_data_array = plugin_hook_function('prep_graph_array', $graph_data_array);
+		
+		if (isset($graph_data_array["output_flag"])) {
+			$output_flag = $graph_data_array["output_flag"];
 		}else{
-			$graph_data_array = plugin_hook_function('prep_graph_array', $graph_data_array);
-			
-			if (isset($graph_data_array["output_flag"])) {
-				$output_flag = $graph_data_array["output_flag"];
-			}else{
-				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
-			}
-			$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
-			
-			plugin_hook_function('rrdtool_function_graph_set_file', array('output' => $output, 'local_graph_id' => $local_graph_id, 'rra_id' => $rra_id));
-			
-			return $output;
+			$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 		}
+		$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
+		
+		/* +++++++++++++++++++++++ Hook ++++++++++++++++++++++++++++++++++++++++++++ */
+		plugin_hook_function('rrdtool_function_graph_set_file', array('output' => $output, 'local_graph_id' => $local_graph_id, 'rra_id' => $rra_id));
+		
+		return $output;
 	}
 }
 
@@ -1349,11 +1350,11 @@ function rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array,
 					/* "pure" VDEF: use DEF as base */
 					$vdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval(isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0")), $vdef_string);
 				}
-# TODO: It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
-#				$vdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $vdef_string);
-#				$vdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $vdef_string);
-#				$vdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $vdef_string);
-#				$vdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $vdef_string);
+				# It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
+				#$vdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $vdef_string);
+				#$vdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $vdef_string);
+				#$vdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $vdef_string);
+				#$vdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $vdef_string);
 
 				/* make the initial "virtual" vdef name */
 				$vdef_graph_defs .= "VDEF:vdef" . generate_graph_def_name(strval($i)) . "=";
@@ -3243,7 +3244,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 	 *   data_template_rrd_id == per different data source (rrd file)
 	 *   graph_cf             == per different consolidation function
 	 * TODO: why data_template_rrd_id and not local_data_id
-	 * TODO: why graph_cf and not cf_reference
+	 * TODO: why graph_cf and not cf_reference?
 	 */
 	$graph_defs = '';
 	
@@ -3282,6 +3283,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 	return $graph_defs;
 }
 
+
 /**
  * build a CDEF statement
  * @param array $graph_item	 					- current graph item
@@ -3294,7 +3296,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
  * @param array $cdef_cache 					- cache of cdefs to avoid duplicate cdefs
  * @return										- CDEF statement for rrdtool
  */
-function rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, &$cf_ds_cache, &$cdef_cache) {
+function rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, &$cdef_cache) {
 #cacti_log(__FUNCTION__ . " started", false, "TEST");
 
 	if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
@@ -3512,7 +3514,7 @@ function rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i,
  * @param array $vdef_cache 					- cache of vdefs to avoid duplicate vdefs
  * @return										- VDEF statement for rrdtool
  */
-function rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache, $vdef_cache) {
+function rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache, &$vdef_cache) {
 	$vdef_graph_defs = "";
 
 	if ((!empty($graph_item["vdef_id"])) && (!isset($vdef_cache{$graph_item["vdef_id"]}{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
@@ -3525,11 +3527,11 @@ function rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache,
 			/* "pure" VDEF: use DEF as base */
 			$vdef_string = str_replace("CURRENT_DATA_SOURCE", generate_graph_def_name(strval(isset($cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id]) ? $cf_ds_cache{$graph_item["data_template_rrd_id"]}[$cf_id] : "0")), $vdef_string);
 		}
-# TODO: It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
-#		$vdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $vdef_string);
-#		$vdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $vdef_string);
-#		$vdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $vdef_string);
-#		$vdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $vdef_string);
+		# It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
+		#$vdef_string = str_replace("ALL_DATA_SOURCES_NODUPS", $magic_item["ALL_DATA_SOURCES_NODUPS"], $vdef_string);
+		#$vdef_string = str_replace("ALL_DATA_SOURCES_DUPS", $magic_item["ALL_DATA_SOURCES_DUPS"], $vdef_string);
+		#$vdef_string = str_replace("SIMILAR_DATA_SOURCES_NODUPS", $magic_item["SIMILAR_DATA_SOURCES_NODUPS"], $vdef_string);
+		#$vdef_string = str_replace("SIMILAR_DATA_SOURCES_DUPS", $magic_item["SIMILAR_DATA_SOURCES_DUPS"], $vdef_string);
 
 		/* make the initial "virtual" vdef name */
 		$vdef_graph_defs .= "VDEF:vdef" . generate_graph_def_name(strval($i)) . "=";
@@ -3538,7 +3540,7 @@ function rrdgraph_vdefs($graph_item, $graph_variables, $cf_id, $i, $cf_ds_cache,
 
 		/* the VDEF cache is so we do not create duplicate VDEF's on a graph,
 		 * but take info account, that same VDEF may use different CDEFs
-		 * so index over VDEF_ID, CDEF_ID per DATA_TEMPLATE_RRD_ID, lvm */
+		 * so index over VDEF_ID, CDEF_ID per DATA_TEMPLATE_RRD_ID */
 		$vdef_cache{$graph_item["vdef_id"]}{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id] = "$i";
 	}
 	return $vdef_graph_defs;
@@ -3777,7 +3779,8 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 	
 	
 #cacti_log(__FUNCTION__ . " legend: " . $graph_variables["text_format"][$graph_item_id], false, "TEST");	
-cacti_log(__FUNCTION__ . " type: " . $graph_item["graph_type_id"] . " padding: >" . $graph_item["text_padding"] . "<", false, "TEST");	
+#cacti_log(__FUNCTION__ . " type: " . $graph_item["graph_type_id"] . " padding: >" . $graph_item["text_padding"] . "<", false, "TEST");	
+cacti_log(__FUNCTION__ . " cf: " . $graph_item["consolidation_function_id"] . " type: >" . $graph_item["graph_type_id"] . "<", false, "TEST");	
 	
 	
 	switch($graph_item["graph_type_id"]) {
@@ -3802,65 +3805,36 @@ cacti_log(__FUNCTION__ . " type: " . $graph_item["graph_type_id"] . " padding: >
 			break;
 			
 			
+		case GRAPH_ITEM_TYPE_GPRINT:
+			if (!isset($graph_data_array["graph_nolegend"])) {
+				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
+				if ($rrdtool_version != RRD_VERSION_1_0) {
+					if ($graph_item["vdef_id"] == "0") {
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+					}else{
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+					}
+				}else {
+					$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+				}
+			}
+			break;
+			
+			
 		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-			if (!isset($graph_data_array["graph_nolegend"])) {
-				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
-				if ($rrdtool_version != RRD_VERSION_1_0) {
-					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}else{
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}
-				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-				}
-			}
-			break;
-			
-			
 		case GRAPH_ITEM_TYPE_GPRINT_LAST:
-			if (!isset($graph_data_array["graph_nolegend"])) {
-				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
-				if ($rrdtool_version != RRD_VERSION_1_0) {
-					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":LAST:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}else{
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}
-				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":LAST:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-				}
-			}
-			break;
-			
-			
 		case GRAPH_ITEM_TYPE_GPRINT_MAX:
-			if (!isset($graph_data_array["graph_nolegend"])) {
-				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
-				if ($rrdtool_version != RRD_VERSION_1_0) {
-					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":MAX:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}else{
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-					}
-				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":MAX:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
-				}
-			}
-			break;
-			
-			
 		case GRAPH_ITEM_TYPE_GPRINT_MIN:
 			if (!isset($graph_data_array["graph_nolegend"])) {
 				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
 				if ($rrdtool_version != RRD_VERSION_1_0) {
 					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":MIN:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
 					}else{
 						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
 					}
 				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":MIN:\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+					$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
 				}
 			}
 			break;
@@ -3958,7 +3932,7 @@ cacti_log(__FUNCTION__ . " type: " . $graph_item["graph_type_id"] . " padding: >
  * @param string $text - current item's legend text string
  * @return int greatest text length found
  */
-function rrdgraph_auto_padding($greatest_text_format, $graph_item_type_id, $text) {	# TODO: delete this, only used for comparisons
+function rrdgraph_auto_padding($greatest_text_format, $graph_item_type_id, $text) {	# TODO: delete this, as soon as rrdtool_cuntion_graph_old is deleted
 	/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
 	AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
 	of course it can be used in other situations, however may not work as intended.
