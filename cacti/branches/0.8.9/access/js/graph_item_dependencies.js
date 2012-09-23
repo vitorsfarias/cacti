@@ -43,6 +43,8 @@ function shift () {
 function graph_interdependencies(graph_type) {
 	/* Initially unhide */
 	$("[class*='not_RRD_TYPE']").each(function() { $(this).removeAttr('disabled'); });
+	/* hide the GPRINT:deprecated option */
+	$("#graph_type_id option[value='<?php print GRAPH_ITEM_TYPE_GPRINT;?>']").attr('disabled','disabled')
 
 	switch (parseInt(graph_type)) {
 		case <?php print GRAPH_ITEM_TYPE_COMMENT;?>:
@@ -71,6 +73,7 @@ function graph_interdependencies(graph_type) {
 		case <?php print GRAPH_ITEM_TYPE_LINESTACK;?>:
 			$('.not_RRD_TYPE_LINESTACK').each(function() { $(this).attr('disabled', 'disabled'); });
 			break;
+		case <?php print GRAPH_ITEM_TYPE_GPRINT;?>:
 		case <?php print GRAPH_ITEM_TYPE_GPRINT_AVERAGE;?>:
 		case <?php print GRAPH_ITEM_TYPE_GPRINT_LAST;?>:
 		case <?php print GRAPH_ITEM_TYPE_GPRINT_MAX;?>:
