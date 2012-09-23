@@ -73,6 +73,13 @@ $graph_item_gprint_types = array(
 	GRAPH_ITEM_TYPE_GPRINT_MAX		=> 'GPRINT:MAX',
 	GRAPH_ITEM_TYPE_GPRINT_MIN		=> 'GPRINT:MIN',
 );
+/* for use with the GPRINT statement on rrdtool graph */
+$graph_item_gprint_cf = array(
+	GRAPH_ITEM_TYPE_GPRINT_AVERAGE	=> 'AVERAGE',
+	GRAPH_ITEM_TYPE_GPRINT_LAST		=> 'LAST',
+	GRAPH_ITEM_TYPE_GPRINT_MAX		=> 'MAX',
+	GRAPH_ITEM_TYPE_GPRINT_MIN		=> 'MIN',
+);
 
 $graph_item_types1 = array(
 	GRAPH_ITEM_TYPE_COMMENT			=> 'COMMENT',
