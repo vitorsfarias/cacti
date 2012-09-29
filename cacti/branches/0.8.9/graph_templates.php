@@ -310,6 +310,8 @@ function form_actions() {
 			}
 		}
 
+		/* after performing the wanted action, re-display the main page */
+		header("Location: graph_templates.php");
 		exit;
 	}
 
