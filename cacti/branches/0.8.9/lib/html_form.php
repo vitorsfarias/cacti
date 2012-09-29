@@ -1166,7 +1166,7 @@ function draw_template_edit_form($table_id, $edit_struct, $edit_data, $use_templ
 
 		$form_array[$field_name]["sub_checkbox"] = array(
 			"name" => "t_" . $field_name,
-			"friendly_name" => "<em>" . "Use Per-Graph Value (Ignore this Value)" . "</em>",
+			"friendly_name" => "<em>" . "Use Per-Graph Value (Ignore this Value)" . "</em><br />",
 			"value" => (isset($edit_data{"t_" . $field_name}) ? $edit_data{"t_" . $field_name} : ""),
 			"class" => (isset($form_array[$field_name]["class"]) ? $form_array[$field_name]["class"] : "")
 		);
