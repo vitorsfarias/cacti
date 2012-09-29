@@ -376,31 +376,7 @@ function item_edit() {
 
 	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
 
-//Now we need some javascript to make it dynamic
-?>
-<script language="JavaScript">
-
-dynamic();
-
-function dynamic() {
-	//alert("RRDTool Version is '" + document.getElementById('rrdtool_version').value + "'");
-	//alert("Color is '" + document.getElementById('color_id').value + "'");
-	document.getElementById('alpha').disabled=true;
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').value != 0)) {
-		document.getElementById('alpha').disabled=false;
-	}
+	include_once(CACTI_BASE_PATH . "/access/js/graph_item_dependencies.js");	# this one modifies attr("disabled")
+	include_once(CACTI_BASE_PATH . "/access/js/line_width.js");
+	include_once(CACTI_BASE_PATH . "/access/js/rrdtool_version.js");			# this one sets attr("disabled) and comes last!
 }
-
-function changeColorId() {
-	//alert("Selected Color Index is '" + document.getElementById('color_id').selectedIndex + "'");
-	if ((document.getElementById('rrdtool_version').value != 'rrd-1.0.x') &&
-		(document.getElementById('color_id').selectedIndex != 0)) {
-		document.getElementById('alpha').disabled=false;
-	}
-}
-</script>
-<?php
-
-}
-?>
