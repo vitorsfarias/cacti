@@ -695,7 +695,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
 			/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
 			 * data source or global cdef, but is unique when those two variables combine. */
-			$graph_defs .= rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, $cdef_cache);
+			$graph_defs .= rrdgraph_cdefs($graph, $graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, $cdef_cache);
 #cacti_log(__FUNCTION__ . " graph cdefs: " . $graph_defs, false, "TEST");
 
 			/* IF this graph item has a data source... get a DEF name for it, 
@@ -3286,6 +3286,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 
 /**
  * build a CDEF statement
+ * @param array $graph		 					- current graph data
  * @param array $graph_item	 					- current graph item
  * @param array $graph_items 					- all graph items
  * @param array $graph_variables 				- all graph variables
@@ -3296,7 +3297,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
  * @param array $cdef_cache 					- cache of cdefs to avoid duplicate cdefs
  * @return										- CDEF statement for rrdtool
  */
-function rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, &$cdef_cache) {
+function rrdgraph_cdefs($graph, $graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, &$cdef_cache) {
 #cacti_log(__FUNCTION__ . " started", false, "TEST");
 
 	if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
@@ -3486,6 +3487,8 @@ function rrdgraph_cdefs($graph_item, $graph_items, $graph_variables, $cf_id, $i,
 		$_time_shift_end = strtotime(read_graph_config_option("day_shift_end")) - strtotime("00:00");
 		$cdef_string = str_replace("TIME_SHIFT_START", (empty($_time_shift_start) ? "64800" : $_time_shift_start), $cdef_string);
 		$cdef_string = str_replace("TIME_SHIFT_END", (empty($_time_shift_end) ? "28800" : $_time_shift_end), $cdef_string);
+		$cdef_string = str_replace("GRAPH_START", (empty($graph["graph_start"]) ? "0" : $graph["graph_start"]), $cdef_string);
+		$cdef_string = str_replace("GRAPH_END", (empty($graph["graph_end"]) ? "0" : $graph["graph_end"]), $cdef_string);
 
 		/* replace query variables in cdefs */
 		$cdef_string = rrdgraph_substitute_host_query_data($cdef_string, $graph, $graph_item);
