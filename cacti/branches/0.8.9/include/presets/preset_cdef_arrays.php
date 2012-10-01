@@ -101,4 +101,6 @@ $custom_data_source_types = array(
 	'COUNT_SIMILAR_DS_DUPS'		 		=> 'Count of All Similar Data Sources (Include Duplicates)',
 	'TIME_SHIFT_START'					=> 'Graph: Shift Start Time',
 	'TIME_SHIFT_END'					=> 'Graph: Shift End Time',
+	'GRAPH_START'						=> 'Graph: Start Time',
+	'GRAPH_END'							=> 'Graph: End Time',
 );
