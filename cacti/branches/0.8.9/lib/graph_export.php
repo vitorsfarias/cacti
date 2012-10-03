@@ -1731,7 +1731,7 @@ define("HTML_HEADER_TREE",
 	<title>Cacti</title>
 	<link href='main.css' rel='stylesheet'>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<meta http-equiv=refresh content='300'; url='index.html'>
+	<meta http-equiv=refresh content='300; url=index.html'>
 	<meta http-equiv=Pragma content=no-cache>
 	<meta http-equiv=cache-control content=no-cache>
 	<script type=\"text/javascript\" src=\"./treeview/ua.js\"></script>
@@ -1817,7 +1817,7 @@ define("HTML_HEADER_CLASSIC", "
 		<title>cacti</title>
 		<link href='main.css' rel='stylesheet'>
 		<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-		<meta http-equiv=refresh content='300'; url='index.html'>
+		<meta http-equiv=refresh content='300; url=index.html'>
 		<meta http-equiv=Pragma content=no-cache>
 		<meta http-equiv=cache-control content=no-cache>
 	</head>
