@@ -119,56 +119,7 @@ function form_save() {
 		}
 	}
 
-	if ((isset($_POST["save_component_data"])) && (!is_error_message())) {
-		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post("data_template_data_id"));
-		/* ==================================================== */
-
-		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc("select
-			data_template_data.data_input_id,
-			data_local.host_id,
-			data_input_fields.id,
-			data_input_fields.input_output,
-			data_input_fields.data_name,
-			data_input_fields.regexp_match,
-			data_input_fields.allow_nulls,
-			data_input_fields.type_code
-			from data_template_data
-			left join data_input_fields on (data_input_fields.data_input_id=data_template_data.data_input_id)
-			left join data_local on (data_template_data.local_data_id=data_local.id)
-			where data_template_data.id=" . $_POST["data_template_data_id"] . "
-			and data_input_fields.input_output='in'");
-
-		if (sizeof($input_fields) > 0) {
-		foreach ($input_fields as $input_field) {
-			if (isset($_POST{"value_" . $input_field["id"]})) {
-				/* save the data into the 'data_input_data' table */
-				$form_value = $_POST{"value_" . $input_field["id"]};
-
-				/* we shouldn't enforce rules on fields the user cannot see (ie. templated ones) */
-				$is_templated = db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . db_fetch_cell("select local_data_template_data_id from data_template_data where id=" . $_POST["data_template_data_id"]));
-
-				if ($is_templated == "") {
-					$allow_nulls = true;
-				}elseif ($input_field["allow_nulls"] == "on") {
-					$allow_nulls = true;
-				}elseif (empty($input_field["allow_nulls"])) {
-					$allow_nulls = false;
-				}
-
-				/* run regexp match on input string */
-				$form_value = form_input_validate($form_value, "value_" . $input_field["id"], $input_field["regexp_match"], $allow_nulls, 3);
-
-				if (!is_error_message()) {
-					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
-						(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'','$form_value')");
-				}
-			}
-		}
-		}
-	}
-
+	/* save data source data prior to data input data, do NOT loose the data source name! (http://bugs.cacti.net/view.php?id=2250)*/
 	if ((isset($_POST["save_component_data_source"])) && (!is_error_message())) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("local_data_id"));
@@ -245,6 +196,56 @@ function form_save() {
 				}
 			}
 		}
+
+	if ((isset($_POST["save_component_data"])) && (!is_error_message())) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("data_template_data_id"));
+		/* ==================================================== */
+
+		/* ok, first pull out all 'input' values so we know how much to save */
+		$input_fields = db_fetch_assoc("select
+			data_template_data.data_input_id,
+			data_local.host_id,
+			data_input_fields.id,
+			data_input_fields.input_output,
+			data_input_fields.data_name,
+			data_input_fields.regexp_match,
+			data_input_fields.allow_nulls,
+			data_input_fields.type_code
+			from data_template_data
+			left join data_input_fields on (data_input_fields.data_input_id=data_template_data.data_input_id)
+			left join data_local on (data_template_data.local_data_id=data_local.id)
+			where data_template_data.id=" . $_POST["data_template_data_id"] . "
+			and data_input_fields.input_output='in'");
+
+		if (sizeof($input_fields) > 0) {
+		foreach ($input_fields as $input_field) {
+			if (isset($_POST{"value_" . $input_field["id"]})) {
+				/* save the data into the 'data_input_data' table */
+				$form_value = $_POST{"value_" . $input_field["id"]};
+
+				/* we shouldn't enforce rules on fields the user cannot see (ie. templated ones) */
+				$is_templated = db_fetch_cell("select t_value from data_input_data where data_input_field_id=" . $input_field["id"] . " and data_template_data_id=" . db_fetch_cell("select local_data_template_data_id from data_template_data where id=" . $_POST["data_template_data_id"]));
+
+				if ($is_templated == "") {
+					$allow_nulls = true;
+				}elseif ($input_field["allow_nulls"] == "on") {
+					$allow_nulls = true;
+				}elseif (empty($input_field["allow_nulls"])) {
+					$allow_nulls = false;
+				}
+
+				/* run regexp match on input string */
+				$form_value = form_input_validate($form_value, "value_" . $input_field["id"], $input_field["regexp_match"], $allow_nulls, 3);
+
+				if (!is_error_message()) {
+					db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value) values
+						(" . $input_field["id"] . "," . $_POST["data_template_data_id"] . ",'','$form_value')");
+				}
+			}
+		}
+		}
+	}
 
 		if (!is_error_message()) {
 			if (!empty($_POST["rra_id"])) {
