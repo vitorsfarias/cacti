@@ -24,18 +24,18 @@
 
 require_once(CACTI_BASE_PATH . "/include/device/device_constants.php");
 
-$host_actions = array(
+$device_actions = array(
 	DEVICE_ACTION_DELETE => "Delete",
 	DEVICE_ACTION_ENABLE => "Enable",
 	DEVICE_ACTION_DISABLE => "Disable",
 	DEVICE_ACTION_CHANGE_SNMP_OPTIONS => "Change SNMP Options",
 	DEVICE_ACTION_CLEAR_STATISTICS => "Clear Statistics",
 	DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS => "Change Availability Options",
-	DEVICE_ACTION_CHANGE_POLLER => "Change Poller",
-	DEVICE_ACTION_CHANGE_SITE => "Change Site",
+#	DEVICE_ACTION_CHANGE_POLLER => "Change Poller",
+#	DEVICE_ACTION_CHANGE_SITE => "Change Site",
 	);
 
-$host_threads = array(
+$device_threads = array(
 	1 => "1 Thread (default)",
 	2 => "2 Threads",
 	3 => "3 Threads",
