@@ -89,21 +89,23 @@ if (strlen($filter)) {
 	$sql_where = "";
 }
 
-if ($host_id == "All") {
+if (strtolower($host_id) === "all") {
 	/* Act on all graphs */
 }elseif (substr_count($host_id, "|")) {
 	$hosts = explode("|", $host_id);
 	$host_str = "";
 
-	foreach($hosts as $host) {
-		if (strlen($host_str)) {
-			$host_str .= ", '" . $host . "'";
-		}else{
-			$host_str .= "'" . $host . "'";
+	if (sizeof($hosts)) {
+		foreach($hosts as $host) {
+			if (strlen($host_str)) {
+				$host_str .= ", '" . $host . "'";
+			}else{
+				$host_str .= "'" . $host . "'";
+			}
 		}
+		$sql_where .= " AND graph_local.host_id IN ($host_str)";
 	}
-
-	$sql_where .= " AND graph_local.host_id IN ($host_str)";
+	
 }elseif ($host_id == "0") {
 	$sql_where .= " AND graph_local.host_id=0";
 }elseif (!empty($host_id)) {
@@ -132,13 +134,15 @@ print "WARNING: Do not interrupt this script.  Interrupting during rename can ca
 debug("There are '" . sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
-foreach ($graph_list as $graph) {
-	if (!$debug) print ".";
-	debug("Graph Name '" . $graph["title_cache"] . "' starting");
-	reapply_suggested_graph_title($graph["local_graph_id"]);
-	update_graph_title_cache($graph["local_graph_id"]);
-	debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
-	$i++;
+if (sizeof($graph_list)) {
+	foreach ($graph_list as $graph) {
+		if (!$debug) print ".";
+		debug("Graph Name '" . $graph["title_cache"] . "' starting");
+		reapply_suggested_graph_title($graph["local_graph_id"]);
+		update_graph_title_cache($graph["local_graph_id"]);
+		debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
+		$i++;
+	}
 }
 
 /*	display_help - displays the usage of the function */
