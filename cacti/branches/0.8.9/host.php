@@ -32,17 +32,9 @@ include_once(CACTI_LIBRARY_PATH . "/snmp.php");
 include_once(CACTI_LIBRARY_PATH . "/ping.php");
 include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 include_once(CACTI_LIBRARY_PATH . "/device.php");
+include_once(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 
 define("MAX_DISPLAY_PAGES", 21);
-
-$device_actions = array(
-	1 => "Delete",
-	2 => "Enable",
-	3 => "Disable",
-	4 => "Change SNMP Options",
-	5 => "Clear Statistics",
-	6 => "Change Availability Options"
-	);
 
 $device_actions = plugin_hook_function('device_action_array', $device_actions);
 
@@ -177,8 +169,8 @@ function form_actions() {
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+		if ($_POST["drp_action"] == DEVICE_ACTION_DELETE) { /* delete */
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = DEVICE_ACTION_DELETE_DS_DELETE; }
 
 			$data_sources_to_act_on = array();
 			$graphs_to_act_on       = array();
@@ -200,7 +192,7 @@ function form_actions() {
 				}
 				}
 
-				if ($_POST["delete_type"] == 2) {
+				if ($_POST["delete_type"] == DEVICE_ACTION_DELETE_DS_DELETE) {
 					$graphs = db_fetch_assoc("select
 						graph_local.id as local_graph_id
 						from graph_local
@@ -217,16 +209,16 @@ function form_actions() {
 			}
 
 			switch ($_POST["delete_type"]) {
-				case '1': /* leave graphs and data_sources in place, but disable the data sources */
+				case DEVICE_ACTION_DELETE_DS_KEEP: /* leave graphs and data_sources in place, but disable the data sources */
 					data_source_disable_multi($data_sources_to_act_on);
 
 					plugin_hook_function('data_source_remove', $data_sources_to_act_on);
 
 					break;
-				case '2': /* delete graphs/data sources tied to this device */
+				case DEVICE_ACTION_DELETE_DS_DELETE: /* delete graphs/data sources tied to this device */
 					data_source_remove_multi($data_sources_to_act_on);
 
-					api_graph_remove_multi($graphs_to_act_on);
+					graph_remove_multi($graphs_to_act_on);
 
 					plugin_hook_function('graphs_remove', $graphs_to_act_on);
 
@@ -236,7 +228,7 @@ function form_actions() {
 			device_remove_multi($devices_to_act_on);
 
 			plugin_hook_function('device_remove', $devices_to_act_on);
-		}elseif ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_ENABLE) { /* Enable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -257,7 +249,7 @@ function form_actions() {
 
 				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 			}
-		}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_DISABLE) { /* Disable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -269,7 +261,7 @@ function form_actions() {
 				db_execute("delete from poller_item where host_id='" . $selected_items[$i] . "'");
 				db_execute("delete from poller_reindex where host_id='" . $selected_items[$i] . "'");
 			}
-		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CHANGE_SNMP_OPTIONS) { /* change snmp options */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -284,7 +276,7 @@ function form_actions() {
 
 				push_out_host($selected_items[$i]);
 			}
-		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CLEAR_STATISTICS) { /* Clear Statisitics for Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -294,7 +286,7 @@ function form_actions() {
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = '" . $selected_items[$i] . "'");
 			}
-		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS) { /* change availability options */
 			for ($i=0;($i<count($selected_items));$i++) {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
@@ -308,6 +300,36 @@ function form_actions() {
 				}
 
 				push_out_host($selected_items[$i]);
+			}
+		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_POLLER) { /* change poller */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				reset($fields_host_edit);
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (isset($_POST["$field_name"])) {
+						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+					}
+				}
+
+				push_out_device($selected_items[$i]);
+			}
+		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_SITE) { /* change site */
+			for ($i=0;($i<count($selected_items));$i++) {
+				/* ================= input validation ================= */
+				input_validate_input_number($selected_items[$i]);
+				/* ==================================================== */
+
+				reset($fields_host_edit);
+				while (list($field_name, $field_array) = each($fields_host_edit)) {
+					if (isset($_POST["$field_name"])) {
+						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+					}
+				}
+
+				push_out_device($selected_items[$i]);
 			}
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -354,7 +376,19 @@ function form_actions() {
 	print "<form action='host.php' autocomplete='off' method='post'>\n";
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if ($_POST["drp_action"] == "2") { /* Enable Devices */
+		if ($_POST["drp_action"] == DEVICE_ACTION_DELETE) { /* delete */
+			print "	<tr>
+					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>When you click \"Continue\" the following Device(s) will be deleted.</p>
+						<p><ul>" . $host_list . "</ul></p>";
+						form_radio_button("delete_type", "2", DEVICE_ACTION_DELETE_DS_KEEP, "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.", "1"); print "<br>";
+						form_radio_button("delete_type", "2", DEVICE_ACTION_DELETE_DS_DELETE, "Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>.", "1"); print "<br>";
+						print "</td></tr>
+					</td>
+				</tr>\n
+				";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_ENABLE) { /* Enable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To enable the following Device(s), click \"Continue\".</p>
@@ -363,7 +397,7 @@ function form_actions() {
 					</tr>";
 
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Enable Device(s)'>";
-		}elseif ($_POST["drp_action"] == "3") { /* Disable Devices */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_DISABLE) { /* Disable Devices */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To disable the following Device(s), click \"Continue\".</p>
@@ -371,7 +405,7 @@ function form_actions() {
 					</td>
 					</tr>";
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Disable Device(s)'>";
-		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CHANGE_SNMP_OPTIONS) { /* change snmp options */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To change SNMP parameters for the following Device(s), check the box next to the fields
@@ -403,7 +437,15 @@ function form_actions() {
 							)
 						);
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) SNMP Options'>";
-		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CLEAR_STATISTICS) { /* Clear Statisitics for Selected Devices */
+			print "	<tr>
+					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>To clear the counters for the following Device(s), press the \"Continue\" button below.</p>
+						<p><ul>" . $host_list . "</ul></p>
+					</td>
+					</tr>";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
+		}elseif ($_POST["drp_action"] == DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS) { /* change availability options */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>To change Availability parameters for the following Device(s), check the box next to the fields
@@ -434,26 +476,48 @@ function form_actions() {
 							)
 						);
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Change Device(s) Availability Options'>";
-		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
+		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_POLLER) { /* Change Poller */
 			print "	<tr>
 					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>To clear the counters for the following Device(s), press the \"Continue\" button below.</p>
+						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Poller below.") . "</p>
 						<p><ul>" . $host_list . "</ul></p>
 					</td>
-					</tr>";
+					</tr>\n";
+
+			$form_array = array();
+			$field_name = "poller_id";
+			$form_array += array($field_name => $fields_host_edit["poller_id"]);
+			$form_array[$field_name]["description"] = __("Please select the new Poller for the selected Device(s).");
+
+			draw_edit_form(
+				array(
+					"config" => array("no_form_tag" => true),
+					"fields" => $form_array
+					)
+				);
+
 			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
-		}elseif ($_POST["drp_action"] == "1") { /* delete */
+		}elseif (get_request_var_post("drp_action") === DEVICE_ACTION_CHANGE_SITE) { /* Change Site */
 			print "	<tr>
-					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
-						<p>When you click \"Continue\" the following Device(s) will be deleted.</p>
-						<p><ul>" . $host_list . "</ul></p>";
-						form_radio_button("delete_type", "2", "1", "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.", "1"); print "<br>";
-						form_radio_button("delete_type", "2", "2", "Delete all associated <strong>Graph(s)</strong> and <strong>Data Source(s)</strong>.", "1"); print "<br>";
-						print "</td></tr>
+					<td colspan='2' class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
+						<p>" . __("When you click 'Continue', the following Device(s) will be re-associated with the Site below.") . "</p>
+						<p><ul>" . $host_list . "</ul></p>
 					</td>
-				</tr>\n
-				";
-			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Device(s)'>";
+					</tr>\n";
+
+			$form_array = array();
+			$field_name = "site_id";
+			$form_array += array($field_name => $fields_host_edit["site_id"]);
+			$form_array[$field_name]["description"] = __("Please select the new Site for the selected Device(s).");
+
+			draw_edit_form(
+				array(
+					"config" => array("no_form_tag" => true),
+					"fields" => $form_array
+					)
+				);
+
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Clear Statistics on Device(s)'>";
 		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>

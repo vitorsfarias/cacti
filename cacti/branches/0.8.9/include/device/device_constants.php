@@ -22,14 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-define("DEVICE_ACTION_DELETE", "0");
-define("DEVICE_ACTION_ENABLE", "1");
-define("DEVICE_ACTION_DISABLE", "2");
-define("DEVICE_ACTION_CHANGE_SNMP_OPTIONS", "3");
-define("DEVICE_ACTION_CLEAR_STATISTICS", "4");
-define("DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS", "5");
-define("DEVICE_ACTION_CHANGE_POLLER", "6");
-define("DEVICE_ACTION_CHANGE_SITE", "7");
+define("DEVICE_ACTION_DELETE", "1");
+define("DEVICE_ACTION_ENABLE", "2");
+define("DEVICE_ACTION_DISABLE", "3");
+define("DEVICE_ACTION_CHANGE_SNMP_OPTIONS", "4");
+define("DEVICE_ACTION_CLEAR_STATISTICS", "5");
+define("DEVICE_ACTION_CHANGE_AVAILABILITY_OPTIONS", "6");
+define("DEVICE_ACTION_CHANGE_POLLER", "7");
+define("DEVICE_ACTION_CHANGE_SITE", "8");
+
+define("DEVICE_ACTION_DELETE_DS_KEEP", "1");
+define("DEVICE_ACTION_DELETE_DS_DELETE", "2");
 
 define("DEVICE_UNKNOWN", 0);
 define("DEVICE_DOWN", 1);
