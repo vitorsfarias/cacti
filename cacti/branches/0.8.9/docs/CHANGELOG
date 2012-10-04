@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -bug#0002232: poller_graphs_reapply_names.php requires -id=All when -id=all should work also
 -bug#0002237: Issue with filtering '/' on "Create Graphs for this Host" page
 -bug#0002250: Bug when creating a data source, broken stub remains
+-bug#0002264: Association spelt incorrectly
 -bug#0002266: Against spelt incorrectly
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
