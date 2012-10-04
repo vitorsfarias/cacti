@@ -170,7 +170,7 @@ function form_actions() {
 			print "	<tr>
 					<td class='textArea' bgcolor='#" . $colors["form_alternate1"]. "'>
 						<p>Are you sure you want to delete the following Host Template(s)? All Devices currently associated
-						with these Host Template(s) will lose that assocation.</p>
+						with these Host Template(s) will lose that association.</p>
 						<p><ul>$host_list</ul></p>
 					</td>
 				</tr>\n
