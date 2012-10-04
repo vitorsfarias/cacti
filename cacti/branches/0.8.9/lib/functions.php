@@ -662,20 +662,28 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = "
 	return $file_array;
 }
 
-/* update_host_status - updates the host table with informaton about it's status.
-	  It will also output to the appropriate log file when an event occurs.
-
-	@arg $status - (int constant) the status of the host (Up/Down)
-		  $host_id - (int) the host ID for the results
-	     $hosts - (array) a memory resident host table for speed
-		  $ping - (class array) results of the ping command			*/
+/** update_host_status - updates the host table with informaton about it's status.
+ * It will also output to the appropriate log file when an event occurs.
+ * @parm int $status - the status of the host (Up/Down)
+ * @parm int $host_id - the host ID for the results
+ * @parm array $hosts - a memory resident host table for speed
+ * @parm array $ping - results of the ping command
+ * @parm int $ping_availability - type of downed host detection (e.g. SNMP, ICMP, ...)
+ * @parm bool $print_data_to_stdout - logging type for log messages 
+ * @return modified arrays $host, $ping and updated table "host" */
 function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availability, $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option("ping_failure_count");
 	$ping_recovery_count = read_config_option("ping_recovery_count");
-	$hosts[$host_id]["status_fail_date"] = '0000-00-00 00:00:00';
-	$hosts[$host_id]["status_rec_date"] = '0000-00-00 00:00:00';
-
+	/* initialize fail and recovery dates correctly */
+	if ($hosts[$host_id]["status_fail_date"] == ""){
+		$hosts[$host_id]["status_fail_date"] = '0000-00-00 00:00:00';
+	}
+	
+	if ($hosts[$host_id]["status_rec_date"] == ""){
+		$hosts[$host_id]["status_rec_date"] = '0000-00-00 00:00:00';
+	}
+	
 	if ($status == HOST_DOWN) {
 		/* update total polls, failed polls and availability */
 		$hosts[$host_id]["failed_polls"]++;
