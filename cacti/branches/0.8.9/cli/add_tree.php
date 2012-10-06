@@ -310,7 +310,7 @@ if (sizeof($parms)) {
 		}
 
 		# $nodeId could be a Header Node, a Graph Node, or a Host node.
-		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
+		$nodeId = tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $rra_id, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
 		echo "Added Node node-id: ($nodeId)\n";
 

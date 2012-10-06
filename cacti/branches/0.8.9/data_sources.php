@@ -338,7 +338,7 @@ function form_actions() {
 						group by graph_templates_graph.local_graph_id"), "local_graph_id", "local_graph_id");
 
 					if (sizeof($graphs) > 0) {
-						api_graph_remove_multi($graphs);
+						graph_remove_multi($graphs);
 					}
 
 					plugin_hook_function('graphs_remove', $graphs);
