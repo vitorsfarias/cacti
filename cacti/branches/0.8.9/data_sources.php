@@ -313,7 +313,7 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
 		if ($_POST["drp_action"] == "1") { /* delete */
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = "1"; }
 
 			switch ($_POST["delete_type"]) {
 				case '2': /* delete all graph items tied to this data source */
