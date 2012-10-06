@@ -26,6 +26,7 @@
 	that match a given data template
    @arg $data_template_id - (int) the ID of the data template to match */
 function update_data_source_title_cache_from_template($data_template_id) {
+
 	$data = db_fetch_assoc("select local_data_id from data_template_data where data_template_id=$data_template_id and local_data_id>0");
 
 	if (sizeof($data) > 0) {
@@ -62,9 +63,16 @@ function update_data_source_title_cache_from_host($host_id) {
 	}
 }
 
-/* update_data_source_title_cache - updates the title cache for a single data source
-   @arg $local_data_id - (int) the ID of the data source to update the title cache for */
+/** update_data_source_title_cache - updates the title cache for a single data source
+   @parm int $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
+	include_once(CACTI_LIBRARY_PATH . "/data_source.php");
+	/* in case this is a Data Query related data source which uses "Suggested Names", reapply them as well 
+	 * before we're going to replace any variables used in that title 
+	 * this is required because we else are going to replace the "Suggested Name Title" unconditionally 
+	 * by the title used by the data template */
+	reapply_suggested_data_source_title($local_data_id);
+
 	db_execute("update data_template_data set name_cache='" . addslashes(get_data_source_title($local_data_id)) . "' where local_data_id=$local_data_id");
 	plugin_hook_function('update_data_source_title_cache', $local_data_id);
 }
