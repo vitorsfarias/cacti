@@ -180,9 +180,7 @@
 		}
 
 		function zoomFunction_init(image) {
-
 			var $this = image;
-
 			// exit if image has not been already loaded or if image is not available
 			if(isReady($this)) {
 				// update zoom.image object with the attributes of this image
@@ -264,7 +262,8 @@
 			if($("#zoom-menu").length == 0) {
 				$('<div id="zoom-menu" class="zoom-menu">'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomin"></div><span>Zoom In</span>'
+					+ 		'<div class="ui-icon ui-icon-zoomin"></div>'
+					+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
 					+ '</div>'
 					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-zoomout"></div>'
@@ -360,6 +359,7 @@
 		* registers all the different mouse click event handler
 		*/
 		function zoomAction_init(image) {
+
 			if(zoom.custom.zoomMode == 'quick') {
 				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
@@ -371,7 +371,6 @@
 							if(zoom.custom.zoomMode != 'quick') {
 								$("#zoom-marker-1").css({ height:zoom.box.height+'px', top:zoom.box.top+'px', left:zoom.attr.start+'px', display:'block' });
 								$("#zoom-marker-tooltip-1").css({ top:zoom.box.top+'px', left:zoom.attr.start+'px'});
-								//$(".zoom-marker-tooltip").css({ display:'block' });
 							}
 							$("#zoom-box").css({ cursor:'e-resize' });
 							$("#zoom-area").css({ width:'0px', left:zoom.attr.start+'px' });
@@ -379,60 +378,30 @@
 					}
 				});
 
-			/* register all mouse up events */
-			$("#zoom-box").mouseup(function(e) {
-				switch(e.which) {
-					case 3:
-						//zoomAction_zoom_out()();
-					break;
-				}
-			});
+				/* register the mouse up event */
+				$("#zoom-area").off("mouseup").on("mouseup", function(e) {
+					switch(e.which) {
+						/* leaving the left mouse button will execute a zoom in */
+						case 1:
+							if(zoom.custom.zoomMode == 'quick' && zoom.attr.start != 'none') {
+								zoomAction_zoom_in();
+							}
+						break;
+					}
+				});
 
-			/* register all mouse up events */
-			$("body").mouseup( function(e) {
-				switch(e.which) {
+				/* stretch the zoom area in that direction the user moved the mouse pointer */
+				$("#zoom-box").mousemove( function(e) { zoomAction_draw(e) } );
 
-					/* leaving the left mouse button will execute a zoom in */
-					case 1:
-						/* execute a simple click if the parent node is an anchor */
-					//	if(image.parent().attr("href") !== undefined && zoom.attr.start == e.pageX) {
-					//		open(image.parent().attr("href"), "_self");
-					//		return false;
-					//	}
+				/* stretch the zoom area in that direction the user moved the mouse pointer.
+				   That is required to get it working faultlessly with Opera, IE and Chrome	*/
+				$("#zoom-area").mousemove( function(e) { zoomAction_draw(e); } );
 
-						if(zoom.custom.zoomMode == 'quick' && zoom.attr.start != 'none') {
-							dynamicZoom(image);
-							//$("#zoom-marker-2").css({ height:zoom.box.height + 'px', top:zoom.box.top+'px', left:(zoom.box.left+parseInt(zoom.box.width)-1)+'px' });
-						}
-					break;
-				}
-			});
-
-			/* stretch the zoom area in that direction the user moved the mouse pointer */
-			$("#zoom-box").mousemove( function(e) { drawZoomArea(e) } );
-
-			/* stretch the zoom area in that direction the user moved the mouse pointer.
-			   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-			$("#zoom-area").mousemove( function(e) { drawZoomArea(e); } );
-
-			/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
-			$("#zoom-box").mouseout( function(e) { drawZoomArea(e) } );
-
-
-
-
-
-
-
-
-
-
-
-
-
+				/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
+				$("#zoom-box").mouseout( function(e) { zoomAction_draw(e) } );
 
 			}else{
-
+				/* welcome to the advanced mode ;) */
 				$("#zoom-box").off("mousedown").on("mousedown", function(e) {
 					switch(e.which) {
 						case 1:
@@ -441,7 +410,7 @@
 
 							/* find out which marker has to be added */
 							if(zoom.marker[1].placed && zoom.marker[2].placed) {
-								/* both markers are in - do nothing */
+								zoomAction_zoom_in();
 								return;
 							}else {
 								var marker = zoom.marker[1].placed ? 2 : 1;
@@ -457,8 +426,9 @@
 							zoom.marker[marker].left = e.pageX;
 
 							/* place the marker's tooltip, update its value and make it visible if necessary (Setting: "Always On") */
+							zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (e.pageX + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
 							$("#zoom-marker-tooltip-value-" + marker).html(
-								unixTime2Date(parseInt(parseInt(zoom.graph.start) + (e.pageX + 1 - zoom.box.left)*zoom.graph.secondsPerPixel)).replace(" ", "<br>")
+								unixTime2Date(zoom.marker[marker].unixtime).replace(" ", "<br>")
 							);
 							zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
 
@@ -523,8 +493,9 @@
 										zoom.marker[marker].left = ui.position["left"];
 
 										/* update the timestamp shown in tooltip */
+										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
 										$("#zoom-marker-tooltip-value-" + marker).html(
-											unixTime2Date(parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel)).replace(" ", "<br>")
+											unixTime2Date(zoom.marker[marker].unixtime).replace(" ", "<br>")
 										);
 
 										zoom.marker[marker].width = $("#zoom-marker-tooltip-" + marker).width();
@@ -571,8 +542,13 @@
 							break;
 						case 2:
 							if(zoom.custom.zoom3rdMouseButton != false) {
+								/* hide context menu if open */
 								zoomContextMenu_hide();
-								alert("double");
+								if(zoom.custom.zoom3rdMouseButton == "zoom_in") {
+									zoomAction_zoom_in();
+								}else {
+									zoomAction_zoom_out( zoom.custom.zoomOutFactor );
+								}
 							}
 							break;
 					}
@@ -587,45 +563,50 @@
 		/*
 		* executes a dynamic zoom in
 		*/
-		function dynamicZoom(image){
+		function zoomAction_zoom_in(){
 
-			var newGraphStartTime 	= (zoom.attr.action == 'left2right')
-									? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start - zoom.box.left)*zoom.graph.secondsPerPixel)
-									: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end - zoom.box.left)*zoom.graph.secondsPerPixel);
-			var newGraphEndTime 	= (zoom.attr.action == 'left2right')
-									? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
-									: parseInt(newGraphStartTime + (zoom.attr.start-zoom.attr.end)*zoom.graph.secondsPerPixel);
+			/* hide context menu if open */
+			zoomContextMenu_hide();
+
+			if(zoom.custom.zoomMode == 'quick') {
+
+				var newGraphStartTime 	= (zoom.attr.action == 'left2right') 	? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start - zoom.box.left)*zoom.graph.secondsPerPixel)
+																				: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end - zoom.box.left)*zoom.graph.secondsPerPixel);
+				var newGraphEndTime 	= (zoom.attr.action == 'left2right')	? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
+																				: parseInt(newGraphStartTime + (zoom.attr.start-zoom.attr.end)*zoom.graph.secondsPerPixel);
+
+				/* If the user only clicked on a graph then equal end and start date to ensure that we do not propergate NaNs */
+				if(isNaN(newGraphStartTime) & isNaN(newGraphEndTime)) {
+					return;
+				}else if(isNaN(newGraphStartTime) & !isNaN(newGraphEndTime)) {
+					newGraphStartTime = newGraphEndTime;
+				}else if(!isNaN(newGraphStartTime) & isNaN(newGraphEndTime)){
+					newGraphEndTime = newGraphStartTime;
+				}
+			}else {
+				/* advanced mode has other requirements */
+				/* first of, do nothing if not both marker have been positioned */
+				if(!zoom.marker[1].placed | !zoom.marker[2].placed) {
+					alert("NOTE: In advanced mode both markers have to be positioned first to define the period of time you want to zoom in.");
+					return;
+				}else {
+					var newGraphStartTime = zoom.marker[((zoom.marker[1].unixtime > zoom.marker[2].unixtime)? 2 : 1 )].unixtime;
+					var newGraphEndTime = zoom.marker[((zoom.marker[1].unixtime > zoom.marker[2].unixtime)? 1 : 2 )].unixtime;
+				}
+			}
 
 			if(zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
+				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
-				image.unbind();
-				$("#zoom-box").unbind();
-				$("#zoom-area").unbind();
-				$("#zoom-box").remove();
-				$("#zoom-area").remove();
-
-				zoom.graph.local_graph_id	= 0;
-				zoom.image.top		= 0;
-				zoom.image.left	= 0;
-
-				zoom.box.top	= 0;
-				zoom.box.right	= 0;
-				zoom.box.left	= 0;
-
-				zoom.attr.start	= 'none';
-				zoom.attr.end		= 'none';
-				zoomAction		= 'left2right';
-
-				zoom.graph.width		= 0;
-
 				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
-
 				return false;
 			}else {
+				/* graph view is alread in zoom status */
 				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
+
 		}
 
 
@@ -637,16 +618,36 @@
 		function zoomAction_zoom_out(multiplier){
 
 			multiplier--;
-			if(zoom.custom.zoomOutPositioning == 'begin') {
-				var newGraphStartTime = parseInt(zoom.graph.start);
-				var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (multiplier * zoom.graph.timespan));
-			}else if(zoom.custom.zoomOutPositioning == 'end') {
-				var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (multiplier * zoom.graph.timespan));
-				var newGraphEndTime = parseInt(zoom.graph.end);
+			/* avoid that we can not zoom out anymore if start and end date will be equal */
+			if(zoom.graph.timespan == 0) {
+				zoom.graph.timespan = 1;
+			}
+
+			if(zoom.custom.zoomMode == 'quick' || !zoom.marker[1].placed || !zoom.marker[2].placed ) {
+				if(zoom.custom.zoomOutPositioning == 'begin') {
+					var newGraphStartTime = parseInt(zoom.graph.start);
+					var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (multiplier * zoom.graph.timespan));
+				}else if(zoom.custom.zoomOutPositioning == 'end') {
+					var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (multiplier * zoom.graph.timespan));
+					var newGraphEndTime = parseInt(zoom.graph.end);
+				}else {
+					// define the new start and end time, so that the selected area will be centered per default
+					var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (0.5 * multiplier * zoom.graph.timespan));
+					var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (0.5 * multiplier * zoom.graph.timespan));
+				}
 			}else {
-				// define the new start and end time, so that the selected area will be centered per default
-				var newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (0.5 * multiplier * zoom.graph.timespan));
-				var newGraphEndTime = parseInt(parseInt(zoom.graph.end) + (0.5 * multiplier * zoom.graph.timespan));
+				var newGraphStartTime = zoom.marker[((zoom.marker[1].unixtime > zoom.marker[2].unixtime)? 2 : 1 )].unixtime;
+				var newGraphEndTime = zoom.marker[((zoom.marker[1].unixtime > zoom.marker[2].unixtime)? 1 : 2 )].unixtime;
+				var selectedTimeSpan = newGraphEndTime - newGraphStartTime;
+
+				if(zoom.custom.zoomOutPositioning == 'begin') {
+					newGraphEndTime = newGraphEndTime + multiplier * selectedTimeSpan;
+				}else if(zoom.custom.zoomOutPositioning == 'end') {
+					newGraphStartTime = newGraphStartTime - multiplier * selectedTimeSpan;
+				}else {
+					newGraphStartTime = newGraphStartTime - 0.5 * multiplier * selectedTimeSpan;
+					newGraphEndTime = newGraphEndTime + 0.5 * multiplier * selectedTimeSpan;
+				}
 			}
 
 			if(zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
@@ -662,7 +663,7 @@
 		/*
 		* updates the css parameters of the zoom area to reflect user's interaction
 		*/
-		function drawZoomArea(event) {
+		function zoomAction_draw(event) {
 
 			if(zoom.attr.start == 'none') { return; }
 
@@ -845,6 +846,9 @@
 						value = (zoom.custom.zoomMode != "quick") ? zoom.custom.zoomOutFactor : 2;
 					}
 					zoomAction_zoom_out(value);
+					break;
+				case "zoom_in":
+					zoomAction_zoom_in();
 					break;
 			}
 		}
