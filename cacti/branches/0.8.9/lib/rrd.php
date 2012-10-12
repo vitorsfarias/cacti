@@ -3783,7 +3783,7 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 	
 #cacti_log(__FUNCTION__ . " legend: " . $graph_variables["text_format"][$graph_item_id], false, "TEST");	
 #cacti_log(__FUNCTION__ . " type: " . $graph_item["graph_type_id"] . " padding: >" . $graph_item["text_padding"] . "<", false, "TEST");	
-cacti_log(__FUNCTION__ . " cf: " . $graph_item["consolidation_function_id"] . " type: >" . $graph_item["graph_type_id"] . "<", false, "TEST");	
+#cacti_log(__FUNCTION__ . " cf: " . $graph_item["consolidation_function_id"] . " type: >" . $graph_item["graph_type_id"] . "<", false, "TEST");	
 	
 	
 	switch($graph_item["graph_type_id"]) {
