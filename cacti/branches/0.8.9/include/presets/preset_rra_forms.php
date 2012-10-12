@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(CACTI_BASE_PATH . '/include/presets/preset_rra_arrays.php');
+require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
 
 /* file: rra.php, action: edit */
 $fields_rra_edit = array(
