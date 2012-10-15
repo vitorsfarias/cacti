@@ -376,7 +376,9 @@ class Net_Ping
 				socket_write($this->socket, $this->request, $this->request_len);
 
 				/* get the socket response */
-				switch(socket_select($r = array($this->socket), $w = NULL, $f = NULL, $to_sec, $to_usec)) {
+				$w = $f = array();
+				$r = array($this->socket);
+				switch(socket_select($r, $w, $f, $to_sec, $to_usec)) {
 				case 2:
 					/* connection refused */
 					$error = "refused";
