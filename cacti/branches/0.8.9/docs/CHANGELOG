@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -bug#0002264: Association spelt incorrectly
 -bug#0002266: Against spelt incorrectly
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
+-bug: avoid PHP "pass by reference" error for ping function
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
 -bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
 -bug: allow empty [upper|lower]_limit even without autoscaling
