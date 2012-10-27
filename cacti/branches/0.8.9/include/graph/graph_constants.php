@@ -32,6 +32,10 @@ define('GRAPH_ACTION_RESIZE', '6');
 define('GRAPH_ACTION_ENABLE_EXPORT', '7');
 define('GRAPH_ACTION_DISABLE_EXPORT', '8');
 
+define('GRAPH_ACTION_DELETE_DS_KEEP', '1');
+define('GRAPH_ACTION_DELETE_DS_DELETE', '2');
+
+
 define('RRD_FONT_RENDER_NORMAL', 'normal');
 define('RRD_FONT_RENDER_LIGHT','light');
 define('RRD_FONT_RENDER_MONO', 'mono');
