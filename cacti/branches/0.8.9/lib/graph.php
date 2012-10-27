@@ -567,25 +567,27 @@ function graph_form_actions() {
 				/* ==================================================== */
 			}
 
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
+			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = GRAPH_ACTION_DELETE_DS_KEEP; }
 
 			switch (get_request_var_post("delete_type")) {
-				case '2': /* delete all data sources referenced by this graph */
+				case GRAPH_ACTION_DELETE_DS_DELETE: /* delete all data sources referenced by this graph */
 					$data_sources = array_rekey(db_fetch_assoc("SELECT data_template_data.local_data_id
 						FROM (data_template_rrd, data_template_data, graph_templates_item)
 						WHERE graph_templates_item.task_item_id=data_template_rrd.id
 						AND data_template_rrd.local_data_id=data_template_data.local_data_id
-						AND graph_templates_item.local_graph_id=" . $selected_items[$i] . "
+						AND " . array_to_sql_or($selected_items, "graph_templates_item.local_graph_id") . "
 						AND data_template_data.local_data_id > 0"), "local_data_id", "local_data_id");
 
 					if (sizeof($data_sources)) {
 						data_source_remove_multi($data_sources);
+						plugin_hook_function('data_source_remove', $data_sources);
 					}
 
 					break;
 			}
 
 			graph_remove_multi($selected_items);
+			plugin_hook_function('graphs_remove', $selected_items);
 		}elseif (get_request_var_post("drp_action") === GRAPH_ACTION_CHANGE_TEMPLATE) { /* change graph template */
 			input_validate_input_number(get_request_var_post("graph_template_id"));
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -739,8 +741,8 @@ function graph_form_actions() {
 							}
 
 							print "</ul></div>";
-							form_radio_button("delete_type", "1", "1", "Leave the Data Source(s) untouched.", "1"); print "<br>";
-							form_radio_button("delete_type", "1", "2", "Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).", "1"); print "<br>";
+							form_radio_button("delete_type", GRAPH_ACTION_DELETE_DS_KEEP, GRAPH_ACTION_DELETE_DS_KEEP, "Leave the Data Source(s) untouched.", "1"); print "<br>";
+							form_radio_button("delete_type", GRAPH_ACTION_DELETE_DS_KEEP, GRAPH_ACTION_DELETE_DS_DELETE, "Delete all <strong>Data Source(s)</strong> referenced by these Graph(s).", "1"); print "<br>";
 							print "</td></tr>";
 						}
 					print "
@@ -1414,9 +1416,10 @@ function graph_edit($tabs = false) {
 	$add_text = (!empty($_GET['id']) ? "menu::" . "Graph Options" . ":m_header:html_start_box:" . $dd_menu_options : "");
 	html_start_box2("Graph" . " $header_label", "100", 3, "center", $add_text, false, "table_graph_template_header");
 	$device["host_id"] = $host_id;
+	$form_list = graph_header_form_list();
 	draw_edit_form(array(
 		"config" => array("no_form_tag" => true),
-		"fields" => inject_form_variables(graph_header_form_list(), $graphs, $device)
+		"fields" => inject_form_variables($form_list, $graphs, $device)
 	));
 	html_end_box(false);
 	
