@@ -25,13 +25,16 @@
 function repopulate_poller_cache() {
 	$poller_data = db_fetch_assoc("select id from data_local");
 	$poller_items   = array();
-	$local_data_ids = array();
+	$local_data_ids = array();	# this will lead to all cache items being deleted!
 
 	if (sizeof($poller_data) > 0) {
-	foreach ($poller_data as $data) {
-			$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
-	}
+		foreach ($poller_data as $data) {
+				$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
+		}
 
+		/* delete all existing entries ... */
+		db_execute("DELETE FROM poller_item");
+		/* .. prior to recreating everything from scratch */
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 
 	}
@@ -40,7 +43,7 @@ function repopulate_poller_cache() {
 function update_poller_cache_from_query($host_id, $data_query_id) {
 	$poller_data = db_fetch_assoc("select id from data_local where host_id = '$host_id' and snmp_query_id = '$data_query_id'");
 
-	$poller_items = array();
+	$poller_items = $local_data_ids = array();
 
 	if (sizeof($poller_data) > 0) {
 		foreach ($poller_data as $data) {
@@ -49,10 +52,17 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 			$poller_items = array_merge($poller_items, update_poller_cache($data["id"]));
 		}
 
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		if (sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		}
 	}
 }
 
+
+/** create poller cache items for given data source
+ * @param int $local_data_id - the data source id to act on
+ * @param bool $commit - either update directly or return resulting array
+ */
 function update_poller_cache($local_data_id, $commit = false) {
 
 	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
@@ -299,10 +309,16 @@ function push_out_data_input_method($data_input_id) {
 			$poller_items = array_merge($poller_items, update_poller_cache($row["local_data_id"]));
 		}
 
-		poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+		if (sizeof($_my_local_data_ids)) {
+			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+		}
 	}
 }
 
+/** mass update of poller cache - can run in parallel to poller
+ * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
+ * @param array $poller_items - the new items for poller cache
+ */
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = array();
@@ -319,7 +335,8 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 		db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
 	} else {
-		db_execute("UPDATE poller_item SET present=0");
+		/* don't mark anything in case we have no $local_data_ids => 
+		 *this would flush the whole table at bottom of this function */
 	}
 
 	/* setup the database call */
@@ -381,14 +398,22 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	if (sizeof($ids)) {
 		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
 	}else{
-		db_execute("DELETE FROM poller_item WHERE present=0");
+		/* only handle explicitely given local_data_ids */
 	}
 }
 
+
+/** for a given data template, update all input data and the poller cache
+ * @param int $host_id - id of host, if any
+ * @param int $local_data_id - id of a single data source, if any
+ * @param int $data_template_id - id of data template
+ * works on table data_input_data and poller cache
+ */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
-	/* ok here's the deal: first we need to find every data source that uses this host.
-	then we go through each of those data sources, finding each one using a data input method
-	with "special fields". if we find one, fill it will the data here from this host */
+	/* ok here's the deal: first we need to find every data source that uses this data template.
+	 * then we go through each of those data sources, finding each one using a data input method
+	 * with "special fields". 
+	 * If we find one, fill it with data from associated host */
 	/* setup the poller items array */
 	$poller_items   = array();
 	$local_data_ids = array();
@@ -403,12 +428,12 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where .= " AND data_local.host_id=$host_id";
 	}
 
-	/* sql where fom local_data_id */
+	/* sql where for local_data_id */
 	if ($local_data_id != 0) {
 		$sql_where .= " AND data_local.id=$local_data_id";
 	}
 
-	/* sql where fom data_template_id */
+	/* sql where for data_template_id */
 	if ($data_template_id != 0) {
 		$sql_where .= " AND data_template_data.data_template_id=$data_template_id";
 	}
