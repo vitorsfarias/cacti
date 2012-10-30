@@ -37,6 +37,8 @@ include_once(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 define("MAX_DISPLAY_PAGES", 21);
 
 $device_actions = plugin_hook_function('device_action_array', $device_actions);
+cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
+
 
 /* set default action */
 if (!isset($_REQUEST["action"])) { $_REQUEST["action"] = ""; }
@@ -89,7 +91,9 @@ switch ($_REQUEST["action"]) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
-
+/** fetch all tree names and add them to the device action array
+ * to allow users to place host onto any of those trees efficiently
+ */
 function add_tree_names_to_device_actions_array() {
 	global $device_actions;
 
@@ -101,6 +105,7 @@ function add_tree_names_to_device_actions_array() {
 			$device_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
 		}
 	}
+cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 }
 
 /* --------------------------
@@ -238,7 +243,7 @@ function form_actions() {
 
 				/* update poller cache */
 				$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
-				$poller_items = array();
+				$poller_items = $local_data_ids = array();
 
 				if (sizeof($data_sources) > 0) {
 					foreach ($data_sources as $data_source) {
@@ -247,7 +252,9 @@ function form_actions() {
 					}
 				}
 
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				if (sizeof($local_data_ids)) {
+					poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				}
 			}
 		}elseif ($_POST["drp_action"] == DEVICE_ACTION_DISABLE) { /* Disable Selected Devices */
 			for ($i=0;($i<count($selected_items));$i++) {
@@ -370,6 +377,7 @@ function form_actions() {
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_device_actions_array();
+cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 
 	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
@@ -1457,6 +1465,7 @@ function host() {
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_device_actions_array();
+cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
