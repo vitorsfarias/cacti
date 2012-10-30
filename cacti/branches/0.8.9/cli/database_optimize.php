@@ -83,7 +83,7 @@ if (sizeof($tables)) {
 /* display_help - displays the usage of the function */
 function display_help () {
 	print "Cacti Database Optimization Tool 1.1, Copyright 2004-2012 - The Cacti Group\n\n";
-	print "usage: optimize_database.php [--debug] [--force] [--form] [--help]\n\n";
+	print "usage: database_optimize.php [--debug] [--force] [--form] [--help]\n\n";
 	print "--force - Remove Invalid Records from the Database\n";
 	print "--debug - Display verbose output during execution\n";
 	print "--help  - Display this help message\n";
