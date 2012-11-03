@@ -501,7 +501,12 @@ function format_snmp_string($string, $snmp_oid_included) {
 		$ishex  = false;
 		for ($i=0;($i<sizeof($string_array));$i++) {
 			if (strlen($string_array[$i])) {
-				$string .= chr(hexdec($string_array[$i]));
+				/* for a 00 delimited Hex-STRING: do NOT translate this to CHR! */
+				if ((($i+1) == sizeof($string_array)) && ($string_array[$i] == 0)) {
+					/* do nothing */
+				}else{
+					$string .= chr(hexdec($string_array[$i]));
+				}
 
 				$hexval .= str_pad($string_array[$i], 2, "0", STR_PAD_LEFT);
 
