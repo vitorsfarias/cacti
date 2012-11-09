@@ -626,21 +626,49 @@ function host_edit() {
 						($host["snmp_version"] == 0)) {
 						print "<span style='color: #ab3f1e; font-weight: bold;'>SNMP not in use</span>\n";
 					}else{
-						$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
-							$host["snmp_username"], $host["snmp_password"],
-							$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
-							$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
-
-						/* modify for some system descriptions */
-						/* 0000937: System output in host.php poor for Alcatel */
-						if (substr_count($snmp_system, "00:")) {
-							$snmp_system = str_replace("00:", "", $snmp_system);
-							$snmp_system = str_replace(":", " ", $snmp_system);
+						switch ($host["availability_method"]) {
+							case AVAIL_SNMP_GET_NEXT:
+								$oid = ".1.3";	# sysDescr
+								break;
+							case AVAIL_SNMP_GET_SYSDESC:
+								$oid = ".1.3.6.1.2.1.1.1.0";	# sysDescr
+								break;
+							case AVAIL_SNMP:
+							case AVAIL_SNMP_AND_PING:
+							case AVAIL_SNMP_OR_PING:
+								$oid = ".1.3.6.1.2.1.1.3.0";	# sysUptime
+								break;
+							default:
+								$oid = ".1.3.6.1.2.1.1.1.0";	# sysDescr						
 						}
 
-						if ($snmp_system == "") {
+						if ($host["availability_method"] == AVAIL_SNMP_GET_NEXT) {
+							$snmp_check = cacti_snmp_getnext($host["hostname"], $host["snmp_community"], $oid, $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);						
+						} else {
+							$snmp_check = cacti_snmp_get($host["hostname"], $host["snmp_community"], $oid, $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
+						}
+						
+						if ($snmp_check == "") {
 							print "<span style='color: #ff0000; font-weight: bold;'>SNMP error</span>\n";
 						}else{
+							$snmp_system = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.1.0", $host["snmp_version"],
+								$host["snmp_username"], $host["snmp_password"],
+								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
+								$host["snmp_context"], $host["snmp_port"], $host["snmp_timeout"], read_config_option("snmp_retries"),SNMP_WEBUI);
+	
+							/* modify for some system descriptions */
+							/* 0000937: System output in host.php poor for Alcatel */
+							if (substr_count($snmp_system, "00:")) {
+								$snmp_system = str_replace("00:", "", $snmp_system);
+								$snmp_system = str_replace(":", " ", $snmp_system);
+							}
+
 							$snmp_uptime   = cacti_snmp_get($host["hostname"], $host["snmp_community"], ".1.3.6.1.2.1.1.3.0", $host["snmp_version"],
 								$host["snmp_username"], $host["snmp_password"],
 								$host["snmp_auth_protocol"], $host["snmp_priv_passphrase"], $host["snmp_priv_protocol"],
