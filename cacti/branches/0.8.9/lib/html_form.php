@@ -430,14 +430,15 @@ function form_multiple_dirpath_box($form_name, $form_previous_value, $form_rows,
 	}
 
 	$dirs = explode(":", $form_previous_value);
+	$extra_data = "";
 	if (sizeof($dirs)) {
 		foreach ($dirs as $dir) {
 			if (is_dir($dir)) {
-				$extra_data = "<span class=\"success\"><br>[" . __("OK: DIR FOUND") . "]</span>";
+				$extra_data .= "<span class=\"success\"><br>[" . __("OK: DIR FOUND") . ": " .$dir . "]</span>";
 			}else if (is_file($dir)) {
-				$extra_data = "<span class=\"warning\"><br>[" . __("ERROR: IS FILE") . ": " .$dir . "]</span>";
+				$extra_data .= "<span class=\"warning\"><br>[" . __("ERROR: IS FILE") . ": " .$dir . "]</span>";
 			}else{
-				$extra_data = "<span class=\"warning\"><br>[" . __("ERROR: DIR NOT FOUND") . ": " . $dir . "]</span>";
+				$extra_data .= "<span class=\"warning\"><br>[" . __("ERROR: DIR NOT FOUND") . ": " . $dir . "]</span>";
 			}
 		}		
 	}
