@@ -416,7 +416,7 @@ $settings = array(
 			),
 		"path_html_export" => array(
 			"friendly_name" => "Export Directory (both local and ftp)",
-			"description" => "This is the directory, either on the local system or on the remote system, that will contain the exported data.",
+			"description" => "This is the directory, either on the local system or on the remote system, that will contain the exported data. <br />This directory will be cleared prior to export!",
 			"method" => "dirpath",
 			"max_length" => "255"
 			),
