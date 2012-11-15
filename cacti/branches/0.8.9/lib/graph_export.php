@@ -519,7 +519,10 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 
 	/* open pointer to the new index file */
 	$fp_index = fopen($cacti_export_path . "/index.html", "w");
-
+	if ($fp_index === FALSE) {
+		export_fatal("Opening '$cacti_export_path/index.html' in write mode failed.  Can not continue");
+	}
+	
 	/* get a list of all graphs that need exported */
 	$exportuser = read_config_option("export_user_id");
 	$current_user = db_fetch_row("SELECT * FROM user_auth WHERE id=" . read_config_option("export_user_id"));
