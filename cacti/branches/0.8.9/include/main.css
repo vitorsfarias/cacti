@@ -537,9 +537,127 @@ a:hover {
 	font-size: 12px;
 }
 
+/* error classes */
 .txtErrorTextBox {
 	border: 2px solid #ff0000;
 }
+
+span.normal {
+	font-weight:normal;
+}
+
+span.info {
+	color: #ab3f1e;
+	font-weight: bold;
+}
+
+span.log {
+	font-family: monospace;
+	font-size:10px;
+}
+
+span.warning {
+	color: #ff0000;
+	font-weight: bold;
+}
+
+span.ping {
+	font-size:10px;
+	color: #000000;
+	font-weight: normal;
+}
+
+span.ping_warning {
+	font-size:10px;
+	color: #ff0000;
+	font-weight: bold;
+}
+
+span.success {
+	color: #008000;
+}
+
+span.unknown {
+	color: #484848;
+}
+
+span.fail {
+	color: #ff0000;
+}
+
+span.new {
+	color: #3C3B85;
+}
+
+span.dependant {
+	color: #000080;
+}
+
+span.filter {
+	background-color: #f8d93d;
+}
+
+span.disabled {
+	color: #a1a1a1;
+}
+
+span.down {
+	color: #ff0000;
+}
+
+span.error {
+	color: #750f7d;
+}
+
+span.recovering {
+	color: #ff8f1e;
+}
+
+span.up {
+	color: #198e32;
+}
+
+span.tabedit {
+	white-space: nowrap;
+	color: #c16921;
+}
+
+span.italic {
+	font-style: italic;
+}
+
+.log_error_fatal {
+	background-color: #FF3932;
+}
+
+.log_warn {
+	background-color: #EACC00;
+}
+
+.log_sql {
+	background-color: #6DC8FE;
+}
+
+.log_debug {
+	background-color: #C4FD3D;
+}
+
+.log_stats {
+	background-color: #96E78A;
+}
+
+.log_default1 {
+	background-color: #CCCCCC;
+}
+
+.log_default2 {
+	background-color: #FFFFFF;
+}
+
+tr.highlight {
+	background-color: #f0e68c;
+}
+
 
 /* tabs */
 td.tab {
