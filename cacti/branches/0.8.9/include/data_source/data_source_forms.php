@@ -55,7 +55,7 @@ $struct_data_source = array(
 	"rra_id" => array(
 		"method" => "drop_multi_rra",
 		"friendly_name" => "Associated RRA's",
-		"description" => "Which RRA's to use when entering data. (It is recommended that you select all of these values).",
+		"description" => "Which RRA's to use when entering data.<br/><em>Changes require existing rrd files to be re-created.</em>",
 		"form_id" => "|arg1:id|",
 		"sql" => "SELECT rra_id as id,data_template_data_id FROM data_template_data_rra WHERE data_template_data_id=|arg1:id|",
 		"sql_all" => "SELECT rra.id FROM rra ORDER BY id",
@@ -68,7 +68,7 @@ $struct_data_source = array(
 		"max_length" => "10",
 		"size" => "20",
 		"default" => "300",
-		"description" => "The amount of time in seconds between expected updates.",
+		"description" => "The amount of time in seconds between expected updates.<br/><em>Changes require existing rrd files to be re-created.</em>",
 		"flags" => ""
 		),
 	"active" => array(
@@ -88,7 +88,7 @@ $struct_data_source_item = array(
 		"max_length" => "19",
 		"size" => "20",
 		"default" => "",
-		"description" => "Choose unique name to represent this piece of data inside of the rrd file.",
+		"description" => "Choose unique name to represent this piece of data inside of the rrd file.<br/><em>Changes have to be propagated using 'rrdtool tune ...'.</em>",
 		),
 	"rrd_minimum" => array(
 		"friendly_name" => "Minimum Value ('U' for No Minimum)",
@@ -97,7 +97,7 @@ $struct_data_source_item = array(
 		"size" => "30",
 		"default" => "0",
 		"class" => "DS_std",
-		"description" => "The minimum value of data that is allowed to be collected.",
+		"description" => "The minimum value of data that is allowed to be collected.<br/><em>Changes have to be propagated using 'rrdtool tune ...'.</em>",
 		),
 	"rrd_maximum" => array(
 		"friendly_name" => "Maximum Value ('U' for No Maximum)",
@@ -106,14 +106,14 @@ $struct_data_source_item = array(
 		"size" => "30",
 		"default" => "0",
 		"class" => "DS_std",
-		"description" => "The maximum value of data that is allowed to be collected.",
+		"description" => "The maximum value of data that is allowed to be collected.<br/><em>Changes have to be propagated using 'rrdtool tune ...'.</em>",
 		),
 	"data_source_type_id" => array(
 		"friendly_name" => "Data Source Type",
 		"method" => "drop_array",
 		"array" => $data_source_types,
 		"default" => "",
-		"description" => "How data is represented in the RRA.",
+		"description" => "How data is represented in the RRA.<br/><em>Changes have to be propagated using 'rrdtool tune ...'.</em>",
 		),
 	"rrd_compute_rpn" => array(
 		"friendly_name" => "RPN for a COMPUTE DS Item Type (RRDTool 1.2.x and above)",
@@ -132,7 +132,7 @@ $struct_data_source_item = array(
 		"size" => "30",
 		"default" => "600",
 		"description" => "The maximum amount of time that can pass before data is entered as 'unknown'." . "<br>" .
-						"(Usually 2x300=600)",
+						"(Usually 2 x step)<br/><em>Changes have to be propagated using 'rrdtool tune ...'.</em>",
 		),
 	"data_input_field_id" => array(
 		"friendly_name" => "Output Field",
