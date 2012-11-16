@@ -65,9 +65,17 @@ function draw_edit_form($array) {
 					form_alternate_row_color($colors["form_alternate1"], $colors["form_alternate2"], $i, 'row_' . $field_name);
 				}
 
-				print "<td width='" . ((isset($config_array["left_column_width"])) ? $config_array["left_column_width"] : "50%") . "'>\n<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
-
 				if (isset($field_array["sub_checkbox"])) {
+					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : " width='50%'");
+					print "<td" . $width . " class='template_checkbox'>\n";
+					print "<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+
+					if (isset($field_array["description"])) {
+						if (strlen($field_array["description"])) {
+							print "<div>" . $field_array["description"] . "</div>";
+						}
+					}
+
 					form_checkbox($field_array["sub_checkbox"]["name"],
 						$field_array["sub_checkbox"]["value"],
 						$field_array["sub_checkbox"]["friendly_name"],
@@ -75,9 +83,14 @@ function draw_edit_form($array) {
 						((isset($field_array["sub_checkbox"]["form_id"])) 	? $field_array["sub_checkbox"]["form_id"] : ""),
 						((isset($field_array["sub_checkbox"]["class"])) 	? $field_array["sub_checkbox"]["class"] : ""),
 						((isset($field_array["sub_checkbox"]["on_change"])) ? $field_array["sub_checkbox"]["on_change"] : ""));
+					print "</td>\n";
+				} else {
+					$width = ((isset($config_array["left_column_width"])) ? (" width='" . $config_array["left_column_width"] . "'") : " width='50%'");
+					print "<td" . $width . ">\n";
+					print "<font class='textEditTitle'>" . $field_array["friendly_name"] . "</font><br>\n";
+					print ((isset($field_array["description"])) ? $field_array["description"] : "");
+					print "</td>\n";
 				}
-
-				print ((isset($field_array["description"])) ? $field_array["description"] : "") . "</td>\n";
 
 				print "<td>";
 
