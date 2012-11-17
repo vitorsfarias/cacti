@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inhereted from the host
-	and the data template
-   @arg $data_template_id - the id of the data template to push out values for */
+/** push_out_data_source_custom_data - pushes out the "custom data" associated with a data
+ * template to all of its children. This includes all fields inherited from the host
+ * 	and the data template
+   @parm int $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
 	
 	/* valid data template id? */
@@ -125,14 +125,14 @@ function push_out_data_source_custom_data($data_template_id) {
 			
 			if (sizeof($input_fields)) {
 				foreach ($input_fields as $input_field) {
-					if ($data_source["id"] == $input_field["data_template_data_id"]) {
+					if ($data_source["id"] == $input_field["data_template_data_id"] &&
+						isset($template_input_fields[$input_field["id"]])) {
 						/* do not push out "host fields" */
 						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field["type_code"])) {
 							/* this is not a "host field", so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
 							$did_cnt++;
-						}elseif ((isset($template_input_fields[$input_field["id"]])) &&
-							($template_input_fields[$input_field["id"]]["value"] != $input_field["value"])) { # templated input field deviates from currenmt data source, so update required
+						}elseif ($template_input_fields[$input_field["id"]]["value"] != $input_field["value"]) { # templated input field deviates from currenmt data source, so update required
 							$did_vals .= ($did_cnt == 0 ? "":",") . "(" . $input_field["id"] . ", " . $data_source["id"] . ", '" . addslashes($template_input_fields[$input_field["id"]]["value"]) . "')";
 							$did_cnt++;
 						}
@@ -170,6 +170,7 @@ function push_out_data_source_custom_data($data_template_id) {
 	}
 }
 
+
 /* push out changed data template fields to related data sources
  * @parm string $did_vals	- data input data fields
  * @parm string $ds_in_str	- all data sources, formatted as SQL "IN" clause
@@ -203,6 +204,53 @@ function push_out_data_source_templates($did_vals, $ds_in_str, $rra_vals, $rra_i
 	}
 }
 
+
+function push_out_data_source_input_fields($data_template_id, $input_fields) {
+#	db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
+				
+	/* push out input fields */
+	if (sizeof($input_fields) > 0) {
+
+		/* get all input fields for this data template */
+		$data_input_array = array_rekey(db_fetch_assoc("SELECT " .
+			"data_input_fields.id, " .
+			"data_input_fields.data_name, " .
+			"data_input_fields.type_code, " .
+			"data_input_data.value, " .
+			"data_input_data.t_value " .
+			"FROM data_input_fields " .
+			"INNER JOIN data_input_data " .
+			"ON data_input_fields.id = data_input_data.data_input_field_id " .
+			"WHERE (data_input_fields.input_output='in') " .
+			"AND (data_input_data.data_template_data_id=$data_template_id) " .
+			"ORDER BY data_input_fields.id"),
+			"data_name", array("type_code", "value", "t_value"));
+
+		reset($input_fields);
+		foreach ($input_fields as $input_field) {
+
+			/* determine, whether the $form_value has changed (or is new)
+			 * or the templating option has changed (or is new)			 */
+			$replace_required = FALSE; 
+			if (!isset($data_input_array{$input_field["data_name"]})) {
+				$replace_required = TRUE;	# input field not yet existing
+			} elseif ($data_input_array{$input_field["data_name"]}{"value"} != $input_field["value"]) {
+				$replace_required = TRUE;	# input field value has changed
+			}
+			if ($data_input_array{$input_field["data_name"]}{"t_value"} != $input_field["t_value"]) {
+				$replace_required = TRUE;	# templating value has changed
+			}
+							 
+				 
+			if ($replace_required) {
+				db_execute("replace into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
+					values (" . $input_field["id"] . ",$data_template_id,'" . $input_field["t_value"] . "','" . $input_field["value"] . "')");
+			}
+		}
+	}
+	
+}
+
 /* push_out_data_source_item - pushes out templated data template item fields to all matching
 	children
    @arg $data_template_rrd_id - the id of the data template item to push out values for */
@@ -225,8 +273,8 @@ function push_out_data_source_item($data_template_rrd_id) {
 	}
 }
 
-/* push_out_data_source - pushes out templated data template fields to all matching children
-   @arg $data_template_data_id - the id of the data template to push out values for */
+/** push_out_data_source - pushes out templated data template fields to all matching children
+   @parm int $data_template_data_id - the id of the data template to push out values for */
 function push_out_data_source($data_template_data_id) {
 	global $struct_data_source;
 
