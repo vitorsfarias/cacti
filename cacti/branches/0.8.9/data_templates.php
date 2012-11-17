@@ -85,6 +85,8 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("data_input_id"));
 		input_validate_input_number(get_request_var_post("data_template_id"));
+		input_validate_input_number(get_request_var_post("data_template_data_id"));
+		input_validate_input_number(get_request_var_post("data_template_rrd_id"));
 		/* ==================================================== */
 
 		/* save: data_template */
@@ -128,23 +130,27 @@ function form_save() {
 		$save3["t_data_input_field_id"] = form_input_validate((isset($_POST["t_data_input_field_id"]) ? $_POST["t_data_input_field_id"] : ""), "t_data_input_field_id", "", true, 3);
 		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
 
-		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc("select
-			id,
-			input_output,
-			regexp_match,
-			allow_nulls,
-			type_code,
-			data_name
-			from data_input_fields
-			where data_input_id=" . $_POST["data_input_id"] . "
-			and input_output='in'");
+		/* ok, first pull out all known 'input' values of given data_input_id so we know how much to save */
+		$input_fields = db_fetch_assoc("SELECT " .
+				"id, " .
+				"input_output, " .
+				"regexp_match, " .
+				"allow_nulls, " .
+				"type_code, " .
+				"data_name, " .
+				"'' as value, " .			# to store form value
+				"'' as t_value " .          # to store templating
+				"FROM data_input_fields " .
+				"WHERE data_input_id=" . $_POST["data_input_id"] . " " .
+				"AND input_output='in'");
 
-		/* pass 1 for validation */
+		/* validate input fields: pass 1 for validation */
 		if (sizeof($input_fields) > 0) {
-			foreach ($input_fields as $input_field) {
+			foreach ($input_fields as $key => $input_field) {
+				/* field name on form is built from name of input field */
 				$form_value = "value_" . $input_field["data_name"];
 
+				/* in case there is a PREDEFINED value ... */
 				if ((isset($_POST[$form_value])) && ($input_field["type_code"] == "")) {
 					if ((isset($_POST["t_" . $form_value])) &&
 						($_POST["t_" . $form_value] == "on")) {
@@ -154,12 +160,22 @@ function form_save() {
 					}else{
 						$not_required = false;
 					}
-
+					
+					/* ... verify predefined value */
 					form_input_validate($_POST[$form_value], "value_" . $input_field["data_name"], $input_field["regexp_match"], $not_required, 3);
+				}
+
+				/* now store form values in $input_fields array for later use */
+				if (isset($_POST[$form_value])) {
+					$input_fields[$key]["value"] = trim($_POST[$form_value]);
+				}
+				if (isset($_POST["t_" . $form_value]) && $_POST["t_" . $form_value] !== '') {
+					$input_fields[$key]["t_value"] = 'on';
 				}
 			}
 		}
 
+		/* save template itself: id, name, hash */
 		if (!is_error_message()) {
 			$data_template_id = sql_save($save1, "data_template");
 
@@ -170,6 +186,7 @@ function form_save() {
 			}
 		}
 
+		/* save template data: title, input method, step, rra done later */
 		if (!is_error_message()) {
 			$save2["data_template_id"] = $data_template_id;
 			$data_template_data_id = sql_save($save2, "data_template_data");
@@ -181,11 +198,13 @@ function form_save() {
 			}
 		}
 
-		/* update actual host template information for live hosts */
+		/* update actual host template information for live hosts 
+		 * for a change of data input method */
 		if ((!is_error_message()) && ($save2["id"] > 0)) {
 			db_execute("update data_template_data set data_input_id = '" . $_POST["data_input_id"] . "' where data_template_id = " . $_POST["data_template_id"] . ";");
 		}
 
+		/* save template data for associated data source items: name, type, heartbeat, ... */
 		if (!is_error_message()) {
 			$save3["data_template_id"] = $data_template_id;
 			$data_template_rrd_id = sql_save($save3, "data_template_rrd");
@@ -197,8 +216,12 @@ function form_save() {
 			}
 		}
 
+
+		/* all basic db records have been inserted/updated successfully, now
+		 * it's time to cope with associated entries */
 		if (!is_error_message()) {
-			/* save entries in 'selected rras' field */
+			/* save entries in 'selected rras' field 
+			 * to accept a change, we first delete all existing RRA entries and then fill in current RRA */
 			db_execute("delete from data_template_data_rra where data_template_data_id=$data_template_data_id");
 
 			if (isset($_POST["rra_id"])) {
@@ -212,34 +235,17 @@ function form_save() {
 				}
 			}
 
+
+			/* push out stuff to child data sources using this template */
 			if (!empty($_POST["data_template_id"])) {
-				/* push out all data source settings to child data source using this template */
+				/* push out template data: title, input method, step */				
 				push_out_data_source($data_template_data_id);
+				/* push out template data for associated data source items: name, type, heartbeat, ... */				
 				push_out_data_source_item($data_template_rrd_id);
 
-				db_execute("delete from data_input_data where data_template_data_id=$data_template_data_id");
-
-				reset($input_fields);
-				if (sizeof($input_fields) > 0) {
-				foreach ($input_fields as $input_field) {
-					$form_value = "value_" . $input_field["data_name"];
-
-					if (isset($_POST[$form_value])) {
-						/* save the data into the 'host_template_data' table */
-						if (isset($_POST{"t_value_" . $input_field["data_name"]})) {
-							$template_this_item = "on";
-						}else{
-							$template_this_item = "";
-						}
-
-						if ((!empty($form_value)) || (!empty($_POST{"t_value_" . $input_field["data_name"]}))) {
-							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','" . trim($_POST[$form_value]) . "')");
-						}
-					}
-				}
-				}
-
+				/* propagate changes to input fields for this template */
+				push_out_data_source_input_fields($data_template_id, $input_fields);
+				
 				/* push out all "custom data" for this data source template */
 				push_out_data_source_custom_data($data_template_id);
 				push_out_host(0, 0, $data_template_id);
@@ -571,9 +577,12 @@ function template_edit() {
 		foreach ($fields as $field) {
 			$data_input_data = db_fetch_row("select t_value,value from data_input_data where data_template_data_id=" . $template_data["id"] . " and data_input_field_id=" . $field["id"]);
 
+			/* if input data source defines a value ... */
 			if (sizeof($data_input_data) > 0) {
+				/* ... then unconditionally use this one */
 				$old_value = $data_input_data["value"];
 			}else{
+				/* ... else leave empty for the user to select what he wants */
 				$old_value = "";
 			}
 
