@@ -94,6 +94,7 @@ function form_save() {
 
 function host_new_graphs_save() {
 	$selected_graphs_array = unserialize(stripslashes($_POST["selected_graphs_array"]));
+	$values = array();
 
 	/* form an array that contains all of the data on the previous form */
 	while (list($var, $val) = each($_POST)) {
@@ -172,7 +173,7 @@ function host_new_graphs_save() {
 				debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 				/* lastly push host-specific information to our data sources */
-				if (sizeof($return_array["local_data_id"])) { # we expect at least one data source associated
+				if (!empty($return_array["local_data_id"])) { # we expect at least one data source associated
 					foreach($return_array["local_data_id"] as $item) {
 						push_out_host($_POST["host_id"], $item);
 					}
@@ -188,7 +189,7 @@ function host_new_graphs_save() {
 					debug_log_insert("new_graphs", "Created graph: " . get_graph_title($return_array["local_graph_id"]));
 
 					/* lastly push host-specific information to our data sources */
-					if (sizeof($return_array["local_data_id"])) { # we expect at least one data source associated
+					if (!empty($return_array["local_data_id"])) { # we expect at least one data source associated
 						foreach($return_array["local_data_id"] as $item) {
 							push_out_host($_POST["host_id"], $item);
 						}
