@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -bug#0001414: COMMENT field can cause rrdtool to report "Legend too long"
 -bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
 -bug#0001600: Default action on lists should be "None"
+-bug#0002226: Creating new graphs without data source fix in revision 5415 reported to not fix the issue
 -bug#0002229: Fresh Install Doesn't Poll Data Sources
 -bug#0002232: poller_graphs_reapply_names.php requires -id=All when -id=all should work also
 -bug#0002237: Issue with filtering '/' on "Create Graphs for this Host" page
