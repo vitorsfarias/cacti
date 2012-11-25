@@ -24,6 +24,7 @@
 
 include("./include/auth.php");
 include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
 
 load_current_session_value("page_referrer", "page_referrer", "");
 
@@ -1230,47 +1231,52 @@ function utilities_view_snmp_cache() {
 	if (get_request_var_request("host_id") == "-1") {
 		/* Show all items */
 	}elseif (get_request_var_request("host_id") == "0") {
-		$sql_where .= " AND host.id=0";
+		$sql_where .= (strlen($sql_where) ? " AND ": "WHERE ") . "host.id=0";
 	}elseif (!empty($_REQUEST["host_id"])) {
-		$sql_where .= " AND host.id=" . get_request_var_request("host_id");
+		$sql_where .= (strlen($sql_where) ? " AND ": "WHERE ") . "host.id=" . get_request_var_request("host_id");
 	}
 
 	/* filter by query name */
 	if (get_request_var_request("snmp_query_id") == "-1") {
 		/* Show all items */
 	}elseif (!empty($_REQUEST["snmp_query_id"])) {
-		$sql_where .= " AND host_snmp_cache.snmp_query_id=" . get_request_var_request("snmp_query_id");
+		$sql_where .= (strlen($sql_where) ? " AND ": "WHERE ") . "host_snmp_cache.snmp_query_id=" . get_request_var_request("snmp_query_id");
 	}
 
 	/* filter by search string */
 	if (get_request_var_request("filter") != "") {
-		$sql_where .= " AND (host.description LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR snmp_query.name LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%'
-			OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where .=  (strlen($sql_where) ? " AND ": "WHERE ") . 
+			"(host.description LIKE '%%" . get_request_var_request("filter") . "%%' " .
+			"OR snmp_query.name LIKE '%%" . get_request_var_request("filter") . "%%' " .
+			"OR host_snmp_cache.field_name LIKE '%%" . get_request_var_request("filter") . "%%' " .
+			"OR host_snmp_cache.field_value LIKE '%%" . get_request_var_request("filter") . "%%' " . 
+			"OR host_snmp_cache.oid LIKE '%%" . get_request_var_request("filter") . "%%')";
 	}
 
 	html_start_box("", "100%", $colors["header"], "3", "center", "");
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM (host_snmp_cache,snmp_query,host)
-		WHERE host_snmp_cache.host_id=host.id
-		AND host_snmp_cache.snmp_query_id=snmp_query.id
-		$sql_where");
+	$total_rows = db_fetch_cell("SELECT " .
+		"COUNT(*) " .
+		"FROM host_snmp_cache " .
+		"LEFT JOIN host ON host_snmp_cache.host_id=host.id " .
+		"LEFT JOIN snmp_query ON host_snmp_cache.snmp_query_id=snmp_query.id " .
+		"LEFT JOIN data_input ON snmp_query.data_input_id=data_input.id " .
+		$sql_where);
 
-	$snmp_cache_sql = "SELECT
-		host_snmp_cache.*,
-		host.description,
-		snmp_query.name
-		FROM (host_snmp_cache,snmp_query,host)
-		WHERE host_snmp_cache.host_id=host.id
-		AND host_snmp_cache.snmp_query_id=snmp_query.id
-		$sql_where
-		LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
+	$snmp_cache_sql = "SELECT " .
+		"host_snmp_cache.*, " .
+		"host.description, " .
+		"data_input.name AS di_name, " .
+		"data_input.type_id, " .
+		"snmp_query.name " .
+		"FROM host_snmp_cache " .
+		"LEFT JOIN host ON host_snmp_cache.host_id=host.id " .
+		"LEFT JOIN snmp_query ON host_snmp_cache.snmp_query_id=snmp_query.id " .
+		"LEFT JOIN data_input ON snmp_query.data_input_id=data_input.id " .
+		$sql_where .
+		"LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
 
-//	print $snmp_cache_sql;
+	#print $snmp_cache_sql;
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
@@ -1303,29 +1309,24 @@ function utilities_view_snmp_cache() {
 	if (sizeof($snmp_cache) > 0) {
 	foreach ($snmp_cache as $item) {
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-		?>
-		<td>
-			Host: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["description"])) : $item["description"]);?>
-			, SNMP Query: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name"])) : $item["name"]);?>
-		</td>
-		</tr>
-		<?php
+		print "<td><span class='info'>Host: </span>";
+		print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["description"])) : $item["description"]) . ", ";
+		print "<span class='info'>". $item["di_name"] . ": </span>" . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["name"])) : $item["name"]);
+		print "</td>
+		</tr>";
 		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
-		?>
-		<td>
-			Index: <?php print $item["snmp_index"];?>
-			, Field Name: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_name"])) : $item["field_name"]);?>
-			, Field Value: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_value"])) : $item["field_value"]);?>
-		</td>
-		</tr>
-		<?php
-		form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i); $i++;
-		?>
-		<td>
-			OID: <?php print (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"])) : $item["oid"]);?>
-		</td>
-		</tr>
-		<?php
+		print "<td><span class='info'>Index: </span>" . $item["snmp_index"] . ", ";
+		print "<span class='info'>Field Name: </span>" . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_name"])) : $item["field_name"]) . ", ";
+		print "<span class='info'>Field Value: </span>" . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["field_value"])) : $item["field_value"]);
+		print "</td>
+		</tr>";
+		if ($item["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) {	# only SNMP Queries have an OID
+			form_alternate_row_color($colors["form_alternate1"],$colors["form_alternate2"],$i);
+			print "<td><span class='info'>OID: </span>" . (strlen(get_request_var_request("filter")) ? (preg_replace("/(" . preg_quote(get_request_var_request("filter"), "/") . ")/i", "<span style='background-color: #F8D93D;'>\\1</span>", $item["oid"])) : $item["oid"]);
+			print "</td>
+			</tr>";
+		}
+		$i++;
 	}
 	}
 
