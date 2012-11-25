@@ -1608,7 +1608,7 @@ function utilities() {
 	</colgroup>
 
 	<?php html_header(array("Technical Support"), 2); ?>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class='rowAlternate0'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_tech");?>'>Technical Support</a>
 		</td>
@@ -1619,7 +1619,7 @@ function utilities() {
 
 	<?php html_header(array("Log Administration"), 2);?>
 
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class='rowAlternate0'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_logfile");?>'>View Cacti Log File</a>
 		</td>
@@ -1627,7 +1627,7 @@ function utilities() {
 			The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class='rowAlternate1'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_user_log");?>'>View User Log</a>
 		</td>
@@ -1638,7 +1638,7 @@ function utilities() {
 
 	<?php html_header(array("Poller Cache Administration"), 2); ?>
 
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr class='rowAlternate0'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_poller_cache");?>'>View Poller Cache</a>
 		</td>
@@ -1646,7 +1646,7 @@ function utilities() {
 			This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate2"];?>">
+	<tr  class='rowAlternate1'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=view_snmp_cache");?>'>View SNMP Cache</a>
 		</td>
@@ -1654,7 +1654,7 @@ function utilities() {
 			The SNMP cache stores information gathered from SNMP queries. It is used by cacti to determine the OID to use when gathering information from an SNMP-enabled host.
 		</td>
 	</tr>
-	<tr bgcolor="#<?php print $colors["form_alternate1"];?>">
+	<tr  class='rowAlternate0'>
 		<td class="textArea">
 			<a href='<?php print htmlspecialchars("utilities.php?action=clear_poller_cache");?>'>Rebuild Poller Cache</a>
 		</td>
