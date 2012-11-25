@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -bug#0002257: status_fail_date and status_rec_date are initialised when a host recovers
 -bug#0002258: Save an existing Data Template (Script Data query based) cause loss of Custom Data in Data Sources
 -bug#0002259: `created' visual highligter breaks if there are some non-existing columns
+-bug#0002261: php5.4.0 added new error_reporting variable, causing cacti to show errors
 -bug#0002264: Association spelt incorrectly
 -bug#0002266: Against spelt incorrectly
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
