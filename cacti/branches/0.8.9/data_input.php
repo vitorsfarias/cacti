@@ -24,6 +24,8 @@
 
 include("./include/auth.php");
 include_once(CACTI_LIBRARY_PATH . "/utility.php");
+include_once(CACTI_LIBRARY_PATH . "/data_input.php");
+include_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
 
 define("MAX_DISPLAY_PAGES", 21);
 
@@ -158,12 +160,36 @@ function form_actions() {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
 
 		if ($_POST["drp_action"] == "1") { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
+			/* do a referential integrity check */
+			if (sizeof($selected_items)) {
+			foreach($selected_items as $data_input_id) {
 				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
+				input_validate_input_number($data_input_id);
 				/* ==================================================== */
 
-				data_remove($selected_items[$i]);
+				if (sizeof(db_fetch_assoc("SELECT * FROM data_template_data WHERE data_input_id=$data_input_id LIMIT 1"))) {
+					$bad_ids[] = $data_input_id;
+				}else{
+					$data_input_ids[] = $data_input_id;
+				}
+			}
+			}
+
+			if (isset($bad_ids)) {
+				$message = "";
+				foreach($bad_ids as $data_input_id) {
+					$message .= (strlen($message) ? "<br>":"") . "<i>Data Input Method " . $data_input_id . " is in use and can not be removed</i>\n";
+				}
+
+				$_SESSION['sess_message_data_input_ref_int'] = array('message' => "<font size=-2>$message</font>", 'type' => 'info');
+
+				raise_message('data_input_ref_int');
+			}
+
+			if (isset($data_input_ids)) {
+			foreach($data_input_ids as $data_input_id) {
+				data_remove($data_input_id);
+			}
 			}
 		}
 
@@ -195,7 +221,15 @@ function form_actions() {
 	print "<form action='data_input.php' method='post'>\n";
 
 	if (isset($di_array) && sizeof($di_array)) {
-		if ($_POST["drp_action"] == "1") { /* delete */
+		if (get_request_var_post("drp_action") === ACTION_NONE) { /* NONE */
+			print "	<tr>
+						<td class='textArea'>
+							<p>" . __("You did not select a valid action. Please select 'Return' to return to the previous menu.") . "</p>
+						</td>
+					</tr>\n";
+
+			$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
+		} elseif ($_POST["drp_action"] == "1") { /* delete */
 			$graphs = array();
 
 			print "
@@ -205,9 +239,9 @@ function form_actions() {
 						<p><ul>$di_list</ul></p>
 					</td>
 				</tr>\n";
+			$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Input Method(s)'>";
 		}
 
-		$save_html = "<input type='button' value='Cancel' onClick='window.history.back()'>&nbsp;<input type='submit' value='Continue' title='Delete Data Input Method(s)'>";
 	}else{
 		print "<tr><td bgcolor='#" . $colors["form_alternate1"]. "'><span class='textError'>You must select at least one data input method.</span></td></tr>\n";
 		$save_html = "<input type='button' value='Return' onClick='window.history.back()'>";
@@ -267,7 +301,8 @@ function field_remove() {
 }
 
 function field_edit() {
-	global $colors, $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
+	global $colors, $registered_cacti_names;
+	require_once(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -314,19 +349,22 @@ function field_edit() {
 	$form_array = array();
 
 	/* field name */
-	if ((($data_input["type_id"] == "1") || ($data_input["type_id"] == "5")) && ($current_field_type == "in")) { /* script */
-		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
-	}elseif (($data_input["type_id"] == "2") ||
-			($data_input["type_id"] == "3") ||
-			($data_input["type_id"] == "4") ||
-			($data_input["type_id"] == "6") ||
+	if ((($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT) || 
+		($data_input["type_id"] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) && 
+		($current_field_type == "in")) { /* script */
+		$form_array = inject_form_variables(data_input_field1_form_list(), $header_name, $array_field_names, (isset($field) ? $field : array()));
+	}elseif (($data_input["type_id"] == DATA_INPUT_TYPE_SNMP) ||
+			($data_input["type_id"] == DATA_INPUT_TYPE_SNMP_QUERY) ||
+			($data_input["type_id"] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+			($data_input["type_id"] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) ||
 			($data_input["type_id"] == "7") ||
 			($data_input["type_id"] == "8") ||
 			($current_field_type == "out")) { /* snmp */
-		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
+		$form_array = inject_form_variables(data_input_field2_form_list(), $header_name, (isset($field) ? $field : array()));
 	}
 
 	/* ONLY if the field is an input */
+	$fields_data_input_field_edit = data_input_field_form_list();
 	if ($current_field_type == "in") {
 		unset($fields_data_input_field_edit["update_rra"]);
 	}elseif ($current_field_type == "out") {
@@ -363,7 +401,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	global $colors, $fields_data_input_edit;
+	global $colors;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -380,7 +418,7 @@ function data_edit() {
 
 	draw_edit_form(array(
 		"config" => array(),
-		"fields" => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
+		"fields" => inject_form_variables(data_input_form_list(), (isset($data_input) ? $data_input : array()))
 		));
 
 	html_end_box();
