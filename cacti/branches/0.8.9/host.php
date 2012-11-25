@@ -168,7 +168,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $colors, $device_actions, $fields_host_edit;
+	global $colors, $device_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
@@ -273,7 +273,7 @@ function form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-
+				$fields_host_edit = device_form_list();
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["t_$field_name"])) {
@@ -298,7 +298,7 @@ function form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-
+				$fields_host_edit = device_form_list();
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["t_$field_name"])) {
@@ -313,7 +313,7 @@ function form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-
+				$fields_host_edit = device_form_list();
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["$field_name"])) {
@@ -328,7 +328,7 @@ function form_actions() {
 				/* ================= input validation ================= */
 				input_validate_input_number($selected_items[$i]);
 				/* ==================================================== */
-
+				$fields_host_edit = device_form_list();
 				reset($fields_host_edit);
 				while (list($field_name, $field_array) = each($fields_host_edit)) {
 					if (isset($_POST["$field_name"])) {
@@ -422,6 +422,8 @@ cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST
 					</td>
 					</tr>";
 					$form_array = array();
+					$fields_host_edit = device_form_list();
+					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
 						if ((preg_match("/^snmp_/", $field_name)) ||
 							($field_name == "max_oids")) {
@@ -462,6 +464,8 @@ cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST
 					</td>
 					</tr>";
 					$form_array = array();
+					$fields_host_edit = device_form_list();
+					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {
 						if (preg_match("/(availability_method|ping_method|ping_port)/", $field_name)) {
 							$form_array += array($field_name => $fields_host_edit[$field_name]);
@@ -493,6 +497,8 @@ cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST
 					</tr>\n";
 
 			$form_array = array();
+			$fields_host_edit = device_form_list();
+			reset($fields_host_edit);
 			$field_name = "poller_id";
 			$form_array += array($field_name => $fields_host_edit["poller_id"]);
 			$form_array[$field_name]["description"] = __("Please select the new Poller for the selected Device(s).");
@@ -514,6 +520,8 @@ cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST
 					</tr>\n";
 
 			$form_array = array();
+			$fields_host_edit = device_form_list();
+			reset($fields_host_edit);
 			$field_name = "site_id";
 			$form_array += array($field_name => $fields_host_edit["site_id"]);
 			$form_array[$field_name]["description"] = __("Please select the new Site for the selected Device(s).");
@@ -588,7 +596,7 @@ function host_remove() {
 }
 
 function host_edit() {
-	global $colors, $fields_host_edit, $reindex_types;
+	global $colors, $reindex_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -747,6 +755,7 @@ function host_edit() {
 	html_start_box("<strong>Devices</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
 	/* preserve the host template id if passed in via a GET variable */
+	$fields_host_edit = device_form_list();
 	if (!empty($_GET["host_template_id"])) {
 		$fields_host_edit["host_template_id"]["value"] = $_GET["host_template_id"];
 	}
