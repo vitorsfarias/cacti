@@ -212,11 +212,11 @@ function dq_reset_deps(snmp_query_id, num_columns) {
 		if (document.chk.elements[i].name.substr( 0, prefix.length ) == prefix) {
 			for (var j = 0; j < num_columns; j++) {
 				lineid = document.getElementById('text' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length) + '_' + j);
-				lineid.style.color = '#000000';
+				if ( lineid ) { lineid.style.color = '#000000' };
 			}
 
 			chkbx = document.getElementById('sg_' + snmp_query_id + '_' + document.chk.elements[i].name.substr(prefix.length));
-			chkbx.style.visibility = 'visible';
+			if (chkbx) { chkbx.style.visibility = 'visible' };
 		}
 	}
 }
