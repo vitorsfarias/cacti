@@ -1864,7 +1864,7 @@ function device($refresh = true) {
 function &device_form_list() {
 	require(CACTI_INCLUDE_PATH . "/device/device_forms.php");
 
-	return $fields_device_edit;
+	return $fields_host_edit;
 }
 
 /**
@@ -1873,7 +1873,7 @@ function &device_form_list() {
 function &device_availability_form_list() {
 	require(CACTI_INCLUDE_PATH . "/device/device_forms.php");
 
-	return $fields_device_edit_availability;
+	return $fields_host_edit_availability;
 }
 
 /** 
