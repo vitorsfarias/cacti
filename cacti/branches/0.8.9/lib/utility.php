@@ -64,7 +64,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
  * @param bool $commit - either update directly or return resulting array
  */
 function update_poller_cache($local_data_id, $commit = false) {
-
+	include_once(CACTI_INCLUDE_PATH . "/data_input/data_input_constants.php");
 	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 	include_once(CACTI_LIBRARY_PATH . "/poller.php");
 
