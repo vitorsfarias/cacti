@@ -65,7 +65,7 @@ class Net_Ping
 	function build_udp_packet() {
 		$data  = "cacti-monitoring-system"; // the actual test data
 
-		// now lets build the actual icmp packet
+		// now lets build the actual UDP packet
 		$this->request = chr(0) . chr(1) . chr(0) . $data . chr(0);
 		$this->request_len = strlen($this->request);
 	}
@@ -140,7 +140,7 @@ class Net_Ping
 			$pattern  = bin2hex("cacti-monitoring-system"); // the actual test data
 
 			/* host timeout given in ms, recalculate to sec, but make it an integer
-			 * we might consider to use escapeshellarh on hostname,
+			 * we might consider to use escapeshellarg on hostname,
 			 * but this field has already been verified.
 			 * The other fields are numerical fields only and thus
 			 * not vulnerable for command injection */
@@ -161,6 +161,10 @@ class Net_Ping
 			}else if (substr_count(strtolower(PHP_OS), "winnt")) {
 				$result = shell_exec("ping -w " . $this->timeout . " -n " . $this->retries . " " . $this->host["hostname"]);
 			}else{
+				/* please know, that when running SELinux, httpd will throw
+				 * ping: cap_set_proc: Permission denied
+				 * as it now tries to open an ICMP socket and fails 
+				 * $result will be empty, then. */
 				$result = shell_exec("ping -W " . ceil($this->timeout/1000) . " -c " . $this->retries . " -p " . $pattern . " " . $this->host["hostname"]);
 			}
 
