@@ -49,9 +49,6 @@ foreach($parms as $parameter) {
 		case "--debug":
 			$debug = TRUE;
 			break;
-		case "--force":
-			$force = TRUE;
-			break;
 		case "-h":
 		case "-v":
 		case "-V":
@@ -83,8 +80,7 @@ if (sizeof($tables)) {
 /* display_help - displays the usage of the function */
 function display_help () {
 	print "Cacti Database Optimization Tool 1.1, Copyright 2004-2012 - The Cacti Group\n\n";
-	print "usage: database_optimize.php [--debug] [--force] [--form] [--help]\n\n";
-	print "--force - Remove Invalid Records from the Database\n";
+	print "usage: database_optimize.php [--debug] [--form] [--help]\n\n";
 	print "--debug - Display verbose output during execution\n";
 	print "--help  - Display this help message\n";
 }
