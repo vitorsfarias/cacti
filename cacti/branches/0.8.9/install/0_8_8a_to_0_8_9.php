@@ -490,6 +490,9 @@ function upgrade_to_0_8_9() {
 
 	/* wrong lower limit for generic OID graph template */
 	db_install_execute("0.8.9", "UPDATE graph_templates_graph SET lower_limit='0', vertical_label='' WHERE id=47");
+	/* wrong base value for Memory Usage graph templates and related graphs */
+	db_install_execute("0.8.9", "UPDATE graph_templates_graph SET base_value='1024' WHERE graph_template_id=12");
+	db_install_execute("0.8.9", "UPDATE graph_templates_graph SET base_value='1024' WHERE graph_template_id=13");
 
 	/* Add SNMPv3 Context to SNMP Input Methods */
 	/* first we must see if the user was smart enough to add it themselves */

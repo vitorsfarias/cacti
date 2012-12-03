@@ -19,6 +19,8 @@ Cacti CHANGELOG
 -bug#0002261: php5.4.0 added new error_reporting variable, causing cacti to show errors
 -bug#0002264: Association spelt incorrectly
 -bug#0002266: Against spelt incorrectly
+-bug#0002269: |query_ifSpeed| in --upper-limit for graph template does not work
+-bug#0002274: Graph template ucd/net - Memory Usage has incorrect base value
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
 -bug: avoid PHP "pass by reference" error for ping function
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
