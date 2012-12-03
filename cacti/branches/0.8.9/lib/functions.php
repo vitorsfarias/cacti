@@ -163,6 +163,7 @@ function set_config_option($config_name, $value) {
 
 /** read_config_option - finds the current value of a Cacti configuration setting
  * @param string $config_name - the name of the configuration setting as specified $settings array in 'include/global_settings.php'
+ * @param bool $force - force reading current value from table
  * @return - the current value of the configuration option */
 function read_config_option($config_name, $force = FALSE) {
 	global $config, $database_default;

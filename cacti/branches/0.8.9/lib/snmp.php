@@ -233,7 +233,13 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			 * snmp_auth is treated seperately, see above */
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
 		}else {
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+			/* handle control options "-C", works for net-snmp only */
+			$control_options = "";
+			if (read_config_option("oid_increasing_check_disable") != "") {
+				$control_options .= " -Cc ";
+			}
+
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 		}
 	}
 
@@ -383,16 +389,26 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				" "    . $context); /* v3 - username/password */
 		}
 
+		/* no valid snmp version has been set, get out */
+		if (empty($snmp_auth)) { return; }
+
 		if (read_config_option("snmp_version") == "ucd-snmp") {
 			/* escape the command to be executed and vulnerable parameters
 			 * numeric parameters are not subject to command injection
 			 * snmp_auth is treated seperately, see above */
 			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid));
 		}else {
+			/* handle control options "-C", works for net-snmp only */
+			$control_options = "";
+			if (read_config_option("oid_increasing_check_disable") != "") {
+				$control_options .= " -Cc ";
+			}
+
 			if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
-				$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
+				$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries -Cr$max_oids " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
 			}else{
-				$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
+				cacti_log(read_config_option("path_snmpwalk") . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), FALSE, "TEST");
+				$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option("path_snmpwalk")) . " -O Qn $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid));
 			}
 		}
 
@@ -577,6 +593,7 @@ function snmp_escape_string($string) {
 }
 
 function snmp_get_method($version = 1) {
+		return SNMP_METHOD_BINARY;
 	if ((function_exists("snmpget")) && ($version == 1)) {
 		return SNMP_METHOD_PHP;
 	}else if ((function_exists("snmp2_get")) && ($version == 2)) {
