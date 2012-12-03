@@ -1273,7 +1273,7 @@ function utilities_view_snmp_cache() {
 		"LEFT JOIN host ON host_snmp_cache.host_id=host.id " .
 		"LEFT JOIN snmp_query ON host_snmp_cache.snmp_query_id=snmp_query.id " .
 		"LEFT JOIN data_input ON snmp_query.data_input_id=data_input.id " .
-		$sql_where .
+		$sql_where . " " .
 		"LIMIT " . (read_config_option("num_rows_data_source")*(get_request_var_request("page")-1)) . "," . read_config_option("num_rows_data_source");
 
 	#print $snmp_cache_sql;
