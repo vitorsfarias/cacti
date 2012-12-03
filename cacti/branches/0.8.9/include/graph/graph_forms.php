@@ -183,7 +183,7 @@ $struct_graph_limits = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '100',
-		'size' => '10',
+		'size' => '30',
 		'description' => 'The maximum vertical value for the rrd graph.',
 	),
 	'lower_limit' => array(
@@ -191,7 +191,7 @@ $struct_graph_limits = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '0',
-		'size' => '10',
+		'size' => '30',
 		'description' => 'The minimum vertical value for the rrd graph.',
 	),
 	'no_gridfit' => array(
