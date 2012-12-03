@@ -715,6 +715,12 @@ $settings = array(
 			"method" => "checkbox",
 			"default" => "on"
 			),
+		"oid_increasing_check_disable" => array(
+			"friendly_name" => "Disable increasing OID Check",
+			"description" => "Controls disabling check for increasing OID while walking OID tree.",
+			"method" => "checkbox",
+			"default" => ""
+			),
 		"spine_header" => array(
 			"friendly_name" => "Spine Specific Execution Parameters",
 			"method" => "spacer",
