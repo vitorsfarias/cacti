@@ -589,13 +589,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	
 	
 	/* +++++++++++++++++++++++ FETCH DATA +++++++++++++++++++++++++++++ */
+	/* override: graph start time */
 	$ds_step = get_step($local_graph_id);
 	/* get graph data for given graph id */
 	$graph = get_graph_data($local_graph_id);
 	/* get graph item data for given graph id */
 	$graph_items = get_graph_item_data($local_graph_id);
 	/* get rra data, depends on a lot of parameters */
-	$rra = get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_data_array["graph_start"], $graph_data_array["graph_end"]);
+	$rra = get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_data_array);
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 	$rrdtool_version = read_config_option("rrdtool_version");
 	
@@ -784,7 +785,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		# since pango markup allows for <span> tags, we need to escape this stuff using htmlspecialchars
 		print htmlspecialchars(read_config_option("path_rrdtool") . " graph $graph_opts$graph_defs$txt_graph_items");
 		/* TODO: delete, when tests finished */
-		print "<br><br><br><strong>NEW</strong><br>";
+		print "<br><br><br><strong>This is the old rrdtool graph code:</strong><br>";
 		rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe);
 	}elseif (isset($graph_data_array["export"])) {
 		rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
@@ -851,7 +852,7 @@ function rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array,
 	/* get graph item data */
 	$graph_items = get_graph_item_data($local_graph_id);
 	/* get rra data */
-	$rra = get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_data_array["graph_start"], $graph_data_array["graph_end"]);
+	$rra = get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_data_array);
 	$seconds_between_graph_updates = ($ds_step * $rra["steps"]);
 	$rrdtool_version = read_config_option("rrdtool_version");
 
@@ -863,7 +864,8 @@ function rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array,
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
 	# generate all global rrdtool graph options
-	$graph_opts .= rrdgraph_options($graph, $graph_data_array, $rrdtool_version);
+	$graph_opts = '';
+	$graph_opts .= rrdgraph_options($graph, $graph_data_array, $rra, $rrdtool_version);
 
 	$graph_opts .= rrdgraph_option_scale($graph);
 
@@ -2569,16 +2571,15 @@ function get_graph_item_data($local_graph_id) {
  * @param int $rra_id - id of rra
  * @param int $ds_step - step size
  * @param int $local_graph_id - id of graph
- * @param int $graph_start - start time for graph display
- * @param int $graph_end - end time for graph display
+ * @param int $graph_array - array with initial graph data (graph_start, graph_end)
  * @return array - rra parameters
  */
-function get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_start, $graph_end) {
+function get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_array) {
 	$rra = array();
 	/* if no rra was specified, we need to figure out which one RRDTool will choose using
 	 * "best-fit" resolution fit algorithm */
 	if (empty($rra_id)) {
-		if ((empty($graph_start)) || (empty($graph_end))) {
+		if ((!isset($graph_array["graph_start"])) || (!isset($graph_array["graph_end"]))) {
 			$rra["rows"] = 600;
 			$rra["steps"] = 1;
 			$rra["timespan"] = 86400;
@@ -2592,7 +2593,7 @@ function get_rra_data($rra_id, $ds_step, $local_graph_id, $graph_start, $graph_e
 					$real_timespan = ($ds_step * $unchosen_rra["steps"] * $unchosen_rra["rows"]);
 
 					/* make sure the current start/end times fit within each RRA's timespan */
-					if ( (($graph_end - $graph_start) <= $real_timespan) && ((time() - $graph_start) <= $real_timespan) ) {
+					if ( (($graph_array["graph_end"] - $graph_array["graph_start"]) <= $real_timespan) && ((time() - $graph_array["graph_start"]) <= $real_timespan) ) {
 						/* is this RRA better than the already chosen one? */
 						if ((isset($rra)) && ($unchosen_rra["steps"] < $rra["steps"])) {
 							$rra = $unchosen_rra;
@@ -3300,6 +3301,8 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 function rrdgraph_cdefs($graph, $graph_item, $graph_items, $graph_variables, $cf_id, $i, $seconds_between_graph_updates, $cf_ds_cache, &$cdef_cache) {
 #cacti_log(__FUNCTION__ . " started", false, "TEST");
 
+	$cdef_graph_defs = '';
+	
 	if ((!empty($graph_item["cdef_id"])) && (!isset($cdef_cache{$graph_item["cdef_id"]}{$graph_item["data_template_rrd_id"]}[$cf_id]))) {
 
 		$cdef_string 	= $graph_variables["cdef_cache"]{$graph_item["graph_templates_item_id"]};
@@ -3786,6 +3789,7 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 #cacti_log(__FUNCTION__ . " cf: " . $graph_item["consolidation_function_id"] . " type: >" . $graph_item["graph_type_id"] . "<", false, "TEST");	
 	
 	
+	$txt_graph_items = '';
 	switch($graph_item["graph_type_id"]) {
 		case GRAPH_ITEM_TYPE_COMMENT:
 			$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
