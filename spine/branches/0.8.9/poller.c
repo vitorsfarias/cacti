@@ -1255,6 +1255,10 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 	poll_time = get_time_as_double() - poll_time;
 	SPINE_LOG_MEDIUM(("Host[%i] TH[%i] Total Time: %5.2g Seconds", host_id, host_thread, poll_time));
 
+	query1[0] = '\0';
+	snprintf(query1, BUFSIZE, "UPDATE host SET polling_time='%g' WHERE id=%i", poll_time, host_id);
+	db_query(&mysql, query1);
+
 	mysql_close(&mysql);
 
 	#ifndef OLD_MYSQL

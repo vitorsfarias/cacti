@@ -1,6 +1,7 @@
 ﻿The Cacti Group | spine
 
 0.8.9
+-feature: provide poller runtime on a per host base
 
 0.8.8a
 -bug#0002204: spine corrupted double-linked list error
