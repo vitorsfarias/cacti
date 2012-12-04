@@ -521,15 +521,6 @@ function upgrade_to_0_8_9() {
 
 
 
-	/* insert the default poller into the database */
-	db_install_execute("0.8.9", "REPLACE INTO `poller` VALUES (1,'','Main Poller','localhost',0,0,0,0,'0000-00-00 00:00:00');");
-
-	/* update all devices to use poller 1, or the main poller */
-	db_install_execute("0.8.9", "UPDATE host SET poller_id=1 WHERE poller_id=0");
-
-	/* update the poller_items table to set the default poller_id */
-	db_install_execute("0.8.9", "UPDATE poller_item SET poller_id=1 WHERE poller_id=0");
-
 	/* fill table VDEF */
 	db_install_execute("0.8.9", "REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("0.8.9", "REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
