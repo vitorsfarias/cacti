@@ -68,6 +68,7 @@ Cacti CHANGELOG
 -feature: introduce |graph_start| and |graph_end| for use with CDEFs
 -feature: remove/rename all api_ functions, keeping api_ for compatibility in this vesion only
 -feature: list all include/config.php parameters during install/upgrade to verify
+-feature: provide poller runtime on a per host base
 
 -bug: hosts using SNMP V3 do not accept setting priv protocol to NONE
 
