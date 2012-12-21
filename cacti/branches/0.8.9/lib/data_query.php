@@ -28,7 +28,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once(CACTI_LIBRARY_PATH . "/utility.php");
 	include_once(CACTI_INCLUDE_PATH . "/data_input/data_input_arrays.php");
 
-	debug_log_insert("data_query", "Running data query type = '" . $snmp_query_id . "' [" .  $input_types[$snmp_query_id]. "].");
+	debug_log_insert("data_query", "Running data query id = '" . $snmp_query_id . "'");
 	$type_id = db_fetch_cell("select data_input.type_id from (snmp_query,data_input) where snmp_query.data_input_id=data_input.id and snmp_query.id=$snmp_query_id");
 	if (isset($input_types[$type_id])) debug_log_insert("data_query", "Found input type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
 
