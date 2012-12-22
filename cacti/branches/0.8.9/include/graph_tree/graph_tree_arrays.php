@@ -36,6 +36,6 @@ $tree_item_types = array(
 );
 
 $tree_device_group_types = array(
-	TREE_HOST_GROUPING_GRAPH_TEMPLATE => __('Graph Template'),
-	TREE_DEVICE_GROUPING_DATA_QUERY_INDEX => __('Data Query Index'),
+	HOST_GROUPING_GRAPH_TEMPLATE => __('Graph Template'),
+	HOST_GROUPING_DATA_QUERY_INDEX => __('Data Query Index'),
 );
