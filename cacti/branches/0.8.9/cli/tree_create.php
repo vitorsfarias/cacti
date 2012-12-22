@@ -152,7 +152,7 @@ if (sizeof($parms)) {
 						$tree_item["local_graph_id"]    	= 0;
 						$tree_item["rra_id"]         		= 0;
 						$tree_item["host_id"]         		= 0;
-						$tree_item["host_grouping_type"] 	= TREE_HOST_GROUPING_GRAPH_TEMPLATE;
+						$tree_item["host_grouping_type"] 	= HOST_GROUPING_GRAPH_TEMPLATE;
 						break;
 					case strtolower($tree_item_types[TREE_ITEM_TYPE_GRAPH]):
 						if (!isset($tree_item["local_graph_id"])) {
@@ -163,7 +163,7 @@ if (sizeof($parms)) {
 						$itemType 							= TREE_ITEM_TYPE_GRAPH;
 						$tree_item["title"]					= '';
 						$tree_item["host_id"]         		= 0;
-						$tree_item["host_grouping_type"] 	= TREE_HOST_GROUPING_GRAPH_TEMPLATE;
+						$tree_item["host_grouping_type"] 	= HOST_GROUPING_GRAPH_TEMPLATE;
 						break;
 					case strtolower($tree_item_types[TREE_ITEM_TYPE_HOST]):
 						if (!isset($tree_item["host_id"])) {
@@ -189,7 +189,7 @@ if (sizeof($parms)) {
 				if (!isset($tree_item["local_graph_id"])) 		$tree_item["local_graph_id"] 		= 0;
 				if (!isset($tree_item["rra_id"])) 				$tree_item["rra_id"] 				= 1;
 				if (!isset($tree_item["host_id"])) 				$tree_item["host_id"] 				= 0;
-				if (!isset($tree_item["host_grouping_type"])) 	$tree_item["host_grouping_type"] 	= TREE_HOST_GROUPING_GRAPH_TEMPLATE;
+				if (!isset($tree_item["host_grouping_type"])) 	$tree_item["host_grouping_type"] 	= HOST_GROUPING_GRAPH_TEMPLATE;
 
 				# $nodeId could be a Header Node, a Graph Node, or a Host node.
 				$nodeId = tree_item_save(0, $tree_item["graph_tree_id"], $itemType, $tree_item["parent_node"],

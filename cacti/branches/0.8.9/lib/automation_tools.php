@@ -1843,8 +1843,8 @@ function verifyTreeItem(&$tree_item, $ri_check=false) {
 				}
 				break;
 			case "host_grouping_type":
-				if ($value != TREE_HOST_GROUPING_GRAPH_TEMPLATE && $value != TREE_DEVICE_GROUPING_DATA_QUERY_INDEX) {
-					$check["err_msg"] = "ERROR: Host Group Type must be " . TREE_HOST_GROUPING_GRAPH_TEMPLATE . " or " . TREE_DEVICE_GROUPING_DATA_QUERY_INDEX . " (Graph Template or Data Query Index)" . "\n";
+				if ($value != HOST_GROUPING_GRAPH_TEMPLATE && $value != HOST_GROUPING_DATA_QUERY_INDEX) {
+					$check["err_msg"] = "ERROR: Host Group Type must be " . HOST_GROUPING_GRAPH_TEMPLATE . " or " . HOST_GROUPING_DATA_QUERY_INDEX . " (Graph Template or Data Query Index)" . "\n";
 					return $check;
 				}
 				break;
