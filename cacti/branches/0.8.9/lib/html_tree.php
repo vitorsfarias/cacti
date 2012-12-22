@@ -598,7 +598,7 @@ function create_dhtml_tree() {
 						$dhtml_tree[$i] = "ou" . ($tier) . ".xID = \"tree_" . $tree["id"] . "_leaf_" . $leaf["id"] . "\"\n";
 
 						if (read_graph_config_option("expand_hosts") == "on") {
-							if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
+							if ($leaf["host_grouping_type"] == TREE_HOST_GROUPING_GRAPH_TEMPLATE) {
 								$graph_templates = db_fetch_assoc("select
 									graph_templates.id,
 									graph_templates.name
@@ -1025,7 +1025,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			ORDER BY graph_tree_items.order_key");
 	}elseif ($leaf_type == "host") {
 		/* graph template grouping */
-		if ($leaf["host_grouping_type"] == TREE_DEVICE_GROUPING_GRAPH_TEMPLATE) {
+		if ($leaf["host_grouping_type"] == TREE_HOST_GROUPING_GRAPH_TEMPLATE) {
 			$graph_templates = db_fetch_assoc("SELECT
 				graph_templates.id,
 				graph_templates.name
