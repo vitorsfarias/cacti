@@ -2166,6 +2166,33 @@ function debug_log_return($type) {
 	return $log_text;
 }
 
+/** apply highlighting filter to target string and encode for html display
+ * @param string $target - the string to be analyzed
+ * @param string $filter - the filter to search for
+ * @return string - highlighted and encoded target string
+ */
+function filter_highlight_and_encode($target, $filter) {
+	/* on empty filter: encode only */
+	if (trim($filter) == '') {
+		return htmlspecialchars($target, ENT_QUOTES);
+	}
+	
+	/* prepare the filter */
+	$preg_filter = '/(' . preg_quote($filter, '/') . ')/i';
+	$segments = preg_split($preg_filter, $target, NULL, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+	$out = array();
+	
+	/* scan the target, if found: highlight; always: encode */
+	foreach ($segments as $segment) {
+		$out[] = (strcasecmp($segment, $filter) == 0)
+			? ("<span style='background-color: #F8D93D;'>". htmlspecialchars($segment, ENT_QUOTES) . '</span>')
+					: htmlspecialchars($segment, ENT_QUOTES);
+	}
+	
+	/* rebuild the target */
+	return implode('',$out);
+}
+
 /** sanitize_search_string - cleans up a search string submitted by the user to be passed
      to the database. NOTE: some of the code for this function came from the phpBB project.
  * @param string $string - the original raw search string
