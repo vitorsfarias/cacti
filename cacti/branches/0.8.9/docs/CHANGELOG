@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -feature#0001588: Add pango-markup options to simple html markup in graphed text (title, legend etc)
 -feature#0002225: Make -Cc SNMP option system wide configurable (disable increasing OID check)
 -feature#0002254: Support for "VALUE/REGEXP:" for get input fields of a data query
+-feature#0002306: Allow Host Description in Data Input Methods as Special Type Code
 -feature: jQuery "TableDnd" for Graph Template Item
 -feature: Support for new variables |host_ping_retries| and |host_max_oids|
 -feature: add_device.php uses a host template like feature#0001122
