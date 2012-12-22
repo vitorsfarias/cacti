@@ -32,7 +32,7 @@ $tree_types = array(
 $tree_item_types = array(
 	TREE_ITEM_TYPE_HEADER => __('Header'),
 	TREE_ITEM_TYPE_GRAPH => __('Graph'),
-	TREE_ITEM_TYPE_DEVICE => __('Device'),
+	TREE_ITEM_TYPE_HOST => __('Device'),
 );
 
 $tree_device_group_types = array(

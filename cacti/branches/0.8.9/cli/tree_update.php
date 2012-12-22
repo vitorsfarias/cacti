@@ -162,7 +162,7 @@ if (sizeof($parms)) {
 				$current_type = "";
 				if ($item["local_graph_id"] > 0) 	{ $current_type = TREE_ITEM_TYPE_GRAPH; }
 				if ($item["title"] != "") 			{ $current_type = TREE_ITEM_TYPE_HEADER; }
-				if ($item["host_id"] > 0) 			{ $current_type = TREE_ITEM_TYPE_DEVICE; }
+				if ($item["host_id"] > 0) 			{ $current_type = TREE_ITEM_TYPE_HOST; }
 
 				# create sql depending on node type
 				$sql = "UPDATE graph_tree_items SET ";
@@ -184,7 +184,7 @@ if (sizeof($parms)) {
 							$sql_vars .= "rra_id='" . $tree_item["rra_id"] . "'";
 						}
 						break;
-					case TREE_ITEM_TYPE_DEVICE:
+					case TREE_ITEM_TYPE_HOST:
 						if (isset($tree_item["host_grouping_type"])) {
 							$sql_vars .= (strlen($sql_vars) ? "," : "");
 							$sql_vars .= "host_grouping_type=" . $tree_item["host_grouping_type"];

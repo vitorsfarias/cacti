@@ -30,7 +30,7 @@ define('TREE_TYPE_NODE', 2);
 
 define('TREE_ITEM_TYPE_HEADER', 1);
 define('TREE_ITEM_TYPE_GRAPH', 2);
-define('TREE_ITEM_TYPE_DEVICE', 3);
+define('TREE_ITEM_TYPE_HOST', 3);
 
 define('SORT_TYPE_TREE', 1);
 define('SORT_TYPE_TREE_ITEM', 2);
