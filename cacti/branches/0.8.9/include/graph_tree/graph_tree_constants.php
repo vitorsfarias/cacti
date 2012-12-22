@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define('TREE_DEVICE_GROUPING_GRAPH_TEMPLATE', 1);
+define('TREE_HOST_GROUPING_GRAPH_TEMPLATE', 1);
 define('TREE_DEVICE_GROUPING_DATA_QUERY_INDEX', 2);
 
 define('TREE_TYPE_TREE', 1);
