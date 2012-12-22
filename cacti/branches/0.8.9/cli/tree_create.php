@@ -165,13 +165,13 @@ if (sizeof($parms)) {
 						$tree_item["host_id"]         		= 0;
 						$tree_item["host_grouping_type"] 	= TREE_DEVICE_GROUPING_GRAPH_TEMPLATE;
 						break;
-					case strtolower($tree_item_types[TREE_ITEM_TYPE_DEVICE]):
+					case strtolower($tree_item_types[TREE_ITEM_TYPE_HOST]):
 						if (!isset($tree_item["host_id"])) {
 							echo __("ERROR: You must supply a valid device id with --device-id") . "\n";
 							display_help($me);
 							exit(1);
 						}
-						$itemType 							= TREE_ITEM_TYPE_DEVICE;
+						$itemType 							= TREE_ITEM_TYPE_HOST;
 						$tree_item["local_graph_id"] 		= 0;
 						$tree_item["rra_id"]         		= 0;
 						$tree_item["title"]					= '';

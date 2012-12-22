@@ -346,7 +346,7 @@ function form_actions() {
 				input_validate_input_number(get_request_var_post("tree_item_id"));
 				/* ==================================================== */
 
-				tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_DEVICE, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
+				tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
 			}
 		} else {
 			plugin_hook_function('device_action_execute', $_POST['drp_action']);
