@@ -1175,7 +1175,7 @@ function plugin_upgrade_columns($plugin, $table, $columns, $sql_install_cache=fa
 
 /** DEPRECATED! Will vanish in 0.8.9++ */
 function api_plugin_db_add_column ($plugin, $table, $column) {
-	cacti_log("function " . __FUNCTION__ . " called using plugin $plugin for table $table and column $column", false, "DEPRECATION WARNING");
+	cacti_log("function " . __FUNCTION__ . " called using plugin $plugin for table $table and column " . $column["name"], false, "DEPRECATION WARNING");
 	plugin_db_add_column($plugin, $table, $column, false);
 }
 
@@ -1183,7 +1183,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
  * add a new column to a table
  * @param string $plugin			plugin
  * @param string $table				table
- * @param string $column 			column name
+ * @param array $column 			column data; e.g. name, type, ...
  * @param bool $sql_install_cache	use the install cache
  */
 function plugin_db_add_column($plugin, $table, $column, $sql_install_cache=false) {
