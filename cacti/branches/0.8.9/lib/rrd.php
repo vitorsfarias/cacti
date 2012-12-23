@@ -293,7 +293,7 @@ function rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe = 
 			} elseif (strpos($data_source["rrd_maximum"], "|query_") !== false) {
 				$data_local = db_fetch_row("SELECT * FROM data_local WHERE id=" . $local_data_id);
 				$data_source["rrd_maximum"] = substitute_snmp_query_data($data_source["rrd_maximum"],$data_local["host_id"], $data_local["snmp_query_id"], $data_local["snmp_index"], 0, false);
-			} elseif (($data_source["rrd_maximum"] != "U") && (int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
+			} elseif (($data_source["rrd_maximum"] != "U") && is_numeric($data_source["rrd_minimum"]) && (int)$data_source["rrd_maximum"]<=(int)$data_source["rrd_minimum"]) {
 				$data_source["rrd_maximum"] = (int)$data_source["rrd_minimum"]+1;
 			}
 
