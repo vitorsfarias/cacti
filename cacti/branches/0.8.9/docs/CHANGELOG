@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -bug#0002305: plugin.php requires PLUGINNAME_version to work
 -bug#0002326: Undefined index: Unknown in utilities.php on line 310
 -bug#0002328: Plugins that implement xxxxxx_check_upgrade() get 'stuck'
+-bug#0002329: data source: Can't define negative max when min is U
 -bug: avoid PHP "pass by reference" error for ping function
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
 -bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
