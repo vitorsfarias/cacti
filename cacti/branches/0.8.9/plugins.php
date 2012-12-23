@@ -31,7 +31,7 @@ define("MAX_DISPLAY_PAGES", 21);
 $pluginslist = retrieve_plugin_list();
 
 /* Check to see if we are installing, etc... */
-$modes = array('installold', 'uninstallold', 'install', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
+$modes = array('installold', 'uninstallold', 'install', 'reinstall', 'uninstall', 'disable', 'enable', 'check', 'moveup', 'movedown');
 
 if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'])) {
 	input_validate_input_regex(get_request_var("id"), "^([a-zA-Z0-9]+)$");
@@ -51,6 +51,12 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 			exit;
 			break;
 		case 'install':
+			plugin_install($id);
+			header("Location: plugins.php");
+			exit;
+			break;
+		case 'reinstall':
+			plugin_uninstall($id);
 			plugin_install($id);
 			header("Location: plugins.php");
 			exit;
@@ -93,6 +99,14 @@ if (isset($_GET['mode']) && in_array($_GET['mode'], $modes)  && isset($_GET['id'
 	}
 }
 
+include("./include/top_header.php");
+
+update_show_current();
+
+include("./include/bottom_footer.php");
+
+
+
 function retrieve_plugin_list () {
 	$pluginslist = array();
 	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
@@ -101,12 +115,6 @@ function retrieve_plugin_list () {
 	}
 	return $pluginslist;
 }
-
-include("./include/top_header.php");
-
-update_show_current();
-
-include("./include/bottom_footer.php");
 
 function plugin_install_old ($plugin) {
 	if (!file_exists(CACTI_PLUGIN_PATH . "/$plugin/setup.php")) {
@@ -578,7 +586,7 @@ function update_show_current () {
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plugin) {
-	include_once(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
+	include(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
@@ -615,13 +623,14 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 }
 
 function plugin_actions($plugin) {
+	include_once(CACTI_INCLUDE_PATH . "/plugins/plugin_constants.php");
 	$link = "<td>";
 	switch ($plugin['status']) {
-		case "-2": // Old PA Not Installed
+		case PLUGIN_STATUS_DISABLED: // Old PA Not Installed
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=installold&id=" . $plugin['directory']) . "' title='Install Old Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "-1":	// Old PA Currently Active
+		case PLUGIN_STATUS_ACTIVE_OLD:	// Old PA Currently Active
 			$oldplugins = read_config_option('oldplugins');
 			if (strlen(trim($oldplugins))) {
 				$oldplugins = explode(',', $oldplugins);
@@ -635,15 +644,27 @@ function plugin_actions($plugin) {
 			}
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "0": // Not Installed
+		case PLUGIN_STATUS_NOT_INSTALLED: // Not Installed
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=install&id=" . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
 			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
 			break;
-		case "1":	// Currently Active
+		case PLUGIN_STATUS_ACTIVE_NEW:	// Currently Active
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=disable&id=" . $plugin['directory']) . "' title='Disable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/disable_icon.png'></a>";
 			break;
-		case "4":	// Installed but not active
+		case PLUGIN_STATUS_NOT_INSTALLED: // Not Installed
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=install&id=" . $plugin['directory']) . "' title='Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/install_icon.png'></a>";
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_AWAITING_CONFIGURATION:
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=reinstall&id=" . $plugin['directory']) . "' title='Re-Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/reinstall_icon.png'></a>";
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_AWAITING_UPGRADE:
+			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=reinstall&id=" . $plugin['directory']) . "' title='Re-Install Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/reinstall_icon.png'></a>";
+			$link .= "<img style='padding:1px;' border='0' align='absmiddle' src='images/view_none.gif'>";
+			break;
+		case PLUGIN_STATUS_INSTALLED:	// Installed but not active
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=uninstall&id=" . $plugin['directory']) . "' title='Uninstall Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/uninstall_icon.gif'></a>";
 			$link .= "<a href='" . htmlspecialchars("plugins.php?mode=enable&id=" . $plugin['directory']) . "' title='Enable Plugin' class='linkEditMain'><img style='padding:1px;' border='0' align='absmiddle' src='images/enable_icon.png'></a>";
 			break;

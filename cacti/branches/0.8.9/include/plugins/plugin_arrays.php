@@ -29,7 +29,7 @@ $plugin_actions = array(
 	PLUGIN_ACTION_ENABLE 	=> 'Enable',
 	PLUGIN_ACTION_DISABLE 	=> 'Disable',
 	PLUGIN_ACTION_UNINSTALL => 'Uninstall',
-//	PLUGIN_ACTION_CHECK 	=> 'Check)'
+	PLUGIN_ACTION_CHECK 	=> 'Check)'
 );
 
 $plugin_status_names = array(
