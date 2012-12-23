@@ -23,25 +23,9 @@
 */
 
 include("./include/auth.php");
+include_once(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 
 define("MAX_DISPLAY_PAGES", 21);
-
-$actions = array("install" => "Install",
-	"enable" => "Enable",
-	"disable" => "Disable",
-	"uninstall" => "Uninstall",
-//	"check" => "Check"
-);
-
-$status_names = array(
-	-2 => 'Disabled',
-	-1 => 'Active',
-	0 => 'Not Installed',
-	1 => 'Active',
-	2 => 'Awaiting Configuration',
-	3 => 'Awaiting Upgrade',
-	4 => 'Installed'
-);
 
 /* get the comprehensive list of plugins */
 $pluginslist = retrieve_plugin_list();
@@ -334,7 +318,7 @@ function plugins_load_temp_table() {
 }
 
 function update_show_current () {
-	global $plugins, $pluginslist, $colors, $plugin_architecture, $config, $status_names, $actions, $item_rows;
+	global $plugins, $pluginslist, $colors, $plugin_architecture, $config, $item_rows;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("page"));
@@ -594,7 +578,7 @@ function update_show_current () {
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plugin) {
-	global $status_names;
+	include_once(CACTI_INCLUDE_PATH . "/plugins/plugin_arrays.php");
 	static $first_plugin = true;
 
 	$row = plugin_actions($plugin);
@@ -619,7 +603,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $system_plu
 
 	$row .= "<td style='white-space:nowrap;'>" . (strlen(get_request_var_request("filter")) ? eregi_replace("(" . preg_quote(get_request_var_request("filter")) . ")", "<span style='background-color: #F8D93D;'>\\1</span>", $plugin["name"]) : $plugin["name"]) . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . ($system_plugin ? "System": ($plugin['status'] < 0 ? "Old PIA":"General")) . "</td>\n";
-	$row .= "<td style='white-space:nowrap;'>" . $status_names[$plugin["status"]] . "</td>\n";
+	$row .= "<td style='white-space:nowrap;'>" . $plugin_status_names[$plugin["status"]] . "</td>\n";
 	$row .= "<td style='white-space:nowrap;'>" . $plugin["author"] . "</td>\n";
 	$row .= "</tr>\n";
 
