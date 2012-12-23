@@ -177,6 +177,7 @@ $snmp_implimentations = array(
 	"net-snmp" => "NET-SNMP 5.x");
 
 $rrdtool_versions = array(
+	"Unknown"	=> "Unknown",
 	"rrd-1.0.x" => "RRDTool 1.0.x",
 	"rrd-1.2.x" => "RRDTool 1.2.x",
 	"rrd-1.3.x" => "RRDTool 1.3.x",

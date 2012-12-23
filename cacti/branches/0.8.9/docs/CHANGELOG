@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
 -bug#0002298: filtering/highlighting of data sources is broken
 -bug#0002305: plugin.php requires PLUGINNAME_version to work
+-bug#0002326: Undefined index: Unknown in utilities.php on line 310
 -bug: avoid PHP "pass by reference" error for ping function
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
 -bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
