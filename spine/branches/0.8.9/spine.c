@@ -506,8 +506,10 @@ int main(int argc, char *argv[]) {
 	result = db_query(&mysql, "SHOW COLUMNS FROM host LIKE 'poller_id'");
 	if (mysql_num_rows(result)) {
 		set.poller_id_exists = TRUE;
+		SPINE_LOG_DEBUG(("DEBUG: Using per host poller_id"));
 	}else{
 		set.poller_id_exists = FALSE;
+		SPINE_LOG_DEBUG(("DEBUG: Table 'host' column 'poller_id' is not available"));
 
 		if (set.poller_id > 0) {
 			SPINE_LOG(("WARNING: PollerID > 0, but 'host' table does NOT contain the poller_id column!!"));
@@ -551,6 +553,12 @@ int main(int argc, char *argv[]) {
 		num_rows = mysql_num_rows(result) + 1; /* add 1 for host = 0 */
 	}else{
 		num_rows = mysql_num_rows(result); /* pollerid 0 takes care of not host based data sources */
+	}
+
+	if (set.poller_id > 0) {
+		SPINE_LOG_MEDIUM(("Spine will poll %i devices", num_rows));
+	} else {
+		SPINE_LOG_MEDIUM(("Spine will poll %i devices, including Host[0] for non-host based data sources", num_rows));
 	}
 
 	if (!(threads = (pthread_t *)malloc(num_rows * sizeof(pthread_t)))) {
