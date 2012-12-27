@@ -553,10 +553,10 @@ int snmp_count(host_t *current_host, char *snmp_oid) {
 						}
 					}
 				} else {
-					SPINE_LOG(("ERROR: An internal Net-Snmp error condition detected in Cacti snmp_count"));
+					SPINE_LOG(("ERROR: An internal Net-Snmp error condition detected in Cacti snmp_count, response %i => %s", response->errstat, snmp_errstring(response->errstat)));
 				}
 			} else if (status == STAT_TIMEOUT) {
-				SPINE_LOG(("ERROR: Timeout detected in Cacti snmp_count"));
+				SPINE_LOG(("Host[%i] ERROR: Generic SNMP status code detected in Cacti snmp_count, OID %s", current_host->id, snmp_oid));
 				ok = 0;
 				error_occurred = 1;
 			} else { /* status == STAT_ERROR */
@@ -692,6 +692,7 @@ void snmp_get_multi(host_t *current_host, snmp_oids_t *snmp_oids, int num_oids) 
 							/* if we have found our error, exit */
 							if (index_count == response->errindex) {
 								SET_UNDEFINED(snmp_oids[array_count].result);
+								SPINE_LOG_MEDIUM(("Host[%i] ERROR detected in Cacti snmp_get_multi, response %i => %s, oid %s", current_host->id, response->errstat, snmp_errstring(response->errstat), snmp_oids[array_count].oid));
 
 								break;
 							}
@@ -710,6 +711,7 @@ void snmp_get_multi(host_t *current_host, snmp_oids_t *snmp_oids, int num_oids) 
 					response = NULL;
 					if (pdu != NULL) {
 						/* retry the request */
+						SPINE_LOG_MEDIUM(("Host[%i] retry detected in Cacti snmp_get_multi", current_host->id));
 						goto retry;
 					}else{
 						/* all OID's errored out so exit cleanly */
@@ -723,6 +725,7 @@ void snmp_get_multi(host_t *current_host, snmp_oids_t *snmp_oids, int num_oids) 
 	}
 
 	if (status != STAT_SUCCESS) {
+		SPINE_LOG_MEDIUM(("Host[%i] ERROR detected in Cacti snmp_get_multi, status %i", current_host->id, status));
 		current_host->ignore_host = 1;
 		for (i = 0; i < num_oids; i++) {
 			SET_UNDEFINED(snmp_oids[i].result);
