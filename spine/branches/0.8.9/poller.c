@@ -61,7 +61,7 @@ void *child(void *arg) {
 
 	thread_ready = TRUE;
 
-	SPINE_LOG_DEBUG(("DEBUG: In Poller, About to Start Polling of Host"));
+	SPINE_LOG_DEBUG(("Host[%i] DEBUG: In Poller, About to Start Polling", host_id));
 
 	poll_host(host_id, host_thread, last_host_thread, host_data_ids, host_time);
 
@@ -76,7 +76,7 @@ void *child(void *arg) {
 		usleep(100);
 	}
 
-	SPINE_LOG_DEBUG(("DEBUG: The Value of Active Threads is %i" ,active_threads));
+	SPINE_LOG_DEBUG(("Host[%i] DEBUG: The Value of Active Threads is %i", host_id, active_threads));
 
 	/* end the thread */
 	pthread_exit(0);
