@@ -521,6 +521,10 @@ function graph_form_save() {
 						}
 					}
 				}
+				
+				/* as inputs may have changed, data query chache and graph title may require an update */
+				update_graph_data_query_cache($local_graph_id);
+				
 			}
 		}
 	}

@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -bug#0002269: |query_ifSpeed| in --upper-limit for graph template does not work
 -bug#0002274: Graph template ucd/net - Memory Usage has incorrect base value
 -bug#0002280: meta http-equiv=refresh content in lib/graph_export.php contains to many apostrophes (more findings apply)
+-bug#0002295: Graph Management Title Bug, not correctly updated
 -bug#0002298: filtering/highlighting of data sources is broken
 -bug#0002305: plugin.php requires PLUGINNAME_version to work
 -bug#0002326: Undefined index: Unknown in utilities.php on line 310
