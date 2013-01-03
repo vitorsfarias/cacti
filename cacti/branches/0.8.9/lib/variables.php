@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2013 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -120,6 +120,7 @@ function update_graph_title_cache_from_host($host_id) {
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
+cacti_log(__FUNCTION__ . " called, local graph id: $local_graph_id", false, "TEST");	
 	db_execute("update graph_templates_graph set title_cache='" . addslashes(get_graph_title($local_graph_id)) . "' where local_graph_id=$local_graph_id");
 }
 
