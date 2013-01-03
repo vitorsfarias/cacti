@@ -15,17 +15,12 @@ SVN
 -bug#0001196: SNMP string with nonstandard characters breaks some Data Queries
 -bug#0001209: Content-type incorrect for the SVG graphs (Graph Management still does not display SVG, but rest does)
 -bug#0001279: php warning when installing specific plugins (if no "keys" were defined for a plugin table)
--bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu)
 -bug#0001311: Access denied for graph-only users when accessing index.php
 -bug#0001319: when adding a host using cli add_device that already exist in the database, both descriptions are updated
--bug#0001333: Lack of scheme indexes
 -bug#0001335: <oid_index_parse> does not work as expected; requires changes to XML for e.g. EMC Cellera
 -bug#0001349: Graphs with Multiple Data Template Items don't show all required non-templated fields
 -bug#0001354: 0.8.7c to 0.8.8 update script bugs
--bug#0001359: Better error checking in rrd.php
 -bug#0001366: Exported data templates do not import the special characters properly
--bug#0001397: Never use "Delete" as default action in any drop-list in cacti to avoid disaster
--bug#0001414: COMMENT field can cause rrdtool to report "Legend too long"
 -bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue. 
 -bug#0001428: segfault when database tables not present
 -bug#0001429: PHP does not support SNMP V3 Contexts and Cacti needs to act accordingly
@@ -34,7 +29,6 @@ SVN
 -bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String", When Import Template
 -bug#0001461: (Data Query) Export/Import fails
 -bug#0001479: cli/add_device.php will modify existing devices
--bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
 -bug#0001506: Reindexing fails in snmp.php
 -bug#0001508: More min-height'ed divs when showing graphs
 -bug#0001511: Speed up the processing of poller through bulk deletes
@@ -52,7 +46,6 @@ SVN
 -bug#0001580: Extra newline in api_automation_tools.php breaks custom scripts
 -bug#0001583: Crash on Large Deployments -> ini_set used to overwrite global php-config locally
 -bug#0001595: double-hyphenated strings in polled OID values cause truncation of last hyphen and subsequent data when populating variables 
--bug#0001600: Default action on lists should be "None"
 -bug#0001604: HEX Counter values enclosed in quotes not recognized as HEX
 -bug#0001609: Script server timeout too aggressive with 10 second poller interval
 -bug#0001623: SQL JOIN on user_log without INDEX (performance issue)
@@ -81,82 +74,54 @@ SVN
 -bug: When creating new graphs without a data source, print error to user instead of throwing php error
 -bug: Browser query string does not contain arguments
 -bug: inject_form_variables does not operate if more than 1 variable needs replacing
--bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
 -bug: verify DS MAX value on data source create (courtesy Fireball)
--bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
 -bug: Turn off process leveling if there are not enough poller items to substantiate it
--bug: allow empty [upper|lower]_limit even without autoscaling
 -bug: Availability method Ping or SNMP generates meaningless warnings
 -bug: Warning in lib/snmp.php by misspelled variable
 -bug: fix SQL error on api_reapply_suggested_graph_title for non-data-query graphs
--bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
 -bug: hosts using SNMP V3 do not accept setting priv protocol to NONE
 -documentation: Remove sgml documentation.  See http://docs.cacti.net for Documentation
 -documentation: Explaining Cacti Special Data Sources used on CDEFs, lots of CDEF examples using Special data Sources
 -documentation: Documentation of specific rrdtool feature
 -documentation: Use of SNMP exec option up to net-snmp 5.3
--feature#0000475: Add RRDTool options currently not settable within Cacti
--feature#0000726: add VDEF support
 -feature#0000967: Option to force users to use SSL
--feature#0000954: implement --alt-y-grid graph option
 -feature#0001009: XML Syntax enhancements (as a dup of 1225 only)
--feature#0001030: Lower limit and upper limit |query_*| variable support for Graph Templates
--feature#0001111: add remove-device.php cli script, replace numerical constants for permission handling by PERM_*
 -feature#0001122: Propagate Device Template changes to related hosts, pops up a confirmation form (new templates and changed reindex only, no deletes)
 -feature#0001123: Performance tweak by adding some indices
 -feature#0001124: Devices/Host Templates - remove already associated objects from dropdown selector
 -feature#0001179: Visual Fix for CACTI Graphs View Interface(list,preview)
--feature#0001185: Mass enable/disable graph export per graph from Graph Management
 -feature#0001225: HowTo use the index at an arbitrary place in the OID field: introduces <rewrite_index>, <rewrite_value> to XML
 -feature#0001290: Modify how 'Index Count Changed' re-index is used
 -feature#0001332: non SNMP Hosts' Reindex Method should not default to "Uptime goes backwards"
 -feature#0001341: SNMP query: add oid_suffix for weird SNMP queries
--feature#0001343: Add TEXTALIGN functionality to graph templates
 -feature#0001347: Add 'down since' as tooltip to host.php listing, where device is down.
 -feature#0001350: Compare Cacti Data Source Info to current RRD File Info
--feature#0001371: Support for LINE:STACK, was: Stacked LINE
 -feature#0001372: Add Custom SNMP context for datasources
 -feature#0001401: allow "|query_foo|" substitution for graphing a --vertical-label
 -feature#0001406: Dynamically display field description for templates
 -feature#0001408: Hide templated input fields
 -feature#0001409: Add context sensitive page help linking to cacti dokuwiki
--feature#0001418: changing the graph backround via graph templates
 -feature#0001434: Nth percentile handling causes excessive memory usage (OOMs php); Use VDEF instead
--feature#0001438: Allow for drag and drop reordering of graph template items
 -feature#0001439: New pseudo variable |host_template|, support all pseudo variable derived from host table
--feature#0001450: Template import script
--feature#0001457: Support for rrdtool graph options, was: Extra settings field in graph template
 -feature#0001483: (OID|VALUE)/REGEXP for get input fields
 -feature#0001519: spine enhancement for parallel collection of data at device level
--feature#0001525: add rebuild_poller_cache --host-id=[ID]
--feature#0001536: small patch to allow plugins to change the x-axis labels
 -feature#0001542: Rewriting SNMP values of data queries
--feature#0001550: Record the polling time for each host to optimize polling times
--feature#0001588: Add pango-markup options to simple html markup in graphed text (title, legend etc)
 -feature#0002003: Ignore empty index values when polling misbehaving snmp devices
 -feature: jQuery "TableDnd" used for cdef item sort (courtesy Browniebraun)
--feature: jQuery "TableDnd" for Graph Template Item
 -feature: jQuery "TableDnd" for Data Queries Suggested Values
 -feature: Default Script Server/Script Queries now accept host specific ping_retries, max_oids
--feature: Support for new variables |host_ping_retries| and |host_max_oids|
 -feature: Support changing the "Reindex Method" of associated data queries
 -feature: Manage all Host Availability Options in each Host Template, derive Host options from those
 -feature: Add Server Time to page headers, pay respect to user specific date/timeformats
--feature: add_device.php uses a host template like feature#0001122
 -feature: Allow the enabling and disabling of a Data Source from the Data Source Edit form
 -feature: Rerun already associated SNMP Queries if any SNMP related field was changed during host edit
--feature: Add Data Source Type "COMPUTE" to data templates to fully support all rrdtool-1.2.x data source types
--feature: Plugin Architecture is now part of main Cacti code
--feature: api_plugin_db_table_create allows for multi-column indices and more than one key per table
 -feature: Add Tab's to the Utilities View Tech Page
 -feature: Add Process Status Information to the View Tech Page
 -feature: Adding multiple poller process support
 -feature: Adding the site object for devices and plugins
 -feature: Add logging to the script server in case of a script crash to aid in debugging
 -feature: Add common warning messages to Plugin Management page
--feature: When editing Graph Templates offer Save and Return to allow in place editing
 -feature: Allow Debug Area on Verbose Query to Collapse
--feature: Disable Graph and Data Source Editing by Default and Provide an Unlock Button to Allow Editing
 -feature: Added Referential Integrity checks throughout the code to minimize breaking templates
 -feature: Improve Accuracy of Page Counters
 -feature: Revamped Colors Interface with Import/Export Capabilities
@@ -169,28 +134,66 @@ SVN
 -feature: Allow non-numeric form row ids in form API
 -feature: User UI Visual Settings Saved Between Login Sessions
 -feature: Custom Legend: customize the entries added in one go to your liking
+-feature: add shortcuts to show matching objects for template management (device, graph, data source templates)
+-feature: tabbed view for templates (device, graph, data source)
+-feature: cli/rrd_rra_delete.php allows for deleting certain RRAs from existing rrd files
+-feature: cli/rrd_rra_clone.php allows for cloning certain RRAs from existing rrd files
+-feature: Return nav as the title for the page
+-feature: Modularize table display
+-feature: Allow Graphs and Data Source totals to be sorted when viewing devices
+-feature: Add snmp timeout warnings for lib/snmp.php
+-feature: path for perl/shell like path for php to be used in Data Input Methods
+
+0.8.9
+-bug#0001306: Empty COMMENT + <HR> gives you a blank legend line (was: Add Blank Line to Graph via Pull down menu)
+-bug#0001333: Lack of scheme indexes
+-bug#0001359: Better error checking in rrd.php
+-bug#0001397: Never use "Delete" as default action in any drop-list in cacti to avoid disaster
+-bug#0001414: COMMENT field can cause rrdtool to report "Legend too long"
+-bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
+-bug#0001600: Default action on lists should be "None"
+-bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
+-bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
+-bug: allow empty [upper|lower]_limit even without autoscaling
+-bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
+-feature#0000475: Add RRDTool options currently not settable within Cacti
+-feature#0000726: add VDEF support
+-feature#0000954: implement --alt-y-grid graph option
+-feature#0001030: Lower limit and upper limit |query_*| variable support for Graph Templates
+-feature#0001111: add remove-device.php cli script, replace numerical constants for permission handling by PERM_*
+-feature#0001185: Mass enable/disable graph export per graph from Graph Management
+-feature#0001343: Add TEXTALIGN functionality to graph templates
+-feature#0001371: Support for LINE:STACK, was: Stacked LINE
+-feature#0001418: changing the graph backround via graph templates
+-feature#0001438: Allow for drag and drop reordering of graph template items
+-feature#0001450: Template import script
+-feature#0001457: Support for rrdtool graph options, was: Extra settings field in graph template
+-feature#0001525: add rebuild_poller_cache --host-id=[ID]
+-feature#0001536: small patch to allow plugins to change the x-axis labels
+-feature#0001550: Record the polling time for each host to optimize polling times
+-feature#0001588: Add pango-markup options to simple html markup in graphed text (title, legend etc)
+-feature: jQuery "TableDnd" for Graph Template Item
+-feature: Support for new variables |host_ping_retries| and |host_max_oids|
+-feature: add_device.php uses a host template like feature#0001122
+-feature: Add Data Source Type "COMPUTE" to data templates to fully support all rrdtool-1.2.x data source types
+-feature: api_plugin_db_table_create allows for multi-column indices and more than one key per table
+-feature: When editing Graph Templates offer Save and Return to allow in place editing
+-feature: Disable Graph and Data Source Editing by Default and Provide an Unlock Button to Allow Editing
 -feature: support LINE<width> using decimal xx.xx line widths for RRDTool > 1.0.x
 -feature: disable graph item fields that are not related to the chosen graph item type
 -feature: add support for [:dashes] and [:dash-offset]
 -feature: add support for TICK on rrdtool graphs
 -feature: TIME_SHIFT_START and _END as specific data sources for CDEFs (e.g. graph colorization)
 -feature: rrdtool SHIFT support available
--feature: add shortcuts to show matching objects for template management (device, graph, data source templates)
--feature: tabbed view for templates (device, graph, data source)
 -feature: cli/rrd_datasouce_add.php allows for adding new datasouces to existing rrd files; supports RRD file version 0001, 0003
--feature: cli/rrd_rra_delete.php allows for deleting certain RRAs from existing rrd files
--feature: cli/rrd_rra_clone.php allows for cloning certain RRAs from existing rrd files
 -feature: Add error messages to upgrade script SQL failures
--feature: Return nav as the title for the page
--feature: Modularize table display
--feature: Allow Graphs and Data Source totals to be sorted when viewing devices
--feature: Add snmp timeout warnings for lib/snmp.php
+-feature: duplicate Data Query (duplicates all associated graph templates and suggested values)
 -feature: upgrade procedure made repeatable
 -feature: add more table upgrade procedures and API functions: table install, column and key upgrade
--feature: path for perl/shell like path for php to be used in Data Input Methods
 -feature: introduce |graph_start| and |graph_end| for use with COMMENT/GPRINT or the like
--feature: duplicate Data Query (duplicates all associated graph templates and suggested values)
--feature: remove/rename all api_ functions, dropping api_
+-feature: introduce |graph_start| and |graph_end| for use with CDEFs
+-feature: remove/rename all api_ functions, keeping api_ for compatibility in this vesion only
+
 
 0.8.8a
 -bug#0002216: use of define_syslog_variables() gone in PHP 5.4 
