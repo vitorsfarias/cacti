@@ -410,7 +410,7 @@ function unset_config_option($config_name) {
 }
 
 /**
- *validates the value of a form field and takes the appropriate action if the input
+ * validates the value of a form field and takes the appropriate action if the input
  * 							is not valid
  * @param $field_value		- the value of the form field
  * @param $field_name 		- the name of the $_POST field as specified in the HTML
