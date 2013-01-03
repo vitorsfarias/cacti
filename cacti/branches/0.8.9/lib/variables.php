@@ -120,7 +120,6 @@ function update_graph_title_cache_from_host($host_id) {
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
-cacti_log(__FUNCTION__ . " called, local graph id: $local_graph_id", false, "TEST");	
 	db_execute("update graph_templates_graph set title_cache='" . addslashes(get_graph_title($local_graph_id)) . "' where local_graph_id=$local_graph_id");
 }
 
