@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -bug: allow empty [upper|lower]_limit even without autoscaling
 -bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
 -bug: when changing a data template, "suggested name" title of data sources are unconditionally overwritten
+-bug: fix bug when re-activating a host without any data source (else poller_item would be flushed)
 -feature#0000475: Add RRDTool options currently not settable within Cacti
 -feature#0000726: add VDEF support
 -feature#0000954: implement --alt-y-grid graph option
@@ -77,6 +78,7 @@ Cacti CHANGELOG
 -feature: remove/rename all api_ functions, keeping api_ for compatibility in this vesion only
 -feature: list all include/config.php parameters during install/upgrade to verify
 -feature: provide poller runtime on a per host base
+-feature: rebuild_poller_cache for a single --local-data-id
 
 -bug: hosts using SNMP V3 do not accept setting priv protocol to NONE
 

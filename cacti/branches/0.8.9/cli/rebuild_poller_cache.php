@@ -56,6 +56,15 @@ foreach($parms as $parameter) {
 		}
 
 		break;
+	case "--data-local-id":
+		$data_local_id = trim($value);
+
+		if (!is_numeric($data_local_id)) {
+			echo "ERROR: You must supply a valid local data id to run this script!\n";
+			exit(1);
+		}
+
+		break;
 	case "-h":
 	case "-v":
 	case "--version":
@@ -80,6 +89,8 @@ ini_set("max_execution_time", "0");
 /* get the data_local Id's for the poller cache */
 if ($host_id > 0) {
 	$poller_data  = db_fetch_assoc("SELECT id FROM data_local WHERE host_id=$host_id");
+} else if ($data_local_id > 0) {
+   $poller_data = db_fetch_assoc("SELECT id FROM data_local WHERE id=$data_local_id");
 } else {
 	$poller_data  = db_fetch_assoc("SELECT id FROM data_local");
 }
@@ -110,6 +121,8 @@ if (sizeof($poller_data) > 0) {
 	if (sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
+} else {
+	debug("No poller data found for current selection. Retry");
 }
 if (!$debug) print "\n";
 
@@ -118,11 +131,14 @@ ini_set("max_execution_time", $max_execution);
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	print "Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2012 - The Cacti Group\n\n";
-	print "usage: rebuild_poller_cache.php [--host-id=ID] [-d | --debug] [-h | --help | -v | --version]\n\n";
-	print "-d | --debug  - Display verbose output during execution\n";
-	print "-v --version  - Display this help message\n";
-	print "-h --help     - Display this help message\n";
+	print "Cacti Rebuild Poller Cache Script 1.1, Copyright 2004-2013 - The Cacti Group\n\n";
+	print "usage: rebuild_poller_cache.php [--host-id=ID] [--data-local-id=ID] [-d | --debug]\n";
+	print "                                [-h | --help | -v | --version]\n\n";
+	print "--host-id        - rebuild for this host only\n";
+	print "--data-local-id  - rebuild for this local data id only\n";
+	print "-d | --debug     - Display verbose output during execution\n";
+	print "-v --version     - Display this help message\n";
+	print "-h --help        - Display this help message\n";
 }
 
 function debug($message) {
