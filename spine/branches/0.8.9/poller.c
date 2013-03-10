@@ -555,7 +555,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 					assert_fail = FALSE;
 					reindex_err = FALSE;
 
-					/* initialize the reindex struction */
+					/* initialize the reindex structure */
 					reindex->data_query_id   = 0;
 					reindex->action          = -1;
 					reindex->op[0]           = '\0';
@@ -662,7 +662,11 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 							break;
 						default:
 							SPINE_LOG(("Host[%i] TH[%i] ERROR: Unknown Assert Action!", host->id, host_thread));
+							break;
 						}
+
+						/* escape the poll_result to make the db happy */
+						db_escape(&mysql, temp_result, poll_result);
 
 						if (!reindex_err) {
 							if (!(query3 = (char *)malloc(BUFSIZE))) {
@@ -674,7 +678,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 							if ((IS_UNDEFINED(poll_result)) || (STRIMATCH(poll_result, "No Such Instance"))) {
 								assert_fail = FALSE;
 							}else if ((!strcmp(reindex->op, "=")) && (strcmp(reindex->assert_value,poll_result))) {
-								SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .eq. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, poll_result, host->hostname, reindex->data_query_id));
+								SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .eq. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, temp_result, host->hostname, reindex->data_query_id));
 
 								if (host_thread == 1) {
 									snprintf(query3, BUFSIZE, "REPLACE INTO poller_command (poller_id, time, action,command) values (0, NOW(), %i, '%i:%i')", POLLER_COMMAND_REINDEX, host->id, reindex->data_query_id);
@@ -683,7 +687,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 								assert_fail = TRUE;
 								previous_assert_failure = TRUE;
 							}else if ((!strcmp(reindex->op, ">")) && (strtoll(reindex->assert_value, (char **)NULL, 10) < strtoll(poll_result, (char **)NULL, 10))) {
-								SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .gt. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, poll_result, host->hostname, reindex->data_query_id));
+								SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .gt. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, temp_result, host->hostname, reindex->data_query_id));
 
 								if (host_thread == 1) {
 									snprintf(query3, BUFSIZE, "REPLACE INTO poller_command (poller_id, time, action, command) values (0, NOW(), %i, '%i:%i')", POLLER_COMMAND_REINDEX, host->id, reindex->data_query_id);
@@ -694,7 +698,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 							/* if uptime is set to '0' don't fail out */
 							}else if (strcmp(reindex->assert_value, "0")) {
 								if ((!strcmp(reindex->op, "<")) && (strtoll(reindex->assert_value, (char **)NULL, 10) > strtoll(poll_result, (char **)NULL, 10))) {
-									SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .lt. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, poll_result, host->hostname, reindex->data_query_id));
+									SPINE_LOG_HIGH(("Host[%i] TH[%i] ASSERT: '%s' .lt. '%s' failed. Recaching host '%s', data query #%i", host->id, host_thread, reindex->assert_value, temp_result, host->hostname, reindex->data_query_id));
 
 									if (host_thread == 1) {
 										snprintf(query3, BUFSIZE, "REPLACE INTO poller_command (poller_id, time, action, command) values (0, NOW(), %i, '%i:%i')", POLLER_COMMAND_REINDEX, host->id, reindex->data_query_id);
@@ -711,7 +715,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 							 *     the assert to fail */
 							if ((assert_fail) || (!strcmp(reindex->op, ">")) || (!strcmp(reindex->op, "<"))) {
 								if (host_thread == 1) {
-									snprintf(query3, BUFSIZE, "UPDATE poller_reindex SET assert_value='%s' WHERE host_id='%i' AND data_query_id='%i' and arg1='%s'", poll_result, host_id, reindex->data_query_id, reindex->arg1);
+									snprintf(query3, BUFSIZE, "UPDATE poller_reindex SET assert_value='%s' WHERE host_id='%i' AND data_query_id='%i' and arg1='%s'", temp_result, host_id, reindex->data_query_id, reindex->arg1);
 									db_insert(&mysql, query3);
 								}
 
@@ -779,7 +783,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 	}
 
 	if (num_rows > 0) {
-		/* retreive each hosts polling items from poller cache and load into array */
+		/* Retrieve each hosts polling items from poller cache and load into array */
 		poller_items = (target_t *) calloc(num_rows, sizeof(target_t));
 
 		i = 0;
