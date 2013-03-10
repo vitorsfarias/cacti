@@ -606,7 +606,7 @@ $struct_graph_item = array(
 		'description' => '[HRULE|VRULE]: The value of the graph item' . '<br/>' .
 						'[TICK]: The fraction for the tick line.' . '<br/>' .
 						'[SHIFT]: The time offset in seconds.',
-		'class' => 'not_RRD_TYPE_COMMENT not_RRD_TYPE_TEXTALIGN not_RRD_TYPE_LINE not_RRD_TYPE_LINESTACK not_RRD_TYPE_AREA not_RRD_TYPE_AREASTACK not_RRD_TYPE_GPRINT RRD_TYPE_SHIFT',
+		'class' => 'not_RRD_TYPE_COMMENT not_RRD_TYPE_TEXTALIGN not_RRD_TYPE_LINE not_RRD_TYPE_LINESTACK not_RRD_TYPE_AREA not_RRD_TYPE_AREASTACK not_RRD_TYPE_GPRINT',
 	),
 	'gprint_id' => array(
 		'friendly_name' => 'GPRINT Type',
