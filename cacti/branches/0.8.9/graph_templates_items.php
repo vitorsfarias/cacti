@@ -163,7 +163,7 @@ function form_save() {
 			$save["consolidation_function_id"] = form_input_validate(((isset($item["consolidation_function_id"]) ? $item["consolidation_function_id"] : (isset($_POST["consolidation_function_id"]) ? $_POST["consolidation_function_id"] : 0))), "consolidation_function_id", "^[0-9]+$", true, 3);
 			$save["textalign"] 			= form_input_validate((isset($_POST["textalign"]) ? $_POST["textalign"] : ""), "textalign", "^[a-z]+$", true, 3);
 			$save["text_format"] 		= form_input_validate(((isset($item["text_format"]) ? $item["text_format"] : (isset($_POST["text_format"]) ? $_POST["text_format"] : ""))), "text_format", "", true, 3);
-			$save["value"] 				= form_input_validate((isset($_POST["value"]) ? $_POST["value"] : ""), "value", "^[0-9]+$", true, 3);
+			$save["value"] 				= form_input_validate((isset($_POST["value"]) ? $_POST["value"] : ""), "value", "^[0-9.]+$", true, 3);
 			$save["hard_return"] 		= form_input_validate(((isset($item["hard_return"]) ? $item["hard_return"] : (isset($_POST["hard_return"]) ? $_POST["hard_return"] : ""))), "hard_return", "", true, 3);
 			$save["gprint_id"] 			= form_input_validate(((isset($item["gprint_id"]) ? $item["gprint_id"] : (isset($_POST["gprint_id"]) ? $_POST["gprint_id"] : 0))), "gprint_id", "^[0-9]+$", true, 3);
 			/* generate a new sequence if needed */
@@ -338,18 +338,20 @@ function item_edit() {
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("graph_template_id"));
 	/* ==================================================== */
+	$_id = get_request_var("id");
+	$_template_id = get_request_var("graph_template_id");
 
-	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
+	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_template_id) . "]";
 
 	html_start_box("<strong>Graph Template Items</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
-	if (!empty($_GET["id"])) {
-		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_GET["id"]);
+	if ($_id != '') {
+		$template_item = db_fetch_row("select * from graph_templates_item where id=" . $_id);
 	}
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
-	if (!empty($_GET["graph_template_id"])) {
-		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_GET["graph_template_id"] . " and local_graph_id=0 order by sequence DESC");
+	if ($_template_id != '') {
+		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_template_id . " and local_graph_id=0 order by sequence DESC");
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item["task_item_id"]["default"] = $default["task_item_id"];
@@ -379,20 +381,20 @@ function item_edit() {
 
 	}
 
-	if (!empty($_GET["id"])) {
+	if ($_id != '') {
 		/* we want to mark the fields that are associated with a graph item input */
 		$graph_item_input_fields = db_fetch_assoc("select
 			graph_template_input.id,
 			graph_template_input.column_name
 			from (graph_template_input,graph_template_input_defs)
 			where graph_template_input.id=graph_template_input_defs.graph_template_input_id
-			and graph_template_input.graph_template_id=" . $_GET["graph_template_id"] . "
-			and graph_template_input_defs.graph_template_item_id=" . $_GET["id"] . "
+			and graph_template_input.graph_template_id=" . $_template_id . "
+			and graph_template_input_defs.graph_template_item_id=" . $_id . "
 			group by graph_template_input.column_name");
 
 		if (sizeof($graph_item_input_fields) > 0) {
 		foreach ($graph_item_input_fields as $field) {
-			$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='" . htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_GET["graph_template_id"]) . "'>Field Not Templated</a>]";
+			$form_array{$field["column_name"]}["friendly_name"] .= " [<a href='" . htmlspecialchars("graph_templates_inputs.php?action=input_edit&id=" . $field["id"] . "&graph_template_id=" . $_template_id) . "'>Field Not Templated</a>]";
 		}
 		}
 	}
@@ -408,7 +410,7 @@ function item_edit() {
 	html_end_box();
 
 	form_hidden_box("graph_template_item_id", (isset($template_item) ? $template_item["id"] : "0"), "");
-	form_hidden_box("graph_template_id", $_GET["graph_template_id"], "0");
+	form_hidden_box("graph_template_id", $_template_id, "0");
 	form_hidden_box("sequence", (isset($template_item) ? $template_item["sequence"] : "0"), "");
 	form_hidden_box("_graph_type_id", (isset($template_item) ? $template_item["graph_type_id"] : "0"), "");
 	form_hidden_box("_task_item_id", (isset($template_item) ? $template_item["task_item_id"] : "0"), "");
@@ -416,7 +418,7 @@ function item_edit() {
 	form_hidden_box("invisible_alpha", $form_array["alpha"]["value"], "FF");
 	form_hidden_box("rrdtool_version", read_config_option("rrdtool_version"), "");
 
-	form_save_button("graph_templates.php?action=template_edit&id=" . $_GET["graph_template_id"]);
+	form_save_button("graph_templates.php?action=template_edit&id=" . $_template_id);
 
 	include_once(CACTI_BASE_PATH . "/access/js/graph_item_dependencies.js");	# this one modifies attr("disabled")
 	include_once(CACTI_BASE_PATH . "/access/js/line_width.js");
