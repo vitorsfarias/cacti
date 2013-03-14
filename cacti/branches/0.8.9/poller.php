@@ -274,15 +274,25 @@ while ($poller_runs_completed < $poller_runs) {
 		$items_launched    = 0;
 
 		/* exit poller if spine is selected and file does not exist */
-		if (($poller == "2") && (!file_exists(read_config_option("path_spine")))) {
-			cacti_log("ERROR: The path: " . read_config_option("path_spine") . " is invalid.  Can not continue", true, "POLLER");
-			exit;
+		if ($poller == "2") {
+			if (!file_exists(read_config_option("path_spine"))) {
+				cacti_log("ERROR: The path: " . read_config_option("path_spine") . " is invalid.  Cannot continue", true, "POLLER");
+				exit;
+			}
+
+			if (read_config_option("path_spine_config") && !file_exists(read_config_option("path_spine_config"))) {
+				cacti_log("ERROR: The path: " . read_config_option("path_spine_config") . " is invalid.  Cannot continue", true, "POLLER");
+				exit;
+			}
 		}
 
 		/* Determine Command Name */
 		if ($poller == "2") {
 			$command_string = read_config_option("path_spine");
 			$extra_args     = "";
+			if (read_config_option("path_spine_config") && file_exists(read_config_option("path_spine_config"))) {
+				$extra_args = "-C " . read_config_option("path_spine_config");
+			}
 			$method         = "spine";
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option("path_spine")));

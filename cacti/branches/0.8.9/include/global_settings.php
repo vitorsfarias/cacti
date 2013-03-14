@@ -137,6 +137,12 @@ $settings = array(
 			"method" => "filepath",
 			"max_length" => "255"
 			),
+		"path_spine_config" => array(
+			"friendly_name" => "Spine Poller Configuration File Path",
+			"description" => "The path to Spine configuration file.",
+			"method" => "filepath",
+			"max_length" => "255"
+			),		
 		"extendedpaths_header" => array(
 			"friendly_name" => "Structured RRD Path",
 			"method" => "spacer",
@@ -665,7 +671,7 @@ $settings = array(
 			"description" => "The font file to be used for Graph Unit items",
 			"method" => "font",
 			"max_length" => "100"
-			)
+			),
 		),
 	"poller" => array(
 		"poller_header" => array(
