@@ -710,7 +710,7 @@
 			$('[class*=zoomContextMenuAction__]').off().on('click', function() {
 				var zoomContextMenuAction = false;
 				var zoomContextMenuActionValue = false;
-				var classList = $(this).attr('class').trim().split(/\s+/);
+				var classList = $.trim($(this).attr('class')).split(/\s+/);
 
 				$.each( classList, function(index, item){
 					if( item.search("zoomContextMenuAction__") != -1) {
