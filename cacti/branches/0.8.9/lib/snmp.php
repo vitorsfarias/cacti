@@ -454,8 +454,10 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 
 	if ($snmp_oid_included) {
-		/* strip off all leading junk (the oid and stuff) */
-		$string_array = explode("=", $string);
+		/* returned SNMP string e.g. 
+		 * .1.3.6.1.2.1.31.1.1.1.18.1 = STRING: === bla ===
+		 * strip off all leading junk (the oid and stuff) */
+		$string_array = explode("=", $string, 2);
 		if (sizeof($string_array) == 1) {
 			/* trim excess first */
 			$string = trim($string);
