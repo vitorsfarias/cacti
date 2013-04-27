@@ -580,7 +580,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 			$graph_data_array["export"] = true;
 			$graph_data_array["export_filename"] = "graphs/thumb_" . $graph["local_graph_id"] . ".png";
 
-			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
+			export_log("Creating Graph '" . $cacti_export_path . "/" . $graph_data_array["export_filename"] . "'");
 
 			@rrdtool_function_graph($graph["local_graph_id"], 0, $graph_data_array, $rrdtool_pipe);
 
@@ -610,7 +610,7 @@ function classical_export($cacti_root_path, $cacti_export_path) {
 				$graph_data_array["export"] = true;
 				$graph_data_array["export_filename"] = "graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 
-				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
+				export_log("Creating Graph '" . $cacti_export_path . "/" . $graph_data_array["export_filename"] . "'");
 
 				@rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 
@@ -1294,7 +1294,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 			/* add the graph to the exported list */
 			array_push($exported_files, $export_filename);
 
-			export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
+			export_log("Creating Graph '" . $cacti_export_path . "/" . $graph_data_array["export_filename"] . "'");
 
 			/* generate the graph */
 			@rrdtool_function_graph($graph["local_graph_id"], $graph["rra_id"], $graph_data_array, $rrdtool_pipe);
@@ -1333,7 +1333,7 @@ function export_tree_graphs_and_graph_html($path, $tree_id) {
 					$graph_data_array["export_filename"] = "/graphs/graph_" . $graph["local_graph_id"] . "_" . $rra["id"] . ".png";
 				}
 
-				export_log("Creating Graph '" . $cacti_export_path . $graph_data_array["export_filename"] . "'");
+				export_log("Creating Graph '" . $cacti_export_path . "/" . $graph_data_array["export_filename"] . "'");
 
 				@rrdtool_function_graph($graph["local_graph_id"], $rra["id"], $graph_data_array, $rrdtool_pipe);
 				$total_graphs_created++;
