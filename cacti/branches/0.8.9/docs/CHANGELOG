@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -bug: correct grep'ing of icmp[s|r]eq required for newer linux versions (e.g. Fedora 14)
 -bug: when changing a data template, "suggested name" title of data sources are unconditionally overwritten
 -bug: fix bug when re-activating a host without any data source (else poller_item would be flushed)
+-bug: fix EXPORT log messages, where "/" is missing between export_path and filename
 -feature#0000475: Add RRDTool options currently not settable within Cacti
 -feature#0000726: add VDEF support
 -feature#0000954: implement --alt-y-grid graph option
