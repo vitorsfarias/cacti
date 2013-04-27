@@ -677,7 +677,7 @@ function _cacti_graph() {
 	html_end_box(false);
 
 	/* add a list of tree names to the actions dropdown */
-	tree_add_tree_names_to_actions_array();
+	$graph_actions = $graph_actions + tree_add_tree_names_to_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($graph_actions);
