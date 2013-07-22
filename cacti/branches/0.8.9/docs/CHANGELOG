@@ -84,7 +84,12 @@ Cacti CHANGELOG
 -feature: provide poller runtime on a per host base
 -feature: rebuild_poller_cache for a single --local-data-id
 
--bug: hosts using SNMP V3 do not accept setting priv protocol to NONE
+0.8.8b
+-bug: Fixed issue with custom data source information being lost when saved from edit
+-bug: Repopulate the poller cache on new installations
+-bug: Fix issue with poller not escaping the script query path correctly
+-bug: Allow snmpv3 priv proto none
+-bug: Fix issue where host activate may flush the entire poller item cache
 
 0.8.8a
 -bug#0002207: cannot export graph templates
