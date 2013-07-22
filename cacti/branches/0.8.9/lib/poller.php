@@ -464,6 +464,7 @@ function &poller_form_list() {
  * @return unknown_type
  */
 function poller_cache_item_add($device_id, $device_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = "", $arg2 = "", $arg3 = "") {
+	global $cnn_id;
 	static $devices = array();
 
 	if (!isset($devices[$device_id])) {
@@ -529,12 +530,12 @@ function poller_cache_item_add($device_id, $device_field_override, $local_data_i
 
 		$rrd_next_step = poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return "($local_data_id, " . $device["poller_id"] . ", " . $device["id"] . ", $poller_action_id,'" . $device["hostname"] . "',
-			'" . $device["snmp_community"]       . "', '" . $device["snmp_version"]       . "', '" . $device["snmp_timeout"] . "',
-			'" . $device["snmp_username"]        . "', '" . $device["snmp_password"]      . "', '" . $device["snmp_auth_protocol"] . "',
-			'" . $device["snmp_priv_passphrase"] . "', '" . $device["snmp_priv_protocol"] . "', '" . $device["snmp_context"] . "',
-			'" . $device["snmp_port"]            . "', '$data_source_item_name', '"     . addslashes(clean_up_path(get_data_source_path($local_data_id, true))) . "',
-			'$num_rrd_items', '$rrd_step', '$rrd_next_step', '$arg1', '$arg2', '$arg3', '1')";
+		return "($local_data_id, " . $device["poller_id"] . ", " . $device["id"] . ", $poller_action_id," . $cnn_id->qstr($device["devicename"]) . ",
+		       " . $cnn_id->qstr($device["snmp_community"])       . ", " . $cnn_id->qstr($device["snmp_version"])       . ", " . $cnn_id->qstr($device["snmp_timeout"]) . ",
+		       " . $cnn_id->qstr($device["snmp_username"])        . ", " . $cnn_id->qstr($device["snmp_password"])      . ", " . $cnn_id->qstr($device["snmp_auth_protocol"]) . ",
+		       " . $cnn_id->qstr($device["snmp_priv_passphrase"]) . ", " . $cnn_id->qstr($device["snmp_priv_protocol"]) . ", " . $cnn_id->qstr($device["snmp_context"]) . ",
+		       " . $cnn_id->qstr($device["snmp_port"])            . ", " . $cnn_id->qstr($data_source_item_name) . ", "     . $cnn_id->qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ",
+		       " . $cnn_id->qstr($num_rrd_items) . ", " . $cnn_id->qstr($rrd_step) . ", " . $cnn_id->qstr($rrd_next_step) . ", " . $cnn_id->qstr($arg1) . ", " . $cnn_id->qstr($arg2) . ", " . $cnn_id->qstr($arg3) . ", '1')";
 	}
 }
 
