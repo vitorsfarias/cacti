@@ -4,6 +4,9 @@
 -feature: provide poller runtime on a per host base
 -bug#0002268: error in your SQL syntax when string contains quotes
 
+0.8.8b
+-bug: set appropriate mysql 5.5+ timeouts
+
 0.8.8a
 -bug#0002204: spine corrupted double-linked list error
 -bug#0002206: On multi-architecture Debian platforms spine fails to build
