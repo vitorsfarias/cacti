@@ -546,7 +546,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
 #cacti_log(__FUNCTION__ . " local graph id: " . $local_graph_id, false, "TEST");
 #cacti_log(__FUNCTION__ . " rra id: " . $rra_id, false, "TEST");
-#cacti_log(__FUNCTION__ . " graph data array: " . serialize($graph_data_array), false, "TEST");
+cacti_log(__FUNCTION__ . " graph data array: " . serialize($graph_data_array), false, "TEST");
 	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
 	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
@@ -593,6 +593,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	$ds_step = get_step($local_graph_id);
 	/* get graph data for given graph id */
 	$graph = get_graph_data($local_graph_id);
+	/* merge $graph_data_array into $graph */
+	$graph = merge_graph_data ($graph, $graph_data_array);
+	
 	/* get graph item data for given graph id */
 	$graph_items = get_graph_item_data($local_graph_id);
 	/* get rra data, depends on a lot of parameters */
@@ -601,7 +604,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	$rrdtool_version = read_config_option("rrdtool_version");
 	
 	# start and end time are used multiple times
-	list($graph_start, $graph_end) = rrdgraph_start_end($graph_data_array, $rra, $seconds_between_graph_updates);
+	list($graph_start, $graph_end) = rrdgraph_start_end($graph, $rra, $seconds_between_graph_updates);
 	$graph["graph_start"] = $graph_start;
 	$graph["graph_end"] = $graph_end;
 	
@@ -610,23 +613,25 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 	/* +++++++++++++++++++++++ GRAPH OPTIONS ++++++++++++++++++++++++++ *
 	 * get global opts and substitute CACTI variables for later use     *
 	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-	$graph_opts = rrdgraph_options($graph, $graph_data_array, $rra, $rrdtool_version);
+cacti_log(__FUNCTION__ . " graph array: " . serialize($graph), false, "TEST");
+	$graph_opts = rrdgraph_options($graph, $rra, $rrdtool_version);
 	$graph_date = date_time_format();  /* TODO: who needs this ? */
 	
 	/* Replace "|query_*|" in the graph command to replace e.g. vertical_label.  */
 	$graph_opts = rrdgraph_substitute_host_query_data($graph_opts, $graph, NULL);
-#cacti_log(__FUNCTION__ . " graph opts: " . $graph_opts, false, "TEST");
+cacti_log(__FUNCTION__ . " graph opts: " . $graph_opts, false, "TEST");
 	
 	
 	
 	/* +++++++++++++++++++++++ GRAPH ITEMS ++++++++++++++++++++++++++++ *
 	 * determine some intermediate results to be used later             *
 	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-	$graph_defs = "";				# store rrdtool DEF statements here
-	$greatest_text_format = 0;		# stores the greatest text length found for a legend entry => auto padding
-	$graph_variables = array();		# all graph variables go here; substitutions
-	$cf_ds_cache = array();			# cache for all pairs of [consolidation function] and [data source id]
-	$print_legend = (! isset($graph_data_array["graph_nolegend"]));	# we will print a legend by default; nolegend has to be set explicitely
+	$graph_defs 			= "";		# store rrdtool DEF statements here
+	$greatest_text_format 	= 0;		# stores the greatest text length found for a legend entry => auto padding
+	$graph_variables 		= array();	# all graph variables go here; substitutions
+	$cf_ds_cache 			= array();	# cache for all pairs of [consolidation function] and [data source id]
+	# we will print a legend by default; nolegend has to be set explicitely
+	$print_legend 			= (! isset($graph_data_array["graph_nolegend"]));	
 	
 	if (sizeof($graph_items) > 0) {
 
@@ -641,9 +646,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 		$graph_defs .= rrdgraph_defs($graph_items, $graph_start, $graph_end, $cf_ds_cache);
 	
 		/* LEGEND: TEXT SUBSTITUTION (<>'s), modify graph pseudo variables */
-		$graph_variables = rrdgraph_pseudo_variable_substitutions($graph, $graph_items, 
-			$graph_start, $graph_end, 
-			$rra["steps"], $ds_step, $print_legend);
+		$graph_variables = rrdgraph_pseudo_variable_substitutions(
+			$graph, $graph_items, $graph_start, $graph_end,	$rra["steps"], $ds_step, $print_legend);
 
 		/* in case we have to print a legend
 		 * there's more to do
@@ -745,9 +749,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$r
 			/* now build the legend text, 
 			 * use all arrays and variables that have been prepared
 			 * $need_rrd_nl will be changed within this function */
-			$txt_graph_items .= rrdgraph_compute_item_text($graph, $graph_item, 
-				$graph_variables, $data_source_name, 
-				$rrdtool_version, $need_rrd_nl);
+			$txt_graph_items .= rrdgraph_compute_item_text(
+				$graph, $graph_item, $graph_variables, $data_source_name, $rrdtool_version, $need_rrd_nl);
 		
 			$i++;
 			
@@ -1532,13 +1535,15 @@ function rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array,
 
 		switch($graph_item["graph_type_id"]) {
 			case GRAPH_ITEM_TYPE_COMMENT:
-				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
+				if (!isset($graph_data_array["graph_nolegend"])) {
+					$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
 						substr(rrdgraph_substitute_host_query_data(str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]), $graph, $graph_item),0,198) .
 						$hardreturn[$graph_item_id] . "\" ";
-				if (trim($comment_string) == 'COMMENT:"\n"') {
-					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ':" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
-				}elseif (trim($comment_string) != "COMMENT:\"\"") {
-					$txt_graph_items .= $comment_string;
+					if (trim($comment_string) == 'COMMENT:"\n"') {
+						$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ':" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
+					}elseif (trim($comment_string) != "COMMENT:\"\"") {
+						$txt_graph_items .= $comment_string;
+					}
 				}
 				break;
 
@@ -2528,6 +2533,20 @@ function get_graph_data($local_graph_id) {
 	return $graph;
 }
 
+/** merge graph data for given graph
+ * @param array $graph - graph data
+ * @param array $graph_data_array - additional graph data
+ * @return array - merged graph data
+ */
+function merge_graph_data ($graph, $graph_data_array) {
+	
+	/* make sure, that $graph_data_array succeeds $graph, so don't use array_merge */
+	foreach ($graph_data_array as $key => $value) {
+		#cacti_log("Parameter: " . $key . " value: " . $value, true, "TEST");
+		$graph{$key} = $graph_data_array{$key};		
+	}
+	return $graph;
+}
 
 /** get required graph item data for given graph
  * @param int $local_graph_id - id of current graph
@@ -2926,37 +2945,71 @@ function rrdgraph_option_image_format($image_format_id, $rrdtool_version) {
 
 /** determine all graph options required for rrdtool graph
  * @param array $graph 				- graph data
- * @param array $graph_data_array 	- more graph data
  * @param array $rra 				- rra data
  * @param string $version 			- rrdtool version
  * @return string 					- options formatted as required for rrdtool graph
  */
-function rrdgraph_options($graph, $graph_data_array, $rra, $version) {
+function rrdgraph_options($graph, $rra, $version) {
 
 	$option = "";
 
 	/* export options: either output to stream or to file */
-	if (isset($graph_data_array["export"])) {
-		$option = read_config_option("path_html_export") . "/" . $graph_data_array["export_filename"] . RRD_NL;
+	if (isset($graph["export"]) && isset($graph["export_filename"])) {
+		$option = read_config_option("path_html_export") . "/" . $graph["export_filename"] . RRD_NL;
 	}else{
-		if (empty($graph_data_array["output_filename"])) {
+		if (empty($graph["output_filename"])) {
 				$option = "-" . RRD_NL;
 		}else{
-			$option = $graph_data_array["output_filename"] . RRD_NL;
+			$option = $graph["output_filename"] . RRD_NL;
 		}
 	}
 
 	# image format
 	$option .= rrdgraph_option_image_format($graph["image_format_id"], $version);
 
-	# start and end time
-	$option .= "--start=" . cacti_escapeshellarg($graph["graph_start"]) . RRD_NL . "--end=" . cacti_escapeshellarg($graph["graph_end"]) . RRD_NL;
-
-
 
 	foreach ($graph as $key => $value) {
 		#cacti_log("Parameter: " . $key . " value: " . $value . " RRDTool: " . $version, true, "TEST");
 		switch ($key) {
+			case "graph_start":
+				if (!empty($value)) {
+					$option .= "--start=" . cacti_escapeshellarg($value) . RRD_NL;
+				}
+				break;
+
+			case "graph_end":
+				if (!empty($value)) {
+					$option .= "--end=" . cacti_escapeshellarg($value) . RRD_NL;
+				}
+				break;
+
+			case "height":
+				/* override: graph height (in pixels), passed via graph_data_array */
+				if (isset($graph["graph_height"]) && preg_match("/^[0-9]+$/", $graph["graph_height"])) {
+					$option .= "--height=" . $graph["graph_height"] . RRD_NL;
+				}else{
+					$option .= "--height=" . $value . RRD_NL;
+				}
+				break;
+
+			case "width":
+				/* override: graph width (in pixels), passed via graph_data_array */
+				if (isset($graph["graph_width"]) && preg_match("/^[0-9]+$/", $graph["graph_width"])) {
+					$option .= "--width=" . $graph["graph_width"] . RRD_NL;
+				}else{
+					$option .= "--width=" . $value . RRD_NL;
+				}
+				break;
+
+			case "graph_nolegend":
+				/* override: skip drawing the legend? */
+				if (isset($graph["graph_nolegend"])) {
+					$option .= "--no-legend" . RRD_NL;
+				}else{
+					$option .= "";
+				}
+				break;
+
 			case "title_cache":
 				if (!empty($value)) {
 					$option .= "--title=" . cacti_escapeshellarg($value) . RRD_NL;
@@ -2976,33 +3029,6 @@ function rrdgraph_options($graph, $graph_data_array, $rra, $version) {
 			case "unit_exponent_value":
 				if (preg_match("/^[0-9]+$/", $value)) {
 					$option .= "--units-exponent=" . $value . RRD_NL;
-				}
-				break;
-
-			case "height":
-				/* override: graph height (in pixels) */
-				if (isset($graph_data_array["graph_height"]) && preg_match("/^[0-9]+$/", $graph_data_array["graph_height"])) {
-					$option .= "--height=" . $graph_data_array["graph_height"] . RRD_NL;
-				}else{
-					$option .= "--height=" . $value . RRD_NL;
-				}
-				break;
-
-			case "width":
-				/* override: graph width (in pixels) */
-				if (isset($graph_data_array["graph_width"]) && preg_match("/^[0-9]+$/", $graph_data_array["graph_width"])) {
-					$option .= "--width=" . $graph_data_array["graph_width"] . RRD_NL;
-				}else{
-					$option .= "--width=" . $value . RRD_NL;
-				}
-				break;
-
-			case "graph_nolegend":
-				/* override: skip drawing the legend? */
-				if (isset($graph_data_array["graph_nolegend"])) {
-					$option .= "--no-legend" . RRD_NL;
-				}else{
-					$option .= "";
 				}
 				break;
 
@@ -3186,8 +3212,6 @@ function rrdgraph_options($graph, $graph_data_array, $rra, $version) {
 
 		}
 	}
-
-
 
 	/* rrdtool 1.2.x++ font options */
 	if ($version != RRD_VERSION_1_0) {
@@ -3792,13 +3816,15 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 	$txt_graph_items = '';
 	switch($graph_item["graph_type_id"]) {
 		case GRAPH_ITEM_TYPE_COMMENT:
-			$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
-				substr(rrdgraph_substitute_host_query_data(str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]), $graph, $graph_item),0,198) .
-				$graph_item["hardreturn"] . "\" ";
-			if (trim($comment_string) == 'COMMENT:"\n"') {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ':" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
-			}elseif (trim($comment_string) != "COMMENT:\"\"") {
-				$txt_graph_items .= $comment_string;
+			if (!isset($graph_data_array["graph_nolegend"])) {
+				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
+					substr(rrdgraph_substitute_host_query_data(str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]), $graph, $graph_item),0,198) .
+					$graph_item["hardreturn"] . "\" ";
+				if (trim($comment_string) == 'COMMENT:"\n"') {
+					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ':" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
+				}elseif (trim($comment_string) != "COMMENT:\"\"") {
+					$txt_graph_items .= $comment_string;
+				}
 			}
 			break;
 			
