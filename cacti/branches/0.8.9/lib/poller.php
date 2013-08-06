@@ -530,7 +530,7 @@ function poller_cache_item_add($device_id, $device_field_override, $local_data_i
 
 		$rrd_next_step = poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return "($local_data_id, " . $device["poller_id"] . ", " . $device["id"] . ", $poller_action_id," . $cnn_id->qstr($device["devicename"]) . ",
+		return "($local_data_id, " . $device["poller_id"] . ", " . $device["id"] . ", $poller_action_id," . $cnn_id->qstr($device["hostname"]) . ",
 		       " . $cnn_id->qstr($device["snmp_community"])       . ", " . $cnn_id->qstr($device["snmp_version"])       . ", " . $cnn_id->qstr($device["snmp_timeout"]) . ",
 		       " . $cnn_id->qstr($device["snmp_username"])        . ", " . $cnn_id->qstr($device["snmp_password"])      . ", " . $cnn_id->qstr($device["snmp_auth_protocol"]) . ",
 		       " . $cnn_id->qstr($device["snmp_priv_passphrase"]) . ", " . $cnn_id->qstr($device["snmp_priv_protocol"]) . ", " . $cnn_id->qstr($device["snmp_context"]) . ",
