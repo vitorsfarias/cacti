@@ -37,7 +37,7 @@ include_once(CACTI_INCLUDE_PATH . "/device/device_arrays.php");
 define("MAX_DISPLAY_PAGES", 21);
 
 $device_actions = plugin_hook_function('device_action_array', $device_actions);
-cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
+#cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 
 
 /* set default action */
@@ -105,7 +105,7 @@ function add_tree_names_to_device_actions_array() {
 			$device_actions{"tr_" . $tree["id"]} = "Place on a Tree (" . $tree["name"] . ")";
 		}
 	}
-cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
+#cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 }
 
 /* --------------------------
@@ -377,7 +377,7 @@ function form_actions() {
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_device_actions_array();
-cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
+#cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 
 	html_start_box("<strong>" . $device_actions[get_request_var_post("drp_action")] . "</strong>", "60%", $colors["header_panel"], "3", "center", "");
 
@@ -1502,7 +1502,7 @@ function host() {
 
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_device_actions_array();
-cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
+#cacti_log(__FUNCTION__ . " actions: " . serialize($device_actions), false, "TEST");
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($device_actions);
