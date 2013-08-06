@@ -546,7 +546,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, &$rrdtool_pipe = "") {
 #cacti_log(__FUNCTION__ . " local graph id: " . $local_graph_id, false, "TEST");
 #cacti_log(__FUNCTION__ . " rra id: " . $rra_id, false, "TEST");
-cacti_log(__FUNCTION__ . " graph data array: " . serialize($graph_data_array), false, "TEST");
+#cacti_log(__FUNCTION__ . " graph data array: " . serialize($graph_data_array), false, "TEST");
 	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_arrays.php");
 	require(CACTI_INCLUDE_PATH . "/graph/graph_arrays.php");
@@ -613,13 +613,13 @@ cacti_log(__FUNCTION__ . " graph data array: " . serialize($graph_data_array), f
 	/* +++++++++++++++++++++++ GRAPH OPTIONS ++++++++++++++++++++++++++ *
 	 * get global opts and substitute CACTI variables for later use     *
 	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-cacti_log(__FUNCTION__ . " graph array: " . serialize($graph), false, "TEST");
+#cacti_log(__FUNCTION__ . " graph array: " . serialize($graph), false, "TEST");
 	$graph_opts = rrdgraph_options($graph, $rra, $rrdtool_version);
 	$graph_date = date_time_format();  /* TODO: who needs this ? */
 	
 	/* Replace "|query_*|" in the graph command to replace e.g. vertical_label.  */
 	$graph_opts = rrdgraph_substitute_host_query_data($graph_opts, $graph, NULL);
-cacti_log(__FUNCTION__ . " graph opts: " . $graph_opts, false, "TEST");
+#cacti_log(__FUNCTION__ . " graph opts: " . $graph_opts, false, "TEST");
 	
 	
 	
