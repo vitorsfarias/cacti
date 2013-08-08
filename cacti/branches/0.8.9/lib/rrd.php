@@ -3816,16 +3816,22 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 	$txt_graph_items = '';
 	switch($graph_item["graph_type_id"]) {
 		case GRAPH_ITEM_TYPE_COMMENT:
-			if (!isset($graph_data_array["graph_nolegend"])) {
-				$comment_string = $graph_item_types{$graph_item["graph_type_id"]} . ":\"" .
-					substr(rrdgraph_substitute_host_query_data(str_replace(":", "\:", $graph_variables["text_format"][$graph_item_id]), $graph, $graph_item),0,198) .
-					$graph_item["hardreturn"] . "\" ";
-				if (trim($comment_string) == 'COMMENT:"\n"') {
-					$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ':" \n"'; # rrdtool will skip a COMMENT that holds a NL only; so add a blank to make NL work
-				}elseif (trim($comment_string) != "COMMENT:\"\"") {
-					$txt_graph_items .= $comment_string;
-				}
+			# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
+			$comment_arg = rrdgraph_substitute_host_query_data($graph_variables["text_format"][$graph_item_id], $graph, $graph_item);
+			# next, compute the argument of the COMMENT statement and perform injection counter measures
+			if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
+				$comment_arg = cacti_escapeshellarg(' ' . $graph_item["hardreturn"]);
+			} else {
+				$comment_arg = cacti_escapeshellarg($comment_arg . $graph_item["hardreturn"]);
 			}
+
+			# create rrdtool specific command line
+			if (read_config_option("rrdtool_version") != "rrd-1.0.x") {
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . str_replace(":", "\:", $comment_arg) . " ";
+			}else {
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $comment_arg . " ";
+			}
+
 			break;
 			
 			
