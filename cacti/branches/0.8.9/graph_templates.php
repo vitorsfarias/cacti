@@ -241,6 +241,46 @@ function form_save() {
 	exit;
 }
 
+function graph_template_item_save() {
+	/* ================= Input validation ================= */
+	input_validate_input_number(get_request_var("id"));
+	/* ==================================================== */
+
+	if(!isset($_REQUEST['graph_item']) || !is_array($_REQUEST['graph_item'])) exit;
+	/* graph_item table contains one row defined as "nodrag&nodrop" */
+	unset($_REQUEST['graph_item'][0]);
+
+	/* delivered graph_item ids has to be exactly the same like we have stored */
+	$old_order = array();
+	$new_order = $_REQUEST['graph_item'];
+
+	$sql = "SELECT id, sequence FROM graph_templates_item WHERE graph_template_id = " . $_REQUEST['id'];
+	$graph_templates_items = db_fetch_assoc($sql);
+
+	if(sizeof($graph_templates_items)>0) {
+		foreach($graph_templates_items as $item) {
+			$old_order[$item['sequence']] = $item['id'];
+		}
+	}else {
+		exit;
+	}
+
+	# compute difference of arrays
+	$diff = array_diff_assoc($new_order, $old_order);
+	# nothing to do?
+	if(sizeof($diff) == 0) exit;
+	/* ==================================================== */
+
+	foreach($diff as $sequence => $graph_templates_item_id) {
+		# update the template item itself
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE id = $graph_templates_item_id";
+		db_execute($sql);
+		# update all items referring the template item
+		$sql = "UPDATE graph_templates_item SET sequence = $sequence WHERE local_graph_template_item_id = $graph_templates_item_id";
+		db_execute($sql);
+	}
+}
+
 /* ------------------------
     The "actions" function
    ------------------------ */
@@ -866,6 +906,7 @@ function graph_template_display_items() {
 		$('#graph_item').tableDnD({
 			onDrop: function(table, row) {
 				$.get("graph_templates.php?action=ajax_item_dnd&id=<?php isset($_GET["id"]) ? print $_GET["id"] : print "";?>&"+$.tableDnD.serialize());
+				// TODO: this does not reassign the "Item #" to each line - we may call this a feature :-)
 			}
 		});
 	});
