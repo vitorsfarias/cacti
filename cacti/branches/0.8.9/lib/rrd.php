@@ -3841,7 +3841,7 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 			if (!empty($graph_item["textalign"]) &&
 					$rrdtool_version != RRD_VERSION_1_0 &&
 						$rrdtool_version != RRD_VERSION_1_2) {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_item["textalign"];
+				$txt_graph_items .= $graph_item["graph_type_id"] . ":" . cacti_escapeshellarg($graph_item_types{$graph_item["textalign"]});
 			}
 			break;
 			
@@ -3851,12 +3851,12 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
 				if ($rrdtool_version != RRD_VERSION_1_0) {
 					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+						$txt_graph_items .= "GPRINT:" . $data_source_name . cacti_escapeshellarg(":AVERAGE:" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 					}else{
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . cacti_escapeshellarg("GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 					}
 				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":AVERAGE:\"" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+					$txt_graph_items .= "GPRINT:" . $data_source_name . cacti_escapeshellarg(":AVERAGE:" . "GPRINT DEPRECATED" . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 				}
 			}
 			break;
@@ -3870,33 +3870,33 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 				/* rrdtool 1.2.x VDEFs must suppress the consolidation function on GPRINTs */
 				if ($rrdtool_version != RRD_VERSION_1_0) {
 					if ($graph_item["vdef_id"] == "0") {
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":" . cacti_escapeshellarg($graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 					}else{
-						$txt_graph_items .= "GPRINT:" . $data_source_name . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+						$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . cacti_escapeshellarg($graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 					}
 				}else {
-					$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":\"" . $graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"] . "\" ";
+					$txt_graph_items .= "GPRINT:" . $data_source_name . ":" . $graph_item_gprint_cf{$graph_item["graph_type_id"]} . ":" . cacti_escapeshellarg($graph_item["text_padding"] . $graph_variables["text_format"][$graph_item_id] . $graph_item["gprint_text"] . $graph_item["hardreturn"]) . " ";
 				}
 			}
 			break;
 			
 			
 		case GRAPH_ITEM_TYPE_AREA:
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\" ";
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . " ";
 			if ($graph_item["shift"] == CHECKED && $graph_item["value"] > 0) {	# create a SHIFT statement
-				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . $graph_item["value"];
+				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . cacti_escapeshellarg($graph_item["value"]);
 			}
 			break;
 			
 			
 		case GRAPH_ITEM_TYPE_STACK:
 			if ($rrdtool_version != RRD_VERSION_1_0) {
-				$txt_graph_items .= "AREA:" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\":STACK";
+				$txt_graph_items .= "AREA:" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . ":STACK ";
 			}else {
-				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\" ";
+				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . " ";
 			}
 			if ($graph_item["shift"] == CHECKED && $graph_item["value"] > 0) {	# create a SHIFT statement
-				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . $graph_item["value"];
+				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . cacti_escapeshellarg($graph_item["value"]);
 			}
 			break;
 			
@@ -3904,27 +3904,27 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 		case GRAPH_ITEM_TYPE_LINE1:
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
-			$txt_graph_items .= "LINE" . $graph_item["line_width"] . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\"" . $dash;
+			$txt_graph_items .= "LINE" . $graph_item["line_width"] . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . "" . $dash;
 			if ($graph_item["shift"] == CHECKED && $graph_item["value"] > 0) {	# create a SHIFT statement
-				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . $graph_item["value"];
+				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . cacti_escapeshellarg($graph_item["value"]);
 			}
 			break;
 			
 			
 		case GRAPH_ITEM_TYPE_LINESTACK:
 			if ($rrdtool_version != RRD_VERSION_1_0) {
-				$txt_graph_items .= "LINE" . $graph_item["line_width"] . ":" . $data_source_name . $graph_item_color_code . ":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\":STACK" . $dash;
+				$txt_graph_items .= "LINE" . $graph_item["line_width"] . ":" . $data_source_name . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . ":STACK" . $dash;
 			}
 			if ($graph_item["shift"] == CHECKED && $graph_item["value"] > 0) {	# create a SHIFT statement
-				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . $graph_item["value"];
+				$txt_graph_items .= RRD_NL . "SHIFT:" . $data_source_name . ":" . cacti_escapeshellarg($graph_item["value"]);
 			}
 			break;
 			
 			
 		case GRAPH_ITEM_TYPE_TICK:
 			if ($rrdtool_version != RRD_VERSION_1_0) {
-				$_fraction 	= (empty($graph_item["graph_type_id"]) 						? "" : (":" . $graph_item["value"]));
-				$_legend 	= (empty($graph_variables["text_format"][$graph_item_id]) 	? "" : (":" . "\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\""));
+				$_fraction 	= (empty($graph_item["graph_type_id"]) 						? "" : (":" . cacti_escapeshellarg($graph_item["value"])));
+				$_legend 	= (empty($graph_variables["text_format"][$graph_item_id]) 	? "" : (":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . " "));
 				$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 			}
 			break;
@@ -3937,7 +3937,7 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 			if (is_numeric($substitute)) {
 				$graph_variables["value"][$graph_item_id] = $substitute;
 			}
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\"" . $dash;
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $graph_variables["value"][$graph_item_id] . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . "" . $dash;
 			break;
 			
 			
@@ -3954,7 +3954,7 @@ function rrdgraph_compute_item_text($graph, $graph_item, $graph_variables, $data
 				$value = $graph_item["value"];
 			}
 			
-			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . $value . $graph_item_color_code . ":\"" . $graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"] . "\"" . $dash;
+			$txt_graph_items .= $graph_item_types{$graph_item["graph_type_id"]} . ":" . cacti_escapeshellarg($value) . $graph_item_color_code . ":" . cacti_escapeshellarg($graph_variables["text_format"][$graph_item_id] . $graph_item["hardreturn"]) . "" . $dash;
 			break;
 			
 			
