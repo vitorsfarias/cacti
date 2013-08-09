@@ -3272,6 +3272,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 	 * TODO: why graph_cf and not cf_reference?
 	 */
 	$graph_defs = '';
+	$i = 0;	# start with an empty count of cache leaves records
 	
 	reset($graph_items);
 	foreach ($graph_items as $key => $graph_item) {
@@ -3284,7 +3285,6 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 			$data_source_path = str_replace(":", "\:", $data_source_path);
 			
 			if (!empty($data_source_path)) {
-				$i = sizeof($cf_ds_cache); # instead of using a counter, same results are achieved this way
 				/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
 				 * to a function that matches the digits with letters. rrdtool likes letters instead
 				 * of numbers in DEF names; especially with CDEF's. cdef's are created
@@ -3300,8 +3300,7 @@ function rrdgraph_defs($graph_items, $start, $end, &$cf_ds_cache) {
 				#			$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["cf_reference"]} = "$i";
 				#			$i++;	# new cache entry found, increment counter to have a new DEF identify on the next run
 				
-				$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["cf_reference"]} = "$i";
-#cacti_log(__FUNCTION__ . " cf_ds_cache rrd id: " . $graph_item["data_template_rrd_id"] .  " cf ref: " . $graph_item["cf_reference"] . " i: ". $i, false, "TEST");
+				$cf_ds_cache{$graph_item["data_template_rrd_id"]}{$graph_item["cf_reference"]} = $i++;	# increase counter of leaves in cache
 			}
 		}
 	}
