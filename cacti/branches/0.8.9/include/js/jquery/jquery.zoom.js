@@ -645,8 +645,8 @@
 				}else if(zoom.custom.zoomOutPositioning == 'end') {
 					newGraphStartTime = newGraphStartTime - multiplier * selectedTimeSpan;
 				}else {
-					newGraphStartTime = newGraphStartTime - 0.5 * multiplier * selectedTimeSpan;
-					newGraphEndTime = newGraphEndTime + 0.5 * multiplier * selectedTimeSpan;
+					newGraphStartTime = parseInt(newGraphStartTime - 0.5 * multiplier * selectedTimeSpan);
+					newGraphEndTime = parseInt(newGraphEndTime + 0.5 * multiplier * selectedTimeSpan);
 				}
 			}
 
