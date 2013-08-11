@@ -490,7 +490,13 @@
 								drag:
 									function(event, ui) {
 
-										zoom.marker[marker].left = ui.position["left"];
+										if(ui.position["left"] < zoom.box.left) {
+											zoom.marker[marker].left = zoom.box.left;
+										}else if(ui.position["left"] > zoom.box.right) {
+											zoom.marker[marker].left = zoom.box.right;
+										}else {
+											zoom.marker[marker].left = ui.position["left"];
+										}
 
 										/* update the timestamp shown in tooltip */
 										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left + 1 - zoom.box.left)*zoom.graph.secondsPerPixel);
