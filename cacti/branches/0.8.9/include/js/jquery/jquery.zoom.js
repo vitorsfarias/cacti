@@ -262,11 +262,11 @@
 			if($("#zoom-menu").length == 0) {
 				$('<div id="zoom-menu" class="zoom-menu">'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomin"></div>'
+					+ 		'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
 					+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
 					+ '</div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomout"></div>'
+					+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
 					+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
 					+ 		'<div class="inner_li advanced_mode">'
 					+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
@@ -328,7 +328,7 @@
 					+ 		'</div>'
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-close"></div><span class="zoomContextMenuAction__close">Close</span>'
+					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
 					+ '</div>').appendTo('body');
 			}
 			zoomElemtents_reset()
