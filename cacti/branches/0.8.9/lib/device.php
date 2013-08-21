@@ -1998,7 +1998,7 @@ function device_save($id, $host_template_id, $description, $hostname, $snmp_comm
 		$_host_template_id = db_fetch_cell("select host_template_id from host where id=$id");
 	}
 
-	$save["id"] = $id;
+	$save["id"] 			  = form_input_validate($id, "id", "^[0-9]+$", false, 3); 
 # TODO: deactivated, until site and poller present
 #	$save["site_id"]          = form_input_validate($site_id, "site_id", "^[0-9]+$", false, 3);
 #	$save["poller_id"]        = form_input_validate($poller_id, "poller_id", "^[0-9]+$", false, 3);
