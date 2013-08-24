@@ -23,7 +23,9 @@
 */
 
 function graph_template_to_xml($graph_template_id) {
-	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
+	require(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	$hash["graph_template"] = get_hash_version("graph_template") . get_hash_graph_template($graph_template_id);
 	$xml_text = "";
@@ -43,6 +45,7 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= "<hash_" . $hash["graph_template"] . ">\n\t<name>" . xml_character_encode($graph_template["name"]) . "</name>\n\t<graph>\n";
 
 	/* XML Branch: <graph> */
+	$struct_graph = graph_form_list();
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($graph_template_graph{"t_" . $field_name}) . "</t_$field_name>\n";
@@ -54,6 +57,7 @@ function graph_template_to_xml($graph_template_id) {
 	/* XML Branch: <items> */
 
 	$xml_text .= "\t<items>\n";
+	$struct_graph_item = graph_item_form_list();
 
 	$i = 0;
 	if (sizeof($graph_template_items) > 0) {
@@ -88,6 +92,7 @@ function graph_template_to_xml($graph_template_id) {
 	/* XML Branch: <inputs> */
 
 	$xml_text .= "\t<inputs>\n";
+	$fields_graph_template_input_edit = graph_template_input_form_list();
 
 	$i = 0;
 	if (sizeof($graph_template_inputs) > 0) {
@@ -134,7 +139,8 @@ function graph_template_to_xml($graph_template_id) {
 }
 
 function data_template_to_xml($data_template_id) {
-	global $struct_data_source, $struct_data_source_item, $export_errors;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	$hash["data_template"] = get_hash_version("data_template") . get_hash_data_template($data_template_id);
 	$xml_text = "";
@@ -155,6 +161,7 @@ function data_template_to_xml($data_template_id) {
 	$xml_text .= "<hash_" . $hash["data_template"] . ">\n\t<name>" . xml_character_encode($data_template["name"]) . "</name>\n\t<ds>\n";
 
 	/* XML Branch: <ds> */
+	$struct_data_source = data_source_form_list();
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if (isset($data_template_data{"t_" . $field_name})) {
@@ -191,6 +198,7 @@ function data_template_to_xml($data_template_id) {
 	/* XML Branch: <items> */
 
 	$xml_text .= "\t<items>\n";
+	$struct_data_source_item = data_source_item_form_list();
 
 	$i = 0;
 	if (sizeof($data_template_rrd) > 0) {
@@ -249,10 +257,8 @@ function data_template_to_xml($data_template_id) {
 }
 
 function data_input_method_to_xml($data_input_id) {
-	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1, $export_errors;
-
-	/* aggregate field arrays */
-	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/data_input.php");
 
 	$hash["data_input_method"] = get_hash_version("data_input_method") . get_hash_data_input($data_input_id);
 	$xml_text = "";
@@ -270,6 +276,7 @@ function data_input_method_to_xml($data_input_id) {
 	$xml_text .= "<hash_" . $hash["data_input_method"] . ">\n";
 
 	/* XML Branch: <> */
+	$fields_data_input_edit = data_input_form_list();
 	reset($fields_data_input_edit);
 	while (list($field_name, $field_array) = each($fields_data_input_edit)) {
 		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
@@ -280,6 +287,8 @@ function data_input_method_to_xml($data_input_id) {
 	/* XML Branch: <fields> */
 
 	$xml_text .= "\t<fields>\n";
+	/* aggregate field arrays */
+	$fields_data_input_field_edit = data_input_field_form_list() + data_input_field1_form_list();
 
 	if (sizeof($data_input_fields) > 0) {
 	foreach ($data_input_fields as $item) {
@@ -315,13 +324,8 @@ function data_input_method_to_xml($data_input_id) {
  * @return string		- the resulting XML text
  */
 function cdef_to_xml($cdef_id) {
-	global $fields_cdef_edit, $export_errors;
-
-	$fields_cdef_item_edit = array(
-		"sequence" => "sequence",
-		"type" => "type",
-		"value" => "value"
-	);
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/cdef.php");
 
 	$hash["cdef"] = get_hash_version("cdef") . get_hash_cdef($cdef_id);
 	$xml_text = "";
@@ -339,6 +343,7 @@ function cdef_to_xml($cdef_id) {
 	$xml_text .= "<hash_" . $hash["cdef"] . ">\n";
 
 	/* XML Branch: <> */
+	$fields_cdef_edit = cdef_form_list();
 	reset($fields_cdef_edit);
 	while (list($field_name, $field_array) = each($fields_cdef_edit)) {
 		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
@@ -349,6 +354,7 @@ function cdef_to_xml($cdef_id) {
 	/* XML Branch: <items> */
 
 	$xml_text .= "\t<items>\n";
+	$fields_cdef_item_edit = cdef_item_form_list();
 
 	$i = 0;
 	if (sizeof($cdef_items) > 0) {
@@ -360,13 +366,11 @@ function cdef_to_xml($cdef_id) {
 		/* now do the encoding */
 		reset($fields_cdef_item_edit);
 		while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
-			if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
-				/* check, if an inherited cdef as to be encoded */
-				if (($field_name == "value") && ($item["type"] == '5')) {
-					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
-				} else {
-					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
-				}
+			/* check, if an inherited cdef as to be encoded */
+			if (($field_name == "value") && ($item["type"] == '5')) {
+				$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version("cdef") . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
+			} else {
+				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";				
 			}
 		}
 
@@ -383,7 +387,8 @@ function cdef_to_xml($cdef_id) {
 }
 
 function gprint_preset_to_xml($gprint_preset_id) {
-	global $fields_grprint_presets_edit, $export_errors;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/preset.php");
 
 	$hash = get_hash_version("gprint_preset") . get_hash_gprint($gprint_preset_id);
 	$xml_text = "";
@@ -400,6 +405,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	$xml_text .= "<hash_$hash>\n";
 
 	/* XML Branch: <> */
+	$fields_grprint_presets_edit = gprint_form_list();
 	reset($fields_grprint_presets_edit);
 	while (list($field_name, $field_array) = each($fields_grprint_presets_edit)) {
 		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
@@ -413,7 +419,8 @@ function gprint_preset_to_xml($gprint_preset_id) {
 }
 
 function round_robin_archive_to_xml($round_robin_archive_id) {
-	global $fields_rra_edit, $export_errors;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/preset.php");
 
 	$hash = get_hash_version("round_robin_archive") . get_hash_round_robin_archive($round_robin_archive_id);
 	$xml_text = "";
@@ -431,6 +438,7 @@ function round_robin_archive_to_xml($round_robin_archive_id) {
 	$xml_text .= "<hash_$hash>\n";
 
 	/* XML Branch: <> */
+	$fields_rra_edit = rra_form_list();
 	reset($fields_rra_edit);
 	while (list($field_name, $field_array) = each($fields_rra_edit)) {
 		if (($field_array["method"] != "hidden_zero") && ($field_array["method"] != "hidden")) {
