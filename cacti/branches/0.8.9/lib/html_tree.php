@@ -27,6 +27,7 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 
 	include(CACTI_INCLUDE_PATH . "/global_arrays.php");
 	include_once(CACTI_LIBRARY_PATH . "/tree.php");
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
 
 	$search_key = "";
 	$already_open = false;
@@ -388,6 +389,8 @@ function set_tree_visibility_status() {
 }
 
 function get_visibility($leaf) {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	$tier = tree_tier($leaf["order_key"]);
 
 	$tier_string = tree_tier_string($leaf["order_key"]);
@@ -682,6 +685,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	include_once(CACTI_LIBRARY_PATH . "/data_query.php");
 	include_once(CACTI_LIBRARY_PATH . "/tree.php");
 	include_once(CACTI_LIBRARY_PATH . "/html_utility.php");
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
 
 	define("MAX_DISPLAY_PAGES", 21);
 
