@@ -501,7 +501,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 }
 
 function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
-	global $struct_graph, $struct_graph_item;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
 
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row("select * from graph_local where id=$_local_graph_id");
@@ -533,6 +533,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	}
 
 	unset($save);
+	$struct_graph = graph_form_list();
 	reset($struct_graph);
 
 	/* create new entry: graph_templates_graph */
@@ -551,6 +552,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	$graph_templates_graph_id = sql_save($save, "graph_templates_graph");
 
 	/* create new entry(s): graph_templates_item */
+	$struct_graph_item = graph_item_form_list();
 	if (sizeof($graph_template_items) > 0) {
 	foreach ($graph_template_items as $graph_template_item) {
 		unset($save);
@@ -605,7 +607,7 @@ function duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 }
 
 function duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
-	global $struct_data_source, $struct_data_source_item;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row("select * from data_local where id=$_local_data_id");
@@ -642,6 +644,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	}
 
 	unset($save);
+	$struct_data_source = data_source_form_list();
 	unset($struct_data_source["rra_id"]);
 	unset($struct_data_source["data_source_path"]);
 	reset($struct_data_source);
@@ -664,6 +667,7 @@ function duplicate_data_source($_local_data_id, $_data_template_id, $data_source
 	$data_template_data_id = sql_save($save, "data_template_data");
 
 	/* create new entry(s): data_template_rrd */
+	$struct_data_source_item = data_source_item_form_list();
 	if (sizeof($data_template_rrds) > 0) {
 	foreach ($data_template_rrds as $data_template_rrd) {
 		unset($save);

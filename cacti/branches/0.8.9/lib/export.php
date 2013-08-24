@@ -540,7 +540,8 @@ function host_template_to_xml($host_template_id) {
 }
 
 function data_query_to_xml($data_query_id) {
-	global $fields_data_query_edit, $fields_data_query_item_edit, $export_errors;
+	global $export_errors;
+	require(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	$hash["data_query"] = get_hash_version("data_query") . get_hash_data_query($data_query_id);
 	$xml_text = "";
@@ -558,6 +559,7 @@ function data_query_to_xml($data_query_id) {
 	$xml_text .= "<hash_" . $hash["data_query"] . ">\n";
 
 	/* XML Branch: <> */
+	$fields_data_query_edit = data_query_form_list();
 	reset($fields_data_query_edit);
 	while (list($field_name, $field_array) = each($fields_data_query_edit)) {
 		if (($field_name == "data_input_id") && (!empty($snmp_query{$field_name}))) {
@@ -572,6 +574,7 @@ function data_query_to_xml($data_query_id) {
 	/* XML Branch: <graphs> */
 
 	$xml_text .= "\t<graphs>\n";
+	$fields_data_query_item_edit = data_query_item_form_list();
 
 	$i = 0;
 	if (sizeof($snmp_query_graph) > 0) {

@@ -255,7 +255,7 @@ function push_out_data_source_input_fields($data_template_id, $input_fields) {
 	children
    @arg $data_template_rrd_id - the id of the data template item to push out values for */
 function push_out_data_source_item($data_template_rrd_id) {
-	global $struct_data_source_item;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* get information about this data template */
 	$data_template_rrd = db_fetch_row("select * from data_template_rrd where id=$data_template_rrd_id");
@@ -264,6 +264,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	if (empty($data_template_rrd["data_template_id"])) { return 0; }
 
 	/* loop through each data source column name (from the above array) */
+	$struct_data_source_item = data_source_item_form_list();
 	reset($struct_data_source_item);
 	while (list($field_name, $field_array) = each($struct_data_source_item)) {
 		/* are we allowed to push out the column? */
@@ -276,7 +277,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 /** push_out_data_source - pushes out templated data template fields to all matching children
    @parm int $data_template_data_id - the id of the data template to push out values for */
 function push_out_data_source($data_template_data_id) {
-	global $struct_data_source;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* get information about this data template */
 	$data_template_data = db_fetch_row("select * from data_template_data where id=$data_template_data_id");
@@ -285,6 +286,7 @@ function push_out_data_source($data_template_data_id) {
 	if (empty($data_template_data["data_template_id"])) { return 0; }
 
 	/* loop through each data source column name (from the above array) */
+	$struct_data_source = data_source_form_list();
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		/* are we allowed to push out the column? */
@@ -305,7 +307,7 @@ function push_out_data_source($data_template_data_id) {
    @arg $data_template_id - id the of the data template to change to. specify '0' for no
 	data template */
 function change_data_template($local_data_id, $data_template_id) {
-	global $struct_data_source, $struct_data_source_item;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* always update tables to new data template (or no data template) */
 	db_execute("UPDATE data_local SET data_template_id=$data_template_id WHERE id=$local_data_id");
@@ -329,6 +331,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	$save["data_template_id"] = $data_template_id;
 
 	/* loop through the "templated field names" to find to the rest... */
+	$struct_data_source = data_source_form_list();
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		if ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
@@ -352,6 +355,7 @@ function change_data_template($local_data_id, $data_template_id) {
 	}else{
 		/* this data source does NOT have "child" items; loop through each item in the template
 		and write it exactly to each item */
+		$struct_data_source_item = data_source_item_form_list();
 		if (sizeof($template_rrds_list) > 0) {
 		foreach ($template_rrds_list as $template_rrd) {
 			unset($save);
@@ -409,7 +413,7 @@ function change_data_template($local_data_id, $data_template_id) {
 /* push_out_graph - pushes out templated graph template fields to all matching children
    @arg $graph_template_graph_id - the id of the graph template to push out values for */
 function push_out_graph($graph_template_graph_id) {
-	global $struct_graph;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* get information about this graph template */
 	$graph_template_graph = db_fetch_row("select * from graph_templates_graph where id=$graph_template_graph_id");
@@ -418,6 +422,7 @@ function push_out_graph($graph_template_graph_id) {
 	if ($graph_template_graph["graph_template_id"] == 0) { return 0; }
 
 	/* loop through each graph column name (from the above array) */
+	$struct_graph = graph_form_list();
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* are we allowed to push out the column? */
@@ -488,7 +493,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	pushed out
    @arg $graph_template_item_id - the id of the graph template item to push out values for */
 function push_out_graph_item($graph_template_item_id) {
-	global $struct_graph_item;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* get information about this graph template */
 	$graph_template_item = db_fetch_row("select * from graph_templates_item where id=$graph_template_item_id");
@@ -522,6 +527,7 @@ function push_out_graph_item($graph_template_item_id) {
 	$graph_item_inputs = array_rekey($graph_item_inputs, "column_name", "graph_template_item_id");
 
 	/* loop through each graph item column name (from the above array) */
+	$struct_graph_item = graph_item_form_list();
 	reset($struct_graph_item);
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
@@ -540,7 +546,7 @@ function push_out_graph_item($graph_template_item_id) {
 	the current graph, remove or add the items from the current graph to make them equal.
 	(false) leave the graph item count alone */
 function change_graph_template($local_graph_id, $graph_template_id, $intrusive) {
-	global $struct_graph, $struct_graph_item;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* always update tables to new graph template (or no graph template) */
 	db_execute("update graph_local set graph_template_id=$graph_template_id where id=$local_graph_id");
@@ -564,6 +570,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 	$save["graph_template_id"] = $graph_template_id;
 
 	/* loop through the "templated field names" to find to the rest... */
+	$struct_graph = graph_form_list();
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$value_type = "t_$field_name";
@@ -588,6 +595,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive) 
 		and graph_template_input.graph_template_id=$graph_template_id");
 
 	$k=0;
+	$struct_graph_item = graph_item_form_list();
 	if (sizeof($template_items_list) > 0) {
 	foreach ($template_items_list as $template_item) {
 		unset($save);

@@ -400,7 +400,8 @@ function tree_remove() {
 }
 
 function tree_edit() {
-	global $colors, $fields_tree_edit;
+	global $colors;
+	require(CACTI_LIBRARY_PATH . "/tree.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -420,9 +421,10 @@ function tree_edit() {
 
 	html_start_box("<strong>Graph Trees</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
+	$fields_graph_tree_edit = graph_tree_form_list();
 	draw_edit_form(array(
 		"config" => array(),
-		"fields" => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : array()))
+		"fields" => inject_form_variables($fields_graph_tree_edit, (isset($tree) ? $tree : array()))
 		));
 
 	html_end_box();

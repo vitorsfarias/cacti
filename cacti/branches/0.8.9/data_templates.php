@@ -415,7 +415,8 @@ function template_rrd_add() {
 }
 
 function template_edit() {
-	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit;
+	global $colors, $data_source_types, $fields_data_template_template_edit;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -443,6 +444,7 @@ function template_edit() {
 	html_start_box("<strong>Data Source</strong>", "100%", $colors["header"], "3", "center", "");
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
+	$struct_data_source = data_source_form_list();
 	unset($struct_data_source["data_source_path"]);
 
 	$form_array = array();
@@ -528,6 +530,7 @@ function template_edit() {
 		</tr>\n";
 
 	/* data input fields list */
+	$struct_data_source_item = data_source_item_form_list();
 	if ((empty($template_data["data_input_id"])) ||
 		((db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "1") &&
 		(db_fetch_cell("select type_id from data_input where id=" . $template_data["data_input_id"]) != "5"))) {

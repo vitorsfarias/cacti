@@ -107,7 +107,7 @@ switch (get_request_var_request("action")) {
    ----------------------- */
 
 function _graph_item() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $colors, $consolidation_functions, $graph_item_types;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -159,7 +159,9 @@ function _graph_item() {
    ------------------------------------ */
 
 function _graph_edit() {
-	global $colors, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $colors, $image_types, $consolidation_functions, $graph_item_types;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
+
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	/* ==================================================== */
@@ -314,6 +316,7 @@ function _graph_edit() {
 
 		$form_array = array();
 
+		$struct_graph = graph_form_list();
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
