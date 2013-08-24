@@ -123,7 +123,7 @@ function rra_remove() {
 }
 
 function rra_edit() {
-	global $colors, $fields_rra_edit;
+	global $colors;
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -138,6 +138,8 @@ function rra_edit() {
 
 	html_start_box("<strong>Round Robin Archives</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
+	$fields_rra_edit = rra_form_list();
+	
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_rra_edit, (isset($rra) ? $rra : array()))
