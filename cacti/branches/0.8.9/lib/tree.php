@@ -583,3 +583,9 @@ function tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $loc
 
 	return $tree_item_id;
 }
+
+function &graph_tree_form_list() {
+	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_forms.php");
+
+	return $fields_graph_tree_edit;
+}

@@ -26,7 +26,7 @@ require(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_arrays.php');
 require(CACTI_INCLUDE_PATH . '/data_query/data_query_arrays.php');
 
 /* file: tree.php, action: edit */
-$fields_tree_edit = array(
+$fields_graph_tree_edit = array(
 	'name' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Name'),

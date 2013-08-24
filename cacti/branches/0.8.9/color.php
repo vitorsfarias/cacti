@@ -93,7 +93,8 @@ function color_remove() {
 }
 
 function color_edit() {
-	global $colors, $fields_color_edit;
+	global $colors;
+	require(CACTI_LIBRARY_PATH . "/preset.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -108,6 +109,7 @@ function color_edit() {
 
 	html_start_box("<strong>Colors</strong> $header_label", "100%", $colors["header"], "3", "center", "");
 
+	$fields_color_edit = color_form_list();
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))

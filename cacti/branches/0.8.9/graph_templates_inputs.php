@@ -141,7 +141,9 @@ function input_remove() {
 }
 
 function input_edit() {
-	global $colors, $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
+	global $colors, $consolidation_functions, $graph_item_types;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
+	require(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -151,6 +153,7 @@ function input_edit() {
 	$header_label = "[edit graph: " . db_fetch_cell("select name from graph_templates where id=" . $_GET["graph_template_id"]) . "]";
 
 	/* get a list of all graph item field names and populate an array for user display */
+	$struct_graph_item = graph_item_form_list();
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		if ($field_array["method"] != "view") {
 			$graph_template_items[$field_name] = $field_array["friendly_name"];
@@ -163,6 +166,7 @@ function input_edit() {
 
 	html_start_box("<strong>Graph Item Inputs</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
+	$fields_graph_template_input_edit = graph_template_input_form_list();
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_GET)

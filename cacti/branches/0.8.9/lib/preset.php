@@ -34,4 +34,10 @@ function &rra_form_list() {
 	return $fields_rra_edit;
 }
 
+function &color_form_list() {
+	require(CACTI_INCLUDE_PATH . "/presets/preset_color_forms.php");
+
+	return $fields_color_edit;
+}
+
 ?>

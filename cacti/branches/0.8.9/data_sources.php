@@ -689,7 +689,8 @@ function ds_rrd_add() {
 }
 
 function ds_edit() {
-	global $colors, $struct_data_source, $struct_data_source_item, $data_source_types;
+	global $colors, $data_source_types;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -834,6 +835,7 @@ function ds_edit() {
 
 		$form_array = array();
 
+		$struct_data_source = data_source_form_list();
 		while (list($field_name, $field_array) = each($struct_data_source)) {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
@@ -920,6 +922,7 @@ function ds_edit() {
 			</tr>\n";
 
 		/* data input fields list */
+		$struct_data_source_item = data_source_item_form_list();
 		if ((empty($data["data_input_id"])) || (db_fetch_cell("select type_id from data_input where id=" . $data["data_input_id"]) > "1")) {
 			unset($struct_data_source_item["data_input_field_id"]);
 		}else{

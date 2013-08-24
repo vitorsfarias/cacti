@@ -350,7 +350,8 @@ function data_query_item_remove() {
 }
 
 function data_query_item_edit() {
-	global $colors, $fields_data_query_item_edit;
+	global $colors;
+	require(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -365,7 +366,8 @@ function data_query_item_edit() {
 	$header_label = "[edit: " . htmlspecialchars($snmp_query["name"]) . "]";
 
 	html_start_box("<strong>Associated Graph/Data Templates</strong> $header_label", "100%", $colors["header"], "3", "center", "");
-
+	$fields_data_query_item_edit = data_query_item_form_list();
+	
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_GET)
@@ -610,7 +612,8 @@ function data_query_remove($id) {
 }
 
 function data_query_edit() {
-	global $colors, $fields_data_query_edit;
+	global $colors;
+	require(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -624,7 +627,8 @@ function data_query_edit() {
 	}
 
 	html_start_box("<strong>Data Queries</strong> $header_label", "100%", $colors["header"], "3", "center", "");
-
+	$fields_data_query_edit = data_query_form_list();
+	
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))

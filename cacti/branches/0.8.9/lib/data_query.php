@@ -865,4 +865,16 @@ function verify_index_order($raw_xml) {
 	return $all_index_order_fields_found;
 }
 
+function &data_query_form_list() {
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_forms.php");
+
+	return $fields_data_query_edit;
+}
+
+function &data_query_item_form_list() {
+	require(CACTI_INCLUDE_PATH . "/data_query/data_query_forms.php");
+
+	return $fields_data_query_item_edit;
+}
+
 ?>

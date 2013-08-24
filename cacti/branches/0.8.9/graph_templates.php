@@ -503,7 +503,9 @@ function item() {
    ---------------------------- */
 
 function _template_edit() {
-	global $colors, $struct_graph, $image_types, $fields_graph_template_template_edit;
+	global $colors, $image_types;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
+	require(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -525,6 +527,7 @@ function _template_edit() {
 
 	html_start_box("<strong>Template</strong> " . htmlspecialchars($header_label), "100%", $colors["header"], "3", "center", "");
 
+	$fields_graph_template_template_edit = graph_template_form_list();
 	draw_edit_form(array(
 		"config" => array(),
 		"fields" => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
@@ -536,6 +539,7 @@ function _template_edit() {
 
 	$form_array = array();
 
+	$struct_graph = graph_form_list();
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		$form_array += array($field_name => $struct_graph[$field_name]);
 

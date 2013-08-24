@@ -105,7 +105,9 @@ function &import_xml_data(&$xml_data, $import_custom_rra_settings, $rra_array = 
 }
 
 function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes;
+	global $hash_version_codes;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
+	require(CACTI_LIBRARY_PATH . "/graph_template.php");
 
 	/* import into: graph_templates */
 	$_graph_template_id = db_fetch_cell("select id from graph_templates where hash='$hash'");
@@ -121,6 +123,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 	$save["id"] = (empty($_graph_template_id) ? "0" : db_fetch_cell("select graph_templates_graph.id from (graph_templates,graph_templates_graph) where graph_templates.id=graph_templates_graph.graph_template_id and graph_templates.id=$graph_template_id and graph_templates_graph.local_graph_id=0"));
 	$save["graph_template_id"] = $graph_template_id;
 
+	$struct_graph = graph_form_list();
 	reset($struct_graph);
 	while (list($field_name, $field_array) = each($struct_graph)) {
 		/* make sure this field exists in the xml array first */
@@ -143,6 +146,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 	$graph_template_graph_id = sql_save($save, "graph_templates_graph");
 
 	/* import into: graph_templates_item */
+	$struct_graph_item = graph_item_form_list();
 	if (is_array($xml_array["items"])) {
 		while (list($item_hash, $item_array) = each($xml_array["items"])) {
 			/* parse information from the hash */
@@ -186,6 +190,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 	}
 
 	/* import into: graph_template_input */
+	$fields_graph_template_input_edit = graph_template_input_form_list();
 	if (is_array($xml_array["inputs"])) {
 		while (list($item_hash, $item_array) = each($xml_array["inputs"])) {
 			/* parse information from the hash */
@@ -240,7 +245,7 @@ function &xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version)
 }
 
 function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_rra_settings, $rra_array) {
-	global $struct_data_source, $struct_data_source_item;
+	require(CACTI_LIBRARY_PATH . "/data_source.php");
 
 	/* import into: data_template */
 	$_data_template_id = db_fetch_cell("select id from data_template where hash='$hash'");
@@ -257,6 +262,7 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 	$save["id"] = (empty($_data_template_id) ? "0" : db_fetch_cell("select data_template_data.id from (data_template,data_template_data) where data_template.id=data_template_data.data_template_id and data_template.id=$data_template_id and data_template_data.local_data_id=0"));
 	$save["data_template_id"] = $data_template_id;
 
+	$struct_data_source = data_source_form_list();
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {
 		/* make sure this field exists in the xml array first */
@@ -311,6 +317,8 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 		}
 	}
 
+	$struct_data_source_item = data_source_item_form_list();
+	
 	/* import into: data_template_rrd */
 	if (is_array($xml_array["items"])) {
 		while (list($item_hash, $item_array) = each($xml_array["items"])) {
@@ -377,13 +385,14 @@ function &xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_custom_
 }
 
 function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_query_edit, $fields_data_query_item_edit;
+	require(CACTI_LIBRARY_PATH . "/data_query.php");
 
 	/* import into: snmp_query */
 	$_data_query_id = db_fetch_cell("select id from snmp_query where hash='$hash'");
 	$save["id"] = (empty($_data_query_id) ? "0" : $_data_query_id);
 	$save["hash"] = $hash;
 
+	$fields_data_query_edit = data_query_form_list();
 	reset($fields_data_query_edit);
 	while (list($field_name, $field_array) = each($fields_data_query_edit)) {
 		/* make sure this field exists in the xml array first */
@@ -400,6 +409,7 @@ function &xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	$data_query_id = sql_save($save, "snmp_query");
 
 	$hash_cache["data_query"][$hash] = $data_query_id;
+	$fields_data_query_item_edit = data_query_item_form_list();
 
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array["graphs"])) {
@@ -534,13 +544,14 @@ function &xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 }
 
 function &xml_to_round_robin_archive($hash, &$xml_array, &$hash_cache) {
-	global $fields_rra_edit;
+	require(CACTI_LIBRARY_PATH . "/preset.php");
 
 	/* import into: rra */
 	$_rra_id = db_fetch_cell("select id from rra where hash='$hash'");
 	$save["id"] = (empty($_rra_id) ? "0" : $_rra_id);
 	$save["hash"] = $hash;
 
+	$fields_rra_edit = rra_form_list();
 	reset($fields_rra_edit);
 	while (list($field_name, $field_array) = each($fields_rra_edit)) {
 		/* make sure this field exists in the xml array first */

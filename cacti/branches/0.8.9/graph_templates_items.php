@@ -332,7 +332,8 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $colors, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global $colors, $graph_item_types, $consolidation_functions;
+	require(CACTI_LIBRARY_PATH . "/graph.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
@@ -350,6 +351,7 @@ function item_edit() {
 	}
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
+	$struct_graph_item = graph_item_form_list();
 	if ($_template_id != '') {
 		$default = db_fetch_row("select task_item_id from graph_templates_item where graph_template_id=" . $_template_id . " and local_graph_id=0 order by sequence DESC");
 
