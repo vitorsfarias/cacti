@@ -844,6 +844,8 @@ function export_tree_html($path, $filename, $tree_id, $parent_tree_item_id) {
 }
 
 function build_html_file($leaf, $type = "", $array_data = array(), $snmp_index = "") {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	$cacti_export_path = read_config_option("path_html_export");
 
 	/* auth check for hosts on the trees */

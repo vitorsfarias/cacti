@@ -22,9 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-define("CHARS_PER_TIER", 3);
-define("MAX_TREE_DEPTH", 30);
-
 /* get_tree_item_type - gets the type of tree item
    @arg $tree_item_id - the id of the tree item to fetch the type for
    @returns - a string reprenting the type of the tree item. valid return
@@ -69,6 +66,8 @@ function tree_tier($order_key, $chars_per_tier = CHARS_PER_TIER) {
    @returns - the id of the parent tree item to $id, or '0' if $id is at the root
      of the tree */
 function get_parent_id($id, $table, $where = "") {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	$parent_root = 0;
 
 	$order_key = db_fetch_cell("select order_key from $table where id=$id and $where");
@@ -95,6 +94,8 @@ function get_parent_id($id, $table, $where = "") {
    @arg $where - extra sql WHERE queries that must be used to query $table
    @returns - the next available order key in $order_key's branch */
 function get_next_tree_id($order_key, $table, $field, $where) {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	if (preg_match("/^" . str_repeat('0', CHARS_PER_TIER) . "/",$order_key)) {
 		$tier = 0;
 		$parent_root = '';
@@ -138,6 +139,8 @@ function branch_down($order_key, $table, $field, $where) {
    @arg $field - the sql field name that contains the order key
    @arg $where - extra sql WHERE queries that must be used to query $table */
 function move_branch($dir, $order_key, $table, $field, $where) {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	$tier = tree_tier($order_key);
 
 	db_execute("LOCK TABLES $table WRITE, graph_tree READ, graph_templates_graph READ, host READ");
@@ -315,6 +318,8 @@ function sort_tree($sort_type, $item_id, $sort_style) {
    @arg $new_parent_id - the target parent id for the target branch to move
    @arg $tree_item_id - the id of the branch to re-parent */
 function reparent_branch($new_parent_id, $tree_item_id) {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	if (empty($tree_item_id)) { return 0; }
 
 	/* get the current tree_id */
@@ -355,6 +360,8 @@ function reparent_branch($new_parent_id, $tree_item_id) {
 /* delete_branch - deletes a branch and all of its children
    @arg $tree_item_id - the id of the branch to remove */
 function delete_branch($tree_item_id) {
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
+	
 	if (empty($tree_item_id)) { return 0; }
 
 	db_execute("LOCK TABLES graph_tree_items WRITE, graph_tree READ, graph_templates_graph READ, host READ");

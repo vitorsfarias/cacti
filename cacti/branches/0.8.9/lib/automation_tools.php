@@ -810,6 +810,7 @@ function displayTrees($quietMode = FALSE) {
 
 function displayTreeNodes($tree_id, $nodeType = "", $parentNode = "", $quietMode = FALSE) {
 	global $tree_sort_types, $tree_item_types, $tree_device_group_types;
+	require_once(CACTI_INCLUDE_PATH . '/graph_tree/graph_tree_constants.php');
 
 	if (!$quietMode) {
 		echo "Known Tree Nodes:\n";

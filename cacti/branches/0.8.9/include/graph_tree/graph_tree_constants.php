@@ -34,3 +34,6 @@ define('TREE_ITEM_TYPE_HOST', 3);
 
 define('SORT_TYPE_TREE', 1);
 define('SORT_TYPE_TREE_ITEM', 2);
+
+define("CHARS_PER_TIER", 3);
+define("MAX_TREE_DEPTH", 30);
