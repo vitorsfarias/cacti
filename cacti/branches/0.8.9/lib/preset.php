@@ -28,4 +28,10 @@ function &gprint_form_list() {
 	return $fields_gprint_presets_edit;
 }
 
+function &rra_form_list() {
+	require(CACTI_INCLUDE_PATH . "/presets/preset_rra_forms.php");
+
+	return $fields_rra_edit;
+}
+
 ?>
