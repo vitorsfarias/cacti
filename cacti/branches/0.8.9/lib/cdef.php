@@ -69,4 +69,16 @@ function get_cdef($cdef_id) {
 	return $cdef_string;
 }
 
+function &cdef_form_list() {
+	require(CACTI_INCLUDE_PATH . "/presets/preset_cdef_forms.php");
+
+	return $fields_cdef_edit;
+}
+
+function &cdef_item_form_list() {
+	require(CACTI_INCLUDE_PATH . "/presets/preset_cdef_forms.php");
+
+	return $fields_cdef_item_edit;
+}
+
 ?>
