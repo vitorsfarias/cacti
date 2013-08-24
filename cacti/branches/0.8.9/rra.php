@@ -124,6 +124,7 @@ function rra_remove() {
 
 function rra_edit() {
 	global $colors;
+	require(CACTI_LIBRARY_PATH . "/preset.php");
 
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
