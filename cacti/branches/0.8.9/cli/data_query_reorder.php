@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2013 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -234,7 +234,7 @@ function update_snmp_index_order($data_query) {
 	}
 }
 function display_help($me) {
-	echo "Reorder Data Query Script 1.0" . ", " . __("Copyright 2004-2012 - The Cacti Group") . "\n";
+	echo "Reorder Data Query Script 1.0" . ", " . __("Copyright 2004-2014 - The Cacti Group") . "\n";
 	echo __("A simple command line utility to reorder data queries in Cacti") . "\n\n";
 	echo __("usage: ") . $me . " [--data-query-id=] [--device-id=] [--site-id=] [--poller-id=]\n";
 	echo "       [--description=] [--ip=] [--template=] [--notes=\"[]\"] [--disabled]\n";
