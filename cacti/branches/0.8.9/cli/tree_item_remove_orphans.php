@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2013 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -149,7 +149,7 @@ function remove_orphans($treeId, $remove, $debug) {
 }
 
 function display_help() {
-	echo "Remove Stale Tree Headers Script 1.1, Copyright 2004-2012 - The Cacti Group\n\n";
+	echo "Remove Stale Tree Headers Script 1.1, Copyright 2004-2014 - The Cacti Group\n\n";
 	echo "A simple command line utility to remove orphaned tree headers in Cacti\n\n";
 	echo "usage: tree_item_remove_orphans.php.php  --tree-id=[tree id] [--remove] [--debug]\n\n";
 	echo "    --tree-id=[ID]    id of tree or 'all' for all trees\n";

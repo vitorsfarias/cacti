@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2013 The Cacti Group                                 |
+ | Copyright (C) 2004-2014 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -84,7 +84,7 @@ print $output;
 
 function display_help() {
 global $dumpfile;
-	echo "Database Dump Utility, Copyright 2008-2012 - The Cacti Group\n\n";
+	echo "Database Dump Utility, Copyright 2008-2014 - The Cacti Group\n\n";
 	echo "usage: database_dump.php [--file] [--proceed] [--help | -H | --version | -V]\n\n";
 	echo "Optional:\n";
 	echo "  --file    relative filename for dumpfile (default: $dumpfile)\n";
