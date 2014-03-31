@@ -878,23 +878,9 @@ function rrdtool_function_graph_old($local_graph_id, $rra_id, $graph_data_array,
 	/* Replace "|query_*|" in the graph command to replace e.g. vertical_label.  */
 	$graph_opts = rrdgraph_substitute_host_query_data($graph_opts, $graph, NULL);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* DEF, CDEF, VDEF handling
- * graph items
- */
+	/* DEF, CDEF, VDEF handling
+	 * graph items
+	 */
 
 	/* define some variables */
 	$graph_defs = "";
@@ -1927,8 +1913,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* basic export options */
 	$xport_opts =
-		"--start=$xport_start" . RRD_NL .
-		"--end=$xport_end" . RRD_NL .
+		"--start=" . cacti_escapeshellarg($xport_start) . RRD_NL .
+		"--end=" . cacti_escapeshellarg($xport_end) . RRD_NL .
 		"--maxrows=10000" . RRD_NL;
 
 	$xport_defs = "";
@@ -2344,7 +2330,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$stacked_columns["col" . $j] = ($xport_item["graph_type_id"] == GRAPH_ITEM_TYPE_LINESTACK) ? 1 : 0;
 			$j++;
 
-			$txt_xport_items .= "XPORT:" . $data_source_name . ":" . "\"" . str_replace(":", "", $legend_name) . "\"";
+			$txt_xport_items .= "XPORT:" . cacti_escapeshellarg($data_source_name) . ":" . str_replace(":", "", cacti_escapeshellarg($legend_name)) ;
 		}else{
 			$need_rrd_nl = FALSE;
 		}
@@ -2986,7 +2972,7 @@ function rrdgraph_options($graph, $rra, $version) {
 			case "height":
 				/* override: graph height (in pixels), passed via graph_data_array */
 				if (isset($graph["graph_height"]) && preg_match("/^[0-9]+$/", $graph["graph_height"])) {
-					$option .= "--height=" . $graph["graph_height"] . RRD_NL;
+					$option .= "--height=" . cacti_escapeshellarg($graph["graph_height"]) . RRD_NL;
 				}else{
 					$option .= "--height=" . $value . RRD_NL;
 				}
@@ -2995,7 +2981,7 @@ function rrdgraph_options($graph, $rra, $version) {
 			case "width":
 				/* override: graph width (in pixels), passed via graph_data_array */
 				if (isset($graph["graph_width"]) && preg_match("/^[0-9]+$/", $graph["graph_width"])) {
-					$option .= "--width=" . $graph["graph_width"] . RRD_NL;
+					$option .= "--width=" . cacti_escapeshellarg($graph["graph_width"]) . RRD_NL;
 				}else{
 					$option .= "--width=" . $value . RRD_NL;
 				}
@@ -3028,13 +3014,13 @@ function rrdgraph_options($graph, $rra, $version) {
 
 			case "unit_exponent_value":
 				if (preg_match("/^[0-9]+$/", $value)) {
-					$option .= "--units-exponent=" . $value . RRD_NL;
+					$option .= "--units-exponent=" . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
 			case "base_value":
 				if ($value == 1000 || $value == 1024) {
-					$option .= "--base=" . $value . RRD_NL;
+					$option .= "--base=" . cacti_escapeshellarg($value) . RRD_NL;
 				}
 				break;
 
