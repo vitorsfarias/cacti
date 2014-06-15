@@ -560,6 +560,10 @@ function graph_form_save() {
 function graph_form_actions() {
 	require(CACTI_INCLUDE_PATH . "/graph_tree/graph_tree_arrays.php");
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('drp_action'));
+	/* ==================================================== */
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
