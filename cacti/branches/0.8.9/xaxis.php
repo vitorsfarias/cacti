@@ -159,6 +159,10 @@ function xaxis_form_save() {
 function xaxis_form_actions() {
 	global $colors, $xaxis_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post('drp_action'));
+	/* ==================================================== */
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
