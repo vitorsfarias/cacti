@@ -118,7 +118,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 			 * snmp_auth is treated seperately, see above */
 			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O vt -v$version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port $snmp_auth " . cacti_escapeshellarg($oid), $snmp_value);
 		}else {
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntev " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpget")) . " -O fntevU " . $snmp_auth . " -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 		}
 
 		/* fix for multi-line snmp output */
@@ -239,7 +239,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 				$control_options .= " -Cc ";
 			}
 
-			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntev $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
+			exec(cacti_escapeshellcmd(read_config_option("path_snmpgetnext")) . " -O fntevU $control_options $snmp_auth -v $version -t $timeout -r $retries " . cacti_escapeshellarg($hostname) . ":$port " . cacti_escapeshellarg($oid), $snmp_value);
 		}
 	}
 
