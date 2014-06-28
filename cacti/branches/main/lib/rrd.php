@@ -3286,7 +3286,7 @@ function rrdtool_set_font($type, $no_legend = "") {
 		$size = 8;
 	}
 
-	return "--font " . strtoupper($type) . ":" . $size . ":" . $font . RRD_NL;
+	return "--font " . strtoupper($type) . ":" . floatval($size) . ":" . $font . RRD_NL;
 }
 
 
