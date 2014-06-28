@@ -486,9 +486,15 @@ while ($poller_runs_completed < $poller_runs) {
 		/* sleep the appropriate amount of time */
 		if ($poller_id == 1) {
 			/* multiple pollers: run the poller bottom hook for the first poller only */
+			list($micro, $seconds) = split(' ', microtime());
+			$plugin_start = $seconds + $micro;
 			plugin_hook('poller_bottom');
+			list($micro, $seconds) = split(' ', microtime());
+			$plugin_end = $seconds + $micro;
 			if ($poller_runs_completed < $poller_runs) {
-				usleep($sleep_time * 1000000);
+				if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
+					usleep(($sleep_time - ($plugin_end - $plugin_start)) * 1000000);
+				}
 			}
 		}
 	}else if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
