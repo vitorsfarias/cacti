@@ -308,6 +308,10 @@ function form_save() {
 function form_actions() {
 	global $colors, $ds_actions;
 
+	/* ================= input validation ================= */
+	input_validate_input_regex(get_request_var_post('drp_action'), "^([a-zA-Z0-9_]+)$");
+	/* ==================================================== */
+
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
