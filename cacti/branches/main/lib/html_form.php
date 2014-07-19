@@ -1390,6 +1390,8 @@ function form_ajax_save($title, $form_id, $text = "") {
    @param string $form_id		- id of the form which we try to reload using call to function "ajax_view"
  */
 function form_continue($item_list, $drp_action = "none", $title = "", $form_id = "") {
+	input_validate_input_regex($drp_action, "^([a-zA-Z0-9_]+)$");
+
 	?>
 	<tr id='title' style='display:none;'><td><?php print $title;?></td></tr>
 	<tr>
