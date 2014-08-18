@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -bug#0002328: Plugins that implement xxxxxx_check_upgrade() get 'stuck'
 -bug#0002329: data source: Can't define negative max when min is U
 -bug#0002354: wrong ifIndex reported in case ifAlias contains "="
+-bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability - Special Thanks to G. Geshev (munmap)
 -bug: avoid PHP "pass by reference" error for ping function
 -bug: GRPINT now supporting AVERAGE, LAST, MAX and MIN correctly (MAX of MAX, MAX of AVERAGEs now possible)
 -bug: Logarithmic Scaling and units-si dependencies fixed (thanks to ke6oms)
