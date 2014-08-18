@@ -2696,10 +2696,10 @@ function rrdgraph_option_font($type, $no_legend = "") {
 	if ($type == "title") {
 		if (!empty($no_legend)) {
 			$size = $size * .70;
-		}elseif (($size <= 4) || ($size == "")) {
+		}elseif (($size <= 4) || !is_numeric($size)) {
 			$size = 12;
 		}
-	}else if (($size <= 4) || ($size == "")) {
+	}else if (($size <= 4) || !is_numeric($size)) {
 		$size = 8;
 	}
 
