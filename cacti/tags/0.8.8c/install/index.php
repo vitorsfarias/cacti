@@ -679,7 +679,7 @@ if ($step == "4") {
 					</td>
 				</tr>
 				<tr>
-					<td class='saveRow' align="right"><input type="button" value="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></td>
+					<td class='saveRow' align="right"><input type="submit" value="<?php if ($step == "3"){?>Finish<?php }else{?>Next<?php }?>"></td>
 				<tr>
 			</table>
 		</td>
