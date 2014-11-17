@@ -338,8 +338,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
    @arg $rows_per_page - the number of rows that are displayed on a single page
    @arg $total_rows - the total number of rows in the navigation system
    @arg $object - the object types that is being displayed
-   @arg $page_var - the object types that is being displayed */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows", $page_var = "page") {
+   @arg $page_var - the object types that is being displayed
+   @arg $return_to - paint the resulting page into this dom object */
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = "Rows", $page_var = "page", $return_to = "") {
 	if ($total_rows > $rows_per_page) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
@@ -347,20 +348,20 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			$base_url = trim($base_url) . '&';
 		}
 
-		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var);
+		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var, $return_to);
 
 		$nav = "<tr class='cactiNavBarTop'>
 			<td colspan='$colspan'>
 				<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 					<tr>
-						<td style='width:33%;' align='left' class='textHeaderDark'>
-							" . (($current_page > 1) ? "<a class='navBarPrevious' href='" . htmlspecialchars($base_url . "$page_var=" . ($current_page-1)) . "'><span>&lt;&lt;&nbsp;</span>Previous</a>":"") . "
+						<td style='width:5%;' align='left' class='textHeaderDark'>
+							" . (($current_page > 1) ? "<span class='navBarPrevious'  style='cursor:pointer;' href='#' onClick='gotoPage(" . ($current_page-1) . ")'><span>&lt;&lt;&nbsp;</span>Previous</span>":"") . "
 						</td>
-						<td style='width:33%;' align='center' class='textHeaderDark'>
+						<td style='width:90%;' align='center' class='textHeaderDark'>
 							Showing $object " . (($rows_per_page*($current_page-1))+1) . " to " . (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page) . " of $total_rows [$url_page_select]
 						</td>
-						<td style='width:33%;' align='right' class='textHeaderDark'>
-							" . (($current_page*$rows_per_page) < $total_rows ? "<a class='navBarPrevious' href='" . htmlspecialchars($base_url . "$page_var=" . ($current_page+1)) . "'>Next<span>&nbsp;&gt;&gt;</span></a>":"") . "
+						<td style='width:5%;' align='right' class='textHeaderDark'>
+							" . (($current_page*$rows_per_page) < $total_rows ? "<span class='navBarPrevious' style='cursor:pointer;' href='#' onClick='gotoPage(" . ($current_page+1) . ")'>Next<span>&nbsp;&gt;&gt;</span></span>":"") . "
 						</td>
 					</tr>
 				</table>

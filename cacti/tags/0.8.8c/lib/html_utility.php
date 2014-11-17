@@ -364,9 +364,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
-				$url_page_select .= "<strong><a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a></strong>";
+				$url_page_select .= "<strong><span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span></strong>";
 			}else{
-				$url_page_select .= "<a class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</a>";
+				$url_page_select .= "<span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span>";
 			}
 		}
 
@@ -380,7 +380,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('$url$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('${url}header=false&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
 	}else{
 		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
 	}

@@ -500,6 +500,22 @@ function grow_dhtml_trees() {
 
 	$default_tree_id = read_graph_config_option('default_tree_id');
 
+	if (empty($default_tree_id)) {
+		$user = db_fetch_row('SELECT * FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+
+		if ($user['policy_trees'] == 1) {
+			$default_tree_id = db_fetch_cell("SELECT id 
+				FROM graph_tree
+				WHERE id NOT IN (SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . ")
+				ORDER BY id LIMIT 1");
+		}else{
+			$default_tree_id = db_fetch_cell("SELECT id 
+				FROM graph_tree
+				WHERE id IN (SELECT item_id FROM user_auth_perms WHERE type=2 AND user_id=" . $_SESSION['sess_user_id'] . ")
+				ORDER BY id LIMIT 1");
+		}
+	}
+
 	$dhtml_tree = create_dhtml_tree();
 
 	$total_tree_items = sizeof($dhtml_tree) - 1;
@@ -624,7 +640,7 @@ function create_dhtml_tree() {
 				order by graph_tree_items.order_key");
 
 			$i++;
-			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id']) . '&leaf_id=&host_group_data=">' . htmlspecialchars($tree['name']) . "</a>\n";
+			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=&host_group_data='). '">' . htmlspecialchars($tree['name']) . "</a>\n";
 
 			if (sizeof($hierarchy) > 0) {
 				$i++;
@@ -657,7 +673,7 @@ function create_dhtml_tree() {
 						$last_tier = $tier;
 						$lasthost = true;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id']) . '&host_group_data=">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 						if (read_graph_config_option('expand_hosts') == 'on') {
 							$i++;
@@ -756,7 +772,7 @@ function create_dhtml_tree() {
 						}
 						$last_tier = $tier;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id']) . '&host_group_data=">' . htmlspecialchars($leaf['title']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a>\n";
 						$openli = true;
 						$lasthost = false;
 					}
@@ -849,14 +865,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	include_once($config['library_path'] . '/html_utility.php');
 
 	if (empty($tree_id)) { return; }
+	if (empty($leaf_id)) { $leaf_id = 0; }
 
 	$sql_where       = '';
 	$sql_join        = '';
 	$title           = '';
 	$title_delimeter = '';
 	$search_key      = '';
-
-	if (empty($leaf_id)) return;
 
 	$leaf = db_fetch_row("SELECT order_key, title, host_id, host_grouping_type
 		FROM graph_tree_items
@@ -1285,14 +1300,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				<td colspan='11'>
 					<table width='100%' cellspacing='0' cellpadding='0' border='0'>
 						<tr>
-							<td align='left' class='textHeaderDark' style='width:33%;'>
-								" . (get_request_var_request('page') > 1 ? "<strong>&lt;&lt;<a class='linkOverDark' onClick='pageBack()' href='#'>Previous</a></strong>":'') . "
+							<td align='left' class='textHeaderDark' style='width:5%;'>
+								" . (get_request_var_request('page') > 1 ? "<strong>&lt;&lt;<span style='cursor:pointer;' class='linkOverDark' onClick='pageBack()'>Previous</span></strong>":'') . "
 							</td>
-							<td align='center' class='textHeaderDark' style='width:33%;'>
+							<td align='center' class='textHeaderDark' style='width:90%;'>
 								Showing Graphs " . ((get_request_var_request('graphs')*(get_request_var_request('page')-1))+1) . ' to ' . ((($total_rows < get_request_var_request('graphs')) || ($total_rows < (get_request_var_request('graphs')*get_request_var_request('page')))) ? $total_rows : (get_request_var_request('graphs')*get_request_var_request('page'))) . " of $total_rows [$url_page_select]
 							</td>
-							<td align='right' class='textHeaderDark' style='width:33%;'>
-								" . ((get_request_var_request('page') * get_request_var_request('graphs')) < $total_rows ? "<strong><a class='linkOverDark' onClick='pageForward()' href='#'>Next</a>&gt;&gt;</strong>":"") . "
+							<td align='right' class='textHeaderDark' style='width:5%;'>
+								" . ((get_request_var_request('page') * get_request_var_request('graphs')) < $total_rows ? "<strong><span style='cursor:pointer;' class='linkOverDark' onClick='pageForward()'>Next</span>&gt;&gt;</strong>":"") . "
 							</td>
 						</tr>
 					</table>
@@ -1332,7 +1347,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	print $nav;
 
 	/* start graph display */
-	print "<tr><td width='390' colspan='11' class='textHeaderDark'>$title</td></tr>";
+	print "<tr bgcolor='#00438c'><td width='390' colspan='11' class='textHeaderDark'>$title</td></tr>";
 
 	$i = get_request_var_request('graphs') * (get_request_var_request('page') - 1);
 	$last_graph = $i + get_request_var_request('graphs');
