@@ -391,7 +391,7 @@ case 'preview':
 							Presets:
 						</td>
 						<td>
-							<select name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timespan' name='predefined_timespan' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
 								<?php
 								if ($_SESSION['custom']) {
 									$graph_timespans[GT_CUSTOM] = 'Custom';
@@ -436,7 +436,7 @@ case 'preview':
 							<input type='image' name='move_left' src='images/move_left.gif' align='middle' alt='Left' title='Shift Left'>
 						</td>
 						<td>
-							<select name='predefined_timeshift' title='Define Shifting Interval' onChange='applyTimespanFilterChange(document.form_timespan_selector)'>
+							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
 								<?php
 								$start_val = 1;
 								$end_val = sizeof($graph_timeshifts)+1;
@@ -452,7 +452,7 @@ case 'preview':
 							<input type='image' name='move_right' src='images/move_right.gif' align='middle' alt='Right' title='Shift Right'>
 						</td>
 						<td>
-							<input type='submit' name='button_refresh_x' value='Refresh' title='Refresh selected time span'>
+							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
 							<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
@@ -460,6 +460,15 @@ case 'preview':
 					</tr>
 				</table>
 			</form>
+			<script type='text/javascript'>
+			function refreshTimespanFilter() {
+				var json = { custom: 1, button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+				var url  = 'graph_view.php?header=false';
+				$.post(url, json).done(function(data) {
+					$('#main').html(data);
+				});
+			}
+			</script>
 			</td>
 		</tr>
 		<?php
