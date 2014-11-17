@@ -222,6 +222,7 @@ include_once($config["library_path"] . "/html_utility.php");
 include_once($config["library_path"] . "/html_validate.php");
 include_once($config["library_path"] . "/variables.php");
 include_once($config["library_path"] . "/auth.php");
+include_once($config["include_path"] . "/csrf/csrf-magic.php");
 
 api_plugin_hook("config_insert");
 
