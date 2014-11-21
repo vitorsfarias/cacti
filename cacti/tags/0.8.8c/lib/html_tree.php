@@ -560,6 +560,8 @@ function grow_dhtml_trees() {
 					$('#main').html(data);
 				});
 			}
+
+			$('#navigation').show();
 		})
 		.on('set_state.jstree', function(e, data) {
 			$('#jstree').jstree('deselect_all');
