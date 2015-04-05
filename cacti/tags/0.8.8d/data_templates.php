@@ -305,7 +305,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from data_template where id=" . $matches[1])) . "<br>";
+			$ds_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from data_template where id=" . $matches[1])) . "</li>";
 			$ds_array[$i] = $matches[1];
 
 			$i++;
@@ -514,7 +514,7 @@ function template_edit() {
 
 	html_start_box("", "100%", "", "3", "center", "");
 
-	print "	<tr>
+	print "	<tr class='cactiTableTitle'>
 			<td class='textHeaderDark'>
 				<strong>Data Source Item</strong> [" . (isset($template_rrd) ? htmlspecialchars($template_rrd["data_source_name"]) : "") . "]
 			</td>
@@ -678,7 +678,7 @@ function template() {
 	$sql_where = "WHERE data_template.id=data_template_data.data_template_id AND data_template_data.local_data_id=0";
 	$rows_where = "";
 	if (strlen($_REQUEST['filter'])) {
-		$sql_where .= "AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
+		$sql_where .= " AND (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
 		$rows_where = "WHERE (data_template.name like '%%" . get_request_var_request("filter") . "%%')";
 	}
 

@@ -163,9 +163,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
-	}
+	data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 
 	return true;
 }
@@ -358,9 +356,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
-	}
+	data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 
 	return true;
 }
@@ -388,25 +384,27 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 	$buf_count    = 0;
 	$buffer       = "";
 
-	foreach($output_array as $record) {
-		if ($buf_count == 0) {
-			$delim = " ";
-		} else {
-			$delim = ", ";
-		}
+	if (sizeof($output_array)) {
+		foreach($output_array as $record) {
+			if ($buf_count == 0) {
+				$delim = " ";
+			} else {
+				$delim = ", ";
+			}
 
-		$buffer .= $delim . $record;
+			$buffer .= $delim . $record;
 
-		$buf_len += strlen($record);
+			$buf_len += strlen($record);
 
-		if (($overhead + $buf_len) > ($max_packet - 1024)) {
-			db_execute($sql_prefix . $buffer . $sql_suffix);
+			if (($overhead + $buf_len) > ($max_packet - 1024)) {
+				db_execute($sql_prefix . $buffer . $sql_suffix);
 
-			$buffer    = "";
-			$buf_len   = 0;
-			$buf_count = 0;
-		} else {
-			$buf_count++;
+				$buffer    = "";
+				$buf_len   = 0;
+				$buf_count = 0;
+			} else {
+				$buf_count++;
+			}
 		}
 	}
 

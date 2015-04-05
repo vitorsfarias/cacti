@@ -1,5 +1,27 @@
 Cacti CHANGELOG
 
+0.8.8d
+-feature: Remove un-needed fonts and javascript files
+-bug#0002261: PHP 5.4.0 added new error_reporting variable, causing cacti to show errors 
+-bug#0002391: Odd Behaviour on ReIndex of Data Query Data 
+-bug#0002393: Broken thumbnail images for graph templates 
+-bug#0002402: Subtree must not have the same header as the parent header 
+-bug#0002474: CLI add_device.php dows not set availability_method correctly 
+-bug#0002449: The Save button does not work: Invalid html on page Console -> Cacti Settings: empty form tag 
+-bug#0002485: Broken pagenation on graph viewing
+-bug#0002428: Fail to delete all data input items when removing more than 1000 data sources
+-bug#0002439: Password with special character don't work with LDAP authentication 
+-bug#0002461: invalid bn with ldap and anonymous bind 
+-bug#0002465: Graph Export return empty CSV file 
+-bug#0002484: Incorrect SQL request in cli script repair_database.php 
+-bug#0002489: SNMP - Get Mounted Partitions using Re-index method of Index Count Changed causes recache event every time 
+-bug#0002490: Can not select page for multiple datasources per device
+-bug#0002494: CSV export always shows last day 
+-bug#0002504: Data template search not functional 
+-bug#0002542: [FG-VD-15-017] Cacti Cross-Site Scripting Vulnerability Notification 
+-bug#0002543: Unable to switch pages within graphs_new.php due to invalid URL generation 
+-bug#0002544: Duplicate entry in $nav_url during list view 
+
 0.8.8c
 -bug#0002228: GPL incompatible files included in Cacti project in include/treeview
 -bug#0002383: Sanitize the step and id variables CVE-2013-5588, CVE-2013-5589
@@ -16,6 +38,7 @@ Cacti CHANGELOG
 -bug#0002453: CVE-2014-4002 Cross-Site Scripting Vulnerability - Special Thanks to G. Geshev (munmap)
 -bug#0002455: Incomplete and incorrect input parsing leads to remote code execution and SQL injection attack scenarios
 -bug#0002456: CVE-2014-5025 / CVE-2014-5026 - Cross-Site Scripting Vulnerability - Special Thanks to Adan Alvarez and Paul Gevers
+-bug#0002495: Graph Filter Date Range 
 -bug: Fix COMMENT handling, even in case COMMENT is empty, with or without HR and with variable substitution
 -bug: Fix issues when SNMP data holds a "="; "explode" must be treated accordingly
 -bug: Fix filter highlighting on data sources for the data template field

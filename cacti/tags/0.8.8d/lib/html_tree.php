@@ -60,12 +60,12 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 		<tr class='even noprint'>
 			<td class='noprint'>
 			<form style='margin:0px;padding:0px;' name='form_timespan_selector' method='post' action='graph_view.php'>
-				<table width='100%' cellpadding='1' cellspacing='0'>
+				<table cellpadding='2' cellspacing='0'>
 					<tr>
-						<td nowrap style='white-space: nowrap;' width='55'>
+						<td width='55'>
 							Presets:
 						</td>
-						<td nowrap style='white-space: nowrap;' width='130'>
+						<td>
 							<select name='predefined_timespan' onChange='spanTime()'>
 								<?php
 								if ($_SESSION['custom']) {
@@ -89,22 +89,28 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 								?>
 							</select>
 						</td>
-						<td nowrap style='white-space: nowrap;' width='30'>
+						<td>
 							From:
 						</td>
-						<td width='150' nowrap style='white-space: nowrap;'>
+						<td>
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='14' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
-							<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
 						</td>
-						<td nowrap style='white-space: nowrap;' width='20'>
+						<td>
+							<input type='image' src='images/calendar.gif' align='absmiddle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
+						</td>
+						<td>
 							To:
 						</td>
-						<td width='150' nowrap style='white-space: nowrap;'>
+						<td>
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='14' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
-							<input style='padding-bottom:8px;' type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
-						<td width='130' nowrap style='white-space: nowrap;'>
-							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='middle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
+						<td>
+							<input type='image' src='images/calendar.gif' align='absmiddle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+						</td>
+						<td>
+							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='absmiddle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
+						</td>
+						<td>
 							<select name='predefined_timeshift' title='Define Shifting Interval'>
 								<?php
 								$start_val = 1;
@@ -116,10 +122,14 @@ function grow_graph_tree($tree_id, $start_branch, $user_id, $options) {
 								}
 								?>
 							</select>
-							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
-						<td nowrap style='white-space: nowrap;'>
+						<td>
+							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='absmiddle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
+						</td>
+						<td>
 							<input type='button' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
+						</td>
+						<td>
 							<input type='button' value='Clear' title='Return to the default time span' onClick='clearTimespanFilter()'>
 						</td>
 					</tr>
@@ -301,7 +311,7 @@ function grow_edit_graph_tree($tree_id, $user_id, $options) {
 	if (sizeof($tree) > 0) {
 	foreach ($tree as $leaf) {
 		$tier = tree_tier($leaf['order_key']);
-		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' style='height:1px;' align='middle' alt=''>&nbsp;";
+		$transparent_indent = "<img src='images/transparent_line.gif' style='padding-right:" . (($tier-1) * 20) . "px;' style='height:1px;' align='absmiddle' alt=''>&nbsp;";
 		$sort_cache[$tier] = $leaf['sort_children_type'];
 
 		if ($i % 2 == 0) { $class = 'odd'; }else{ $class = 'even'; } $i++;
@@ -916,9 +926,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>Tree:</strong>' . htmlspecialchars($tree_name); $title_delimeter = '-> '; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>Leaf:</strong>' . htmlspecialchars($leaf_name); $title_delimeter = '-> '; }
-	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Host:</strong>' . htmlspecialchars($host_name); $title_delimeter = '-> '; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>Tree:</strong>' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>Leaf:</strong>' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>Host:</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
 	validate_tree_vars($tree_id, $leaf_id, $host_group_data);
@@ -966,7 +976,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='text' name='date1' id='date1' title='Graph Begin Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='images/calendar.gif' align='middle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
+							<input type='image' src='images/calendar.gif' align='absmiddle' alt='Start date selector' title='Start date selector' onclick="return showCalendar('date1');">
 						</td>
 						<td>
 							To:
@@ -975,10 +985,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<input type='text' name='date2' id='date2' title='Graph End Timestamp' size='15' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 						</td>
 						<td>
-							<input type='image' src='images/calendar.gif' align='middle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
+							<input type='image' src='images/calendar.gif' align='absmiddle' alt='End date selector' title='End date selector' onclick="return showCalendar('date2');">
 						</td>
 						<td>
-							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='middle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
+							<img style='padding-bottom:0px;cursor:pointer;' border='0' src='images/move_left.gif' align='absmiddle' alt='' title='Shift Left' onClick='timeshiftFilterLeft()'/>
 						</td>
 						<td>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='Define Shifting Interval'>
@@ -994,7 +1004,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							</select>
 						</td>
 						<td>
-							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='middle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
+							<img style='padding-bottom:0px;cursor:pointer;' name='move_right' src='images/move_right.gif' align='absmiddle' alt='' title='Shift Right' onClick='timeshiftFilterRight()'/>
 						</td>
 						<td>
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
@@ -1431,7 +1441,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 	/* print out the actual graph html */
 	if (read_graph_config_option('thumbnail_section_tree_1') == 'on') {
 		if (read_graph_config_option('timespan_sel') == 'on') {
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='" . htmlspecialchars($graph_title) . "' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='absmiddle' alt='" . htmlspecialchars($graph_title, ENT_QUOTES) . "' class='graphimage' id='graph_$local_graph_id'
 				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . '&graph_end=' . get_current_graph_end() . '&graph_height=' .
 				read_graph_config_option('default_height') . '&graph_width=' . read_graph_config_option('default_width') . '&graph_nolegend=true') . "' border='0'></a></td>\n";
 
@@ -1440,7 +1450,7 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 				print "</tr><tr>\n";
 			}
 		}else{
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='middle' alt='" . htmlspecialchars($graph_title) . "' class='graphimage' id='graph_$local_graph_id'
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img align='absmiddle' alt='" . htmlspecialchars($graph_title, ENT_QUOTES) . "' class='graphimage' id='graph_$local_graph_id'
 				src='" . htmlspecialchars("graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id&graph_start=" . -(db_fetch_cell("select timespan from rra where id=$rra_id")) . '&graph_height=' .
 				read_graph_config_option('default_height') . '&graph_width=' . read_graph_config_option('default_width') . '&graph_nolegend=true') . "' border='0'></a></td>\n";
 
@@ -1451,10 +1461,10 @@ function draw_tree_graph_row($already_open, $graph_counter, $next_leaf_type, $cu
 		}
 	}else{
 		if (read_graph_config_option('timespan_sel') == 'on') {
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . '&graph_end=' . get_current_graph_end() . "' border='0' alt='" . htmlspecialchars($graph_title) . "'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=0&graph_start=" . get_current_graph_start() . '&graph_end=' . get_current_graph_end() . "' border='0' alt='" . htmlspecialchars($graph_title, ENT_QUOTES) . "'></a></td>";
 			print "</tr><tr>\n";
 		}else{
-			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='" . htmlspecialchars($graph_title) . "'></a></td>";
+			print "<td><a href='" . htmlspecialchars("graph.php?local_graph_id=$local_graph_id&rra_id=all") . "'><img class='graphimage' id='graph_$local_graph_id' src='graph_image.php?action=view&local_graph_id=$local_graph_id&rra_id=$rra_id' border='0' alt='" . htmlspecialchars($graph_title, ENT_QUOTES) . "'></a></td>";
 			print "</tr><tr>\n";
 		}
 	}
@@ -1498,7 +1508,7 @@ function draw_tree_dropdown($current_tree_id) {
 	/* make the dropdown list of trees */
 	if (sizeof($tree_list) > 1) {
 		$html ="<form name='form_tree_id' id='form_tree_id' action='graph_view.php'>
-			<td valign='middle' style='height:30px;' class='even'>\n
+			<td valign='absmiddle' style='height:30px;' class='even'>\n
 				<table width='100%' cellspacing='0' cellpadding='0'>\n
 					<tr>\n
 						<td width='200' class='textHeader'>\n

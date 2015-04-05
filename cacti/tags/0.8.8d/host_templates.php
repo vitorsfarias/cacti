@@ -156,7 +156,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from host_template where id=" . $matches[1])) . "<br>";
+			$host_list .= "<li>" . htmlspecialchars(db_fetch_cell("select name from host_template where id=" . $matches[1])) . "</li>";
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -276,7 +276,7 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_graph_templates) > 0) {
 		foreach ($selected_graph_templates as $item) {
-			form_alternate_row('', true);
+			form_alternate_row('', true);$i++;
 			?>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
@@ -300,6 +300,7 @@ function template_edit() {
 							from graph_templates left join host_template_graph
 							on (graph_templates.id=host_template_graph.graph_template_id and host_template_graph.host_template_id=" . $_GET["id"] . ")
 							where host_template_graph.host_template_id is null
+							and graph_templates.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
 							order by graph_templates.name"),"name","id","","","");?>
 					</td>
 					<td align="right">
@@ -325,7 +326,7 @@ function template_edit() {
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
 		foreach ($selected_data_queries as $item) {
-			form_alternate_row('', true);
+			form_alternate_row('', true);$i++;
 			?>
 				<td style="padding: 4px;">
 					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>

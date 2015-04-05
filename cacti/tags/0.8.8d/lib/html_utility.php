@@ -339,6 +339,10 @@ function get_current_graph_end() {
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = "page", $return_to = '') {
 	$url_page_select = "";
 
+	if (strpos($url, '?') === false) {
+		$url .= '?';
+	}
+
 	$total_pages = ceil($total_rows / $rows_per_page);
 
 	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
@@ -364,9 +368,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
-				$url_page_select .= "<strong><span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span></strong>";
+				$url_page_select .= "<strong><span class='linkOverDark' style='cursor:pointer;' onClick='goto$page_var($page)'>$page</span></strong>";
 			}else{
-				$url_page_select .= "<span class='linkOverDark' style='cursor:pointer;' onClick='gotoPage($page)'>$page</span>";
+				$url_page_select .= "<span class='linkOverDark' style='cursor:pointer;' onClick='goto$page_var($page)'>$page</span>";
 			}
 		}
 
@@ -380,9 +384,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { $.get('${url}header=false&$page_var='+pageNo,function(data) { $('#$return_to').html(data);}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add, function(data) { $('#$return_to').html(data);}); }</script>";
 	}else{
-		$url_page_select .= "<script type='text/javascript'>function gotoPage(pageNo) { document.location='$url$page_var='+pageNo}</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
 	}
 
 	return $url_page_select;
