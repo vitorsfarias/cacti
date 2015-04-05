@@ -64,7 +64,7 @@ if (sizeof($parms)) {
 	$snmp_port            = read_config_option("snmp_port");
 	$snmp_timeout         = read_config_option("snmp_timeout");
 
-	$avail          = 1;
+	$avail          = read_config_option("availability_method"); 
 	$ping_method    = read_config_option("ping_method");
 	$ping_port      = read_config_option("ping_port");
 	$ping_timeout   = read_config_option("ping_timeout");

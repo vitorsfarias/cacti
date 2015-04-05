@@ -329,7 +329,7 @@ $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
 		<tr style="height:10px;"><td></td></tr>
 		<tr id="user_row">
 			<td>User Name:</td>
-			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print htmlspecialchars($username); ?>"></td>
+			<td><input type="text" name="login_username" size="40" style="width: 295px;" value="<?php print htmlspecialchars($username, ENT_QUOTES); ?>"></td>
 		</tr>
 		<tr id="password_row">
 			<td>Password:</td>
@@ -345,7 +345,7 @@ $cacti_logo = api_plugin_hook_function('cacti_image', $cacti_logo);
 				<select name="realm" style="width: 295px;"><?php
 				if (sizeof($realms)) {
 				foreach($realms as $name => $realm) {
-					print "\t\t\t\t\t<option value='" . $name . "'" . ($realm["selected"] ? " selected":"") . ">" . htmlspecialchars($realm["name"]) . "</option>\n";
+					print "\t\t\t\t\t<option value='" . $name . "'" . ($realm["selected"] ? " selected":"") . ">" . htmlspecialchars($realm["name"], ENT_QUOTES) . "</option>\n";
 				}
 				}
 				?>

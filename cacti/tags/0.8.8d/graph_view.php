@@ -563,7 +563,7 @@ case 'preview':
 		'limit ' . ($_REQUEST['rows']*($_REQUEST['page']-1)) . ',' . $_REQUEST['rows']);
 
 	/* do some fancy navigation url construction so we don't have to try and rebuild the url string */
-	if (ereg('page=[0-9]+',basename($_SERVER['QUERY_STRING']))) {
+	if (preg_match('/page=[0-9]+/',basename($_SERVER['QUERY_STRING']))) {
 		$nav_url = str_replace('&page=' . get_request_var_request('page'), '', get_browser_query_string());
 	}else{
 		$nav_url = get_browser_query_string() . '&host_id=' . get_request_var_request('host_id');
@@ -673,11 +673,6 @@ case 'list':
 	/* update the revised graph list session variable */
 	$_REQUEST['graph_list'] = implode(',', array_keys($graph_list));
 	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
-
-	// debugging
-	//echo "GraphList:" . (strlen($_REQUEST["graph_list"]) ? $_REQUEST["graph_list"]:"-") . ", GraphRemove:" . (isset($_REQUEST["graph_remove"]) && strlen($_REQUEST["graph_remove"]) ? $_REQUEST["graph_remove"]:"-") . ", GraphAdd:" . (isset($_REQUEST["graph_add"]) && strlen($_REQUEST["graph_add"]) ? $_REQUEST["graph_add"]:"-");
-
-	$nav_url = 'graph_view.php?action=list&page=<PAGE>';
 
 	/* display graph view filter selector */
 	html_start_box('<strong>Graph Filters</strong>' . (isset($_REQUEST['style']) && strlen($_REQUEST['style']) ? ' [ Custom Graph List Applied - Filter from List ]':''), '100%', '', '2', 'center', '');
@@ -845,7 +840,7 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$nav = html_nav_bar("graph_view.php?action=list" . $nav_url, MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs");
+	$nav = html_nav_bar("graph_view.php?action=list", MAX_DISPLAY_PAGES, get_request_var_request("page"), get_request_var_request("rows"), $total_rows, 5, "Graphs");
 
 	print $nav;
 
