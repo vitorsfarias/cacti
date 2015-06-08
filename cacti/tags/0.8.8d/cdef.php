@@ -107,6 +107,15 @@ function draw_cdef_preview($cdef_id) {
    -------------------------- */
 
 function form_save() {
+
+	// make sure ids are numeric
+	if (isset($_POST["id"]) && ! is_numeric($_POST["id"])) {
+		$_POST["id"] = 0;
+	}
+	if (isset($_POST["cdef_id"]) && ! is_numeric($_POST["cdef_id"])) {
+		$_POST["cdef_id"] = 0;
+	}
+
 	if (isset($_POST["save_component_cdef"])) {
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"]);
