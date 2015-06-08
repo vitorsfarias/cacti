@@ -78,6 +78,11 @@ case 'save':
 default:
 	include("./include/top_header.php");
 
+	/* clean up tab string */
+	if (isset($_REQUEST['tab'])) {
+		$_REQUEST['tab'] = sanitize_search_string(get_request_var_request('tab'));
+	}
+
 	/* set the default settings category */
 	if (!isset($_GET["tab"])) {
 		/* there is no selected tab; select the first one */
