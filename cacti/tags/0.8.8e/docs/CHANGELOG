@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.8e
+-d is for disaster
+
 0.8.8d
 -feature: Remove un-needed fonts and javascript files
 -bug: Fixed SQL injection VN: JVN#78187936 / TN:JPCERT#98968540 
