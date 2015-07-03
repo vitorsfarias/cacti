@@ -466,7 +466,7 @@ if ($step == "4") {
 			upgrade_to_0_8_8d();
 		}elseif ($cacti_versions[$i] == "0.8.8e") {
 			include ("0_8_8d_to_0_8_8e.php");
-			upgrade_to_0_8_8d();
+			upgrade_to_0_8_8e();
 		}
 
 	}
