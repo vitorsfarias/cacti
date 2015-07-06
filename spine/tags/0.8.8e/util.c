@@ -617,7 +617,7 @@ int spine_log(const char *format, ...) {
 	char flogmessage[LOGSIZE];     /* Formatted Log Message */
 
 	va_start(args, format);
-	vsprintf(ulogmessage, LOGSIZE-1, args);
+	vsprintf(ulogmessage, LOGSIZE - 1, args);
 	va_end(args);
 
 	/* default for "console" messages to go to stdout */
