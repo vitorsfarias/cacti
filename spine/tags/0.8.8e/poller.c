@@ -218,8 +218,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 				"status, status_event_count, status_fail_date, "
 				"status_rec_date, status_last_error, "
 				"min_time, max_time, cur_time, avg_time, "
-				"total_polls, failed_polls, availability, snmp_sysUptimeInstance, snmp_sysDescr, snmp_sysObjectID, "
-                "snmp_sysContact, snmp_sysName, snmp_sysLocation"
+				"total_polls, failed_polls, availability"
 			" FROM host"
 			" WHERE id=%i", host_id);
 
@@ -289,8 +288,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 				"status, status_event_count, status_fail_date, "
 				"status_rec_date, status_last_error, "
 				"min_time, max_time, cur_time, avg_time, "
-				"total_polls, failed_polls, availability, snmp_sysUptimeInstance, snmp_sysDescr, snmp_sysObjectID, "
-				"snmp_sysContact, snmp_sysName, snmp_sysLocation"
+				"total_polls, failed_polls, availability"
 			" FROM host"
 			" WHERE id=%i", host_id);
 
@@ -411,12 +409,6 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 				host->total_polls             = 0;					// 27
 				host->failed_polls            = 0;					// 28
 				host->availability            = 100;				// 29
-				host->snmp_sysUpTimeInstance  = 0;					// 30
-				host->snmp_sysDescr[0]        = '\0';				// 31
-				host->snmp_sysObjectID[0]     = '\0';				// 32
-				host->snmp_sysContact[0]      = '\0';				// 33
-				host->snmp_sysName[0]         = '\0';				// 34
-				host->snmp_sysLocation[0]     = '\0';				// 35
 
 				/* populate host structure */
 				host->ignore_host = FALSE;
@@ -459,13 +451,6 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 				if (row[27] != NULL) host->total_polls  = atoi(row[27]);
 				if (row[28] != NULL) host->failed_polls = atoi(row[28]);
 				if (row[29] != NULL) host->availability = atof(row[29]);
-
-				if (row[30] != NULL) host->snmp_sysUpTimeInstance=atoi(row[30]);
-				if (row[31] != NULL) STRNCOPY(host->snmp_sysDescr, row[31]);
-				if (row[32] != NULL) STRNCOPY(host->snmp_sysObjectID, row[32]);
-				if (row[33] != NULL) STRNCOPY(host->snmp_sysContact, row[33]);
-				if (row[34] != NULL) STRNCOPY(host->snmp_sysName, row[34]);
-				if (row[35] != NULL) STRNCOPY(host->snmp_sysLocation, row[35]);
 
 				/* correct max_oid bounds issues */
 				if ((host->max_oids == 0) || (host->max_oids > 100)) {
@@ -531,9 +516,7 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 						"SET status='%i', status_event_count='%i', status_fail_date='%s',"
 							" status_rec_date='%s', status_last_error='%s', min_time='%f',"
 							" max_time='%f', cur_time='%f', avg_time='%f', total_polls='%i',"
-							" failed_polls='%i', availability='%.4f', snmp_sysDescr='%s', "
-							" snmp_sysObjectID='%s', snmp_sysUpTimeInstance='%i', "
-							" snmp_sysContact='%s', snmp_sysName='%s', snmp_sysLocation='%s' "
+							" failed_polls='%i', availability='%.4f' "
 						"WHERE id='%i'",
 						host->status,
 						host->status_event_count,
@@ -547,12 +530,6 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 						host->total_polls,
 						host->failed_polls,
 						host->availability,
-						host->snmp_sysDescr,
-						host->snmp_sysObjectID,
-						host->snmp_sysUpTimeInstance,
-						host->snmp_sysContact,
-						host->snmp_sysName,
-						host->snmp_sysLocation,
 						host->id);
 	
 					db_insert(&mysql, update_sql);
@@ -1284,10 +1261,6 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 	/* record the polling time for the device */
 	poll_time = get_time_as_double() - poll_time;
 	SPINE_LOG_MEDIUM(("Host[%i] TH[%i] Total Time: %5.2g Seconds", host_id, host_thread, poll_time));
-
-	query1[0] = '\0';
-	snprintf(query1, BUFSIZE, "UPDATE host SET polling_time='%g' WHERE id=%i", poll_time, host_id);
-	db_query(&mysql, query1);
 
 	mysql_close(&mysql);
 

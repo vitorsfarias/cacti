@@ -2,6 +2,9 @@
 
 0.8.8e
 
+-bug#0002576: Call to a non-existent column of the database in poller.c
+-bug#0002578: spine doesn't compile on ubuntu 12.04
+-bug#0002585: Spine: buffer overflow in logging when RESULTS_BUFFER>LOGSIZE can SEGV
 
 0.8.8d
 

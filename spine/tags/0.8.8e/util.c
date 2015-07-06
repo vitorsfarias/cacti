@@ -617,7 +617,7 @@ int spine_log(const char *format, ...) {
 	char flogmessage[LOGSIZE];     /* Formatted Log Message */
 
 	va_start(args, format);
-	vsprintf(ulogmessage, format, args);
+	vsprintf(ulogmessage, LOGSIZE-1, args);
 	va_end(args);
 
 	/* default for "console" messages to go to stdout */
@@ -658,8 +658,8 @@ int spine_log(const char *format, ...) {
 		}
 	}
 
-	strncat(flogmessage, logprefix,   sizeof(flogmessage)-1);
-	strncat(flogmessage, ulogmessage, sizeof(flogmessage)-1);
+	strncat(flogmessage, logprefix,   sizeof(flogmessage) - 1);
+	strncat(flogmessage, ulogmessage, sizeof(flogmessage) - 50);
 
 	if ((IS_LOGGING_TO_FILE() &&
 		(set.log_level != POLLER_VERBOSITY_NONE) &&

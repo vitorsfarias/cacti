@@ -74,9 +74,7 @@ netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_PRINT_BARE_VALUE, 1
 netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_NUMERIC_TIMETICKS, 1);
 
 #if defined(VERIFY_PACKAGE_VERSION) && defined(PACKAGE_VERSION)
-	/* check that the headers we compiled with match the library we linked with -
-	   apparently not defined in UCD-SNMP...
-	*/
+	/* check that the headers we compiled with match the library we linked with */
 	SPINE_LOG_DEBUG(("DEBUG: SNMP Header Version is %s", PACKAGE_VERSION));
 	SPINE_LOG_DEBUG(("DEBUG: SNMP Library Version is %s", netsnmp_get_version()));
 
@@ -108,7 +106,7 @@ void snmp_spine_close(void) {
  * char *snmp_context, int snmp_port, int snmp_timeout)
  *  \brief initializes an snmp_session object for a Spine host
  *
- *	This function will initialize NET-SNMP or UCD-SNMP for the Spine host
+ *	This function will initialize NET-SNMP for the Spine host
  *  in question.
  *
  */
