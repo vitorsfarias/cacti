@@ -39,12 +39,9 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/js/jquery-ui.css" type="text/css" rel="stylesheet">
-	<link href="<?php echo $config['url_path']; ?>include/js/themes/proton/style.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
-	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.cookie.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jstree.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/jscalendar/calendar.js"></script>
