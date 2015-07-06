@@ -243,16 +243,7 @@ AC_CHECK_LIB(mysqlclient_r,mysql_init, LIBS="-lmysqlclient_r",
   AC_MSG_ERROR([MySQL libraries not found])
 )
 
-# Net/UCD-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
-AC_MSG_CHECKING([if UCD-SNMP needs crypto support])
-SNMP_SSL=no
-AC_TRY_COMPILE([#include <ucd-snmp-config.h>], [exit(USE_OPENSSL != 1);],
-  [  AC_MSG_RESULT(yes)
-     SNMP_SSL=yes
-  ],
-  AC_MSG_RESULT(no)
-)
-
+# Net-SNMP includes v3 support and insists on crypto unless compiled --without-openssl
 AC_MSG_CHECKING([if Net-SNMP needs crypto support])
 AC_TRY_COMPILE([#include <net-snmp-config.h>], [exit(USE_OPENSSL != 1);],
   [  AC_MSG_RESULT(yes)
