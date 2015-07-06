@@ -87,7 +87,7 @@ function form_save() {
 		$save["hash"] = get_hash_data_input($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["input_string"] = form_input_validate($_POST["input_string"], "input_string", "", true, 3);
-		$save["type_id"] = form_input_validate($_POST["type_id"], "type_id", "", true, 3);
+		$save["type_id"] = form_input_validate($_POST["type_id"], "type_id", "^[0-9]+$", true, 3);
 
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, "data_input");
@@ -113,6 +113,7 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
 		input_validate_input_number(get_request_var_post("data_input_id"));
+		input_validate_input_number(get_request_var_post("sequence"));
 		input_validate_input_regex(get_request_var_post("input_output"), "^(in|out)$");
 		/* ==================================================== */
 
@@ -159,15 +160,13 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				data_remove($selected_items[$i]);
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				for ($i=0;($i<count($selected_items));$i++) {
+					data_remove($selected_items[$i]);
+				}
 			}
 		}
 

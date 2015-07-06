@@ -94,6 +94,10 @@ function form_save() {
 	}
 
 	if (isset($_POST["save_component_tree"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("id"));
+		/* ==================================================== */
+
 		$save["id"] = $_POST["id"];
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save["sort_type"] = form_input_validate($_POST["sort_type"], "sort_type", "", true, 3);
@@ -113,6 +117,17 @@ function form_save() {
 
 		header("Location: tree.php?action=edit&id=" . (empty($tree_id) ? $_POST["id"] : $tree_id));
 	}elseif (isset($_POST["save_component_tree_item"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("id"));
+		input_validate_input_number(get_request_var_post("graph_tree_id"));
+		input_validate_input_number(get_request_var_post("type"));
+		input_validate_input_number(get_request_var_post("parent_item_id"));
+		input_validate_input_number(get_request_var_post("local_graph_id"));
+		input_validate_input_number(get_request_var_post("host_id"));
+		input_validate_input_number(get_request_var_post("rra_id"));
+		input_validate_input_number(get_request_var_post("host_group_type"));
+		/* ==================================================== */
+
 		$tree_item_id = api_tree_item_save($_POST["id"], $_POST["graph_tree_id"], $_POST["type"], $_POST["parent_item_id"],
 			(isset($_POST["title"]) ? $_POST["title"] : ""), (isset($_POST["local_graph_id"]) ? $_POST["local_graph_id"] : "0"),
 			(isset($_POST["rra_id"]) ? $_POST["rra_id"] : "0"), (isset($_POST["host_id"]) ? $_POST["host_id"] : "0"),

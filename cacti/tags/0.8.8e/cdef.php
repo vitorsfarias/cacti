@@ -117,6 +117,10 @@ function form_save() {
 	}
 
 	if (isset($_POST["save_component_cdef"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		/* ==================================================== */
+
 		$save["id"] = $_POST["id"];
 		$save["hash"] = get_hash_cdef($_POST["id"]);
 		$save["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
@@ -133,14 +137,20 @@ function form_save() {
 
 		header("Location: cdef.php?action=edit&id=" . (empty($cdef_id) ? $_POST["id"] : $cdef_id));
 	}elseif (isset($_POST["save_component_item"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post('id'));
+		input_validate_input_number(get_request_var_post('cdef_id'));
+		input_validate_input_number(get_request_var_post('type'));
+		/* ==================================================== */
+
 		$sequence = get_sequence($_POST["id"], "sequence", "cdef_items", "cdef_id=" . $_POST["cdef_id"]);
 
-		$save["id"] = $_POST["id"];
-		$save["hash"] = get_hash_cdef($_POST["id"], "cdef_item");
-		$save["cdef_id"] = $_POST["cdef_id"];
+		$save["id"]       = $_POST["id"];
+		$save["hash"]     = get_hash_cdef($_POST["id"], "cdef_item");
+		$save["cdef_id"]  = $_POST["cdef_id"];
 		$save["sequence"] = $sequence;
-		$save["type"] = $_POST["type"];
-		$save["value"] = $_POST["value"];
+		$save["type"]     = $_POST["type"];
+		$save["value"]    = $_POST["value"];
 
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, "cdef_items");
@@ -173,19 +183,16 @@ function form_actions() {
 	
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from cdef where " . array_to_sql_or($selected_items, "id"));
-			db_execute("delete from cdef_items where " . array_to_sql_or($selected_items, "cdef_id"));
-
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_cdef($selected_items[$i], $_POST["title_format"]);
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				db_execute("delete from cdef where " . array_to_sql_or($selected_items, "id"));
+				db_execute("delete from cdef_items where " . array_to_sql_or($selected_items, "cdef_id"));
+			}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_cdef($selected_items[$i], $_POST["title_format"]);
+				}
 			}
 		}
 

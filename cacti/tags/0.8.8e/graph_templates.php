@@ -92,6 +92,11 @@ function form_save() {
 	}
 
 	if (isset($_POST["save_component_template"])) {
+		/* ================= input validation ================= */
+		input_validate_input_number(get_request_var_post("graph_template_id"));
+		input_validate_input_number(get_request_var_post("graph_template_graph_id"));
+		/* ==================================================== */
+
 		$save1["id"] = $_POST["graph_template_id"];
 		$save1["hash"] = get_hash_graph_template($_POST["graph_template_id"]);
 		$save1["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
@@ -100,7 +105,7 @@ function form_save() {
 		$save2["local_graph_template_graph_id"] = 0;
 		$save2["local_graph_id"] = 0;
 		$save2["t_image_format_id"] = (isset($_POST["t_image_format_id"]) ? $_POST["t_image_format_id"] : "");
-		$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "", true, 3);
+		$save2["image_format_id"] = form_input_validate($_POST["image_format_id"], "image_format_id", "^[0-9]+$", true, 3);
 		$save2["t_title"] = form_input_validate((isset($_POST["t_title"]) ? $_POST["t_title"] : ""), "t_title", "", true, 3);
 		$save2["title"] = form_input_validate($_POST["title"], "title", "", (isset($_POST["t_title"]) ? true : false), 3);
 		$save2["t_height"] = form_input_validate((isset($_POST["t_height"]) ? $_POST["t_height"] : ""), "t_height", "", true, 3);
@@ -176,35 +181,33 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from graph_templates where " . array_to_sql_or($selected_items, "id"));
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				db_execute("delete from graph_templates where " . array_to_sql_or($selected_items, "id"));
 
-			$graph_template_input = db_fetch_assoc("select id from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
+				$graph_template_input = db_fetch_assoc("select id from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
 
-			if (sizeof($graph_template_input) > 0) {
-			foreach ($graph_template_input as $item) {
-				db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
-			}
-			}
+				if (sizeof($graph_template_input) > 0) {
+				foreach ($graph_template_input as $item) {
+					db_execute("delete from graph_template_input_defs where graph_template_input_id=" . $item["id"]);
+				}
+				}
 
-			db_execute("delete from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
-			db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
-			db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "graph_template_id"));
+				db_execute("delete from graph_template_input where " . array_to_sql_or($selected_items, "graph_template_id"));
+				db_execute("delete from graph_templates_graph where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
+				db_execute("delete from graph_templates_item where " . array_to_sql_or($selected_items, "graph_template_id") . " and local_graph_id=0");
+				db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "graph_template_id"));
 
-			/* "undo" any graph that is currently using this template */
-			db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
-			db_execute("update graph_local set graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_graph(0, $selected_items[$i], $_POST["title_format"]);
+				/* "undo" any graph that is currently using this template */
+				db_execute("update graph_templates_graph set local_graph_template_graph_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
+				db_execute("update graph_templates_item set local_graph_template_item_id=0,graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
+				db_execute("update graph_local set graph_template_id=0 where " . array_to_sql_or($selected_items, "graph_template_id"));
+			}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_graph(0, $selected_items[$i], $_POST["title_format"]);
+				}
 			}
 		}
 

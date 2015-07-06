@@ -1,7 +1,15 @@
 Cacti CHANGELOG
 
 0.8.8e
--d is for disaster
+-bug: Fixed various SQL Injection vectors
+-bug#0002574: SQL Injection Vulnerabilitie in graph items and graph template items
+-bug#0002577: CVE-2015-4634 - SQL injection in graphs.php
+-bug#0002579: SQL Injection Vulnerabilitie in data sources
+-bug#0002580: SQL Injection in cdef.php
+-bug#0002582: SQL Injection in data_templates.php
+-bug#0002583: SQL Injection in graph_templates.php
+-bug#0002584: SQL Injection in host_templates.php
+-bug#0002586: Cannot delete data sources from the GUI
 
 0.8.8d
 -feature: Remove un-needed fonts and javascript files

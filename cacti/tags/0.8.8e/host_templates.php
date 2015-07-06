@@ -76,6 +76,7 @@ switch ($_REQUEST["action"]) {
 
 function form_save() {
 	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post("id"));
 	input_validate_input_number(get_request_var_post("host_template_id"));
 	input_validate_input_number(get_request_var_post("snmp_query_id"));
 	input_validate_input_number(get_request_var_post("graph_template_id"));
@@ -123,22 +124,20 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			db_execute("delete from host_template where " . array_to_sql_or($selected_items, "id"));
-			db_execute("delete from host_template_snmp_query where " . array_to_sql_or($selected_items, "host_template_id"));
-			db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "host_template_id"));
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				db_execute("delete from host_template where " . array_to_sql_or($selected_items, "id"));
+				db_execute("delete from host_template_snmp_query where " . array_to_sql_or($selected_items, "host_template_id"));
+				db_execute("delete from host_template_graph where " . array_to_sql_or($selected_items, "host_template_id"));
 
-			/* "undo" any device that is currently using this template */
-			db_execute("update host set host_template_id=0 where " . array_to_sql_or($selected_items, "host_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_host_template($selected_items[$i], $_POST["title_format"]);
+				/* "undo" any device that is currently using this template */
+				db_execute("update host set host_template_id=0 where " . array_to_sql_or($selected_items, "host_template_id"));
+			}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_host_template($selected_items[$i], $_POST["title_format"]);
+				}
 			}
 		}
 
