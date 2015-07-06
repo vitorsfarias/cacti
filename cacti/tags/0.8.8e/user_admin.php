@@ -79,88 +79,74 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
 		if (get_request_var_post("drp_action") != "2") {
-			$selected_items = unserialize(stripslashes(get_request_var_post("selected_items")));
+			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 		}
 
-		if (get_request_var_post("drp_action") == "1") { /* delete */
-			for ($i=0;($i<count($selected_items));$i++) {
+		if ($selected_items != false) {
+			if (get_request_var_post("drp_action") == "1") { /* delete */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_remove($selected_items[$i]);
+
+					api_plugin_hook_function('user_remove', $selected_items[$i]);
+				}
+			}
+
+			if (get_request_var_post("drp_action") == "2") { /* copy */
 				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
+				input_validate_input_number(get_request_var_post("selected_items"));
+				input_validate_input_number(get_request_var_post("new_realm"));
 				/* ==================================================== */
 
-				user_remove($selected_items[$i]);
+				$new_username = get_request_var_post("new_username");
+				$new_realm = get_request_var_post("new_realm", 0);
+				$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("selected_items"));
+				$overwrite = array( "full_name" => get_request_var_post("new_fullname") );
 
-				api_plugin_hook_function('user_remove', $selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post("drp_action") == "2") { /* copy */
-			/* ================= input validation ================= */
-			input_validate_input_number(get_request_var_post("selected_items"));
-			input_validate_input_number(get_request_var_post("new_realm"));
-			/* ==================================================== */
-
-			$new_username = get_request_var_post("new_username");
-			$new_realm = get_request_var_post("new_realm", 0);
-			$template_user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("selected_items"));
-			$overwrite = array( "full_name" => get_request_var_post("new_fullname") );
-
-			if (strlen($new_username)) {
-				if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username = '" . $new_username . "' AND realm = " . $new_realm))) {
-					raise_message(19);
-				} else {
-					if (user_copy($template_user["username"], $new_username, $template_user["realm"], $new_realm, false, $overwrite) === false) {
-						raise_message(2);
+				if (strlen($new_username)) {
+					if (sizeof(db_fetch_assoc("SELECT username FROM user_auth WHERE username = '" . $new_username . "' AND realm = " . $new_realm))) {
+						raise_message(19);
 					} else {
-						raise_message(1);
+						if (user_copy($template_user["username"], $new_username, $template_user["realm"], $new_realm, false, $overwrite) === false) {
+							raise_message(2);
+						} else {
+							raise_message(1);
+						}
 					}
 				}
 			}
-		}
 
-		if (get_request_var_post("drp_action") == "3") { /* enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_enable($selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post("drp_action") == "4") { /* disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				user_disable($selected_items[$i]);
-			}
-		}
-
-		if (get_request_var_post("drp_action") == "5") { /* batch copy */
-			/* ================= input validation ================= */
-			input_validate_input_number(get_request_var_post("template_user"));
-			/* ==================================================== */
-
-			$copy_error = false;
-			$template = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("template_user"));
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				$user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $selected_items[$i]);
-				if ((isset($user)) && (isset($template))) {
-					if (user_copy($template["username"], $user["username"], $template["realm"], $user["realm"], true) === false) {
-						$copy_error = true;
-					}
+			if (get_request_var_post("drp_action") == "3") { /* enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_enable($selected_items[$i]);
 				}
 			}
-			if ($copy_error) {
-				raise_message(2);
-			} else {
-				raise_message(1);
+
+			if (get_request_var_post("drp_action") == "4") { /* disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_disable($selected_items[$i]);
+				}
+			}
+
+			if (get_request_var_post("drp_action") == "5") { /* batch copy */
+				/* ================= input validation ================= */
+				input_validate_input_number(get_request_var_post("template_user"));
+				/* ==================================================== */
+
+				$copy_error = false;
+				$template = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . get_request_var_post("template_user"));
+				for ($i=0;($i<count($selected_items));$i++) {
+					$user = db_fetch_row("SELECT username, realm FROM user_auth WHERE id = " . $selected_items[$i]);
+					if ((isset($user)) && (isset($template))) {
+						if (user_copy($template["username"], $user["username"], $template["realm"], $user["realm"], true) === false) {
+							$copy_error = true;
+						}
+					}
+				}
+				if ($copy_error) {
+					raise_message(2);
+				} else {
+					raise_message(1);
+				}
 			}
 		}
 
@@ -319,7 +305,7 @@ function form_actions() {
    -------------------------- */
 
 function form_save() {
-	global $settings_graphs;
+	global $settings_graphs, $cnn_id;
 
 	/* graph permissions */
 	if ((isset($_POST["save_component_graph_perms"])) && (!is_error_message())) {
@@ -362,6 +348,10 @@ function form_save() {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("id"));
 		input_validate_input_number(get_request_var_post("realm"));
+		input_validate_input_number(get_request_var_post("policy_hosts"));
+		input_validate_input_number(get_request_var_post("policy_graphs"));
+		input_validate_input_number(get_request_var_post("policy_trees"));
+		input_validate_input_number(get_request_var_post("policy_graph_templates"));
 		/* ==================================================== */
 
 		if ((get_request_var_post("password") == "") && (get_request_var_post("password_confirm") == "")) {
@@ -371,7 +361,7 @@ function form_save() {
 		}
 
 		/* check duplicate username */
-		if (sizeof(db_fetch_row("select * from user_auth where realm = " . get_request_var_post("realm") . " and username = '" . get_request_var_post("username") . "' and id != " . get_request_var_post("id")))) {
+		if (sizeof(db_fetch_row("select * from user_auth where realm = " . get_request_var_post("realm") . " and username = " . $cnn_id->qstr(get_request_var_post("username")) . " and id != " . get_request_var_post("id")))) {
 			raise_message(12);
 		}
 
@@ -404,10 +394,10 @@ function form_save() {
 		$save["show_preview"] = form_input_validate(get_request_var_post("show_preview", ""), "show_preview", "", true, 3);
 		$save["graph_settings"] = form_input_validate(get_request_var_post("graph_settings", ""), "graph_settings", "", true, 3);
 		$save["login_opts"] = form_input_validate(get_request_var_post("login_opts"), "login_opts", "", true, 3);
-		$save["policy_graphs"] = form_input_validate(get_request_var_post("policy_graphs", get_request_var_post("_policy_graphs")), "policy_graphs", "", true, 3);
-		$save["policy_trees"] = form_input_validate(get_request_var_post("policy_trees", get_request_var_post("_policy_trees")), "policy_trees", "", true, 3);
-		$save["policy_hosts"] = form_input_validate(get_request_var_post("policy_hosts", get_request_var_post("_policy_hosts")), "policy_hosts", "", true, 3);
-		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("_policy_graph_templates")), "policy_graph_templates", "", true, 3);
+		$save["policy_graphs"] = form_input_validate(get_request_var_post("policy_graphs", get_request_var_post("_policy_graphs")), "policy_graphs", "^[0-9]+$", true, 3);
+		$save["policy_trees"] = form_input_validate(get_request_var_post("policy_trees", get_request_var_post("_policy_trees")), "policy_trees", "^[0-9]+$", true, 3);
+		$save["policy_hosts"] = form_input_validate(get_request_var_post("policy_hosts", get_request_var_post("_policy_hosts")), "policy_hosts", "^[0-9]+$", true, 3);
+		$save["policy_graph_templates"] = form_input_validate(get_request_var_post("policy_graph_templates", get_request_var_post("_policy_graph_templates")), "policy_graph_templates", "^[0-9]+$", true, 3);
 		$save["realm"] = get_request_var_post("realm", 0);
 		$save["enabled"] = form_input_validate(get_request_var_post("enabled", ""), "enabled", "", true, 3);
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
@@ -427,6 +417,9 @@ function form_save() {
 				while (list($var, $val) = each($_POST)) {
 					if (preg_match("/^[section]/i", $var)) {
 						if (substr($var, 0, 7) == "section") {
+							/* ================= input validation ================= */
+							input_validate_input_number(substr($var,7));
+							/* ==================================================== */
 							db_execute("REPLACE INTO user_auth_realm (user_id,realm_id) VALUES (" . $user_id . "," . substr($var, 7) . ")");
 						}
 					}
@@ -436,10 +429,10 @@ function form_save() {
 					while (list($field_name, $field_array) = each($tab_fields)) {
 						if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 							while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-								db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : get_request_var_post("id")) . ",'$sub_field_name', '" . get_request_var_post($sub_field_name, "") . "')");
+								db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : get_request_var_post("id")) . "," . $cnn_id->qstr($sub_field_name) . ", " . $cnn_id->qstr(get_request_var_post($sub_field_name, "")) . ")");
 							}
 						}else{
-							db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : $_POST["id"]) . ",'$field_name', '" . get_request_var_post($field_name) . "')");
+							db_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (" . (!empty($user_id) ? $user_id : $_POST["id"]) . "," . $cnn_id->qstr($field_name) . ", " . $cnn_id->qstr(get_request_var_post($field_name)) . ")");
 						}
 					}
 				}

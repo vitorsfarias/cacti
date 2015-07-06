@@ -81,10 +81,14 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
+	global $cnn_id;
+
 	if (isset($_POST["save_component_template"])) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("data_input_id"));
 		input_validate_input_number(get_request_var_post("data_template_id"));
+		input_validate_input_number(get_request_var_post("data_template_data_id"));
+		input_validate_input_number(get_request_var_post("data_template_rrd_id"));
 		/* ==================================================== */
 
 		/* save: data_template */
@@ -97,7 +101,7 @@ function form_save() {
 		$save2["local_data_template_data_id"] = 0;
 		$save2["local_data_id"] = 0;
 
-		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
+		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "^[0-9]+$", true, 3);
 		$save2["t_name"] = form_input_validate((isset($_POST["t_name"]) ? $_POST["t_name"] : ""), "t_name", "", true, 3);
 		$save2["name"] = form_input_validate($_POST["name"], "name", "", (isset($_POST["t_name"]) ? true : false), 3);
 		$save2["t_active"] = form_input_validate((isset($_POST["t_active"]) ? $_POST["t_active"] : ""), "t_active", "", true, 3);
@@ -119,11 +123,11 @@ function form_save() {
 		$save3["t_rrd_heartbeat"] = form_input_validate((isset($_POST["t_rrd_heartbeat"]) ? $_POST["t_rrd_heartbeat"] : ""), "t_rrd_heartbeat", "", true, 3);
 		$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat"], "rrd_heartbeat", "^[0-9]+$", (isset($_POST["t_rrd_heartbeat"]) ? true : false), 3);
 		$save3["t_data_source_type_id"] = form_input_validate((isset($_POST["t_data_source_type_id"]) ? $_POST["t_data_source_type_id"] : ""), "t_data_source_type_id", "", true, 3);
-		$save3["data_source_type_id"] = form_input_validate($_POST["data_source_type_id"], "data_source_type_id", "", true, 3);
+		$save3["data_source_type_id"] = form_input_validate($_POST["data_source_type_id"], "data_source_type_id", "^[0-9]+$", true, 3);
 		$save3["t_data_source_name"] = form_input_validate((isset($_POST["t_data_source_name"]) ? $_POST["t_data_source_name"] : ""), "t_data_source_name", "", true, 3);
 		$save3["data_source_name"] = form_input_validate($_POST["data_source_name"], "data_source_name", "^[a-zA-Z0-9_]{1,19}$", (isset($_POST["t_data_source_name"]) ? true : false), 3);
 		$save3["t_data_input_field_id"] = form_input_validate((isset($_POST["t_data_input_field_id"]) ? $_POST["t_data_input_field_id"] : ""), "t_data_input_field_id", "", true, 3);
-		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "", true, 3);
+		$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id"]) ? $_POST["data_input_field_id"] : "0"), "data_input_field_id", "^[0-9]+$", true, 3);
 
 		/* ok, first pull out all 'input' values so we know how much to save */
 		$input_fields = db_fetch_assoc("select
@@ -180,7 +184,7 @@ function form_save() {
 
 		/* update actual host template information for live hosts */
 		if ((!is_error_message()) && ($save2["id"] > 0)) {
-			db_execute("update data_template_data set data_input_id = '" . $_POST["data_input_id"] . "' where data_template_id = " . $_POST["data_template_id"] . ";");
+			db_execute("update data_template_data set data_input_id = " . $_POST["data_input_id"] . " where data_template_id = " . $_POST["data_template_id"] . ";");
 		}
 
 		if (!is_error_message()) {
@@ -231,7 +235,7 @@ function form_save() {
 
 						if ((!empty($form_value)) || (!empty($_POST{"t_value_" . $input_field["data_name"]}))) {
 							db_execute("insert into data_input_data (data_input_field_id,data_template_data_id,t_value,value)
-								values (" . $input_field["id"] . ",$data_template_data_id,'$template_this_item','" . trim($_POST[$form_value]) . "')");
+								values (" . $input_field["id"] . "," . $data_template_data_id . "," . $cnn_id->qstr($template_this_item) . "," . $cnn_id->qstr(trim($_POST[$form_value])) . ")");
 						}
 					}
 				}
@@ -260,34 +264,32 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			$data_template_datas = db_fetch_assoc("select id from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				$data_template_datas = db_fetch_assoc("select id from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
 
-			if (sizeof($data_template_datas) > 0) {
-			foreach ($data_template_datas as $data_template_data) {
-				db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
-			}
-			}
+				if (sizeof($data_template_datas) > 0) {
+				foreach ($data_template_datas as $data_template_data) {
+					db_execute("delete from data_template_data_rra where data_template_data_id=" . $data_template_data["id"]);
+				}
+				}
 
-			db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
-			db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
-			db_execute("delete from snmp_query_graph_rrd where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("delete from snmp_query_graph_rrd_sv where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
+				db_execute("delete from data_template_data where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+				db_execute("delete from data_template_rrd where " . array_to_sql_or($selected_items, "data_template_id") . " and local_data_id=0");
+				db_execute("delete from snmp_query_graph_rrd where " . array_to_sql_or($selected_items, "data_template_id"));
+				db_execute("delete from snmp_query_graph_rrd_sv where " . array_to_sql_or($selected_items, "data_template_id"));
+				db_execute("delete from data_template where " . array_to_sql_or($selected_items, "id"));
 
-			/* "undo" any graph that is currently using this template */
-			db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
-			db_execute("update data_local set data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
-		}elseif ($_POST["drp_action"] == "2") { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_data_source(0, $selected_items[$i], $_POST["title_format"]);
+				/* "undo" any graph that is currently using this template */
+				db_execute("update data_template_data set local_data_template_data_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+				db_execute("update data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+				db_execute("update data_local set data_template_id=0 where " . array_to_sql_or($selected_items, "data_template_id"));
+			}elseif ($_POST["drp_action"] == "2") { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_data_source(0, $selected_items[$i], $_POST["title_format"]);
+				}
 			}
 		}
 

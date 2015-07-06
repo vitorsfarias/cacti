@@ -181,157 +181,132 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "2") { /* Enable Selected Devices */
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
 
-				db_execute("update host set disabled='' where id='" . $selected_items[$i] . "'");
+					/* update poller cache */
+					$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
+					$poller_items = $local_data_ids = array();
 
-				/* update poller cache */
-				$data_sources = db_fetch_assoc("select id from data_local where host_id='" . $selected_items[$i] . "'");
-				$poller_items = $local_data_ids = array();
+					if (sizeof($data_sources) > 0) {
+						foreach ($data_sources as $data_source) {
+							$local_data_ids[] = $data_source["id"];
+							$poller_items     = array_merge($poller_items, update_poller_cache($data_source["id"]));
+						}
+					}
 
-				if (sizeof($data_sources) > 0) {
+					if (sizeof($local_data_ids)) {
+						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+					}
+				}
+			}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
+
+					/* update poller cache */
+					db_execute("delete from poller_item where host_id='" . $selected_items[$i] . "'");
+					db_execute("delete from poller_reindex where host_id='" . $selected_items[$i] . "'");
+				}
+			}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reset($fields_host_edit);
+					while (list($field_name, $field_array) = each($fields_host_edit)) {
+						if (isset($_POST["t_$field_name"])) {
+							db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+						}
+					}
+
+					push_out_host($selected_items[$i]);
+				}
+			}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
+							total_polls = '0', failed_polls = '0',	availability = '100.00'
+							where id = '" . $selected_items[$i] . "'");
+				}
+			}elseif ($_POST["drp_action"] == "6") { /* change availability options */
+				for ($i=0;($i<count($selected_items));$i++) {
+					reset($fields_host_edit);
+					while (list($field_name, $field_array) = each($fields_host_edit)) {
+						if (isset($_POST["t_$field_name"])) {
+							db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
+						}
+					}
+
+					push_out_host($selected_items[$i]);
+				}
+			}elseif ($_POST["drp_action"] == "1") { /* delete */
+				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
+
+				$data_sources_to_act_on = array();
+				$graphs_to_act_on       = array();
+				$devices_to_act_on      = array();
+
+				for ($i=0; $i<count($selected_items); $i++) {
+					$data_sources = db_fetch_assoc("select
+						data_local.id as local_data_id
+						from data_local
+						where " . array_to_sql_or($selected_items, "data_local.host_id"));
+
+					if (sizeof($data_sources) > 0) {
 					foreach ($data_sources as $data_source) {
-						$local_data_ids[] = $data_source["id"];
-						$poller_items     = array_merge($poller_items, update_poller_cache($data_source["id"]));
-					}
-				}
-
-				if (sizeof($local_data_ids)) {
-					poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
-				}
-			}
-		}elseif ($_POST["drp_action"] == "3") { /* Disable Selected Devices */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				db_execute("update host set disabled='on' where id='" . $selected_items[$i] . "'");
-
-				/* update poller cache */
-				db_execute("delete from poller_item where host_id='" . $selected_items[$i] . "'");
-				db_execute("delete from poller_reindex where host_id='" . $selected_items[$i] . "'");
-			}
-		}elseif ($_POST["drp_action"] == "4") { /* change snmp options */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				reset($fields_host_edit);
-				while (list($field_name, $field_array) = each($fields_host_edit)) {
-					if (isset($_POST["t_$field_name"])) {
-						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
-					}
-				}
-
-				push_out_host($selected_items[$i]);
-			}
-		}elseif ($_POST["drp_action"] == "5") { /* Clear Statisitics for Selected Devices */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				db_execute("update host set min_time = '9.99999', max_time = '0', cur_time = '0',	avg_time = '0',
-						total_polls = '0', failed_polls = '0',	availability = '100.00'
-						where id = '" . $selected_items[$i] . "'");
-			}
-		}elseif ($_POST["drp_action"] == "6") { /* change availability options */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				reset($fields_host_edit);
-				while (list($field_name, $field_array) = each($fields_host_edit)) {
-					if (isset($_POST["t_$field_name"])) {
-						db_execute("update host set $field_name = '" . $_POST[$field_name] . "' where id='" . $selected_items[$i] . "'");
-					}
-				}
-
-				push_out_host($selected_items[$i]);
-			}
-		}elseif ($_POST["drp_action"] == "1") { /* delete */
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 2; }
-
-			$data_sources_to_act_on = array();
-			$graphs_to_act_on       = array();
-			$devices_to_act_on      = array();
-
-			for ($i=0; $i<count($selected_items); $i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				$data_sources = db_fetch_assoc("select
-					data_local.id as local_data_id
-					from data_local
-					where " . array_to_sql_or($selected_items, "data_local.host_id"));
-
-				if (sizeof($data_sources) > 0) {
-				foreach ($data_sources as $data_source) {
-					$data_sources_to_act_on[] = $data_source["local_data_id"];
-				}
-				}
-
-				if ($_POST["delete_type"] == 2) {
-					$graphs = db_fetch_assoc("select
-						graph_local.id as local_graph_id
-						from graph_local
-						where " . array_to_sql_or($selected_items, "graph_local.host_id"));
-
-					if (sizeof($graphs) > 0) {
-					foreach ($graphs as $graph) {
-						$graphs_to_act_on[] = $graph["local_graph_id"];
+						$data_sources_to_act_on[] = $data_source["local_data_id"];
 					}
 					}
+
+					if ($_POST["delete_type"] == 2) {
+						$graphs = db_fetch_assoc("select
+							graph_local.id as local_graph_id
+							from graph_local
+							where " . array_to_sql_or($selected_items, "graph_local.host_id"));
+
+						if (sizeof($graphs) > 0) {
+						foreach ($graphs as $graph) {
+							$graphs_to_act_on[] = $graph["local_graph_id"];
+						}
+						}
+					}
+
+					$devices_to_act_on[] = $selected_items[$i];
 				}
 
-				$devices_to_act_on[] = $selected_items[$i];
-			}
+				switch ($_POST["delete_type"]) {
+					case '1': /* leave graphs and data_sources in place, but disable the data sources */
+						api_data_source_disable_multi($data_sources_to_act_on);
 
-			switch ($_POST["delete_type"]) {
-				case '1': /* leave graphs and data_sources in place, but disable the data sources */
-					api_data_source_disable_multi($data_sources_to_act_on);
+						api_plugin_hook_function('data_source_remove', $data_sources_to_act_on);
 
-					api_plugin_hook_function('data_source_remove', $data_sources_to_act_on);
+						break;
+					case '2': /* delete graphs/data sources tied to this device */
+						api_data_source_remove_multi($data_sources_to_act_on);
 
-					break;
-				case '2': /* delete graphs/data sources tied to this device */
-					api_data_source_remove_multi($data_sources_to_act_on);
+						api_graph_remove_multi($graphs_to_act_on);
 
-					api_graph_remove_multi($graphs_to_act_on);
+						api_plugin_hook_function('graphs_remove', $graphs_to_act_on);
 
-					api_plugin_hook_function('graphs_remove', $graphs_to_act_on);
+						break;
+				}
 
-					break;
-			}
+				api_device_remove_multi($devices_to_act_on);
 
-			api_device_remove_multi($devices_to_act_on);
-
-			api_plugin_hook_function('device_remove', $devices_to_act_on);
-		}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
+				api_plugin_hook_function('device_remove', $devices_to_act_on);
+			}elseif (preg_match("/^tr_([0-9]+)$/", $_POST["drp_action"], $matches)) { /* place on tree */
 				input_validate_input_number(get_request_var_post("tree_id"));
 				input_validate_input_number(get_request_var_post("tree_item_id"));
-				/* ==================================================== */
 
-				api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_tree_item_save(0, $_POST["tree_id"], TREE_ITEM_TYPE_HOST, $_POST["tree_item_id"], "", 0, read_graph_config_option("default_rra_id"), $selected_items[$i], 1, 1, false);
+				}
+			} else {
+				api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
 			}
-		} else {
-			api_plugin_hook_function('device_action_execute', $_POST['drp_action']);
-		}
 
-		api_plugin_hook_function('device_action_bottom', array($_POST['drp_action'], $selected_items));
+			api_plugin_hook_function('device_action_bottom', array($_POST['drp_action'], $selected_items));
+		}
 
 		header("Location: host.php");
 		exit;

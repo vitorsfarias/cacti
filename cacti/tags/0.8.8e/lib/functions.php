@@ -887,15 +887,30 @@ function strip_quotes($result) {
 	$result = trim(trim($result), "'\"");
 
 	/* clean off ugly non-numeric data */
-	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != "U")) {
+	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != 'U')) {
+		/* strip trailing chars first */
 		$len = strlen($result);
 		for($a=$len-1; $a>=0; $a--){
 			$p = ord($result[$a]);
-			if ((($p > 47) && ($p < 58)) || ($p==85)) {
-				$result = substr($result,0,$a+1);
+			if ($p > 47 && $p < 58) {
 				break;
+			}else{
+				$result[$a] = ' ';
 			}
 		}
+
+		/* strip leading chars second */
+		$len = strlen($result);
+		for($a=0; $a<$len; $a++){
+			$p = ord($result[$a]);
+			if ($p > 47 && $p < 58 || ($p == 43 || $p == 45)) {
+				break;
+			}else{
+				$result[$a] = ' ';
+			}
+		}
+
+		$result = trim($result);
 	}
 
 	return($result);
@@ -2179,6 +2194,28 @@ function sanitize_cdef($cdef) {
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '');
 
 	return str_replace($drop_char_match, $drop_char_replace, $cdef);
+}
+
+/** verifies all selected items are numeric to guard against injection
+ * @arg array $items   - an array of serialized items from a post
+ * @returns array      - the sanitized selected items array
+ */
+function sanitize_unserialize_selected_items($items) {
+	$items = unserialize(stripslashes($items));
+
+	if (is_array($items)) {
+		foreach ($items as $value) {
+			if (is_array($value)) {
+				return false;
+			}elseif (!is_numeric($value) && ($value != '')) {
+				return false;
+			}
+		}
+	}else{
+		return false;
+	}
+
+	return $items;
 }
 
 function cacti_escapeshellcmd($string) {

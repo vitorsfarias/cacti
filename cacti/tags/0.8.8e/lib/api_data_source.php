@@ -42,7 +42,7 @@ function api_data_source_remove($local_data_id) {
 
 function api_data_source_remove_multi($local_data_ids) {
 	// Shortcut out if no data
-	if (sizeof($local_data_ids)) {
+	if (!sizeof($local_data_ids)) {
 		return;
 	}
 
@@ -69,9 +69,9 @@ function api_data_source_remove_multi($local_data_ids) {
 				db_execute("DELETE FROM data_input_data WHERE data_template_data_id IN (" . implode(",", $dtd_ids_to_delete) . ")");
 			}
 
-			db_execute("DELETE FROM data_template_data WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
 		}
 
+		db_execute("DELETE FROM data_template_data WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
 		db_execute("DELETE FROM data_template_rrd WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
 		db_execute("DELETE FROM poller_item WHERE local_data_id IN (" . implode(",", $ids_to_delete) . ")");
 		db_execute("DELETE FROM data_local WHERE id IN (" . implode(",", $ids_to_delete) . ")");

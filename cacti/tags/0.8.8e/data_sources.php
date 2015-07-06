@@ -99,6 +99,7 @@ function form_save() {
 	if ((isset($_POST["save_component_data_source_new"])) && (!empty($_POST["data_template_id"]))) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("host_id"));
+		input_validate_input_number(get_request_var_post("local_data_id"));
 		input_validate_input_number(get_request_var_post("data_template_id"));
 		/* ==================================================== */
 
@@ -172,9 +173,11 @@ function form_save() {
 	if ((isset($_POST["save_component_data_source"])) && (!is_error_message())) {
 		/* ================= input validation ================= */
 		input_validate_input_number(get_request_var_post("local_data_id"));
-		input_validate_input_number(get_request_var_post("current_rrd"));
 		input_validate_input_number(get_request_var_post("data_template_id"));
 		input_validate_input_number(get_request_var_post("host_id"));
+		input_validate_input_number(get_request_var_post("data_template_data_id"));
+		input_validate_input_number(get_request_var_post("local_data_template_data_id"));
+		input_validate_input_number(get_request_var_post("current_rrd"));
 		/* ==================================================== */
 
 		$save1["id"] = $_POST["local_data_id"];
@@ -184,7 +187,7 @@ function form_save() {
 		$save2["id"] = $_POST["data_template_data_id"];
 		$save2["local_data_template_data_id"] = $_POST["local_data_template_data_id"];
 		$save2["data_template_id"] = $_POST["data_template_id"];
-		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "", true, 3);
+		$save2["data_input_id"] = form_input_validate($_POST["data_input_id"], "data_input_id", "^[0-9]+$", true, 3);
 		$save2["name"] = form_input_validate($_POST["name"], "name", "", false, 3);
 		$save2["data_source_path"] = form_input_validate($_POST["data_source_path"], "data_source_path", "", true, 3);
 		$save2["active"] = form_input_validate((isset($_POST["active"]) ? $_POST["active"] : ""), "active", "", true, 3);
@@ -230,7 +233,7 @@ function form_save() {
 					$save3["rrd_maximum"] = form_input_validate($_POST["rrd_maximum$name_modifier"], "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
 					$save3["rrd_minimum"] = form_input_validate($_POST["rrd_minimum$name_modifier"], "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", false, 3);
 					$save3["rrd_heartbeat"] = form_input_validate($_POST["rrd_heartbeat$name_modifier"], "rrd_heartbeat$name_modifier", "^[0-9]+$", false, 3);
-					$save3["data_source_type_id"] = $_POST["data_source_type_id$name_modifier"];
+					$save3["data_source_type_id"] = form_input_validate($_POST["data_source_type_id$name_modifier"], "data_source_type_id$name_modifier", "^[0-9]+$", false, 3);
 					$save3["data_source_name"] = form_input_validate($_POST["data_source_name$name_modifier"], "data_source_name$name_modifier", "^[a-zA-Z0-9_-]{1,19}$", false, 3);
 					$save3["data_input_field_id"] = form_input_validate((isset($_POST["data_input_field_id$name_modifier"]) ? $_POST["data_input_field_id$name_modifier"] : "0"), "data_input_field_id$name_modifier", "", true, 3);
 
@@ -313,108 +316,86 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset($_POST["selected_items"])) {
-		$selected_items = unserialize(stripslashes($_POST["selected_items"]));
+		$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 
-		if ($_POST["drp_action"] == "1") { /* delete */
-			if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
+		if ($selected_items != false) {
+			if ($_POST["drp_action"] == "1") { /* delete */
+				if (!isset($_POST["delete_type"])) { $_POST["delete_type"] = 1; }
 
-			switch ($_POST["delete_type"]) {
-				case '2': /* delete all graph items tied to this data source */
-					$data_template_rrds = array_rekey(db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id")), "id", "id");
+				switch ($_POST["delete_type"]) {
+					case '2': /* delete all graph items tied to this data source */
+						$data_template_rrds = array_rekey(db_fetch_assoc("select id from data_template_rrd where " . array_to_sql_or($selected_items, "local_data_id")), "id", "id");
 
-					/* loop through each data source item */
-					if (sizeof($data_template_rrds) > 0) {
-						db_execute("delete from graph_templates_item where task_item_id IN (" . implode(",", $data_template_rrds) . ") and local_graph_id > 0");
-					}
+						/* loop through each data source item */
+						if (sizeof($data_template_rrds) > 0) {
+							db_execute("delete from graph_templates_item where task_item_id IN (" . implode(",", $data_template_rrds) . ") and local_graph_id > 0");
+						}
 
-					api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
 
-					break;
-				case '3': /* delete all graphs tied to this data source */
-					$graphs = array_rekey(db_fetch_assoc("select
-						graph_templates_graph.local_graph_id
-						from (data_template_rrd,graph_templates_item,graph_templates_graph)
-						where graph_templates_item.task_item_id=data_template_rrd.id
-						and graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
-						and " . array_to_sql_or($selected_items, "data_template_rrd.local_data_id") . "
-						and graph_templates_graph.local_graph_id > 0
-						group by graph_templates_graph.local_graph_id"), "local_graph_id", "local_graph_id");
+						break;
+					case '3': /* delete all graphs tied to this data source */
+						$graphs = array_rekey(db_fetch_assoc("select
+							graph_templates_graph.local_graph_id
+							from (data_template_rrd,graph_templates_item,graph_templates_graph)
+							where graph_templates_item.task_item_id=data_template_rrd.id
+							and graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
+							and " . array_to_sql_or($selected_items, "data_template_rrd.local_data_id") . "
+							and graph_templates_graph.local_graph_id > 0
+							group by graph_templates_graph.local_graph_id"), "local_graph_id", "local_graph_id");
 
-					if (sizeof($graphs) > 0) {
-						api_graph_remove_multi($graphs);
-					}
+						if (sizeof($graphs) > 0) {
+							api_graph_remove_multi($graphs);
+						}
 
-					api_plugin_hook_function('graphs_remove', $graphs);
+						api_plugin_hook_function('graphs_remove', $graphs);
 
-					break;
-			}
+						break;
+				}
 
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-			}
+				api_data_source_remove_multi($selected_items);
 
-			api_data_source_remove_multi($selected_items);
-
-			api_plugin_hook_function('data_source_remove', $selected_items);
-		}elseif ($_POST["drp_action"] == "2") { /* change graph template */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
+				api_plugin_hook_function('data_source_remove', $selected_items);
+			}elseif ($_POST["drp_action"] == "2") { /* change graph template */
 				input_validate_input_number(get_request_var_post("data_template_id"));
-				/* ==================================================== */
 
-				change_data_template($selected_items[$i], $_POST["data_template_id"]);
-			}
-		}elseif ($_POST["drp_action"] == "3") { /* change host */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
+				for ($i=0;($i<count($selected_items));$i++) {
+					change_data_template($selected_items[$i], $_POST["data_template_id"]);
+				}
+			}elseif ($_POST["drp_action"] == "3") { /* change host */
 				input_validate_input_number(get_request_var_post("host_id"));
-				/* ==================================================== */
+				for ($i=0;($i<count($selected_items));$i++) {
+					db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
+					push_out_host($_POST["host_id"], $selected_items[$i]);
+					update_data_source_title_cache($selected_items[$i]);
+				}
+			}elseif ($_POST["drp_action"] == "4") { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_data_source($selected_items[$i], 0, $_POST["title_format"]);
+				}
+			}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
+				for ($i=0;($i<count($selected_items));$i++) {
+					data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
+				}
+			}elseif ($_POST["drp_action"] == "6") { /* data source enable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_data_source_enable($selected_items[$i]);
+				}
+			}elseif ($_POST["drp_action"] == "7") { /* data source disable */
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_data_source_disable($selected_items[$i]);
+				}
+			}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_reapply_suggested_data_source_title($selected_items[$i]);
+					update_data_source_title_cache($selected_items[$i]);
+				}
+			} else {
+				api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
+			}
 
-				db_execute("update data_local set host_id=" . $_POST["host_id"] . " where id=" . $selected_items[$i]);
-				push_out_host($_POST["host_id"], $selected_items[$i]);
-				update_data_source_title_cache($selected_items[$i]);
-			}
-		}elseif ($_POST["drp_action"] == "4") { /* duplicate */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				duplicate_data_source($selected_items[$i], 0, $_POST["title_format"]);
-			}
-		}elseif ($_POST["drp_action"] == "5") { /* data source -> data template */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-
-				data_source_to_data_template($selected_items[$i], $_POST["title_format"]);
-			}
-		}elseif ($_POST["drp_action"] == "6") { /* data source enable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_enable($selected_items[$i]);
-			}
-		}elseif ($_POST["drp_action"] == "7") { /* data source disable */
-			for ($i=0;($i<count($selected_items));$i++) {
-				api_data_source_disable($selected_items[$i]);
-			}
-		}elseif ($_POST["drp_action"] == "8") { /* reapply suggested data source naming */
-			for ($i=0;($i<count($selected_items));$i++) {
-				/* ================= input validation ================= */
-				input_validate_input_number($selected_items[$i]);
-				/* ==================================================== */
-				api_reapply_suggested_data_source_title($selected_items[$i]);
-				update_data_source_title_cache($selected_items[$i]);
-			}
-		} else {
-			api_plugin_hook_function('data_source_action_execute', $_POST['drp_action']);
+			api_plugin_hook_function('data_source_action_bottom', array($_POST['drp_action'], $selected_items));
 		}
-
-		api_plugin_hook_function('data_source_action_bottom', array($_POST['drp_action'], $selected_items));
 
 		header("Location: data_sources.php");
 		exit;
