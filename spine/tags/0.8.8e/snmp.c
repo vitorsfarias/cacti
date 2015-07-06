@@ -572,7 +572,7 @@ void snmp_snprint_value(char *obuf, size_t buf_len, const oid *objid, size_t obj
 
 	if (buf_len > 0) {
 		if ((buf = (u_char *) calloc(buf_len, 1)) != 0) {
-			sprint_realloc_by_type(&buf, &buf_len, &out_len, 1, variable, NULL, NULL, NULL);
+			sprint_realloc_by_type(&buf, &buf_len, &out_len, 0, variable, NULL, NULL, NULL);
 			snprintf(obuf, buf_len, "%s", buf);
 		}else{
 			SET_UNDEFINED(obuf);
