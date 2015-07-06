@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.8e
+-bug: Fixed issue with graph zooming failing to work
 -bug: Fixed various SQL Injection vectors
 -bug#0002574: SQL Injection Vulnerabilitie in graph items and graph template items
 -bug#0002577: CVE-2015-4634 - SQL injection in graphs.php
