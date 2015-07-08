@@ -617,7 +617,7 @@ int spine_log(const char *format, ...) {
 	char flogmessage[LOGSIZE];     /* Formatted Log Message */
 
 	va_start(args, format);
-	vsprintf(ulogmessage, LOGSIZE - 1, args);
+	vsnprintf(ulogmessage, LOGSIZE - 1, format, args);
 	va_end(args);
 
 	/* default for "console" messages to go to stdout */
@@ -839,15 +839,7 @@ int is_numeric(const char *string) {
 		end_ptr_double = NULL;
 	}
 
-	if (!errno) {
-		if (STRIMATCH(string," ")) {
-			return FALSE;
-		}else{
-			return TRUE;
-		}
-	}else{
-		return FALSE;
-	}
+	return FALSE;
 }
 
 /*! \fn int is_hexadecimal(const char *str, const short ignore_space)
