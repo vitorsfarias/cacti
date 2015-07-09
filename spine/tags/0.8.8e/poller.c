@@ -495,12 +495,6 @@ void poll_host(int host_id, int host_thread, int last_host_thread, int host_data
 						host->ignore_host = FALSE;
 						if (host_thread == 1) {
 							update_host_status(HOST_UP, host, ping, host->availability_method);
-
-							if (host->availability_method == AVAIL_SNMP) {
-								get_system_information(host, &mysql);
-
-								
-							}
 						}
 					}else{
 						host->ignore_host = TRUE;
@@ -1314,50 +1308,6 @@ int is_multipart_output(char *result) {
 
 	return FALSE;
 
-}
-
-void get_system_information(host_t *host, MYSQL *mysql)  {
-	snmp_oids_t *snmp_oids;
-
-	if (set.mibs) {
-		int num_oids = 6;
-
-		/* create an array for snmp oids */
-		snmp_oids = (snmp_oids_t *) calloc(num_oids, sizeof(snmp_oids_t));
-
-		/* initialize all the memory to insure we don't get issues */
-		memset(snmp_oids, 0, sizeof(snmp_oids_t)*num_oids);
-
-		STRNCOPY(snmp_oids[0].oid, ".1.3.6.1.2.1.1.1.0");
-		STRNCOPY(snmp_oids[1].oid, ".1.3.6.1.2.1.1.2.0");
-		STRNCOPY(snmp_oids[2].oid, ".1.3.6.1.2.1.1.3.0");
-		STRNCOPY(snmp_oids[3].oid, ".1.3.6.1.2.1.1.4.0");
-		STRNCOPY(snmp_oids[4].oid, ".1.3.6.1.2.1.1.5.0");
-		STRNCOPY(snmp_oids[5].oid, ".1.3.6.1.2.1.1.6.0");
-		snmp_get_multi(host, snmp_oids, num_oids);
-
-		mysql_real_escape_string(mysql, host->snmp_sysDescr, snmp_oids[0].result, strlen(snmp_oids[0].result));
-		mysql_real_escape_string(mysql, host->snmp_sysObjectID, snmp_oids[1].result, strlen(snmp_oids[1].result));
-		host->snmp_sysUpTimeInstance = atoi(snmp_oids[2].result);
-		mysql_real_escape_string(mysql, host->snmp_sysContact, snmp_oids[3].result, strlen(snmp_oids[3].result));
-		mysql_real_escape_string(mysql, host->snmp_sysName, snmp_oids[4].result, strlen(snmp_oids[4].result));
-		mysql_real_escape_string(mysql, host->snmp_sysLocation, snmp_oids[5].result, strlen(snmp_oids[5].result));
-	}else{
-		int num_oids = 1;
-
-		/* create an array for snmp oids */
-		snmp_oids = (snmp_oids_t *) calloc(num_oids, sizeof(snmp_oids_t));
-
-		/* initialize all the memory to insure we don't get issues */
-		memset(snmp_oids, 0, sizeof(snmp_oids_t)*num_oids);
-
-		STRNCOPY(snmp_oids[0].oid, ".1.3.6.1.2.1.1.3.0");
-		snmp_get_multi(host, snmp_oids, num_oids);
-
-		host->snmp_sysUpTimeInstance = atoi(snmp_oids[2].result);
-	}
-
-	free(snmp_oids);
 }
 
 /*! \fn int validate_result(char *result)

@@ -97,9 +97,20 @@ static const char *getsetting(MYSQL *psql, const char *setting) {
 
 	result = db_query(psql, qstring);
 
-	if ((mysql_num_rows(result) > 0) &&
-		(mysql_row = mysql_fetch_row(result)) != 0)	{
-		return mysql_row[0];
+	if (result != 0) {
+		if (mysql_num_rows(result) > 0) {
+			mysql_row = mysql_fetch_row(result);
+			mysql_free_result(result);
+		
+			if (mysql_row != NULL) {
+				return mysql_row[0];
+			}else{
+				return 0;
+			}
+		}else{
+			mysql_free_result(result);
+			return 0;
+		}
 	}else{
 		return 0;
 	}
@@ -175,9 +186,20 @@ static const char *getglobalvariable(MYSQL *psql, const char *setting) {
 
 	result = db_query(psql, qstring);
 
-	if ((mysql_num_rows(result) > 0) &&
-		(mysql_row = mysql_fetch_row(result)) != 0)	{
-		return mysql_row[1];
+	if (result != 0) {
+		if (mysql_num_rows(result) > 0) {
+			mysql_row = mysql_fetch_row(result);
+			mysql_free_result(result);
+		
+			if (mysql_row != NULL) {
+				return mysql_row[1];
+			}else{
+				return 0;
+			}
+		}else{
+			mysql_free_result(result);
+			return 0;
+		}
 	}else{
 		return 0;
 	}
@@ -427,6 +449,7 @@ void read_config_options() {
 
 		result = db_query(&mysql, sqlbuf);
 		num_rows = mysql_num_rows(result);
+		mysql_free_result(result);
 
 		if (num_rows > 0) set.php_required = TRUE;
 
@@ -446,6 +469,7 @@ void read_config_options() {
 
 		result = db_query(&mysql, sqlbuf);
 		num_rows = mysql_num_rows(result);
+		mysql_free_result(result);
 
 		if (num_rows > 0) set.php_required = TRUE;
 
@@ -473,7 +497,6 @@ void read_config_options() {
 	/* log the snmp_max_get_size variable */
 	SPINE_LOG_DEBUG(("DEBUG: The Maximum SNMP OID Get Size is %i", set.snmp_max_get_size));
 
-	mysql_free_result(result);
 	db_disconnect(&mysql);
 }
 

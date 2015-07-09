@@ -522,6 +522,7 @@ int main(int argc, char *argv[]) {
 			SPINE_LOG(("WARNING: PollerID > 0, but 'host' table does NOT contain the poller_id column!!"));
 		}
 	}
+	mysql_free_result(result);
 
 	/* determine if the device_threads field exists in the host table */
 	result = db_query(&mysql, "SHOW COLUMNS FROM host LIKE 'device_threads'");
@@ -530,6 +531,7 @@ int main(int argc, char *argv[]) {
 	}else{
 		set.device_threads_exists = FALSE;
 	}
+	mysql_free_result(result);
 
 	if (set.device_threads_exists) {
 		SPINE_LOG_MEDIUM(("NOTE: Spine will support multithread device polling."));
@@ -555,7 +557,6 @@ int main(int argc, char *argv[]) {
 	qp += sprintf(qp, " ORDER BY id");
 
 	result = db_query(&mysql, querybuf);
-
 	if (set.poller_id == 0) {
 		num_rows = mysql_num_rows(result) + 1; /* add 1 for host = 0 */
 	}else{
@@ -627,6 +628,8 @@ int main(int argc, char *argv[]) {
 						snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE host_id=%i", device_threads, host_id);
 						tresult   = db_query(&mysql, querybuf);
 						mysql_row = mysql_fetch_row(tresult);
+						mysql_free_result(tresult);
+
 						itemsPT   = atoi(mysql_row[0]);
 						if (host_time) free(host_time);
 						host_time = get_host_poll_time();
