@@ -11,6 +11,10 @@ Cacti CHANGELOG
 -bug#0002583: SQL Injection in graph_templates.php
 -bug#0002584: SQL Injection in host_templates.php
 -bug#0002586: Cannot delete data sources from the GUI
+-bug#0002592: graph_view.php - viewing host in new tab - Undefined index: nodeid
+-bug#0002594: status_fail_date and status_rec_date are set incorrectly after host is marked down
+-bug#0002597: Incorrect value in Hosts column on Host Templates page
+-bug#0002598: Incorrect row number in Devices -> (Edit) page
 
 0.8.8d
 -feature: Remove un-needed fonts and javascript files

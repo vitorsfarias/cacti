@@ -1007,27 +1007,30 @@ function host_edit() {
 			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name");
 
 		$i = 0;
-		if (sizeof($selected_graph_templates) > 0) {
-		foreach ($selected_graph_templates as $item) {
-			form_alternate_row('', true);
+		if (sizeof($selected_graph_templates)) {
+			foreach ($selected_graph_templates as $item) {
+				$i++;
+				form_alternate_row('', true);
 
-			/* get status information for this graph template */
-			$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
+				/* get status information for this graph template */
+				$is_being_graphed = (sizeof(db_fetch_assoc("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"])) > 0) ? true : false;
 
-			?>
-				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
-				</td>
-				<td>
-					<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
-				</td>
-				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
-				</td>
-			<?php
-			form_end_row();
+				?>
+					<td style="padding: 4px;">
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+					</td>
+					<td>
+						<?php print (($is_being_graphed == true) ? "<span style='color: green;'>Is Being Graphed</span> (<a href='" . htmlspecialchars("graphs.php?action=graph_edit&id=" . db_fetch_cell("select id from graph_local where graph_template_id=" . $item["id"] . " and host_id=" . $_GET["id"] . " limit 0,1")) . "'>Edit</a>)" : "<span style='color: #484848;'>Not Being Graphed</span>");?>
+					</td>
+					<td align='right' nowrap>
+						<a href='<?php print htmlspecialchars("host.php?action=gt_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Graph Template Association' alt='Delete Graph Template Association' border='0' align='middle'></a>
+					</td>
+				<?php
+				form_end_row();
+			}
+		}else{ 
+			print "<tr><td colspan='2'><em>No associated graph templates.</em></td></tr>"; 
 		}
-		}else{ print "<tr><td colspan='2'><em>No associated graph templates.</em></td></tr>"; }
 
 		?>
 		<tr class='odd'>
@@ -1080,36 +1083,39 @@ function host_edit() {
 
 		$i = 0;
 		if (sizeof($selected_data_queries) > 0) {
-		foreach ($selected_data_queries as $item) {
-			form_alternate_row('', true);
+			foreach ($selected_data_queries as $item) {
+				$i++;
+				form_alternate_row('', true);
 
-			/* get status information for this data query */
-			$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
-			$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
+				/* get status information for this data query */
+				$num_dq_items = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"]));
+				$num_dq_rows = sizeof(db_fetch_assoc("select snmp_index from host_snmp_cache where host_id=" . $_GET["id"] . " and snmp_query_id=" . $item["id"] . " group by snmp_index"));
 
-			$status = "success";
+				$status = "success";
 
-			?>
-				<td style="padding: 4px;">
-					<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
-				</td>
-				<td>
-					(<a href="<?php print htmlspecialchars("host.php?action=query_verbose&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>">Verbose Query</a>)
-				</td>
-				<td>
-					<?php print $reindex_types{$item["reindex_method"]};?>
-				</td>
-				<td>
-					<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
-				</td>
-				<td align='right' nowrap>
-					<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
-					<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
-				</td>
-			<?php
-			form_end_row();
+				?>
+					<td style="padding: 4px;">
+						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item["name"]);?>
+					</td>
+					<td>
+						(<a href="<?php print htmlspecialchars("host.php?action=query_verbose&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>">Verbose Query</a>)
+					</td>
+					<td>
+						<?php print $reindex_types{$item["reindex_method"]};?>
+					</td>
+					<td>
+						<?php print (($status == "success") ? "<span style='color: green;'>Success</span>" : "<span style='color: green;'>Fail</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? "" : "s");?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? "" : "s");?>]
+					</td>
+					<td align='right' nowrap>
+						<a href='<?php print htmlspecialchars("host.php?action=query_reload&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/reload_icon_small.gif' title='Reload Data Query' alt='Reload Data Query' border='0' align='middle'></a>&nbsp;
+						<a href='<?php print htmlspecialchars("host.php?action=query_remove&id=" . $item["id"] . "&host_id=" . $_GET["id"]);?>'><img src='images/delete_icon_large.gif' title='Delete Data Query Association' alt='Delete Data Query Association' border='0' align='middle'></a>
+					</td>
+				<?php
+				form_end_row();
+			}
+		}else{ 
+			print "<tr><td colspan='4'><em>No associated data queries.</em></td></tr>"; 
 		}
-		}else{ print "<tr><td colspan='4'><em>No associated data queries.</em></td></tr>"; }
 
 		?>
 		<tr class='odd'>
