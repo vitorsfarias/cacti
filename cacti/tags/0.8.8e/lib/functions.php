@@ -711,7 +711,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				$issue_log_message = true;
 
 				/* update the failure date only if the failure count is 1 */
-				if ($ping_failure_count == 1) {
+				if ($hosts[$host_id]["status_event_count"] == 1 ) {
 					$hosts[$host_id]["status_fail_date"] = date("Y-m-d H:i:s");
 				}
 			/* host is down, but not ready to issue log message */
@@ -2204,10 +2204,10 @@ function sanitize_unserialize_selected_items($items) {
 	$items = unserialize(stripslashes($items));
 
 	if (is_array($items)) {
-		foreach ($items as $value) {
-			if (is_array($value)) {
+		for ($i=0;($i<count($items));$i++) {
+			if (is_array($items[$i])) {
 				return false;
-			}elseif (!is_numeric($value) && ($value != '')) {
+			}elseif (!is_numeric($items[$i]) && ($items[$i] != '')) {
 				return false;
 			}
 		}
