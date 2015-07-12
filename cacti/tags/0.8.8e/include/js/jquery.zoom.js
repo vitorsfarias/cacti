@@ -391,6 +391,7 @@
 			$(".zoom-area-excluded").bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
 			$(".zoom-area-excluded").bind('click', function(e) { zoomContextMenu_hide(); return false;} );
 			$(".zoom-marker-arrow-up").css({ top:(zoom.box.height-6) + 'px' });
+			$(".zoom-marker-tooltip-value").disableSelection();
 		}
 
 		/*
