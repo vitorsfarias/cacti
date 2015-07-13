@@ -539,15 +539,23 @@ function grow_dhtml_trees() {
 	if ((!isset($_SESSION['sess_node_id']) && !isset($_REQUEST['tree_id'])) || isset($_REQUEST['select_first'])) {
 		print "var node='tree_" . $default_tree_id . "';\n";
 		print "var reset=true;\n";
+	}elseif (isset($_REQUEST['nodeid']) && $_REQUEST['nodeid'] != '') {
+		print "var node='" . $_REQUEST['nodeid'] . "';\n";
+		print "var reset=false;\n";
 	}elseif (isset($_REQUEST['tree_id'])) {
 		print "var node='tree_" . $_REQUEST['tree_id'] . "';\n";
 		print "var reset=false;\n";
-	}elseif (isset($_SESSION['sess_node_id'])) {
+	}elseif (isset($_SESSION['sess_node_id']) && $_SESSION['sess_node_id'] != '') {
 		print "var node='" . $_SESSION['sess_node_id'] . "';\n";
 		print "var reset=false;\n";
 	}else{
 		print "var node='';\n";
 		print "var reset=true;\n";
+	}
+	if (isset($_REQUEST['leaf_id'])) {
+		print "var leaf='" . $_REQUEST['leaf_id'] . "';\n";
+	}else{
+		print "var leaf='';\n";
 	}
 	?>
 	$(function () {
@@ -565,8 +573,7 @@ function grow_dhtml_trees() {
 				$('#jstree').jstree('set_theme', 'default', '<?php print $config['url_path'];?>include/js/themes/default/style.css');
 				$('#jstree').jstree('deselect_all');
 				$('#jstree').jstree('select_node', node);
-				href=$('#'+node+'_anchor').attr('href')+"&nodeid="+node;
-				$.get($('#'+node+'_anchor').attr('href')+"&nodeid="+node, function(data) {
+				$.get($('#'+node+'_anchor').attr('href').replace('leaf_id=&', 'leaf_id='+leaf+'&').replace('action=tree', 'action=tree_content')+"&nodeid="+node, function(data) {
 					$('#main').html(data);
 				});
 			}
@@ -579,7 +586,7 @@ function grow_dhtml_trees() {
 		})
 		.on('activate_node.jstree', function(e, data) {
 			if (data.node.id) {
-				$.get($('#'+data.node.id+'_anchor').attr('href')+"&nodeid="+data.node.id, function(data) {
+				$.get($('#'+data.node.id+'_anchor').attr('href').replace('action=tree', 'action=tree_content')+"&nodeid="+data.node.id, function(data) {
 					$('#main').html(data);
 				});
 				node = data.node.id;
@@ -652,7 +659,7 @@ function create_dhtml_tree() {
 				order by graph_tree_items.order_key");
 
 			$i++;
-			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=&host_group_data='). '">' . htmlspecialchars($tree['name']) . "</a>\n";
+			$dhtml_tree[$i] = "\t<ul>\n\t\t<li id='tree_" . $tree['id'] . "'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=&nodeid=tree_' . $tree['id'] . '&host_group_data='). '">' . htmlspecialchars($tree['name']) . "</a>\n";
 
 			if (sizeof($hierarchy) > 0) {
 				$i++;
@@ -685,7 +692,7 @@ function create_dhtml_tree() {
 						$last_tier = $tier;
 						$lasthost = true;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '&host_group_data=') . '">Host: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 						if (read_graph_config_option('expand_hosts') == 'on') {
 							$i++;
@@ -704,7 +711,7 @@ function create_dhtml_tree() {
 								if (sizeof($graph_templates) > 0) {
 									foreach ($graph_templates as $graph_template) {
 										$i++;
-										$dhtml_tree[$i] = "\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=graph_template:' . $graph_template['id']) . '">' . htmlspecialchars($graph_template['name']) . "</a></li>\n";
+										$dhtml_tree[$i] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_gt_' . $graph_template['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_gt_' . $graph_template['id'] . '&host_group_data=graph_template:' . $graph_template['id']) . '">' . htmlspecialchars($graph_template['name']) . "</a></li>\n";
 									}
 								}
 							}else if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -736,16 +743,16 @@ function create_dhtml_tree() {
 											(($data_query['id'] > 0) && (sizeof($sort_field_data) > 0))) {
 											$i++;
 											if ($data_query['name'] != 'Non Query Based') {
-												$dhtml_tree[$i] = "\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+												$dhtml_tree[$i] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 											}else{
-												$dhtml_tree[$i] = "\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+												$dhtml_tree[$i] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node'. $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 											}
 											if ($data_query['id'] > 0) {
 												$i++;
 												$dhtml_tree[$i] = "\t\t\t\t\t\t\t<ul>\n";
 												while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
 													$i++;
-													$dhtml_tree[$i] = "\t\t\t\t\t\t\t\t<li data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
+													$dhtml_tree[$i] = "\t\t\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
 												}
 											$i++;
 											$dhtml_tree[$i] = "\t\t\t\t\t\t\t</ul>\n";
@@ -784,7 +791,7 @@ function create_dhtml_tree() {
 						}
 						$last_tier = $tier;
 						$i++;
-						$dhtml_tree[$i] = "\t\t\t\t<li><a href=\"" . htmlspecialchars('graph_view.php?action=tree_content&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a>\n";
+						$dhtml_tree[$i] = "\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . "'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '&host_group_data=') . '">' . htmlspecialchars($leaf['title']) . "</a>\n";
 						$openli = true;
 						$lasthost = false;
 					}
@@ -852,6 +859,7 @@ function validate_tree_vars() {
 		$changed += check_changed('graphs', 'sess_graph_tree_graphs');
 		$changed += check_changed('columns', 'sess_graph_tree_columns');
 		$changed += check_changed('filter', 'sess_graph_tree_filter');
+		$changed += check_changed('nodeid', 'sess_node_id');
 	}
 
 	if ($changed) {
@@ -860,6 +868,7 @@ function validate_tree_vars() {
 
 	load_current_session_value('page',   'sess_graph_tree_page',   '1');
 	load_current_session_value('graphs', 'sess_graph_tree_graphs', '-1');
+	load_current_session_value('nodeid', 'sess_node_id', '');
 	load_current_session_value('columns', 'sess_graph_tree_columns', read_graph_config_option('num_columns'));
 	load_current_session_value('filter', 'sess_graph_tree_filter', '');
 	load_current_session_value('thumbnails', 'sess_graph_tree_thumbnails', read_graph_config_option('thumbnail_section_tree_2') == 'on' ? 'true':'false');
