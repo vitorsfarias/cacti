@@ -249,7 +249,7 @@ function form_save() {
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
 							 the inputs in this case. */
 							if (isset($_POST{$input["column_name"] . "_" . $input["id"]})) {
-								db_execute("update graph_templates_item set " . $input["column_name"] . "=" . $cnn_id->qstr($_POST{$input["column_name"] . "_" . $input["id"]}) . "' where id=" . $item["id"]);
+								db_execute("update graph_templates_item set " . $input["column_name"] . "=" . $cnn_id->qstr($_POST{$input["column_name"] . "_" . $input["id"]}) . " where id=" . $item["id"]);
 							}
 						}
 					}
