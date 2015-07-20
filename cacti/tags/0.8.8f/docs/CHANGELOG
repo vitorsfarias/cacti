@@ -3,6 +3,7 @@ Cacti CHANGELOG
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken
 -bug:0002600: cli/upgrade_database.php is missing releases
+-bug:0002603: 0.8.8e graph managment graphs.php save button does not works
 
 0.8.8e
 -bug: Fixed issue with graph zooming failing to work
