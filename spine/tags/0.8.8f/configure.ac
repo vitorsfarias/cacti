@@ -61,7 +61,7 @@ case $host_alias in
 *darwin*)
   ShLib="dylib";;
 *)
-  LDFLAGS="-lpthread -lm";;
+  LDFLAGS="-lpthread -lm $LDFLAGS";;
 esac
 
 # Checks for programs.
