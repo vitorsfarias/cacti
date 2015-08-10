@@ -343,7 +343,7 @@ function item_edit() {
 			</select>
 		</td>
 	</tr>
-	form_alternate_row();?>
+	<?php form_alternate_row();?>
 		<td width="50%">
 			<font class="textEditTitle">CDEF Item Value</font><br>
 			Enter a value for this CDEF item.
@@ -446,7 +446,6 @@ function cdef_edit() {
 		if (sizeof($cdef_items) > 0) {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row();$i++;?>
-					?>
 					<td>
 						<a class="linkEditMain" href="<?php print htmlspecialchars("cdef.php?action=item_edit&id=" . $cdef_item["id"] . "&cdef_id=" . $cdef["id"]);?>">Item #<?php print htmlspecialchars($i);?></a>
 					</td>

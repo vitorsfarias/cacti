@@ -351,7 +351,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 function sql_sanitize($value) {
 	global $cnn_id;
 
-	$value = $cnn_id->qstr($value);
+	$value = "'" . $value . "'";
 
 	return $value;
 }
