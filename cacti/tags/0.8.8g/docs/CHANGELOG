@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.8g
+
+
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken
 -bug:0002600: cli/upgrade_database.php is missing releases
