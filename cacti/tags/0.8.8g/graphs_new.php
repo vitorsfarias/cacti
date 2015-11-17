@@ -364,9 +364,12 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
    ------------------- */
 
 function graphs() {
+	global $item_rows;
+
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var_request("host_id"));
 	input_validate_input_number(get_request_var_request("graph_type"));
+	input_validate_input_number(get_request_var_request("rows"));
 	/* ==================================================== */
 
 	/* clean up search string */
@@ -375,7 +378,7 @@ function graphs() {
 	}
 
 	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST["clear_x"])) {
+	if (isset($_REQUEST["clear"])) {
 		kill_session_var("sess_graphs_new_filter");
 		unset($_REQUEST["filter"]);
 		$changed = true;
@@ -385,14 +388,22 @@ function graphs() {
 		$changed += check_changed("host_id",    "sess_graphs_new_host_id");
 		$changed += check_changed("graph_type", "sess_graphs_new_graph_type");
 		$changed += check_changed("filter",     "sess_graphs_new_filter");
+		$changed += check_changed("rows",       "sess_graphs_new_rows");
 	}
 
 	load_current_session_value("host_id",    "sess_graphs_new_host_id",    db_fetch_cell("select id from host order by description,hostname limit 1"));
 	load_current_session_value("graph_type", "sess_graphs_new_graph_type", read_config_option("default_graphs_new_dropdown"));
 	load_current_session_value("filter",     "sess_graphs_new_filter",     "");
+	load_current_session_value("rows",       "sess_graphs_new_rows",       "-1");
 
 	$host      = db_fetch_row("select id,description,hostname,host_template_id from host where id=" . $_REQUEST["host_id"]);
-	$row_limit = read_config_option("num_rows_data_query");
+
+	if ($_REQUEST['rows'] == '-1') {
+		$row_limit = read_config_option("num_rows_data_query");
+	}else{
+		$row_limit = $_REQUEST['rows'];
+	}
+
 	$debug_log = debug_log_return("new_graphs");
 
 	$header =  " [ " . htmlspecialchars($host["description"]) . " (" . htmlspecialchars($host["hostname"]) . ") " . 
@@ -401,6 +412,7 @@ function graphs() {
 	html_start_box("<strong>New Graphs for</strong> $header" , "100%", "", "3", "center", "");
 
 	form_alternate_row();
+
 	print "<td>";
 
 	if (!empty($debug_log)) {
@@ -421,46 +433,40 @@ function graphs() {
 		<br><?php }
 	}
 	?>
+
 	<script type="text/javascript">
-	<!--
-	<?php if (read_config_option("cacti_popup_messages") == "on") {?>
-	var obj = document.getElementById('message');
-
-	if (obj) {
-		if (window.innerHeight) {
-			height = window.innerHeight;
-			width  = window.innerWidth;
-		}else{
-			height = document.body.clientHeight;
-			width  = document.body.clientWidth;
-		}
-		obj.style.class = "popupBox";
-		cw = obj.offsetWidth;
-		// Adjust for IE6
-		if (!cw) cw = 150;
-		ch = obj.offsetHeight;
-		obj.style.top = '65px';
-		obj.style.left = ((width/2) - (cw/2) - 88)+'px';
-	}
-	<?php } ?>
-
-	function applyGraphsNewFilterChange(objForm) {
-		strURL = '?graph_type=' + objForm.graph_type.value;
-		strURL = strURL + '&host_id=' + objForm.host_id.value;
-		strURL = strURL + '&filter=' + objForm.filter.value;;
+	function applyFilter() {
+		strURL  = 'graphs_new.php?graph_type=' + $('#graph_type').val();
+		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rows=' + $('#rows').val();
 		document.location = strURL;
 	}
 
-	-->
+	function clearFilter() {
+		document.location = 'graphs_new.php?clear=true';
+	}
+
+	$(function() {
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#form_graphs_new').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
+	});
 	</script>
-	<form name="form_graphs_new" action="graphs_new.php">
-	<table width="100%" class="textHeader" cellpadding="2" align="left">
+
+	<form id="form_graphs_new" action="graphs_new.php">
+	<table width="100%" cellpadding="2" align="left">
 		<tr>
-			<td width="55" valign='top'>
+			<td width="55">
 				Host:
 			</td>
-			<td width="1" valign='top'>
-				<select name="host_id" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
+			<td width="1">
+				<select id="host_id" onChange="applyFilter()">
 				<?php
 				$hosts = db_fetch_assoc("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
 
@@ -472,31 +478,37 @@ function graphs() {
 				?>
 				</select>
 			</td>
-			<td style='white-space:nowrap;' valign='top' width="100">
+			<td style='white-space:nowrap;' width='1'>
 				Graph Types:
 			</td>
 			<td width="1" valign='top'>
-				<select name="graph_type" onChange="applyGraphsNewFilterChange(document.form_graphs_new)">
-				<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
-				<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
-				<?php
+				<select id="graph_type" onChange="applyFilter()">
+					<option value="-2"<?php if ($_REQUEST["graph_type"] == "-2") {?> selected<?php }?>>All</option>
+					<option value="-1"<?php if ($_REQUEST["graph_type"] == "-1") {?> selected<?php }?>>Graph Template Based</option>
+					<?php
 
-				$snmp_queries = db_fetch_assoc("SELECT
-					snmp_query.id,
-					snmp_query.name,
-					snmp_query.xml_path
-					FROM (snmp_query,host_snmp_query)
-					WHERE host_snmp_query.snmp_query_id=snmp_query.id
-					AND host_snmp_query.host_id=" . $host["id"] . "
-					ORDER BY snmp_query.name");
+					$snmp_queries = db_fetch_assoc("SELECT
+						snmp_query.id,
+						snmp_query.name,
+						snmp_query.xml_path
+						FROM (snmp_query,host_snmp_query)
+						WHERE host_snmp_query.snmp_query_id=snmp_query.id
+						AND host_snmp_query.host_id=" . $host["id"] . "
+						ORDER BY snmp_query.name");
 
-				if (sizeof($snmp_queries) > 0) {
-				foreach ($snmp_queries as $query) {
-					print "<option value='" . $query["id"] . "'"; if ($_REQUEST["graph_type"] == $query["id"]) { print " selected"; } print ">" . $query["name"] . "</option>\n";
-				}
-				}
-				?>
+					if (sizeof($snmp_queries) > 0) {
+					foreach ($snmp_queries as $query) {
+						print "<option value='" . $query["id"] . "'"; if ($_REQUEST["graph_type"] == $query["id"]) { print " selected"; } print ">" . $query["name"] . "</option>\n";
+					}
+					}
+					?>
 				</select>
+			</td>
+			<td width='1'>
+				<input type="submit" value="Go" title="Set/Refresh Filters">
+			</td>
+			<td width='1'>
+				<input type="button" id="clear" value="Clear" title="Clear Filters">
 			</td>
 			<td rowspan="2" class="textInfo" align="right" valign="top">
 				<span class="linkMarker">*</span><a href="<?php print htmlspecialchars("host.php?action=edit&id=" . $_REQUEST["host_id"]);?>">Edit this Host</a><br>
@@ -504,22 +516,29 @@ function graphs() {
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
-	<?php if ($_REQUEST["graph_type"] > 0) {?>
 		<tr>
-			<td width="55" valign='top'>
+			<td width='55'>
+				Items:
+			</td>
+			<td>
+				<select id="rows" onChange="applyFilter()">
+					<option value="-1"<?php if (get_request_var_request("rows") == "-1") {?> selected<?php }?>>Default</option>
+					<?php
+					if (sizeof($item_rows) > 0) {
+						foreach ($item_rows as $key => $value) {
+							print "<option value='" . $key . "'"; if (get_request_var_request("rows") == $key) { print " selected"; } print ">" . htmlspecialchars($value) . "</option>\n";
+						}
+					}
+					?>
+				</select>
+			</td>
+			<td>
 				Search:
 			</td>
-			<td valign='top'>
-				<input type="text" name="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
-			</td>
-			<td colspan='2' valign='top'>
-				<input type="submit" value="Go" title="Set/Refresh Filters">
-				<input type="submit" name="clear_x" value="Clear" title="Clear Filters">
+			<td>
+				<input type="text" id="filter" size="30" value="<?php print htmlspecialchars(get_request_var_request("filter"));?>">
 			</td>
 		</tr>
-	<?php }else{
-		form_hidden_box("filter", $_REQUEST["filter"], "");
-	}?>
 	</table>
 	</form>
 	</td>
@@ -564,7 +583,8 @@ function graphs() {
 			graph_templates.name AS graph_template_name
 			FROM (host_graph,graph_templates)
 			WHERE host_graph.graph_template_id=graph_templates.id
-			AND host_graph.host_id=" . $_REQUEST["host_id"] . "
+			AND host_graph.host_id=" . $_REQUEST["host_id"] . 
+			(strlen($_REQUEST['filter']) ? " AND graph_templates.name LIKE '%" . get_request_var_request('filter') . "%'":"") . "
 			ORDER BY graph_templates.name");
 
 		$template_graphs = db_fetch_assoc("SELECT
@@ -635,7 +655,7 @@ function graphs() {
 			($_REQUEST["graph_type"] != -2 ? " AND snmp_query.id=" . $_REQUEST["graph_type"] : '') . "
 			ORDER BY snmp_query.name");
 
-		if (sizeof($snmp_queries) > 0) {
+		if (sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
 			unset($total_rows);
 
@@ -668,9 +688,12 @@ function graphs() {
 				$total_rows = 0;
 			}
 
-			$snmp_query_graphs = db_fetch_assoc("SELECT snmp_query_graph.id,snmp_query_graph.name FROM snmp_query_graph WHERE snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " ORDER BY snmp_query_graph.name");
+			$snmp_query_graphs = db_fetch_assoc("SELECT snmp_query_graph.id, snmp_query_graph.name 
+				FROM snmp_query_graph 
+				WHERE snmp_query_graph.snmp_query_id=" . $snmp_query["id"] . " 
+				ORDER BY snmp_query_graph.name");
 
-			if (sizeof($snmp_query_graphs) > 0) {
+			if (sizeof($snmp_query_graphs)) {
 				foreach ($snmp_query_graphs as $snmp_query_graph) {
 					$created_graphs = db_fetch_assoc("SELECT DISTINCT
 						data_local.snmp_index
@@ -697,21 +720,21 @@ function graphs() {
 				}
 			}
 
-			print "	<table width='100%' class='cactiTable' align='center' cellpadding='3' cellspacing='0'>\n
-					<tr>
-						<td colspan='" . ($num_input_fields+1) . "'>
-							<table  cellspacing='0' cellpadding='0' width='100%' >
-								<tr>
-									<td class='textHeaderDark'>
-										<strong>Data Query</strong> [" . $snmp_query["name"] . "]
-									</td>
-									<td align='right' nowrap>
-										<a href='" . htmlspecialchars("graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='middle'></a>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>";
+			print "<table width='100%' class='cactiTable' align='center' cellpadding='3' cellspacing='0'>
+				<tr>
+					<td colspan='" . ($num_input_fields+1) . "'>
+						<table  cellspacing='0' cellpadding='0' width='100%' >
+							<tr>
+								<td class='textHeaderDark'>
+									<strong>Data Query</strong> [" . $snmp_query["name"] . "]
+								</td>
+								<td align='right' nowrap>
+									<a href='" . htmlspecialchars("graphs_new.php?action=query_reload&id=" . $snmp_query["id"] . "&host_id=" . $host["id"]) . "'><img src='images/reload_icon_small.gif' title='Reload Associated Query' alt='' border='0' align='middle'></a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>";
 
 			if ($xml_array != false) {
 				$html_dq_header = "";
@@ -721,11 +744,12 @@ function graphs() {
 
 				/* if there is a where clause, get the matching snmp_indexes */
 				$sql_where = "";
+				$indexes   = array();
 				if (strlen($_REQUEST["filter"])) {
 					$sql_where = "";
 					$indexes = db_fetch_assoc("SELECT DISTINCT snmp_index
 						FROM host_snmp_cache
-						WHERE field_value LIKE '%%" . $_REQUEST["filter"] . "%%'
+						WHERE field_value LIKE '%" . $_REQUEST["filter"] . "%'
 						AND snmp_query_id=" . $snmp_query["id"] . "
 						AND host_id=" . $host["id"]);
 
@@ -742,18 +766,28 @@ function graphs() {
 					}
 				}
 
-				if ((strlen($_REQUEST["filter"]) == 0) ||
-					((strlen($_REQUEST["filter"])) && (sizeof($indexes)))) {
+				if ($_REQUEST['filter'] == '' || sizeof($indexes)) {
+					$sql_order_fields = array('snmp_index');
+					if (isset($xml_array['index_order'])) {
+						$sql_order_fields = explode(':', $xml_array['index_order']);
+					}
+
 					/* determine the sort order */
-					if (isset($xml_array["index_order_type"])) {
-						if ($xml_array["index_order_type"] == "numeric") {
-							$sql_order = "ORDER BY CAST(snmp_index AS unsigned)";
-						}else if ($xml_array["index_order_type"] == "alphabetic") {
-							$sql_order = "ORDER BY snmp_index";
-						}else if ($xml_array["index_order_type"] == "natural") {
-							$sql_order = "ORDER BY INET_ATON(snmp_index)";
-						}else{
-							$sql_order = "";
+					if (isset($xml_array['index_order_type'])) {
+						foreach($sql_order_fields as $k) {
+							switch($xml_array['index_order_type']) {
+							case 'numeric':
+								$sql_order = "ORDER BY CAST($k AS unsigned)";
+								break;
+							case 'alphabetic':
+								$sql_order = "ORDER BY $k";
+								break;
+							case 'natural':
+								$sql_order = "ORDER BY INET_ATON($k)";
+								break;
+							default:
+								$sql_order = "ORDER BY $k";
+							}
 						}
 					}else{
 						$sql_order = "";
@@ -766,7 +800,7 @@ function graphs() {
 						AND snmp_query_id=" . $snmp_query["id"]);
 
 					/* build magic query */
-					$sql_query  = "SELECT host_id, snmp_query_id, snmp_index";
+					$sql_query  = "SELECT * FROM (SELECT host_id, snmp_query_id, snmp_index";
 					$num_visible_fields = sizeof($field_names);
 					$i = 0;
 					if (sizeof($field_names) > 0) {
@@ -782,6 +816,7 @@ function graphs() {
 						AND snmp_query_id=" . $snmp_query["id"] . "
 						$sql_where
 						GROUP BY host_id, snmp_query_id, snmp_index
+						) AS results
 						$sql_order
 						LIMIT " . ($row_limit*($page-1)) . "," . $row_limit;
 

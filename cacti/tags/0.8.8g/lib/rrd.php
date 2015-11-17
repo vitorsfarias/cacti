@@ -1997,7 +1997,7 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 			$stacked_columns["col" . $j] = ($graph_item_types{$xport_item["graph_type_id"]} == "STACK") ? 1 : 0;
 			$j++;
 
-			$txt_xport_items .= "XPORT:" . cacti_escapeshellarg($data_source_name) . ":" . str_replace(":", "", cacti_escapeshellarg($legend_name)) ;
+			$txt_xport_items .= "XPORT:" . cacti_escapeshellarg($data_source_name) . ":" . str_replace(":", "", cacti_escapeshellarg(htmlspecialchars($legend_name))) ;
 		}else{
 			$need_rrd_nl = FALSE;
 		}
@@ -2016,8 +2016,8 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 
 	/* add host and graph information */
 	$xport_array["meta"]["stacked_columns"]= $stacked_columns;
-	$xport_array["meta"]["title_cache"]    = cacti_escapeshellarg($graph["title_cache"]);
-	$xport_array["meta"]["vertical_label"] = cacti_escapeshellarg($graph["vertical_label"]);
+	$xport_array["meta"]["title_cache"]    = cacti_escapeshellarg(htmlspecialchars($graph["title_cache"]));
+	$xport_array["meta"]["vertical_label"] = cacti_escapeshellarg(htmlspecialchars($graph["vertical_label"]));
 	$xport_array["meta"]["local_graph_id"] = $local_graph_id;
 	$xport_array["meta"]["host_id"]        = $graph["host_id"];
 
