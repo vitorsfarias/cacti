@@ -573,9 +573,13 @@ function grow_dhtml_trees() {
 				$('#jstree').jstree('set_theme', 'default', '<?php print $config['url_path'];?>include/js/themes/default/style.css');
 				$('#jstree').jstree('deselect_all');
 				$('#jstree').jstree('select_node', node);
-				$.get($('#'+node+'_anchor').attr('href').replace('leaf_id=&', 'leaf_id='+leaf+'&').replace('action=tree', 'action=tree_content')+"&nodeid="+node, function(data) {
-					$('#main').html(data);
-				});
+
+				exists = $('#'+node+'_anchor').length;
+				if (exists) {
+					$.get($('#'+node+'_anchor').attr('href').replace('leaf_id=&', 'leaf_id='+leaf+'&').replace('action=tree', 'action=tree_content')+"&nodeid="+node, function(data) {
+						$('#main').html(data);
+					});
+				}
 			}
 
 			$('#navigation').show();

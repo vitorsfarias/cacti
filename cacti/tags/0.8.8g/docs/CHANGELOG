@@ -4,6 +4,16 @@ Cacti CHANGELOG
 -bug:0002608: cacti 0.8.8f - Data Templates - Poller/script issue with backslash
 -bug:0002616: cdef.php -- Extra php closing tag
 -bug:0002617: PHP Warning is thrown when trying to include auth_login.php
+-bug:0002623: log warning display wrong time_interval
+-bug:0002601: graphs_new.php query not sorted as per definition
+xml:index_order
+-bug:0002625: Plugins don't display the next page
+-bug:0002631: RRDtool export not XML compliant - results in empty CSV exports
+-bug:0002622: graph_view.php -- Navigation and Content Areas are not visible
+in Tree Mode
+-bug:0002626: Unable to add two users in a row - Notice: Undefined index: id
+-bug:0002620: Unable to copy user
+-bug:0002618: bug/syntax error in html_utility.php
 
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken

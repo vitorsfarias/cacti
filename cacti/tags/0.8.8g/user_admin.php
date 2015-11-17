@@ -82,7 +82,7 @@ function form_actions() {
 			$selected_items = sanitize_unserialize_selected_items($_POST['selected_items']);
 		}
 
-		if ($selected_items != false) {
+		if ($selected_items != false || $_POST['drp_action'] == '2') {
 			if (get_request_var_post("drp_action") == "1") { /* delete */
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_remove($selected_items[$i]);
@@ -850,13 +850,15 @@ function graph_settings_edit() {
 
 			if ((isset($field_array["items"])) && (is_array($field_array["items"]))) {
 				while (list($sub_field_name, $sub_field_array) = each($field_array["items"])) {
-					if (graph_config_value_exists($sub_field_name, $_GET["id"])) {
-						$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
-					}
+					if (isset($_GET['id'])) {
+						if (graph_config_value_exists($sub_field_name, $_GET["id"])) {
+							$form_array[$field_name]["items"][$sub_field_name]["form_id"] = 1;
+						}
 
-					$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("SELECT value FROM settings_graphs WHERE name = '" . $sub_field_name . "' AND user_id = " . get_request_var("id"));
+						$form_array[$field_name]["items"][$sub_field_name]["value"] =  db_fetch_cell("SELECT value FROM settings_graphs WHERE name = '" . $sub_field_name . "' AND user_id = " . get_request_var("id"));
+					}
 				}
-			}else{
+			}elseif (isset($_GET['id'])) {
 				if (graph_config_value_exists($field_name, $_GET["id"])) {
 					$form_array[$field_name]["form_id"] = 1;
 				}
