@@ -1266,24 +1266,34 @@ int hasCaps() {
 	cap_value_t capval;
 	cap_flag_value_t capflag;
 
-	caps = cap_from_text("cap_net_raw=eip");
+	/* Recommended caps: cap_net_raw=eip */
+	caps = cap_get_proc();
 	if (caps == NULL) {
-		SPINE_LOG_DEBUG(("WARNING: cap_from_text failed."));
+		SPINE_LOG(("ERROR: cap_get_proc failed."));
 		return FALSE;
 	}
 
-	for (capval=0; ;capval++) {
-		if (cap_get_flag(caps, capval, CAP_EFFECTIVE, &capflag))
-			break;
-		if (capflag != CAP_SET)
-			return FALSE;
+    /* check if cap_net_raw is in effective set */
+	if (cap_get_flag(caps, CAP_NET_RAW, CAP_EFFECTIVE, &capflag)) {
+		SPINE_LOG(("ERROR: cap_get_flag for CAP_NET_RAW failed. ICMP ping will not work as non-root user."));
+		return FALSE;
 	}
+
+	if (capflag != CAP_SET) {
+		SPINE_LOG(("ERROR: Capability CAP_NET_RAW is not set. ICMP ping will not work as non-root user."));
+		return FALSE;
+	}
+
+	SPINE_LOG_DEBUG(("DEBUG: Capability CAP_NET_RAW is set."));
+	cap_free(caps);
+
 	return TRUE;
 	#else
+	SPINE_LOG(("ERROR: Spine is not compiled with capability support. ICMP ping will not work as non-root user."));
 	return FALSE;
 	#endif
 }
-	
+
 void checkAsRoot() {
 	#ifndef __CYGWIN__
 	#ifdef SOLAR_PRIV
