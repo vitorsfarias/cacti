@@ -349,9 +349,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
    @arg $value - value to sanitize
    @return - fixed value */
 function sql_sanitize($value) {
-	global $cnn_id;
-
-	$value = "'" . $value . "'";
+	$value = str_replace(";", "\;", $value);
 
 	return $value;
 }
