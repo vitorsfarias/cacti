@@ -146,12 +146,12 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 			$graph_data_array["print_source"] = true;
 
 			/* override: graph start time (unix time) */
-			if (!empty($_GET["graph_start"])) {
+			if (!empty($_REQUEST["graph_start"])) {
 				$graph_data_array["graph_start"] = get_request_var_request("graph_start");
 			}
 
 			/* override: graph end time (unix time) */
-			if (!empty($_GET["graph_end"])) {
+			if (!empty($_REQUEST["graph_end"])) {
 				$graph_data_array["graph_end"] = get_request_var_request("graph_end");
 			}
 
