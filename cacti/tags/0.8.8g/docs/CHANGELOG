@@ -14,6 +14,7 @@ in Tree Mode
 -bug:0002626: Unable to add two users in a row - Notice: Undefined index: id
 -bug:0002620: Unable to copy user
 -bug:0002618: bug/syntax error in html_utility.php
+-bug:0002646: SQL injection in graph.php
 
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken
