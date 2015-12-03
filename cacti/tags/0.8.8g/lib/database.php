@@ -321,7 +321,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 	}
 
 	while (list($key, $value) = each($array_items)) {
-		$array_items[$key] = sql_sanitize($value);
+		$array_items[$key] = "\"" . sql_sanitize($value) . "\"";
 	}
 
 	$replace_result = $db_conn->Replace($table_name, $array_items, $key_cols, FALSE, $autoinc);
@@ -335,7 +335,7 @@ function sql_save($array_items, $table_name, $key_cols = "id", $autoinc = TRUE, 
 	if (($db_conn->Insert_ID() == "0") || ($replace_result == 1)) {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
-				return str_replace("'", "", $array_items[$key_cols]);
+				return str_replace("\"", "", $array_items[$key_cols]);
 			}
 		}
 
