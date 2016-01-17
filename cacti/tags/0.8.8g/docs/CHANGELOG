@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 0.8.8g
 -bug:0002608: cacti 0.8.8f - Data Templates - Poller/script issue with backslash
+-bug:0002618: bug/syntax error in html_utility.php
 -bug:0002616: cdef.php -- Extra php closing tag
 -bug:0002617: PHP Warning is thrown when trying to include auth_login.php
 -bug:0002623: log warning display wrong time_interval
