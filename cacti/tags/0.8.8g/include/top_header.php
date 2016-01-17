@@ -41,7 +41,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>include/js/jquery-ui.css" type="text/css" rel="stylesheet">
 	<link href="<?php echo $config['url_path']; ?>images/favicon.ico" rel="shortcut icon">
-	<link rel="icon" type="image/png" href="<?php echo $config['url_path']; ?>images/cacti_logo.png" sizes="96x96">
+	<link rel="icon" type="image/gif" href="<?php echo $config['url_path']; ?>images/cacti_logo.gif" sizes="96x96">
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/layout.js"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery.js" language="javascript"></script>
 	<script type="text/javascript" src="<?php echo $config['url_path']; ?>include/js/jquery-ui.js" language="javascript"></script>
