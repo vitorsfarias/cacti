@@ -17,6 +17,8 @@ in Tree Mode
 -bug:0002646: SQL injection in graph.php
 -bug:0002656: Authentication using web authentication as a user not in the cacti database allows complete access
 -bug:0002647: 0.8.8g rev 7767 Can add cacti devices to graph tree "Save Failed"
+-bug:0002652: CVE-2015-8604: SQL injection in graphs_new.php
+-bug:0002655: CVE-2015-8377: SQL injection vulnerability in the host_new_graphs_save function in graphs_new.php
 
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken
