@@ -57,6 +57,11 @@ switch ($_REQUEST["action"]) {
    -------------------------- */
 
 function form_save() {
+	/* ================= input validation ================= */
+	input_validate_input_number(get_request_var_post("host_id"));
+	input_validate_input_number(get_request_var_post("host_template_id"));
+	/* ==================================================== */
+
 	if (isset($_POST["save_component_graph"])) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		while (list($var, $val) = each($_POST)) {
@@ -183,11 +188,19 @@ function host_new_graphs_save() {
 
 		while (list($form_id1, $form_array2) = each($form_array)) {
 			/* enumerate information from the arrays stored in post variables */
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id1);
+			/* ==================================================== */
+
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 			}elseif ($form_type == "sg") {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					$snmp_index_array = $form_array3;
+
+					/* ================= input validation ================= */
+					input_validate_input_number($form_id2);
+					/* ==================================================== */
 
 					$snmp_query_array["snmp_query_id"] = $form_id1;
 					$snmp_query_array["snmp_index_on"] = get_best_data_query_index_type($_POST["host_id"], $form_id1);
@@ -246,6 +259,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 	while (list($form_type, $form_array) = each($selected_graphs_array)) {
 		while (list($form_id1, $form_array2) = each($form_array)) {
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id1);
+			/* ==================================================== */
+
 			if ($form_type == "cg") {
 				$graph_template_id = $form_id1;
 
@@ -254,6 +271,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				while (list($form_id2, $form_array3) = each($form_array2)) {
 					/* ================= input validation ================= */
 					input_validate_input_number($snmp_query_id);
+					input_validate_input_number($form_id2);
 					/* ==================================================== */
 
 					$snmp_query_id = $form_id1;
