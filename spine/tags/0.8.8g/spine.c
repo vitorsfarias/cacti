@@ -332,11 +332,6 @@ int main(int argc, char *argv[]) {
 			snprintf(set.host_id_list, BIG_BUFSIZE, "%s", getarg(opt, &argv));
 		}
 
-		else if (STRMATCH(arg, "-m") ||
-				 STRMATCH(arg, "--mibs")) {
-			set.mibs = 1;
-		}
-
 		else if (STRMATCH(arg, "-h") ||
 				 STRMATCH(arg, "-v") ||
 				 STRMATCH(arg, "--help") ||
@@ -628,9 +623,10 @@ int main(int argc, char *argv[]) {
 						snprintf(querybuf, BIG_BUFSIZE, "SELECT CEIL(COUNT(*)/%i) FROM poller_item WHERE host_id=%i", device_threads, host_id);
 						tresult   = db_query(&mysql, querybuf);
 						mysql_row = mysql_fetch_row(tresult);
-						mysql_free_result(tresult);
 
 						itemsPT   = atoi(mysql_row[0]);
+						mysql_free_result(tresult);
+
 						if (host_time) free(host_time);
 						host_time = get_host_poll_time();
 					}
