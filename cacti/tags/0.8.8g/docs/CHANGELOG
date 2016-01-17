@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 0.8.8g
+-bug:0002591: graph_view.php - unable to advance to Next Page in Tree View
 -bug:0002608: cacti 0.8.8f - Data Templates - Poller/script issue with backslash
 -bug:0002618: bug/syntax error in html_utility.php
 -bug:0002616: cdef.php -- Extra php closing tag
