@@ -361,15 +361,15 @@ function item_remove() {
 		$graph_tree_item = db_fetch_row("select title,local_graph_id,host_id from graph_tree_items where id=" . $_GET["id"]);
 
 		if (!empty($graph_tree_item["local_graph_id"])) {
-			$text = "Are you sure you want to delete the graph item <strong>'" . db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]) . "'</strong>?";
+			$text = "Are you sure you want to delete the graph item <strong>'" . htmlspecialchars(db_fetch_cell("select title_cache from graph_templates_graph where local_graph_id=" . $graph_tree_item["local_graph_id"]), ENT_QUOTES) . "'</strong>?";
 		}elseif ($graph_tree_item["title"] != "") {
-			$text = "Are you sure you want to delete the header item <strong>'" . $graph_tree_item["title"] . "'</strong>?";
+			$text = "Are you sure you want to delete the header item <strong>'" . htmlspecialchars($graph_tree_item["title"], ENT_QUOTES) . "'</strong>?";
 		}elseif (!empty($graph_tree_item["host_id"])) {
-			$text = "Are you sure you want to delete the host item <strong>'" . db_fetch_cell("select CONCAT_WS('',description,' (',hostname,')') as hostname from host where id=" . $graph_tree_item["host_id"]) . "'</strong>?";
+			$text = "Are you sure you want to delete the host item <strong>'" . htmlspecialchars(db_fetch_cell("select CONCAT_WS('',description,' (',hostname,')') as hostname from host where id=" . $graph_tree_item["host_id"]), ENT_QUOTES) . "'</strong>?";
 		}
 
 		include("./include/top_header.php");
-		form_confirm("Are You Sure?", htmlspecialchars($text, ENT_QUOTES), htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
+		form_confirm("Are You Sure?", $text, htmlspecialchars("tree.php?action=edit&id=" . $_GET["tree_id"]), htmlspecialchars("tree.php?action=item_remove&id=" . $_GET["id"] . "&tree_id=" . $_GET["tree_id"]));
 		include("./include/bottom_footer.php");
 		exit;
 	}
