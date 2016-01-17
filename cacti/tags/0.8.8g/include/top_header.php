@@ -35,7 +35,7 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text("title
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE-Edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=EDGE">
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link href="<?php echo $config['url_path']; ?>include/main.css" type="text/css" rel="stylesheet">

@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -bug:0002616: cdef.php -- Extra php closing tag
 -bug:0002617: PHP Warning is thrown when trying to include auth_login.php
 -bug:0002623: log warning display wrong time_interval
+-bug:0002627: Graph tree doesn't work in Internet Explorer
 -bug:0002601: graphs_new.php query not sorted as per definition
 xml:index_order
 -bug:0002625: Plugins don't display the next page
