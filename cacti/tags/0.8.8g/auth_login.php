@@ -86,6 +86,13 @@ if ($action == 'login') {
 		/* Locate user in database */
 		$user = db_fetch_row("SELECT * FROM user_auth WHERE username = " . $cnn_id->qstr($username) . " AND realm = 2");
 
+		if (!$user) {
+			cacti_log("AUTH LOGIN: User " . $username . " authenticated by web server but not found in Cacti database.");
+			$username = htmlspecialchars($username);
+			auth_display_custom_error_message("$username is not authorized to use Cacti.");
+			exit;			
+		}
+
 		break;
 	case "3":
 		/* LDAP Auth */
