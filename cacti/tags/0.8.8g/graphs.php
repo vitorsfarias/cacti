@@ -88,7 +88,7 @@ switch ($_REQUEST["action"]) {
 	default:
 		include_once("./include/top_header.php");
 
-		graph();
+		graph_management();
 
 		include_once("./include/bottom_footer.php");
 		break;
@@ -1036,7 +1036,7 @@ function changeScaleLog() {
 
 }
 
-function graph() {
+function graph_management() {
 	global $colors, $graph_actions, $item_rows;
 
 	/* ================= input validation ================= */
