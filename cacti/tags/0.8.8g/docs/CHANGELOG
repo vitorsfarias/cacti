@@ -28,6 +28,7 @@ in Tree Mode
 -bug:0002619: Fix incorrect placement of htmlspecialchars() in tree.php
 -bug:0002642: ping.pl does not take into account host port numbers
 -bug:0002567: RRDTool 1.5.x Support 
+-bug:0002269: |query_ifSpeed| in --upper-limit for graph template does not work with empty ifSpeed
 
 0.8.8f
 -bug:0002599: 0.8.8e Poller Script Parser is Broken
