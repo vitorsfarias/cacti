@@ -1,7 +1,7 @@
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2002-2015 The Cacti Group                                 |
+ | Copyright (C) 2002-2016 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU Lesser General Public              |
@@ -105,7 +105,7 @@ php_t	*php_processes = 0;
 char	 config_paths[CONFIG_PATHS][BUFSIZE];
 
 static char *getarg(char *opt, char ***pargv);
-static void display_help(void);
+static void display_help(int *only_version);
 
 #ifdef HAVE_LCAP
 /* This patch is adapted (copied) patch for ntpd from Jarno Huuskonen and
@@ -332,11 +332,14 @@ int main(int argc, char *argv[]) {
 			snprintf(set.host_id_list, BIG_BUFSIZE, "%s", getarg(opt, &argv));
 		}
 
-		else if (STRMATCH(arg, "-h") ||
-				 STRMATCH(arg, "-v") ||
-				 STRMATCH(arg, "--help") ||
-				 STRMATCH(arg, "--version")) {
-			display_help();
+		else if (STRMATCH(arg, "-h") || STRMATCH(arg, "--help")) {
+			display_help(FALSE);
+
+			exit(EXIT_SUCCESS);
+		}
+
+		else if (STRMATCH(arg, "-v") || STRMATCH(arg, "--version")) {
+			display_help(TRUE);
 
 			exit(EXIT_SUCCESS);
 		}
@@ -837,7 +840,7 @@ int main(int argc, char *argv[]) {
  *	is dumped literally.
  *
  */
-static void display_help(void) {
+static void display_help(int *only_version) {
 	static const char *const *p;
 	static const char * const helptext[] = {
 		"Usage: spine [options] [[firstid lastid] || [-H/--hostlist='hostid1,hostid2,...,hostidn']]",
@@ -874,10 +877,13 @@ static void display_help(void) {
 		0 /* ENDMARKER */
 	};
 
-	printf("SPINE %s  Copyright 2002-2015 by The Cacti Group\n\n", VERSION);
+	printf("SPINE %s  Copyright 2002-2016 by The Cacti Group\n", VERSION);
 
-	for (p = helptext; *p; p++) {
-		puts(*p);	/* automatically adds a newline */
+	if (only_version == FALSE) {
+		printf("\n");
+		for (p = helptext; *p; p++) {
+			puts(*p);	/* automatically adds a newline */
+		}
 	}
 }
 
