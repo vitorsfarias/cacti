@@ -10,4 +10,4 @@ bin_PROGRAMS = spine
 man_MANS = spine.1
 
 spine.1: spine.c 
-	$(HELP2MAN) --output=$@ --name='Data Collector for Cacti' --no-info --version-string='$(VERSION)' ./spine
+	$(HELP2MAN) --output=$@ --name='Data Collector for Cacti' --no-info --version-option='--version' ./spine
