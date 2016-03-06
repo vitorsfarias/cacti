@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+0.8.8h
+-bug:0002656: Authentication using web authentication as a user not in the cacti database allows complete access (refixed)
+
 0.8.8g
 -bug:0002161: Graph management "graph()" function conflicts with graphviz PECL extension graph()
 -bug:0002320: Unable to delete more than 500 graphs at once
