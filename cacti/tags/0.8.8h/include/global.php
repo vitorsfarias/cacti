@@ -236,6 +236,6 @@ function csrf_startup() {
 api_plugin_hook("config_insert");
 
 /* current cacti version */
-$config["cacti_version"] = "0.8.8g";
+$config["cacti_version"] = "0.8.8h";
 
 ?>

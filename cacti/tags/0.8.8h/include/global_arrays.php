@@ -565,6 +565,7 @@ $hash_version_codes = array(
 	"0.8.8e" => "0025",
 	"0.8.8f" => "0025",
 	"0.8.8g" => "0025",
+	"0.8.8h" => "0025",
 	);
 
 $hash_type_names = array(
