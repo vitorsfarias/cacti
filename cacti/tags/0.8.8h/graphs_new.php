@@ -795,16 +795,16 @@ function graphs() {
 						foreach($sql_order_fields as $k) {
 							switch($xml_array['index_order_type']) {
 							case 'numeric':
-								$sql_order = "ORDER BY CAST($k AS unsigned)";
+								$sql_order = "ORDER BY CAST(`$k` AS unsigned)";
 								break;
 							case 'alphabetic':
-								$sql_order = "ORDER BY $k";
+								$sql_order = "ORDER BY `$k`";
 								break;
 							case 'natural':
-								$sql_order = "ORDER BY INET_ATON($k)";
+								$sql_order = "ORDER BY INET_ATON(`$k`)";
 								break;
 							default:
-								$sql_order = "ORDER BY $k";
+								$sql_order = "ORDER BY `$k`";
 							}
 						}
 					}else{
