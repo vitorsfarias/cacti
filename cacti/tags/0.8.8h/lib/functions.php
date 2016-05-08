@@ -1365,7 +1365,11 @@ function generate_graph_def_name($graph_item_id) {
 		$result .= $lookup_table{substr(strval($graph_item_id), $i, 1)};
 	}
 
-	return $result;
+	if ($result == 'cf') {
+		return 'zcf';
+	}else{
+		return $result;
+	}
 }
 
 /* generate_data_input_field_sequences - re-numbers the sequences of each field associated
