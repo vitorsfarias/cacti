@@ -2,6 +2,7 @@
 
 0.8.8h
 -bug:0002659: wrong information about spine setup for icmps
+-bug: Removed requirement for building man page, deferred to 1.0
 
 0.8.8g
 -bug:0002380: please build man page for spine
