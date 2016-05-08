@@ -455,14 +455,21 @@ case 'preview':
 							<input type='button' name='button_refresh_x' value='Refresh' title='Refresh selected time span' onClick='refreshTimespanFilter()'>
 						</td>
 						<td>
-							<input type='submit' name='button_clear_x' value='Clear' title='Return to the default time span'>
+							<input type='button' name='button_clear_x' value='Clear' title='Return to the default time span' onClick='clearFilter()'>
 						</td>
 					</tr>
 				</table>
 			</form>
 			<script type='text/javascript'>
 			function refreshTimespanFilter() {
-				var json = { custom: 1, button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val() };
+				var json = { custom: 1, button_refresh_x: 1, date1: $('#date1').val(), date2: $('#date2').val(), predefined_timespan: $('#predefined_timespan').val(), predefined_timeshift: $('#predefined_timeshift').val(), __csrf_magic: csrfMagicToken };
+				var url  = 'graph_view.php?header=false';
+				$.post(url, json).done(function(data) {
+					$('#main').html(data);
+				});
+			}
+			function clearFilter() {
+				var json = { button_clear_x: 1, __csrf_magic: csrfMagicToken };
 				var url  = 'graph_view.php?header=false';
 				$.post(url, json).done(function(data) {
 					$('#main').html(data);
