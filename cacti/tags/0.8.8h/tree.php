@@ -153,6 +153,7 @@ function item_edit() {
 	/* ================= input validation ================= */
 	input_validate_input_number(get_request_var("id"));
 	input_validate_input_number(get_request_var("tree_id"));
+	input_validate_input_number(get_request_var("parent_id"));
 	/* ==================================================== */
 
 	if (!empty($_GET["id"])) {
